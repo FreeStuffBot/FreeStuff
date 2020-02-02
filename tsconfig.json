@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es2016",
+    "outDir": "build",
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "sourceMap": true,
+    "types": [
+      // add node as an option
+      "node",
+      "reflect-metadata"
+    ],
+    "typeRoots": [
+      // add path to @types
+      "node_modules/@types"
+    ],
+    "baseUrl": "./src",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "./src/**/*", "src/bot/messagedistributer.ts"
+  ]
+}
