@@ -19,9 +19,9 @@ class Util {
                 }
             },
             iterate: {
-                value: function (counter) {
+                value: function (run) {
                     let out = undefined;
-                    this.forEach(e => out = counter(e, out));
+                    this.forEach(e => out = run(e, out));
                     return out;
                 }
             }

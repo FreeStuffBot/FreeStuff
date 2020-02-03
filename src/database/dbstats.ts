@@ -1,40 +1,55 @@
 import Database, { dbcollection } from "./database";
 import { RequestHandler } from "discord.js";
+import { FreeStuffBot } from "index";
+import { CronJob } from "cron";
+const chalk = require('chalk');
 
 
 export class DbStats {
 
     private constructor() {}
 
-    static getCommand(name: string): Promise<DbStatCommand> {
-        return new Promise(async (resolve, reject) => resolve(await new DbStatCommand(name).load()));
+    public static startMonitoring(bot: FreeStuffBot) {
+        new CronJob('0 0 0 * * *', () => {
+            setTimeout(async () => {
+                let guildCount = bot.guilds.size;
+                let guildMemberCount = bot.guilds.array().count(g => g.memberCount);
+                console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.size}; Members: ${guildMemberCount}`));
+                (await this.usage).guilds.updateYesterday(guildCount, false);
+                (await this.usage).members.updateYesterday(guildMemberCount, false);
+            }, 60_000);
+        }).start();
+    }
+
+    static get usage(): Promise<DbStatUsage> {
+        return new DbStatUsage().load();
     }
 
 }
 
-export class DbStatCommand {
+export class DbStatUsage {
 
     public readonly raw: {[key: string ]: number[]} = {};
 
     constructor(
-        public readonly name: string
     ) {}
 
     async load(): Promise<this> {
         let c = await Database
-            .collection('stats')
-            .findOne({ _id: this.name });
-        for (let temp in c)
-            this.raw[temp] = c[temp];
+            .collection('stats-usage')
+            .find({ })
+            .toArray();
+        for (let temp of c)
+            this.raw[temp._id] = temp.value;
         return this;
     }
 
-    get calls(): DbStatGraph {
-        return new DbStatGraph('stats-commands', {_id:this.name}, 'calls', this.raw['calls'], this.raw);
+    get guilds(): DbStatGraph {
+        return new DbStatGraph('stats-usage', {_id:'guilds'}, this.raw['guilds'], this.raw);
     }
 
-    get executions(): DbStatGraph {
-        return new DbStatGraph('stats-commands', {_id:this.name}, 'executions', this.raw['executions'], this.raw);
+    get members(): DbStatGraph {
+        return new DbStatGraph('stats-usage', {_id:'members'}, this.raw['members'], this.raw);
     }
 
 }
@@ -44,7 +59,6 @@ export class DbStatGraph {
     constructor(
         private _collectionname: string,
         private _dbquery: any,
-        private _objectid: string,
         public readonly raw: number[],
         private _fullraw: any
     ) {}
@@ -58,14 +72,14 @@ export class DbStatGraph {
         if (dayId < 0) return;
         if (this.raw) {
             let obj = { };
-            obj[`${this._objectid}.${dayId}`] = value
+            obj[`value.${dayId}`] = value
             if (delta) obj = { '$inc': obj };
             else obj = { '$set': obj };
             if (dayId > this.raw.length) {
                 if (!obj['$set'])
                     obj['$set'] = {};
                 while (dayId-- > this.raw.length)
-                    obj['$set'][`${this._objectid}.${dayId}`] = 0;
+                    obj['$set'][`value.${dayId}`] = 0;
             }
             return await Database
                 .collection(this._collectionname as dbcollection)
@@ -73,16 +87,16 @@ export class DbStatGraph {
         } else {
             let parentExists = Object.keys(this._fullraw).length > 0;
             let obj = parentExists ? {} : this._dbquery;
-            obj[this._objectid] = [];
+            obj.value = [];
             for (let i = 0; i < dayId; i++)
-                obj[this._objectid].push(0);
-            obj[this._objectid].push(value);
+                obj.value.push(0);
+            obj.value.push(value);
             if (parentExists) {
                 return await Database
                     .collection(this._collectionname as dbcollection)
                     .updateOne(this._dbquery, { '$set': obj });
             } else {
-                this._fullraw[this._objectid] = obj;
+                this._fullraw.value = obj;
                 return await Database
                     .collection(this._collectionname as dbcollection)
                     .insertOne(obj);
@@ -92,6 +106,10 @@ export class DbStatGraph {
 
     public updateToday(value: number, delta: boolean = true) {
         this.update(getDayId(), value, delta);
+    }
+
+    public updateYesterday(value: number, delta: boolean = true) {
+        this.update(getDayId() - 1, value, delta);
     }
 
 }

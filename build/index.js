@@ -17,6 +17,8 @@ const util_1 = require("./util/util");
 const commandhandler_1 = require("./bot/commandhandler");
 const databasemanager_1 = require("./bot/databasemanager");
 const messagedistributor_1 = require("./bot/messagedistributor");
+const dbstats_1 = require("./database/dbstats");
+const gitParser_1 = require("./util/gitParser");
 const chalk = require('chalk');
 const settings = require('../config/settings.json');
 class FreeStuffBot extends discord_js_1.Client {
@@ -33,15 +35,17 @@ class FreeStuffBot extends discord_js_1.Client {
             .then(() => __awaiter(this, void 0, void 0, function* () {
             console.log('Connected to Mongo');
             wcp_1.default.send({ status_mongodb: '+Connected' });
+            gitParser_1.logVersionDetails();
             yield database_1.default.init();
-            this.on('ready', () => {
-                console.log('Bot ready! Logged in as ' + chalk.yellowBright(this.user.tag));
-                wcp_1.default.send({ status_discord: '+Connected' });
-                this.user.setActivity('@Free Stuff ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://tude.ga/freestuff', { type: 'WATCHING' });
-            });
             this.commandHandler = new commandhandler_1.default(this);
             this.databaseManager = new databasemanager_1.default(this);
             this.messageDistributor = new messagedistributor_1.default(this);
+            dbstats_1.DbStats.startMonitoring(this);
+            this.on('ready', () => {
+                console.log('Bot ready! Logged in as ' + chalk.yellowBright(this.user.tag));
+                wcp_1.default.send({ status_discord: '+Connected' });
+                this.user.setActivity('@FreeStuff ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://tude.ga/freestuff', { type: 'WATCHING' });
+            });
             this.login(settings.bot.token);
         }));
     }

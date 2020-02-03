@@ -16,7 +16,6 @@ class MessageDistributor {
     constructor(bot) {
     }
     distribute(content) {
-        console.log(content);
         database_1.default
             .collection('guilds')
             .find({})

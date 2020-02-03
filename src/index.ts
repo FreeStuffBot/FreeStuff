@@ -10,6 +10,8 @@ import { Util } from "./util/util";
 import CommandHandler from "./bot/commandhandler";
 import DatabaseManager from "./bot/databasemanager";
 import MessageDistributor from "./bot/messagedistributor";
+import { DbStats } from "./database/dbstats";
+import { logVersionDetails } from "./util/gitParser";
 const chalk = require('chalk');
 
 const settings = require('../config/settings.json');
@@ -39,17 +41,21 @@ export class FreeStuffBot extends Client {
         console.log('Connected to Mongo');
         WCP.send({ status_mongodb: '+Connected' });
 
+        logVersionDetails();
+
         await Database.init();
+    
+        this.commandHandler = new CommandHandler(this);
+        this.databaseManager = new DatabaseManager(this);
+        this.messageDistributor = new MessageDistributor(this);
+
+        DbStats.startMonitoring(this);
 
         this.on('ready', () => {
           console.log('Bot ready! Logged in as ' + chalk.yellowBright(this.user.tag));
           WCP.send({ status_discord: '+Connected' });
           this.user.setActivity('@FreeStuff ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://tude.ga/freestuff', { type: 'WATCHING' });
         });
-    
-        this.commandHandler = new CommandHandler(this);
-        this.databaseManager = new DatabaseManager(this);
-        this.messageDistributor = new MessageDistributor(this);
 
         this.login(settings.bot.token);
       });

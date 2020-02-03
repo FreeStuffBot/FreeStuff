@@ -208,6 +208,10 @@ class CommandHandler {
                         reply('Whoops!', `Looks like there's no channel specified!\nDo \`@FreeStuff set channel #${orgmes.guild.channels.filter(c => c.type == 'text').random().name}\` to tell me where to annouce free games!`);
                         return true;
                     }
+                    if (d.channelInstance.guild.me.permissionsIn(d.channelInstance).has('SEND_MESSAGES')) {
+                        reply('Whoops!', `Looks like I don't have the permission to write in that channel!`);
+                        return true;
+                    }
                     index_1.Core.messageDistributor.test(orgmes.guild, {
                         title: 'Game name here',
                         org_price: {
