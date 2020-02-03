@@ -15,13 +15,6 @@ const chalk = require('chalk');
 class DbStats {
     constructor() { }
     static startMonitoring(bot) {
-        setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-            let guildCount = bot.guilds.size;
-            let guildMemberCount = bot.guilds.array().count(g => g.memberCount);
-            console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.size}; Members: ${guildMemberCount}`));
-            (yield this.usage).guilds.updateYesterday(guildCount, false);
-            (yield this.usage).members.updateYesterday(guildMemberCount, false);
-        }), 1000);
         new cron_1.CronJob('0 0 0 * * *', () => {
             setTimeout(() => __awaiter(this, void 0, void 0, function* () {
                 let guildCount = bot.guilds.size;
