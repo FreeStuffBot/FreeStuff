@@ -2,6 +2,8 @@ import { FreeStuffBot, Core } from "../index";
 import { Message } from "discord.js";
 import Const from "./const";
 
+const settings = require('../../config/settings.json');
+
 
 
 const commandlist = [
@@ -21,7 +23,7 @@ export default class CommandHandler {
     bot.on('message', m => {
       if (m.author.bot) return;
       if (!m.guild) return;
-      if (!m.content.replace('!', '').startsWith(bot.user.toString()) && !m.content.startsWith('@FreeStuff')) return;
+      if (!m.content.replace('!', '').startsWith(bot.user.toString()) && !m.content.toLowerCase().startsWith('@freestuff')) return;
       if (!m.guild.me.permissionsIn(m.channel).has('SEND_MESSAGES')) return;
 
       let args = m.content.split(' ');
@@ -73,7 +75,7 @@ export default class CommandHandler {
       case 'config':
       case 'configure':
       case 'change':
-        if (!orgmes.member.hasPermission('MANAGE_GUILD')) {
+        if (!orgmes.member.hasPermission('MANAGE_GUILD') && !settings.admins.includes(orgmes.member.id)) {
           reply('No permission!', 'You need the `manage server` permission to change my settings!', undefined, undefined, 'https://media.discordapp.net/attachments/672907465670787083/672907481957007400/unknown.png');
           return true;
         }

@@ -58,13 +58,13 @@ export default class MessageDistributor {
       if (!data.mentionRoleInstance.mentionable
       && (data.channelInstance.guild.me.hasPermission('MANAGE_ROLES')
        || data.channelInstance.guild.me.hasPermission('MANAGE_ROLES_OR_PERMISSIONS'))) {
-        data.mentionRoleInstance.setMentionable(true);
+        await data.mentionRoleInstance.setMentionable(true);
         setNoMention = true;
        }
     }
     let mes: Message = await data.channelInstance.send(...messageContent) as Message;
     if (data.react && self.permissionsIn(data.channelInstance).has('ADD_REACTIONS'))
-      mes.react('🆓');
+      await mes.react('🆓');
     if (setNoMention)
       data.mentionRoleInstance.setMentionable(false);
   }
@@ -87,7 +87,7 @@ export default class MessageDistributor {
 
   buildTheme1(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
     let priceString = '';
-    if (data.currency == 'euro') priceString = `€${content.org_price.euro}`;
+    if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
     else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
 
     return [
@@ -111,7 +111,7 @@ export default class MessageDistributor {
 
   buildTheme2(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
     let priceString = '';
-    if (data.currency == 'euro') priceString = `€${content.org_price.euro}`;
+    if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
     else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
 
     return [
@@ -135,7 +135,7 @@ export default class MessageDistributor {
 
   buildTheme3(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
     let priceString = '';
-    if (data.currency == 'euro') priceString = `€${content.org_price.euro}`;
+    if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
     else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
 
     return [
@@ -156,7 +156,7 @@ export default class MessageDistributor {
 
   buildTheme4(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
     let priceString = '';
-    if (data.currency == 'euro') priceString = `€${content.org_price.euro}`;
+    if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
     else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
 
     return [

@@ -64,13 +64,13 @@ class MessageDistributor {
                 if (!data.mentionRoleInstance.mentionable
                     && (data.channelInstance.guild.me.hasPermission('MANAGE_ROLES')
                         || data.channelInstance.guild.me.hasPermission('MANAGE_ROLES_OR_PERMISSIONS'))) {
-                    data.mentionRoleInstance.setMentionable(true);
+                    yield data.mentionRoleInstance.setMentionable(true);
                     setNoMention = true;
                 }
             }
             let mes = yield data.channelInstance.send(...messageContent);
             if (data.react && self.permissionsIn(data.channelInstance).has('ADD_REACTIONS'))
-                mes.react('🆓');
+                yield mes.react('🆓');
             if (setNoMention)
                 data.mentionRoleInstance.setMentionable(false);
         });
@@ -94,7 +94,7 @@ class MessageDistributor {
     buildTheme1(content, data, test) {
         let priceString = '';
         if (data.currency == 'euro')
-            priceString = `€${content.org_price.euro}`;
+            priceString = `${content.org_price.euro} €`;
         else if (data.currency == 'usd')
             priceString = `$${content.org_price.dollar}`;
         return [
@@ -118,7 +118,7 @@ class MessageDistributor {
     buildTheme2(content, data, test) {
         let priceString = '';
         if (data.currency == 'euro')
-            priceString = `€${content.org_price.euro}`;
+            priceString = `${content.org_price.euro} €`;
         else if (data.currency == 'usd')
             priceString = `$${content.org_price.dollar}`;
         return [
@@ -142,7 +142,7 @@ class MessageDistributor {
     buildTheme3(content, data, test) {
         let priceString = '';
         if (data.currency == 'euro')
-            priceString = `€${content.org_price.euro}`;
+            priceString = `${content.org_price.euro} €`;
         else if (data.currency == 'usd')
             priceString = `$${content.org_price.dollar}`;
         return [
@@ -163,7 +163,7 @@ class MessageDistributor {
     buildTheme4(content, data, test) {
         let priceString = '';
         if (data.currency == 'euro')
-            priceString = `€${content.org_price.euro}`;
+            priceString = `${content.org_price.euro} €`;
         else if (data.currency == 'usd')
             priceString = `$${content.org_price.dollar}`;
         return [

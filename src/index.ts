@@ -10,9 +10,12 @@ import { Util } from "./util/util";
 import CommandHandler from "./bot/commandhandler";
 import DatabaseManager from "./bot/databasemanager";
 import MessageDistributor from "./bot/messagedistributor";
+import AdminCommandHandler from "./bot/admincommandhandler";
 import { DbStats } from "./database/dbstats";
 import { logVersionDetails } from "./util/gitParser";
-const chalk = require('chalk');
+import WebScraper from "./web_scraper/scraper";
+import * as chalk from "chalk";
+import * as DBL from "dblapi.js";
 
 const settings = require('../config/settings.json');
 
@@ -22,6 +25,9 @@ export class FreeStuffBot extends Client {
   public commandHandler: CommandHandler;
   public databaseManager: DatabaseManager;
   public messageDistributor: MessageDistributor;
+  public adminCommandHandler: AdminCommandHandler;
+  
+  public dbl: any;
 
   constructor(props) {
     super(props);
@@ -48,13 +54,22 @@ export class FreeStuffBot extends Client {
         this.commandHandler = new CommandHandler(this);
         this.databaseManager = new DatabaseManager(this);
         this.messageDistributor = new MessageDistributor(this);
+        this.adminCommandHandler = new AdminCommandHandler(this);
 
         DbStats.startMonitoring(this);
+
+        this.dbl = new DBL(settings.thirdparty.topgg.apitoken, this);
 
         this.on('ready', () => {
           console.log('Bot ready! Logged in as ' + chalk.yellowBright(this.user.tag));
           WCP.send({ status_discord: '+Connected' });
           this.user.setActivity('@FreeStuff ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://tude.ga/freestuff', { type: 'WATCHING' });
+
+          WebScraper.init();
+
+          // WebScraper.fetch('https://www.epicgames.com/store/de/product/detroit-become-human/home').then(d => {
+          //   this.messageDistributor.distribute(d);
+          // });
         });
 
         this.login(settings.bot.token);
