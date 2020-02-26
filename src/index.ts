@@ -16,6 +16,7 @@ import { logVersionDetails } from "./util/gitParser";
 import WebScraper from "./web_scraper/scraper";
 import * as chalk from "chalk";
 import * as DBL from "dblapi.js";
+import Pastebin from "./thirdparty/pastebin/pastebin";
 
 const settings = require('../config/settings.json');
 
@@ -29,14 +30,14 @@ export class FreeStuffBot extends Client {
   
   public dbl: any;
 
-  constructor(props) {
-    super(props);
+  constructor(options) {
+    super(options);
 
     // fixReactionEvent(this);
 
     Util.init();
-    
     WCP.init();
+    // Pastebin.init();
 
     MongoAdapter.connect(settings.mongodb.url)
       .catch(err => {
@@ -82,28 +83,67 @@ export class FreeStuffBot extends Client {
 export const Core = new FreeStuffBot (
   {
     disabledEvents: [
+      // 'READY',
+      'RESUMED',
+      'GUILD_SYNC',
+      // 'GUILD_CREATE',
+      // 'GUILD_DELETE',
+      'GUILD_UPDATE',
+      'GUILD_MEMBER_ADD',
+      'GUILD_MEMBER_REMOVE',
+      'GUILD_MEMBER_UPDATE',
+      'GUILD_MEMBERS_CHUNK',
+      'GUILD_INTEGRATIONS_UPDATE',
+      'GUILD_ROLE_CREATE',
+      'GUILD_ROLE_DELETE',
+      'GUILD_ROLE_UPDATE',
+      'GUILD_BAN_ADD',
+      'GUILD_BAN_REMOVE',
+      'CHANNEL_CREATE',
+      'CHANNEL_DELETE',
+      'CHANNEL_UPDATE',
+      'CHANNEL_PINS_UPDATE',
+      // 'MESSAGE_CREATE',
+      'MESSAGE_DELETE',
+      'MESSAGE_UPDATE',
+      'MESSAGE_DELETE_BULK',
+      'MESSAGE_REACTION_ADD',
+      'MESSAGE_REACTION_REMOVE',
+      'MESSAGE_REACTION_REMOVE_ALL',
+      'USER_UPDATE',
+      'USER_NOTE_UPDATE',
+      'USER_SETTINGS_UPDATE',
+      'PRESENCE_UPDATE',
+      'VOICE_STATE_UPDATE',
       'TYPING_START',
-    ]
+      'VOICE_SERVER_UPDATE',
+      'RELATIONSHIP_ADD',
+      'RELATIONSHIP_REMOVE',
+      'WEBHOOKS_UPDATE'
+    ],
+    messageSweepInterval: 5,
+    messageCacheLifetime: 5,
+    messageCacheMaxSize: 5,
   }
 );
 
 
 function fixReactionEvent(bot: FreeStuffBot) {
   const events = {
-      MESSAGE_REACTION_ADD: 'messageReactionAdd',
-      MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
+    MESSAGE_REACTION_ADD: 'messageReactionAdd',
+    MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
   }
 
   bot.on('raw', async (event: Event) => {
-      const ev: any = event;
-      if (!events.hasOwnProperty(ev.t)) return
-      const data = ev.d;
-      const user: User = bot.users.get(data.user_id);
-      const channel: any = bot.channels.get(data.channel_id) || await user.createDM();
-      if (channel.messages.has(data.message_id)) return;
-      const message = await channel.fetchMessage(data.message_id);
-      const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-      const reaction = message.reactions.get(emojiKey);
-      bot.emit(events[ev.t], reaction, user);
+    const ev: any = event;
+    if (!events.hasOwnProperty(ev.t)) return
+    const data = ev.d;
+    const user: User = bot.users.get(data.user_id);
+    const channel: any = bot.channels.get(data.channel_id) || await user.createDM();
+    if (channel.messages.has(data.message_id)) return;
+    const message = await channel.fetchMessage(data.message_id);
+    const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+    const reaction = message.reactions.get(emojiKey);
+    bot.emit(events[ev.t], reaction, user);
   });
 }
