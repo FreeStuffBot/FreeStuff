@@ -8,5 +8,6 @@ export default class Const {
   public static readonly websiteLinkClean = 'tude.ga/freestuff';
   public static readonly themeListLink = 'https://tude.ga/freestuff/themes';
   public static readonly testGameLink = 'https://tude.ga/freestuff/testgame';
+  public static readonly topGGLink = 'https://top.gg/bot/672822334641537041';
 
 }

@@ -273,7 +273,7 @@ export default class CommandHandler {
       case 'top':
       case 'botlist':
       case 'v':
-        reply('Enjoing the service?', `[Click here to upvote me on top.gg!](${Const.inviteLink})`);
+        reply('Enjoing the free games?', `[Click here to upvote me on top.gg!](${Const.topGGLink})`);
         return true;
     }
 
