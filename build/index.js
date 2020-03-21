@@ -52,10 +52,10 @@ class FreeStuffBot extends discord_js_1.Client {
                 wcp_1.default.send({ status_discord: '+Connected' });
                 this.user.setActivity('@FreeStuff ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://tude.ga/freestuff', { type: 'WATCHING' });
                 scraper_1.default.init();
-                scraper_1.default.fetch('https://store.steampowered.com/app/442070/Drawful_2/').then(d => {
-                    // this.messageDistributor.distribute(d);
-                    console.log(d);
-                });
+                // WebScraper.fetch('https://store.steampowered.com/app/442070/Drawful_2/').then(d => {
+                //   // this.messageDistributor.distribute(d);
+                //   console.log(d);
+                // });
             });
             this.login(settings.bot.token);
         }));

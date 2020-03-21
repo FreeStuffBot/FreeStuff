@@ -16,8 +16,6 @@ import { logVersionDetails } from "./util/gitParser";
 import WebScraper from "./web_scraper/scraper";
 import * as chalk from "chalk";
 import * as DBL from "dblapi.js";
-import Pastebin from "./thirdparty/pastebin/pastebin";
-import SteamScraper from "web_scraper/steam.scraper";
 
 const settings = require('../config/settings.json');
 

@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const puppeteer = require("puppeteer");
 const worker_1 = require("./worker");
+// TODO this is not working
 class SteamScraper extends worker_1.default {
     constructor() {
         super(...arguments);
@@ -29,12 +30,12 @@ class SteamScraper extends worker_1.default {
             yield page.screenshot({ path: 'example.png' });
             let price = yield this.grabInfo(page, this.queries.price, '9.99 €');
             let priceEur = parseFloat(price.substring(0, price.length - 2).split(',').join('.'));
-            let priceUsd = Math.ceil(priceEur * 1.09) - .01;
+            let priceUsd = priceEur; //Math.ceil(priceEur * 1.09) - .01;
             let title = yield this.grabInfo(page, this.queries.title, 'Unknown');
             let image = yield page.evaluate(el => console.log(el), yield page.$(this.queries.image)[0]);
             browser.close();
             return {
-                store: 'Epic Games',
+                store: 'Steam',
                 thumbnail: undefined,
                 title: title,
                 url: url,
