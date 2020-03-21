@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../index");
-const const_1 = require("./const");
+const Const_1 = require("./Const");
 const settings = require('../../config/settings.json');
 const commandlist = [
     '`@FreeStuff help` - Shows this help page',
@@ -9,6 +9,7 @@ const commandlist = [
     '`@FreeStuff set` - Change the settings',
     '`@FreeStuff test` - Run a test announcement to see if you\'ve set up everything correctly',
     '`@FreeStuff invite` - Get an invite link to add this bot to your server',
+    '`@FreeStuff vote` - Enjoying the service? Give me an upvote on top.gg!',
 ];
 const testCooldown = [];
 const testCooldownHarsh = [];
@@ -46,7 +47,7 @@ class CommandHandler {
         };
         switch (command.toLowerCase()) {
             case '':
-                reply(`Hey ${orgmes.author.username}!`, 'Type `@FreeStuff help` for a help page!\nType `@FreeStuff info` for information about the bot!\n[Or click here for more info](' + const_1.default.websiteLink + ')');
+                reply(`Hey ${orgmes.author.username}!`, 'Type `@FreeStuff help` for a help page!\nType `@FreeStuff info` for information about the bot!\n[Or click here for more info](' + Const_1.default.websiteLink + ')');
                 return true;
             case 'help':
                 reply('Help is on the way!', 'Available commands:\n' + commandlist.map(c => `• ${c}`).join('\n'));
@@ -54,12 +55,7 @@ class CommandHandler {
             case 'about':
             case 'info':
             case 'information':
-                reply('Free Stuff Bot', `Bot made by [Maanex](https://maanex.tk/?utm_source=freestuffbot&utm_medium=about&utm_campaign=project)\n\n[About / Website](${const_1.default.websiteLink})\n\n[Click here to add it to your server](${const_1.default.inviteLink})\n\n[Report a bug or get in contact](${const_1.default.discordInvite})`, 'Copyright © 2020 Tude', 0x00b0f4);
-                return true;
-            case 'techdetails':
-            case 'technicaldetails':
-            case 'techdet':
-                reply('Free Stuff Bot', 'Written in TypeScript\nUsing Discord.js\nWith a MongoDB Database');
+                reply('Free Stuff Bot', `Bot made by [Maanex](https://maanex.tk/?utm_source=freestuffbot&utm_medium=about&utm_campaign=project)\n\n[About / Website](${Const_1.default.websiteLink})\n\n[Click here to add it to your server](${Const_1.default.inviteLink})\n\n[Report a bug or get in contact](${Const_1.default.discordInvite})`, 'Copyright © 2020 Tude', 0x00b0f4);
                 return true;
             case 'set':
             case 'settings':
@@ -82,7 +78,7 @@ class CommandHandler {
                                     '`' + c + ' channel #' + ((guilddata && guilddata.channelInstance) ? guilddata.channelInstance.name : 'channel') + '` change the channel the bot will announce stuff in!',
                                     '`' + c + ' mention @' + ((guilddata && guilddata.mentionRoleInstance) ? guilddata.mentionRoleInstance.name : 'role') + '` let the bot mention a certain role. Useful for self-roles etc.',
                                     '`' + c + ' mention` to not let the bot mention anyone. The bot won\'t mention anyone by default!',
-                                    '`' + c + ' theme ' + (guilddata ? (guilddata.theme + 1) : 1) + '` change the theme in which the bot will display the annoucement. See all available themes [here](' + const_1.default.themeListLink + ')',
+                                    '`' + c + ' theme ' + (guilddata ? (guilddata.theme + 1) : 1) + '` change the theme in which the bot will display the annoucement. See all available themes [here](' + Const_1.default.themeListLink + ')',
                                     '`' + c + ' currency ' + (guilddata ? (guilddata.currency == 'euro' ? '€' : '$') : '€') + '` to change the currency displayed in the announcement. You can use € or $.',
                                     '`' + c + ' reaction ' + (guilddata ? (guilddata.react ? 'on' : 'off') : 'off') + '` toggle auto reaction on or off. This will make the bot react with the :free: emoji on every new annoucement.',
                                 ].map(l => { return { name: l.split('` ')[0] + '`', value: l.split('` ')[1] }; })
@@ -91,15 +87,39 @@ class CommandHandler {
                     }
                     switch (args[0].toLowerCase()) {
                         case 'channel':
-                            if (args.length < 2 || !orgmes.mentions.channels.size) {
-                                reply('Missing arguments!', 'Please provide a channel to announce the free games in.\nExample: `@FreeStuff channel #' + orgmes.guild.channels.filter(c => c.type == 'text').random().name + '`');
+                            if (args.length < 2) {
+                                reply('Sure, just tell me where!', 'Example: `@FreeStuff set channel #' + orgmes.guild.channels.filter(c => c.type == 'text').random().name + '`');
                                 break;
                             }
                             let channel = orgmes.mentions.channels.first();
-                            if (!channel)
-                                return;
-                            index_1.Core.databaseManager.changeSetting(orgmes.guild, guilddata, 'channel', channel.id);
-                            reply('Alright!', 'From now on I will announce free games in ' + channel.toString());
+                            if (!channel) {
+                                const result = isNaN(parseInt(args[1]))
+                                    ? orgmes.guild.channels.find(find => find.name.toLowerCase() == args[1].toLowerCase())
+                                    : orgmes.guild.channels.find(find => find.id == args[1]);
+                                if (!result) {
+                                    reply(`I'm sorry,`, `but I just don't seem to find the channel \`${args[1]}\`!`);
+                                    return;
+                                }
+                                else if (channel.type != 'text' && channel.type != 'news') {
+                                    reply('Interesting choice of channel!', 'I would prefer a regular text channel though!');
+                                    return;
+                                }
+                                else
+                                    channel = result;
+                            }
+                            if (channel.type != 'text' && channel.type != 'news') {
+                                reply('Interesting choice of channel!', 'I would prefer a regular text channel though!');
+                            }
+                            else if (!channel.guild.me.permissionsIn(channel).has('VIEW_CHANNEL')) {
+                                reply('Oh no!', `The channel #${channel.name} is not visible to me! Please edit my permissions in this channel like so:`, undefined, undefined, 'https://media.discordapp.net/attachments/672907465670787083/690942039218454558/unknown.png');
+                            }
+                            else if (!channel.guild.me.permissionsIn(channel).has('SEND_MESSAGES')) {
+                                reply('I wish I could...', `... but I don't have the permission to do so! Please check my permissions in #${channel.name} and make sure I can send messages!`, undefined, undefined, 'https://media.discordapp.net/attachments/672907465670787083/690942039218454558/unknown.png');
+                            }
+                            else {
+                                index_1.Core.databaseManager.changeSetting(orgmes.guild, guilddata, 'channel', channel.id);
+                                reply('Alright!', 'From now on I will announce free games in ' + channel.toString());
+                            }
                             break;
                         case 'mention':
                             if (args.length < 2) {
@@ -133,7 +153,7 @@ class CommandHandler {
                             break;
                         case 'theme':
                             if (args.length < 2) {
-                                reply('Missing argument!', `If you want to change your current theme please use \`@FreeStuff set theme <theme>\`\nA full list of all available themes can be found [Here](${const_1.default.themeListLink})`);
+                                reply('Yes I can, just which one?', `If you want to change your current theme please use \`@FreeStuff set theme <theme>\`\nA full list of all available themes can be found [Here](${Const_1.default.themeListLink})`);
                                 break;
                             }
                             if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(args[1])) {
@@ -141,12 +161,12 @@ class CommandHandler {
                                 reply('Looking good!', 'New theme was applied successfully! Take a look with `@FreeStuff test`!');
                             }
                             else {
-                                reply('Oh no!', `Couldn't find the theme ${args[1]}!\n[Here's a full list of all the available themes!](${const_1.default.themeListLink})`);
+                                reply('Oh no!', `Couldn't find the theme ${args[1]}!\n[Here's a full list of all the available themes!](${Const_1.default.themeListLink})`);
                             }
                             break;
                         case 'currency':
                             if (args.length < 2) {
-                                reply('Missing argument!', 'To change the currency, please use `@FreeStuff set currency <currency>`, with <currency> being either € or $');
+                                reply('Sure, just tell me which one!', 'To change the currency, please use `@FreeStuff set currency <currency>`, with <currency> being either € or $');
                                 break;
                             }
                             if (['€', 'euro', 'eur'].includes(args[1].toLowerCase())) {
@@ -166,7 +186,7 @@ class CommandHandler {
                         case 'react':
                         case 'reaction':
                             if (args.length < 2) {
-                                reply('Missing argument!', 'To enable / disable auto reaction, please use `@FreeStuff set reaction on/off`');
+                                reply(`I'm currently ${guilddata.react ? 'reacting to annoucements!' : 'not reacting to announcements!'}`, 'To change that, use `@FreeStuff set reaction on/off`');
                                 break;
                             }
                             if (args[1].toLowerCase() == 'on/off') {
@@ -221,7 +241,7 @@ class CommandHandler {
                         },
                         store: 'Store xyz',
                         thumbnail: 'https://cdn.discordapp.com/attachments/672907465670787083/673119991649796106/unknown.png',
-                        url: const_1.default.testGameLink
+                        url: Const_1.default.testGameLink
                     });
                 }).catch(err => {
                     reply('An error occured!', 'We\'re trying to fix this issue as soon as possible!');
@@ -241,11 +261,22 @@ class CommandHandler {
             case 'invite':
             case 'add':
             case 'join':
-                reply('Sure!', `[Click here to add me to your server!](${const_1.default.inviteLink})`);
+                reply('Sure!', `[Click here to add me to your server!](${Const_1.default.inviteLink})`);
                 return true;
+            case 'vote':
+            case 'topgg':
+            case 'top':
+            case 'botlist':
+            case 'v':
+                reply('Enjoing the service?', `[Click here to upvote me on top.gg!](${Const_1.default.inviteLink})`);
+                return true;
+        }
+        if (/set.*/.test(command.toLowerCase())) {
+            reply('You\'re missing a space between the `set` and the `' + command.toLowerCase().substr(3) + '`!', 'To see all available settings use `@FreeStuff settings`');
+            return true;
         }
         return false;
     }
 }
 exports.default = CommandHandler;
-//# sourceMappingURL=commandhandler.js.map
+//# sourceMappingURL=CommandHandler.js.map

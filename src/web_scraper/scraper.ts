@@ -2,6 +2,7 @@
 import { FreeStuffData } from 'types';
 import EpicGamesScraper from './epicgames.scraper';
 import ScraperWorker from './worker';
+import SteamScraper from './steam.scraper';
 
 
 
@@ -16,7 +17,7 @@ export default class WebScraper {
   static init() {
     WebScraper.scraper = {
       'epic-games': new EpicGamesScraper(),
-      'steam': undefined,
+      'steam': new SteamScraper(),
       'gog': undefined,
     }
   }
@@ -26,6 +27,8 @@ export default class WebScraper {
 
     if (/^https?:\/\/(www\.)?epicgames\.com\/store\/.*$/.test(url))
       store = 'epic-games';
+    if (/^https?:\/\/store.steampowered\.com\/app\/.*$/.test(url))
+      store = 'steam';
 
     console.log(store);
 

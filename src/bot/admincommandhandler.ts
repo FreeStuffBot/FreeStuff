@@ -1,6 +1,6 @@
 import { FreeStuffBot, Core } from "../index";
 import { Message } from "discord.js";
-import Const from "./const";
+import Const from "./Const";
 import Database from "../database/database";
 import WebScraper from "../web_scraper/scraper";
 

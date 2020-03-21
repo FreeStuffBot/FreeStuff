@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../index");
-const const_1 = require("./const");
+const Const_1 = require("./Const");
 const database_1 = require("../database/database");
 class MessageDistributor {
     constructor(bot) {
@@ -44,7 +44,7 @@ class MessageDistributor {
     }
     sendToGuild(g, content, test) {
         return __awaiter(this, void 0, void 0, function* () {
-            let data = index_1.Core.databaseManager.parseGuildData(g);
+            const data = index_1.Core.databaseManager.parseGuildData(g);
             if (!data) {
                 index_1.Core.databaseManager.removeGuild(g._id);
                 return;
@@ -53,10 +53,12 @@ class MessageDistributor {
                 return;
             if (!data.channelInstance.guild.available)
                 return;
-            let self = data.channelInstance.guild.me;
+            const self = data.channelInstance.guild.me;
             if (!self.permissionsIn(data.channelInstance).has('SEND_MESSAGES'))
                 return;
-            let messageContent = this.buildMessage(content, data, test);
+            if (!self.permissionsIn(data.channelInstance).has('VIEW_CHANNEL'))
+                return;
+            const messageContent = this.buildMessage(content, data, test);
             if (!messageContent)
                 return;
             let setNoMention = false;
@@ -76,7 +78,7 @@ class MessageDistributor {
         });
     }
     buildMessage(content, data, test) {
-        let builder = ([
+        const builder = ([
             this.buildTheme1,
             this.buildTheme2,
             this.buildTheme3,
@@ -109,7 +111,7 @@ class MessageDistributor {
                         url: content.thumbnail
                     },
                     footer: {
-                        text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${const_1.default.websiteLinkClean}`
+                        text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const_1.default.websiteLinkClean}`
                     },
                     color: 0x2f3136
                 } }
@@ -133,7 +135,7 @@ class MessageDistributor {
                         url: content.thumbnail
                     },
                     footer: {
-                        text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${const_1.default.websiteLinkClean}`
+                        text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const_1.default.websiteLinkClean}`
                     },
                     color: 0x2f3136
                 } }
@@ -154,7 +156,7 @@ class MessageDistributor {
                     title: content.title,
                     description: `~~${priceString}~~ **Free** • ${content.store}\n\n[<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>](${content.url})`,
                     footer: {
-                        text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${const_1.default.websiteLinkClean}`
+                        text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const_1.default.websiteLinkClean}`
                     },
                     color: 0x2f3136
                 } }
@@ -175,7 +177,7 @@ class MessageDistributor {
                     title: content.title,
                     description: `~~${priceString}~~ **Free** • ${content.store}\n\n[Get it now](${content.url})`,
                     footer: {
-                        text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${const_1.default.websiteLinkClean}`
+                        text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const_1.default.websiteLinkClean}`
                     },
                     color: 0x2f3136
                 } }
@@ -191,7 +193,7 @@ class MessageDistributor {
                     title: content.title,
                     url: content.url,
                     footer: {
-                        text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${const_1.default.websiteLinkClean}`
+                        text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const_1.default.websiteLinkClean}`
                     },
                     color: 0x2f3136
                 } }
@@ -207,7 +209,7 @@ class MessageDistributor {
                     title: content.title,
                     url: content.url,
                     footer: {
-                        text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${const_1.default.websiteLinkClean}`
+                        text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const_1.default.websiteLinkClean}`
                     },
                     image: {
                         url: content.thumbnail
@@ -239,4 +241,4 @@ class MessageDistributor {
     }
 }
 exports.default = MessageDistributor;
-//# sourceMappingURL=messagedistributor.js.map
+//# sourceMappingURL=MessageDistributor.js.map

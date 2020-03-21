@@ -7,16 +7,17 @@ import { Long } from 'mongodb';
 import MongoAdapter from "./database/mongo.adapter";
 import Database from "./database/database";
 import { Util } from "./util/util";
-import CommandHandler from "./bot/commandhandler";
-import DatabaseManager from "./bot/databasemanager";
-import MessageDistributor from "./bot/messagedistributor";
-import AdminCommandHandler from "./bot/admincommandhandler";
+import CommandHandler from "./bot/CommandHandler";
+import DatabaseManager from "./bot/DatabaseManager";
+import MessageDistributor from "./bot/MessageDistributor";
+import AdminCommandHandler from "./bot/AdminCommandHandler";
 import { DbStats } from "./database/dbstats";
 import { logVersionDetails } from "./util/gitParser";
 import WebScraper from "./web_scraper/scraper";
 import * as chalk from "chalk";
 import * as DBL from "dblapi.js";
 import Pastebin from "./thirdparty/pastebin/pastebin";
+import SteamScraper from "web_scraper/steam.scraper";
 
 const settings = require('../config/settings.json');
 
@@ -68,8 +69,9 @@ export class FreeStuffBot extends Client {
 
           WebScraper.init();
 
-          // WebScraper.fetch('https://www.epicgames.com/store/de/product/detroit-become-human/home').then(d => {
-          //   this.messageDistributor.distribute(d);
+          // WebScraper.fetch('https://store.steampowered.com/app/442070/Drawful_2/').then(d => {
+          //   // this.messageDistributor.distribute(d);
+          //   console.log(d);
           // });
         });
 
@@ -88,20 +90,20 @@ export const Core = new FreeStuffBot (
       'GUILD_SYNC',
       // 'GUILD_CREATE',
       // 'GUILD_DELETE',
-      'GUILD_UPDATE',
+      // 'GUILD_UPDATE',
       'GUILD_MEMBER_ADD',
       'GUILD_MEMBER_REMOVE',
-      'GUILD_MEMBER_UPDATE',
+      // 'GUILD_MEMBER_UPDATE',
       'GUILD_MEMBERS_CHUNK',
       'GUILD_INTEGRATIONS_UPDATE',
-      'GUILD_ROLE_CREATE',
-      'GUILD_ROLE_DELETE',
-      'GUILD_ROLE_UPDATE',
+      // 'GUILD_ROLE_CREATE',
+      // 'GUILD_ROLE_DELETE',
+      // 'GUILD_ROLE_UPDATE',
       'GUILD_BAN_ADD',
       'GUILD_BAN_REMOVE',
-      'CHANNEL_CREATE',
-      'CHANNEL_DELETE',
-      'CHANNEL_UPDATE',
+      // 'CHANNEL_CREATE',
+      // 'CHANNEL_DELETE',
+      // 'CHANNEL_UPDATE',
       'CHANNEL_PINS_UPDATE',
       // 'MESSAGE_CREATE',
       'MESSAGE_DELETE',
@@ -110,7 +112,7 @@ export const Core = new FreeStuffBot (
       'MESSAGE_REACTION_ADD',
       'MESSAGE_REACTION_REMOVE',
       'MESSAGE_REACTION_REMOVE_ALL',
-      'USER_UPDATE',
+      // 'USER_UPDATE',
       'USER_NOTE_UPDATE',
       'USER_SETTINGS_UPDATE',
       'PRESENCE_UPDATE',

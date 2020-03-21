@@ -113,4 +113,4 @@ class DatabaseManager {
     }
 }
 exports.default = DatabaseManager;
-//# sourceMappingURL=databasemanager.js.map
+//# sourceMappingURL=DatabaseManager.js.map

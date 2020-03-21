@@ -14,10 +14,10 @@ const wcp_1 = require("./thirdparty/wcp/wcp");
 const mongo_adapter_1 = require("./database/mongo.adapter");
 const database_1 = require("./database/database");
 const util_1 = require("./util/util");
-const commandhandler_1 = require("./bot/commandhandler");
-const databasemanager_1 = require("./bot/databasemanager");
-const messagedistributor_1 = require("./bot/messagedistributor");
-const admincommandhandler_1 = require("./bot/admincommandhandler");
+const CommandHandler_1 = require("./bot/CommandHandler");
+const DatabaseManager_1 = require("./bot/DatabaseManager");
+const MessageDistributor_1 = require("./bot/MessageDistributor");
+const AdminCommandHandler_1 = require("./bot/AdminCommandHandler");
 const dbstats_1 = require("./database/dbstats");
 const gitParser_1 = require("./util/gitParser");
 const scraper_1 = require("./web_scraper/scraper");
@@ -41,10 +41,10 @@ class FreeStuffBot extends discord_js_1.Client {
             wcp_1.default.send({ status_mongodb: '+Connected' });
             gitParser_1.logVersionDetails();
             yield database_1.default.init();
-            this.commandHandler = new commandhandler_1.default(this);
-            this.databaseManager = new databasemanager_1.default(this);
-            this.messageDistributor = new messagedistributor_1.default(this);
-            this.adminCommandHandler = new admincommandhandler_1.default(this);
+            this.commandHandler = new CommandHandler_1.default(this);
+            this.databaseManager = new DatabaseManager_1.default(this);
+            this.messageDistributor = new MessageDistributor_1.default(this);
+            this.adminCommandHandler = new AdminCommandHandler_1.default(this);
             dbstats_1.DbStats.startMonitoring(this);
             this.dbl = new DBL(settings.thirdparty.topgg.apitoken, this);
             this.on('ready', () => {
@@ -52,9 +52,10 @@ class FreeStuffBot extends discord_js_1.Client {
                 wcp_1.default.send({ status_discord: '+Connected' });
                 this.user.setActivity('@FreeStuff ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://tude.ga/freestuff', { type: 'WATCHING' });
                 scraper_1.default.init();
-                // WebScraper.fetch('https://www.epicgames.com/store/de/product/detroit-become-human/home').then(d => {
-                //   this.messageDistributor.distribute(d);
-                // });
+                scraper_1.default.fetch('https://store.steampowered.com/app/442070/Drawful_2/').then(d => {
+                    // this.messageDistributor.distribute(d);
+                    console.log(d);
+                });
             });
             this.login(settings.bot.token);
         }));
@@ -68,20 +69,20 @@ exports.Core = new FreeStuffBot({
         'GUILD_SYNC',
         // 'GUILD_CREATE',
         // 'GUILD_DELETE',
-        'GUILD_UPDATE',
+        // 'GUILD_UPDATE',
         'GUILD_MEMBER_ADD',
         'GUILD_MEMBER_REMOVE',
-        'GUILD_MEMBER_UPDATE',
+        // 'GUILD_MEMBER_UPDATE',
         'GUILD_MEMBERS_CHUNK',
         'GUILD_INTEGRATIONS_UPDATE',
-        'GUILD_ROLE_CREATE',
-        'GUILD_ROLE_DELETE',
-        'GUILD_ROLE_UPDATE',
+        // 'GUILD_ROLE_CREATE',
+        // 'GUILD_ROLE_DELETE',
+        // 'GUILD_ROLE_UPDATE',
         'GUILD_BAN_ADD',
         'GUILD_BAN_REMOVE',
-        'CHANNEL_CREATE',
-        'CHANNEL_DELETE',
-        'CHANNEL_UPDATE',
+        // 'CHANNEL_CREATE',
+        // 'CHANNEL_DELETE',
+        // 'CHANNEL_UPDATE',
         'CHANNEL_PINS_UPDATE',
         // 'MESSAGE_CREATE',
         'MESSAGE_DELETE',
@@ -90,7 +91,7 @@ exports.Core = new FreeStuffBot({
         'MESSAGE_REACTION_ADD',
         'MESSAGE_REACTION_REMOVE',
         'MESSAGE_REACTION_REMOVE_ALL',
-        'USER_UPDATE',
+        // 'USER_UPDATE',
         'USER_NOTE_UPDATE',
         'USER_SETTINGS_UPDATE',
         'PRESENCE_UPDATE',

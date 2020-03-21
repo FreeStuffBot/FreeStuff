@@ -1,6 +1,6 @@
 import { FreeStuffBot, Core } from "../index";
 import { Message, Guild, TextChannel, RichEmbedOptions, RichEmbed, MessageOptions } from "discord.js";
-import Const from "./const";
+import Const from "./Const";
 import Database from "../database/database";
 import { Long } from "mongodb";
 import { FreeStuffData, GuildData } from "../types";
@@ -41,7 +41,7 @@ export default class MessageDistributor {
   }
 
   async sendToGuild(g: any, content: FreeStuffData, test: boolean) {
-    let data = Core.databaseManager.parseGuildData(g);
+    const data = Core.databaseManager.parseGuildData(g);
     if (!data) {
       Core.databaseManager.removeGuild(g._id);
       return;
@@ -49,9 +49,10 @@ export default class MessageDistributor {
 
     if (!data.channelInstance) return;
     if (!data.channelInstance.guild.available) return;
-    let self = data.channelInstance.guild.me;
+    const self = data.channelInstance.guild.me;
     if (!self.permissionsIn(data.channelInstance).has('SEND_MESSAGES')) return;
-    let messageContent = this.buildMessage(content, data, test);
+    if (!self.permissionsIn(data.channelInstance).has('VIEW_CHANNEL')) return;
+    const messageContent = this.buildMessage(content, data, test);
     if (!messageContent) return;
     let setNoMention = false;
     if (data.mentionRoleInstance) {
@@ -70,7 +71,7 @@ export default class MessageDistributor {
   }
 
   buildMessage(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
-    let builder = ([
+    const builder = ([
       this.buildTheme1,
       this.buildTheme2,
       this.buildTheme3,

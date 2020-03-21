@@ -10,13 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const epicgames_scraper_1 = require("./epicgames.scraper");
+const steam_scraper_1 = require("./steam.scraper");
 class WebScraper {
     constructor() {
     }
     static init() {
         WebScraper.scraper = {
             'epic-games': new epicgames_scraper_1.default(),
-            'steam': undefined,
+            'steam': new steam_scraper_1.default(),
             'gog': undefined,
         };
     }
@@ -25,6 +26,8 @@ class WebScraper {
             let store = '';
             if (/^https?:\/\/(www\.)?epicgames\.com\/store\/.*$/.test(url))
                 store = 'epic-games';
+            if (/^https?:\/\/store.steampowered\.com\/app\/.*$/.test(url))
+                store = 'steam';
             console.log(store);
             if (!store)
                 return;

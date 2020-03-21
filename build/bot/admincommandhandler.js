@@ -139,4 +139,4 @@ class AdminCommandHandler {
     }
 }
 exports.default = AdminCommandHandler;
-//# sourceMappingURL=admincommandhandler.js.map
+//# sourceMappingURL=AdminCommandHandler.js.map
