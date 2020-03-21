@@ -10,4 +10,5 @@ Const.websiteLink = 'https://tude.ga/freestuff';
 Const.websiteLinkClean = 'tude.ga/freestuff';
 Const.themeListLink = 'https://tude.ga/freestuff/themes';
 Const.testGameLink = 'https://tude.ga/freestuff/testgame';
+Const.topGGLink = 'https://top.gg/bot/672822334641537041';
 //# sourceMappingURL=Const.js.map

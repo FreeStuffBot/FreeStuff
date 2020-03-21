@@ -268,7 +268,7 @@ class CommandHandler {
             case 'top':
             case 'botlist':
             case 'v':
-                reply('Enjoing the service?', `[Click here to upvote me on top.gg!](${Const_1.default.inviteLink})`);
+                reply('Enjoing the free games?', `[Click here to upvote me on top.gg!](${Const_1.default.topGGLink})`);
                 return true;
         }
         if (/set.*/.test(command.toLowerCase())) {
