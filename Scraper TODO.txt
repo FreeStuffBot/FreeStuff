@@ -1,0 +1,31 @@
+Scraper TODO
+
+
+
+
+
+function findA(el) {
+    while (el.nodeName != 'A') el = el.parentElement
+    return el
+}
+
+// findA($$('div[class^="CardGrid-card"] span[class^="AvailabilityStatusBar"]')[0]).href
+
+for(let i = 0; i < $$('[class*="AvailabilityStatusBar-free"]').length; i++)
+  console.log(findA($$('[class*="AvailabilityStatusBar-free"]')[i]).href)
+
+
+/* * * * */
+
+
+// Name
+$$('[class*="NavigationHorizontal-items"]')[0].children[1].querySelector('span').innerHTML
+
+// Image
+$$('[class*="Description-logo_"]')[0].style.backgroundImage
+
+// Org Price
+$$('[class*="Price-discount"]')[0].innerText
+
+
+

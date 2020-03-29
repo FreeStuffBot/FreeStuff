@@ -3,6 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../index");
 const Const_1 = require("./Const");
 const settings = require('../../config/settings.json');
+const thumbsUpImages = [
+    'https://cdn.discordapp.com/attachments/672907465670787083/673119991649796106/unknown.png',
+    'https://media.discordapp.net/attachments/672907465670787083/693591561262465124/fetchimage.png',
+    'https://media.discordapp.net/attachments/672907465670787083/693591793479975013/1562325563_hidethepainharold_promotions.png',
+    'https://media.discordapp.net/attachments/672907465670787083/693592156530540595/106479_Medium.png',
+    'https://media.discordapp.net/attachments/672907465670787083/693592862763515914/23silg.png?width=1204&height=677',
+];
 const commandlist = [
     '`@FreeStuff help` - Shows this help page',
     '`@FreeStuff about` - Shows some info about the bot',
@@ -88,7 +95,7 @@ class CommandHandler {
                     switch (args[0].toLowerCase()) {
                         case 'channel':
                             if (args.length < 2) {
-                                reply('Sure, just tell me where!', 'Example: `@FreeStuff set channel #' + orgmes.guild.channels.filter(c => c.type == 'text').random().name + '`');
+                                reply('Sure, just tell me where!', `Example: \`@FreeStuff set channel #${orgmes.guild.channels.filter(c => c.type == 'text').random().name}\``);
                                 break;
                             }
                             let channel = orgmes.mentions.channels.first();
@@ -100,7 +107,7 @@ class CommandHandler {
                                     reply(`I'm sorry,`, `but I just don't seem to find the channel \`${args[1]}\`!`);
                                     return;
                                 }
-                                else if (channel.type != 'text' && channel.type != 'news') {
+                                else if (result.type != 'text' && result.type != 'news') {
                                     reply('Interesting choice of channel!', 'I would prefer a regular text channel though!');
                                     return;
                                 }
@@ -240,7 +247,7 @@ class CommandHandler {
                             dollar: 19.99
                         },
                         store: 'Store xyz',
-                        thumbnail: 'https://cdn.discordapp.com/attachments/672907465670787083/673119991649796106/unknown.png',
+                        thumbnail: thumbsUpImages[Math.floor(Math.random() * thumbsUpImages.length)],
                         url: Const_1.default.testGameLink
                     });
                 }).catch(err => {

@@ -16,6 +16,7 @@ import { logVersionDetails } from "./util/gitParser";
 import WebScraper from "./web_scraper/scraper";
 import * as chalk from "chalk";
 import * as DBL from "dblapi.js";
+import { config as loadDotEnv } from "dotenv";
 
 const settings = require('../config/settings.json');
 
@@ -28,14 +29,24 @@ export class FreeStuffBot extends Client {
   public adminCommandHandler: AdminCommandHandler;
   
   public dbl: any;
+  public readonly devMode;
 
   constructor(options) {
     super(options);
+    loadDotEnv();
+
+    this.devMode = process.env.ENVIRONMENT == 'dev';
+
+    if (this.devMode) {
+      console.log(chalk.bgRedBright.black(' RUNNING DEV MODE '));
+    }
+
+    logVersionDetails();
 
     // fixReactionEvent(this);
 
     Util.init();
-    WCP.init();
+    WCP.init(this.devMode);
     // Pastebin.init();
 
     MongoAdapter.connect(settings.mongodb.url)
@@ -47,8 +58,6 @@ export class FreeStuffBot extends Client {
         console.log('Connected to Mongo');
         WCP.send({ status_mongodb: '+Connected' });
 
-        logVersionDetails();
-
         await Database.init();
     
         this.commandHandler = new CommandHandler(this);
@@ -58,7 +67,9 @@ export class FreeStuffBot extends Client {
 
         DbStats.startMonitoring(this);
 
-        this.dbl = new DBL(settings.thirdparty.topgg.apitoken, this);
+        if (!this.devMode) {
+          this.dbl = new DBL(settings.thirdparty.topgg.apitoken, this);
+        }
 
         this.on('ready', () => {
           console.log('Bot ready! Logged in as ' + chalk.yellowBright(this.user.tag));
@@ -84,7 +95,7 @@ export const Core = new FreeStuffBot (
   {
     disabledEvents: [
       // 'READY',
-      'RESUMED',
+      // 'RESUMED',
       'GUILD_SYNC',
       // 'GUILD_CREATE',
       // 'GUILD_DELETE',

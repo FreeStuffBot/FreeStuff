@@ -40,9 +40,14 @@ export default class WCP {
 
     //
 
+    private static offlineMode = false;
+
     private static sysout = [];
 
-    public static init() {
+    public static init(offlineMode: boolean) {
+        this.offlineMode = offlineMode;
+        if (this.offlineMode) return;
+
         WCP.send({
             running: true,
             status_mode: '+Productive',
@@ -70,12 +75,13 @@ export default class WCP {
     }
 
     public static reload() {
-        this.init();
+        this.init(this.offlineMode);
     }
 
     //
 
     public static send(data: WcpData) {
+        if (this.offlineMode) return;
         fetch(this.endpoint, {
             method: 'post',
             headers: { 'authorization': this.secret, 'Content-Type': 'application/json' },

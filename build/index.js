@@ -23,13 +23,19 @@ const gitParser_1 = require("./util/gitParser");
 const scraper_1 = require("./web_scraper/scraper");
 const chalk = require("chalk");
 const DBL = require("dblapi.js");
+const dotenv_1 = require("dotenv");
 const settings = require('../config/settings.json');
 class FreeStuffBot extends discord_js_1.Client {
     constructor(options) {
         super(options);
+        dotenv_1.config();
+        this.devMode = process.env.ENVIRONMENT == 'dev';
+        if (this.devMode) {
+            console.log(chalk.bgRedBright.black(' RUNNING DEV MODE '));
+        }
         // fixReactionEvent(this);
         util_1.Util.init();
-        wcp_1.default.init();
+        wcp_1.default.init(this.devMode);
         // Pastebin.init();
         mongo_adapter_1.default.connect(settings.mongodb.url)
             .catch(err => {
@@ -46,7 +52,9 @@ class FreeStuffBot extends discord_js_1.Client {
             this.messageDistributor = new MessageDistributor_1.default(this);
             this.adminCommandHandler = new AdminCommandHandler_1.default(this);
             dbstats_1.DbStats.startMonitoring(this);
-            this.dbl = new DBL(settings.thirdparty.topgg.apitoken, this);
+            if (!this.devMode) {
+                this.dbl = new DBL(settings.thirdparty.topgg.apitoken, this);
+            }
             this.on('ready', () => {
                 console.log('Bot ready! Logged in as ' + chalk.yellowBright(this.user.tag));
                 wcp_1.default.send({ status_discord: '+Connected' });
