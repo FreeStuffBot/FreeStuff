@@ -51,6 +51,8 @@ class MessageDistributor {
             }
             if (!data.channelInstance)
                 return;
+            if (!data.channelInstance.send)
+                return;
             if (!data.channelInstance.guild.available)
                 return;
             const self = data.channelInstance.guild.me;

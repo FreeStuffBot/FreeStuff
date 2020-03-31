@@ -142,6 +142,19 @@ export default class AdminCommandHandler {
               console.error(err);
             });
           return true;
+
+        case 'aprilfools': 
+          Core.messageDistributor.distribute({
+            title: 'Half Life Alyx',
+            url: 'https://tude.ga/half-life-alyx-free/',
+            store: 'Steam',
+            thumbnail: 'https://steamcdn-a.akamaihd.net/steam/apps/546560/header.jpg',
+            org_price: {
+              euro: 49.99,
+              dollar: 59.99,
+            }
+          });
+          return true;
     }
 
     return false;

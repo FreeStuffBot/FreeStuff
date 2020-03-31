@@ -33,6 +33,7 @@ class FreeStuffBot extends discord_js_1.Client {
         if (this.devMode) {
             console.log(chalk.bgRedBright.black(' RUNNING DEV MODE '));
         }
+        gitParser_1.logVersionDetails();
         // fixReactionEvent(this);
         util_1.Util.init();
         wcp_1.default.init(this.devMode);
@@ -45,7 +46,6 @@ class FreeStuffBot extends discord_js_1.Client {
             .then(() => __awaiter(this, void 0, void 0, function* () {
             console.log('Connected to Mongo');
             wcp_1.default.send({ status_mongodb: '+Connected' });
-            gitParser_1.logVersionDetails();
             yield database_1.default.init();
             this.commandHandler = new CommandHandler_1.default(this);
             this.databaseManager = new DatabaseManager_1.default(this);
@@ -73,7 +73,7 @@ exports.FreeStuffBot = FreeStuffBot;
 exports.Core = new FreeStuffBot({
     disabledEvents: [
         // 'READY',
-        'RESUMED',
+        // 'RESUMED',
         'GUILD_SYNC',
         // 'GUILD_CREATE',
         // 'GUILD_DELETE',

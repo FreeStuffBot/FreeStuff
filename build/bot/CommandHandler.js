@@ -213,6 +213,10 @@ class CommandHandler {
                                 reply('uhhhhh', `What's ${args[1]} supposed to mean? Please either go for on or for off, thanks!`);
                             }
                             break;
+                        case 'filter':
+                        case 'limit':
+                            // TODO
+                            break;
                         default:
                             reply(`Setting ${args[0]} not found!`, 'Type `@FreeStuff settings` for an overview over all available settings!');
                             break;
