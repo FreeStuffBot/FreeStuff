@@ -9,7 +9,7 @@ export default class MongoAdapter {
  
   public static connect(url: string): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      mongo.MongoClient.connect(url, {useNewUrlParser: true}, (err, client: mongo.MongoClient) => {
+      mongo.MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}, (err, client: mongo.MongoClient) => {
         if (err) {
             reject(err);
         } else {

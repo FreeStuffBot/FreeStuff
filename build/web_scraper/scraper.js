@@ -12,8 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const epicgames_scraper_1 = require("./epicgames.scraper");
 const steam_scraper_1 = require("./steam.scraper");
 class WebScraper {
-    constructor() {
-    }
+    constructor() { }
     static init() {
         WebScraper.scraper = {
             'epic-games': new epicgames_scraper_1.default(),

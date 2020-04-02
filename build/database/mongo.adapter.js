@@ -6,7 +6,7 @@ class MongoAdapter {
     }
     static connect(url) {
         return new Promise((resolve, reject) => {
-            mongo.MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
+            mongo.MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
                 if (err) {
                     reject(err);
                 }
