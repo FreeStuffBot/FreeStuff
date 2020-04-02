@@ -36,7 +36,8 @@ export default class SteamScraper extends ScraperWorker {
       org_price: {
         euro: priceEur,
         dollar: priceUsd
-      }
+      },
+      trash: false
     };
   }
 

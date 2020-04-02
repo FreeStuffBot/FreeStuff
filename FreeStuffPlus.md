@@ -5,7 +5,8 @@
 ? Get notified earlier
 ! Apply content filter
   • Blacklist / Whitelist Platforms / Stores
-  • Set a minimum original price
+  • Access to console / mobile freestuff if wished
+  • Access to non game freestuff if wished
 ! Custom themes
   • Custom theme creator
 ! No more "via tude.ga/freestuff"

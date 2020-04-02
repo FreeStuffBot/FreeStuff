@@ -14,7 +14,20 @@
 [ ] Deals in general
 [ ] Free For A Weekend Announcements
 [ ] Content filter
-  ( ) Minimum Price
+  (X) Minimum Price
   ( ) Allow certain stores
 
-[ ] APRIL FOOLS JOKE
+[X] Make announcement to server owners
+  (-) Make it disable-able
+
+[X] APRIL FOOLS JOKE
+
+
+--
+
+Upload new version
+Upload new WCP version (checkbox thingy)
+Update Website
+Update Database while bot is down!!! (add price: 3 to each one! - BACKUP BEFORE)
+Make dm annoucement 12:00-13:00
+

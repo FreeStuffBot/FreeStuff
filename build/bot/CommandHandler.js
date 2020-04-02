@@ -129,6 +129,7 @@ class CommandHandler {
                             }
                             break;
                         case 'mention':
+                        case 'role':
                             if (args.length < 2) {
                                 if (guilddata.mentionRole) {
                                     index_1.Core.databaseManager.changeSetting(orgmes.guild, guilddata, 'roleMention', undefined);
@@ -213,6 +214,70 @@ class CommandHandler {
                                 reply('uhhhhh', `What's ${args[1]} supposed to mean? Please either go for on or for off, thanks!`);
                             }
                             break;
+                        case 'trash':
+                        case 'bad':
+                        case 'garbage':
+                            if (args.length < 2) {
+                                if (guilddata.trashGames)
+                                    reply('I announce trash games in this server!', 'Don\'t want them anymore? `@FreeStuff set trash off` will be your saviour!');
+                                else
+                                    reply('This server is save from trashy games!', 'I do my best to filter them out! If you want them, do a quick `@FreeStuff set trash on`');
+                                break;
+                            }
+                            if (['on', 'true', '1'].includes(args[1].toLowerCase())) {
+                                if (!guilddata.trashGames)
+                                    index_1.Core.databaseManager.changeSetting(orgmes.guild, guilddata, 'trash', 1);
+                                reply('Wild!', 'Trashy games will now be announced!');
+                            }
+                            else if (['off', 'false', '0'].includes(args[1].toLowerCase())) {
+                                if (guilddata.trashGames)
+                                    index_1.Core.databaseManager.changeSetting(orgmes.guild, guilddata, 'trash', 0);
+                                reply('Yeah I\'d do the same tbo!', 'No more trash games in this server!');
+                            }
+                            else {
+                                reply('YES OR NO? ☎️', `The connection here is really bad atm... I only understand ${args[1]}. What do you mean?`);
+                            }
+                            break;
+                        case 'minimum':
+                        case 'min':
+                        case 'price':
+                        case 'cost':
+                            if (args.length < 2) {
+                                const pricestr = guilddata.currency == 'euro'
+                                    ? `${guilddata.price}€`
+                                    : `$ ${guilddata.price}`;
+                                reply(`Currently, only games worth ${pricestr} or more get announced here!`, 'To change that, use `@FreeStuff set minimum price <something>`');
+                                break;
+                            }
+                            const clear = inp => inp.split('$').join('').split('€').join('');
+                            let price = parseFloat(clear(args[1]));
+                            if (isNaN(price) && args.length > 2) {
+                                price = parseFloat(clear(args[2]));
+                            }
+                            if (isNaN(price)) {
+                                reply(`${args.length == 2 ? args[1] : args[2]} is not a valid price!`, 'Here are some examples of how to use this properly\n`@FreeStuff set minimum price 3.99`n\n`@FreeStuff set minimum price $2`\n`@FreeStuff set price 5`');
+                                break;
+                            }
+                            price = ~~((price) * 100) / 100;
+                            const pricestr = guilddata.currency == 'euro'
+                                ? `${price}€`
+                                : `$ ${price}`;
+                            if (price < 0) {
+                                reply(`How? What? Why?`, `${pricestr} is a negative value. This doesn't make sense. Please choose 0 if you don't want any price restrictions or a valid positive number otherise!`);
+                            }
+                            else if (price > 100) {
+                                reply(`Let's not get ridiculous!`, `Which game that costs over ${pricestr} will ever be free? Choose something more reasonable please!`);
+                            }
+                            else {
+                                if (price == 69)
+                                    reply(`Nice!`, `You'll only get the good stuff!`);
+                                else if (price == 0)
+                                    reply(`As you wish, no price filter!`, `Now each and every game will be announced, no matter how expensive it is... or was`);
+                                else
+                                    reply(`Excellent choice ${orgmes.author.username}!`, `Every game cheaper than ${pricestr} will no longer make it to this server!`);
+                                index_1.Core.databaseManager.changeSetting(orgmes.guild, guilddata, 'price', price);
+                            }
+                            break;
                         case 'filter':
                         case 'limit':
                             // TODO
@@ -252,7 +317,8 @@ class CommandHandler {
                         },
                         store: 'Store xyz',
                         thumbnail: thumbsUpImages[Math.floor(Math.random() * thumbsUpImages.length)],
-                        url: Const_1.default.testGameLink
+                        url: Const_1.default.testGameLink,
+                        trash: false
                     });
                 }).catch(err => {
                     reply('An error occured!', 'We\'re trying to fix this issue as soon as possible!');

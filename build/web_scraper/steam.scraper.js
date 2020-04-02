@@ -42,7 +42,8 @@ class SteamScraper extends worker_1.default {
                 org_price: {
                     euro: priceEur,
                     dollar: priceUsd
-                }
+                },
+                trash: false
             };
         });
     }

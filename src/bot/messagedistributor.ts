@@ -23,7 +23,7 @@ export default class MessageDistributor {
         if (!guilds) return;
         guilds.forEach(async g => {
           if (!g) return;
-          this.sendToGuild(g, content, false);
+          this.sendToGuild(g, content, false, false);
         })
       })
       .catch(console.error);
@@ -35,16 +35,21 @@ export default class MessageDistributor {
       .findOne({ _id: guild.id })
       .then(g => {
         if (!g) return;
-        this.sendToGuild(g, content, true);
+        this.sendToGuild(g, content, true, true);
       })
       .catch(console.error);
   }
 
-  async sendToGuild(g: any, content: FreeStuffData, test: boolean) {
+  async sendToGuild(g: any, content: FreeStuffData, test: boolean, force: boolean) {
     const data = Core.databaseManager.parseGuildData(g);
     if (!data) {
       Core.databaseManager.removeGuild(g._id);
       return;
+    }
+
+    if (!force) {
+      if (data.price > content.org_price[data.currency == 'euro' ? 'euro' : 'dollar']) return;
+      if (content.trash && !data.trashGames) return;
     }
 
     if (!data.channelInstance) return;

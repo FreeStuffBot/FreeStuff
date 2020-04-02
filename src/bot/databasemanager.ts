@@ -45,13 +45,15 @@ export default class DatabaseManager {
         _id: guild.id,
         channel: undefined,
         role: undefined,
+        price: 3,
         settings: 0
       });
-    // settings: _ _ _______
-    // 0 0 0 0 0 0 0 0 0 0 0
-    //           | |  theme
-    //           | currency (on = usd, off = eur)
-    //           react with :free: emoji
+    // settings: _ _ _ _______
+    // 0 0 0 0 0 0 0 0 0 0 0 0
+    //           | | |  theme
+    //           | | currency (on = usd, off = eur)
+    //           | react with :free: emoji
+    //           show trash games? 0 is no, 1 is yes
     //
   }
 
@@ -87,7 +89,9 @@ export default class DatabaseManager {
         : undefined,
       currency: (dbObject.settings & 0b10000) == 0 ? 'euro' : 'usd',
       react: (dbObject.settings & 0b100000) != 0,
-      theme: dbObject.settings & 0b1111
+      trashGames: (dbObject.settings & 0b1000000) != 0,
+      theme: dbObject.settings & 0b1111,
+      price: dbObject.price
     }
   }
 
@@ -108,6 +112,12 @@ export default class DatabaseManager {
         break;
       case 'react':
         out['settings'] = (current.settings | 0b100000) ^ (value ? 0 : 0b100000);
+        break;
+      case 'trash':
+        out['settings'] = (current.settings | 0b1000000) ^ (value ? 0 : 0b1000000);
+        break;
+      case 'price':
+        out['price'] = value as number;
         break;
     }
     Database

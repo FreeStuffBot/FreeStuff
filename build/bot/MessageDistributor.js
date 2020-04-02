@@ -26,7 +26,7 @@ class MessageDistributor {
             guilds.forEach((g) => __awaiter(this, void 0, void 0, function* () {
                 if (!g)
                     return;
-                this.sendToGuild(g, content, false);
+                this.sendToGuild(g, content, false, false);
             }));
         })
             .catch(console.error);
@@ -38,16 +38,22 @@ class MessageDistributor {
             .then(g => {
             if (!g)
                 return;
-            this.sendToGuild(g, content, true);
+            this.sendToGuild(g, content, true, true);
         })
             .catch(console.error);
     }
-    sendToGuild(g, content, test) {
+    sendToGuild(g, content, test, force) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = index_1.Core.databaseManager.parseGuildData(g);
             if (!data) {
                 index_1.Core.databaseManager.removeGuild(g._id);
                 return;
+            }
+            if (!force) {
+                if (data.price > content.org_price[data.currency == 'euro' ? 'euro' : 'dollar'])
+                    return;
+                if (content.trash && !data.trashGames)
+                    return;
             }
             if (!data.channelInstance)
                 return;

@@ -10,6 +10,7 @@ export interface FreeStuffData {
   };
   store: string;
   thumbnail: string;
+  trash: boolean;
 
 }
 
@@ -24,7 +25,9 @@ export interface GuildData {
   theme: number;
   currency: 'euro' | 'usd';
   react: boolean;
+  trashGames: boolean;
+  price: number;
 
 }
 
-export type GuildSetting = 'channel' | 'roleMention' | 'theme' | 'currency' | 'react';
+export type GuildSetting = 'channel' | 'roleMention' | 'theme' | 'currency' | 'react' | 'trash' | 'price';

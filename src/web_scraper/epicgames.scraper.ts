@@ -51,7 +51,8 @@ export default class EpicGamesScraper extends ScraperWorker {
       org_price: {
         euro: priceEur,
         dollar: priceUsd
-      }
+      },
+      trash: false
     };
   }
 

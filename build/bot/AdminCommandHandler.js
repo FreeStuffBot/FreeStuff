@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../index");
 const database_1 = require("../database/database");
@@ -84,7 +93,7 @@ class AdminCommandHandler {
                 scraper_1.default
                     .fetch(args[0])
                     .then(d => {
-                    index_1.Core.messageDistributor.sendToGuild(orgmes.guild, d, false);
+                    index_1.Core.messageDistributor.sendToGuild(orgmes.guild, d, false, false);
                 })
                     .catch(err => {
                     reply('Error', '```' + err + '```');
@@ -135,6 +144,8 @@ class AdminCommandHandler {
                 });
                 return true;
             case 'aprilfools':
+                reply('Nope!', 'Not april 1st today!');
+                return true;
                 index_1.Core.messageDistributor.distribute({
                     title: 'Half Life Alyx',
                     url: 'https://tude.ga/half-life-alyx-free/',
@@ -143,12 +154,79 @@ class AdminCommandHandler {
                     org_price: {
                         euro: 49.99,
                         dollar: 59.99,
-                    }
+                    },
+                    trash: false
                 });
+                return true;
+            case 'sendfirstnews':
+                database_1.default
+                    .collection('guilds')
+                    .find({})
+                    .toArray()
+                    .then(guilds => {
+                    if (!guilds)
+                        return;
+                    const sentTo = [];
+                    guilds.forEach((g) => __awaiter(this, void 0, void 0, function* () {
+                        if (!g)
+                            return;
+                        const data = index_1.Core.databaseManager.parseGuildData(g);
+                        if (!data) {
+                            index_1.Core.databaseManager.removeGuild(g._id);
+                            return;
+                        }
+                        if (!data.channelInstance)
+                            return;
+                        const owner = data.channelInstance.guild.owner;
+                        if (sentTo.includes(owner.id))
+                            return;
+                        owner.send(firstNewsDM(data.currency == 'euro' ? '3.00€' : '$3.00')).catch(err => console.log('One person didn\'t let me!'));
+                        sentTo.push(owner.id);
+                    }));
+                })
+                    .catch(console.error);
                 return true;
         }
         return false;
     }
 }
 exports.default = AdminCommandHandler;
+function firstNewsDM(defaultPrice) {
+    return {
+        embed: {
+            "title": "Hey Maanex! April fools are over!",
+            "description": "This is a quick info for server owners like you that have the FreeStuff Bot added to one of their servers. **tl;dr at the end!**",
+            "color": 13455313,
+            "footer": {
+                "text": "Messages like these will be really rare. Don't worry, we hate spam too!"
+            },
+            "thumbnail": {
+                "url": "https://tude.ga/favicon.freestuff.png"
+            },
+            "fields": [
+                {
+                    "name": "Lots of games recently huh?",
+                    "value": "The bot really got some attention lately and as a result of that we got more and more free games reported by various people. Now while some of you might wanna catch every freebie they can get, you might aswell be one of those who rather take it slow and prefer quality over quantity. Now to tackle this issue and reduce the spam, we added some new features to the bot:"
+                },
+                {
+                    "name": "Minimum original price",
+                    "value": `First new setting you can set in your server is the \`@FreeStuff set minimum price <price>\` with <price> being an amount of your choice. Whenever a game is free the bot will from now on first check if the original price - before the sale - was equal or greater than what you've set before it announces the game. We've set the minimum for your server to **${defaultPrice}** now but of course you can change this to your likings at any time!`
+                },
+                {
+                    "name": "Trash games",
+                    "value": "We now also occasionally mark games as 'trash'. Which games are trash and which not gets decided by the FreeStuff content moderators and while you might not agree with every decision we make, a game is usually marked as trash if it has really bad reviews or is of generally poor quality. Low prices don't make a game 'trash' since you can filter them out with the minimum price filter as said above. Trash games will now by default no longer reach your server, if you do want to get them though you can re-enable them using `@FreeStuff set trash on`."
+                },
+                {
+                    "name": "That's it for now!",
+                    "value": "This DM did not get sent to every user in your server, don't panic! Only you as the server owner recieved it. We're planning on sending out more messages like these in the furure whenever there's things you as the server owner absolutely have to know! But don't stress out, we won't spam your DMs in the slightest - only when it's really necessary, pinky promise! And stay tuned, we got some more cool stuff in the works :o"
+                },
+                {
+                    "name": "tl;dr 👇",
+                    "value": "There is now a setting `@FreeStuff set minimum price <price>` and the bot will no longer annouce games cheaper than that! Oh and we also filter out trash games now, you're welcome! <3"
+                }
+            ]
+        }
+    };
+}
+;
 //# sourceMappingURL=AdminCommandHandler.js.map
