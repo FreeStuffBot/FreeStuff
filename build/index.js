@@ -14,8 +14,15 @@ const wcp_1 = require("./thirdparty/wcp/wcp");
 const mongo_adapter_1 = require("./database/mongo.adapter");
 const database_1 = require("./database/database");
 const util_1 = require("./util/util");
+const CommandHandler_1 = require("./bot/CommandHandler");
+const DatabaseManager_1 = require("./bot/DatabaseManager");
+const MessageDistributor_1 = require("./bot/MessageDistributor");
+const AdminCommandHandler_1 = require("./bot/AdminCommandHandler");
+const dbstats_1 = require("./database/dbstats");
 const gitParser_1 = require("./util/gitParser");
+const scraper_1 = require("./web_scraper/scraper");
 const chalk = require("chalk");
+const DBL = require("dblapi.js");
 const dotenv_1 = require("dotenv");
 const settings = require('../config/settings.json');
 class FreeStuffBot extends discord_js_1.Client {
@@ -40,30 +47,25 @@ class FreeStuffBot extends discord_js_1.Client {
             console.log('Connected to Mongo');
             wcp_1.default.send({ status_mongodb: '+Connected' });
             yield database_1.default.init();
-            database_1.default.collection('guilds').updateMany({}, {
-                '$set': {
-                    'price': 3
-                }
+            this.commandHandler = new CommandHandler_1.default(this);
+            this.databaseManager = new DatabaseManager_1.default(this);
+            this.messageDistributor = new MessageDistributor_1.default(this);
+            this.adminCommandHandler = new AdminCommandHandler_1.default(this);
+            dbstats_1.DbStats.startMonitoring(this);
+            if (!this.devMode) {
+                this.dbl = new DBL(settings.thirdparty.topgg.apitoken, this);
+            }
+            this.on('ready', () => {
+                console.log('Bot ready! Logged in as ' + chalk.yellowBright(this.user.tag));
+                wcp_1.default.send({ status_discord: '+Connected' });
+                this.user.setActivity('@FreeStuff ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://tude.ga/freestuff', { type: 'WATCHING' });
+                scraper_1.default.init();
+                // WebScraper.fetch('https://store.steampowered.com/app/442070/Drawful_2/').then(d => {
+                //   // this.messageDistributor.distribute(d);
+                //   console.log(d);
+                // });
             });
-            // this.commandHandler = new CommandHandler(this);
-            // this.databaseManager = new DatabaseManager(this);
-            // this.messageDistributor = new MessageDistributor(this);
-            // this.adminCommandHandler = new AdminCommandHandler(this);
-            // DbStats.startMonitoring(this);
-            // if (!this.devMode) {
-            //   this.dbl = new DBL(settings.thirdparty.topgg.apitoken, this);
-            // }
-            // this.on('ready', () => {
-            //   console.log('Bot ready! Logged in as ' + chalk.yellowBright(this.user.tag));
-            //   WCP.send({ status_discord: '+Connected' });
-            //   this.user.setActivity('@FreeStuff ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://tude.ga/freestuff', { type: 'WATCHING' });
-            //   WebScraper.init();
-            //   // WebScraper.fetch('https://store.steampowered.com/app/442070/Drawful_2/').then(d => {
-            //   //   // this.messageDistributor.distribute(d);
-            //   //   console.log(d);
-            //   // });
-            // });
-            // this.login(settings.bot.token);
+            this.login(settings.bot.token);
         }));
     }
 }

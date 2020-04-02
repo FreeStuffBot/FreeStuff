@@ -74,6 +74,10 @@ class CommandHandler {
                     return true;
                 }
                 index_1.Core.databaseManager.getGuildData(orgmes.guild).then(guilddata => {
+                    if (!guilddata) {
+                        reply('An error occured!', 'Try removing the bot from your server and adding it back in. If this does not help, try it again at a later point in time!');
+                        return true;
+                    }
                     if (args.length < 1) {
                         let c = '@FreeStuff ' + command.toLowerCase();
                         orgmes.channel.send({ embed: {
