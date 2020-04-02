@@ -180,7 +180,7 @@ class AdminCommandHandler {
                         const owner = data.channelInstance.guild.owner;
                         if (sentTo.includes(owner.id))
                             return;
-                        owner.send(firstNewsDM(data.currency == 'euro' ? '3.00€' : '$3.00')).catch(err => console.log('One person didn\'t let me!'));
+                        owner.send(firstNewsDM(data.currency == 'euro' ? '3.00€' : '$3.00', owner.user.username)).catch(err => console.log('One person didn\'t let me!'));
                         sentTo.push(owner.id);
                     }));
                 })
@@ -191,10 +191,10 @@ class AdminCommandHandler {
     }
 }
 exports.default = AdminCommandHandler;
-function firstNewsDM(defaultPrice) {
+function firstNewsDM(defaultPrice, username) {
     return {
         embed: {
-            "title": "Hey Maanex! April fools are over!",
+            "title": `Hey ${username}! Good news!`,
             "description": "This is a quick info for server owners like you that have the FreeStuff Bot added to one of their servers. **tl;dr at the end!**",
             "color": 13455313,
             "footer": {
@@ -218,7 +218,7 @@ function firstNewsDM(defaultPrice) {
                 },
                 {
                     "name": "That's it for now!",
-                    "value": "This DM did not get sent to every user in your server, don't panic! Only you as the server owner recieved it. We're planning on sending out more messages like these in the furure whenever there's things you as the server owner absolutely have to know! But don't stress out, we won't spam your DMs in the slightest - only when it's really necessary, pinky promise! And stay tuned, we got some more cool stuff in the works :o"
+                    "value": "This DM did not get sent to every user in your server, don't panic! Only you as the server owner recieved it. We're planning on sending out more messages like these in the furure whenever there's things you as the server owner absolutely have to know! But don't stress out, we won't spam your DMs in the slightest - only when it's really necessary, pinky promise! We're also currently moving servers so if anything works not as expected, we're sorry. And stay tuned, we got some more cool stuff in the works :o"
                 },
                 {
                     "name": "tl;dr 👇",
