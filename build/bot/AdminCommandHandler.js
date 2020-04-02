@@ -159,6 +159,7 @@ class AdminCommandHandler {
                 });
                 return true;
             case 'sendfirstnews':
+                return;
                 database_1.default
                     .collection('guilds')
                     .find({})
@@ -185,6 +186,32 @@ class AdminCommandHandler {
                     }));
                 })
                     .catch(console.error);
+                return true;
+            case 'game-one':
+                index_1.Core.messageDistributor.distribute({
+                    url: 'https://www.epicgames.com/store/en-US/product/gone-home/home',
+                    title: 'Gone Home',
+                    org_price: {
+                        euro: 11.99,
+                        dollar: 12.99
+                    },
+                    store: 'Epic Games Store',
+                    trash: false,
+                    thumbnail: 'https://media.discordapp.net/attachments/327073652329807872/695292432073621644/unknown.png'
+                });
+                return true;
+            case 'game-two':
+                index_1.Core.messageDistributor.distribute({
+                    url: 'https://www.epicgames.com/store/en-US/product/hob/home',
+                    title: 'Hob',
+                    org_price: {
+                        euro: 19.99,
+                        dollar: 19.99
+                    },
+                    store: 'Epic Games Store',
+                    trash: false,
+                    thumbnail: 'https://media.discordapp.net/attachments/327073652329807872/695292645425283182/unknown.png'
+                });
                 return true;
         }
         return false;
