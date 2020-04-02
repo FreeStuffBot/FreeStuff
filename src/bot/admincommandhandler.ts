@@ -185,31 +185,17 @@ export default class AdminCommandHandler {
             .catch(console.error);
           return true;
 
-        case 'game-one':
+        case 'game-three':
           Core.messageDistributor.distribute({
-            url: 'https://www.epicgames.com/store/en-US/product/gone-home/home',
-            title: 'Gone Home',
+            url: 'https://store.steampowered.com/app/350300/Gang_of_Four/',
+            title: 'Gang of Four',
             org_price: {
-              euro: 11.99,
-              dollar: 12.99
+              euro: 6.99,
+              dollar: 6.99
             },
-            store: 'Epic Games Store',
+            store: 'Steam',
             trash: false,
-            thumbnail: 'https://media.discordapp.net/attachments/327073652329807872/695292432073621644/unknown.png' 
-          })
-          return true;
-
-        case 'game-two':
-          Core.messageDistributor.distribute({
-            url: 'https://www.epicgames.com/store/en-US/product/hob/home',
-            title: 'Hob',
-            org_price: {
-              euro: 19.99,
-              dollar: 19.99
-            },
-            store: 'Epic Games Store',
-            trash: false,
-            thumbnail: 'https://media.discordapp.net/attachments/327073652329807872/695292645425283182/unknown.png' 
+            thumbnail: 'https://steamcdn-a.akamaihd.net/steam/apps/350300/header.jpg?t=1585677223' 
           })
           return true;
     }
