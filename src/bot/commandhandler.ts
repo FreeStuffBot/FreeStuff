@@ -102,6 +102,8 @@ export default class CommandHandler {
                 '`' + c + ' theme ' + (guilddata ? (guilddata.theme + 1) : 1) + '` change the theme in which the bot will display the annoucement. See all available themes [here](' + Const.themeListLink + ')',
                 '`' + c + ' currency ' + (guilddata ? (guilddata.currency == 'euro' ? '€' : '$') : '€') + '` to change the currency displayed in the announcement. You can use € or $.',
                 '`' + c + ' reaction ' + (guilddata ? (guilddata.react ? 'on' : 'off') : 'off') + '` toggle auto reaction on or off. This will make the bot react with the :free: emoji on every new annoucement.',
+                '`' + c + ' trash ' + (guilddata ? (guilddata.trashGames ? 'on' : 'off') : 'off') + '` toggle weather you want to get notified about games with really bad rating or low quality.',
+                '`' + c + ' minimum price ' + (guilddata ? guilddata.price : '3') + '` set the minimum price a game had to have before it became free for it to be announced.',
               ].map(l => { return { name: l.split('` ')[0] + '`', value: l.split('` ')[1] }})
             }});
             return true;
