@@ -177,7 +177,7 @@ export default class AdminCommandHandler {
                 if (!data.channelInstance) return;
                 const owner = data.channelInstance.guild.owner;
                 if (sentTo.includes(owner.id)) return;
-                owner.send(firstNewsDM(data.currency == 'euro' ? '3.00€' : '$3.00')).catch(err => console.log('One person didn\'t let me!'));
+                owner.send(firstNewsDM(data.currency == 'euro' ? '3.00€' : '$3.00', owner.user.username)).catch(err => console.log('One person didn\'t let me!'));
                 sentTo.push(owner.id);
               })
             })
@@ -190,10 +190,10 @@ export default class AdminCommandHandler {
 
 }
 
-function firstNewsDM(defaultPrice: string) {
+function firstNewsDM(defaultPrice: string, username: string) {
   return {
     embed: {
-      "title": "Hey Maanex! Good news!",
+      "title": `Hey ${username}! Good news!`,
       "description": "This is a quick info for server owners like you that have the FreeStuff Bot added to one of their servers. **tl;dr at the end!**",
       "color": 13455313,
       "footer": {
