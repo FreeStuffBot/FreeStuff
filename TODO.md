@@ -17,17 +17,29 @@
   (X) Minimum Price
   ( ) Allow certain stores
 
+[ ] Custom themes mehr variablen, wie z.B.:
+  ( ) SubId (https://steamdb.info/app/822540/subs/)
+  
+
 [X] Make announcement to server owners
   (-) Make it disable-able
-
 [X] APRIL FOOLS JOKE
 
 
 --
 
-Upload new version
-Upload new WCP version (checkbox thingy)
-Update Website
-Update Database while bot is down!!! (add price: 3 to each one! - BACKUP BEFORE)
-Make dm annoucement 12:00-13:00
 
+[X] Raspbian auf Raspi installieren
+[X] 11 Uhr Mathe Konferenz
+[X] FreeStuff Bot Permission checks einbauen
+[X] TudeBot und TudeApi auf OVH-Coyote
+[X] Datenbank von raspi auf Atlas
+[X] Daily rewards fixen, dass der Tag übersprungen wird
+[X] WCP wieder zum laufen kriegen
+-> al dente
+
+dann noch raspi:
+[X] gitea wieder herstellen
+[X] nginx einrichten
+[ ] WCP remote sh execution auf OVH-Coyote für updates etc
+[ ] Gpios testen

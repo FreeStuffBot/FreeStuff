@@ -10,17 +10,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
-const wcp_1 = require("./thirdparty/wcp/wcp");
-const mongo_adapter_1 = require("./database/mongo.adapter");
-const database_1 = require("./database/database");
+const WCP_1 = require("./thirdparty/wcp/WCP");
+const MongoAdapter_1 = require("./database/MongoAdapter");
+const Database_1 = require("./database/Database");
 const util_1 = require("./util/util");
 const CommandHandler_1 = require("./bot/CommandHandler");
 const DatabaseManager_1 = require("./bot/DatabaseManager");
 const MessageDistributor_1 = require("./bot/MessageDistributor");
 const AdminCommandHandler_1 = require("./bot/AdminCommandHandler");
-const dbstats_1 = require("./database/dbstats");
+const DbStats_1 = require("./database/DbStats");
 const gitParser_1 = require("./util/gitParser");
-const scraper_1 = require("./web_scraper/scraper");
+const WebScraper_1 = require("./webScraper/WebScraper");
 const chalk = require("chalk");
 const DBL = require("dblapi.js");
 const dotenv_1 = require("dotenv");
@@ -29,6 +29,39 @@ class FreeStuffBot extends discord_js_1.Client {
     constructor(options) {
         super(options);
         dotenv_1.config();
+        // const data = {
+        //   store: 'Steam',
+        //   name: 'Cool Game',
+        //   'oldprice.eur': '2.99€',
+        //   trash: false,
+        //   'steam.subids': '4124 24124'
+        // }
+        // function test(a: string) {
+        //   console.log(a);
+        //   console.log(parseAstr(a, data));
+        //   console.log(' ');
+        // }
+        // test('=name= is free on =store=');
+        // test('The game =name= costed =oldprice.eur= before!');
+        // test('{trash? YES}{NO}');
+        // test('This game {trash? is}{is not} trash!');
+        // test('{steam.subids? =steam.subids=}{Game not from Steam}');
+        // test('{abc? ABC!}{def? DEF}{store? STORE!}{xyz? XYZ}');
+        // test('{trash?}{Ok boomerino}');
+        // test('{ok}');
+        // WebScraper.init();
+        // // WebScraper.fetch('https://store.steampowered.com/app/680360/Regions_Of_Ruin/').then(d => {
+        // //   console.log(d);
+        // // });
+        // // SteamdbScraper.fetchFreeGames().then(console.log);
+        // (async () => {
+        //   SteamdbScraper.fetchSubids('822540').then(console.log)
+        //   // let ids = await SteamdbScraper.fetchFreeGames();
+        //   // let subids = ids.map(SteamdbScraper.fetchSubids).map(async a => await a);
+        //   // let flatted = Array.prototype.concat.apply([], subids);
+        //   // console.log(flatted);
+        // })();
+        // return;
         this.devMode = process.env.ENVIRONMENT == 'dev';
         if (this.devMode) {
             console.log(chalk.bgRedBright.black(' RUNNING DEV MODE '));
@@ -36,30 +69,30 @@ class FreeStuffBot extends discord_js_1.Client {
         gitParser_1.logVersionDetails();
         // fixReactionEvent(this);
         util_1.Util.init();
-        wcp_1.default.init(this.devMode);
+        WCP_1.default.init(this.devMode);
         // Pastebin.init();
-        mongo_adapter_1.default.connect(settings.mongodb.url)
+        MongoAdapter_1.default.connect(settings.mongodb.url)
             .catch(err => {
             console.error(err);
-            wcp_1.default.send({ status_mongodb: '-Connection failed' });
+            WCP_1.default.send({ status_mongodb: '-Connection failed' });
         })
             .then(() => __awaiter(this, void 0, void 0, function* () {
             console.log('Connected to Mongo');
-            wcp_1.default.send({ status_mongodb: '+Connected' });
-            yield database_1.default.init();
+            WCP_1.default.send({ status_mongodb: '+Connected' });
+            yield Database_1.default.init();
             this.commandHandler = new CommandHandler_1.default(this);
             this.databaseManager = new DatabaseManager_1.default(this);
             this.messageDistributor = new MessageDistributor_1.default(this);
             this.adminCommandHandler = new AdminCommandHandler_1.default(this);
-            dbstats_1.DbStats.startMonitoring(this);
+            DbStats_1.DbStats.startMonitoring(this);
             if (!this.devMode) {
                 this.dbl = new DBL(settings.thirdparty.topgg.apitoken, this);
             }
             this.on('ready', () => {
                 console.log('Bot ready! Logged in as ' + chalk.yellowBright(this.user.tag));
-                wcp_1.default.send({ status_discord: '+Connected' });
+                WCP_1.default.send({ status_discord: '+Connected' });
                 this.user.setActivity('@FreeStuff ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://tude.ga/freestuff', { type: 'WATCHING' });
-                scraper_1.default.init();
+                WebScraper_1.default.init();
                 // WebScraper.fetch('https://store.steampowered.com/app/442070/Drawful_2/').then(d => {
                 //   // this.messageDistributor.distribute(d);
                 //   console.log(d);

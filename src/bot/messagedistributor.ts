@@ -1,7 +1,7 @@
 import { FreeStuffBot, Core } from "../index";
 import { Message, Guild, TextChannel, RichEmbedOptions, RichEmbed, MessageOptions } from "discord.js";
 import Const from "./Const";
-import Database from "../database/database";
+import Database from "../database/Database";
 import { Long } from "mongodb";
 import { FreeStuffData, GuildData } from "../types";
 
@@ -55,9 +55,15 @@ export default class MessageDistributor {
     if (!data.channelInstance) return;
     if (!data.channelInstance.send) return;
     if (!data.channelInstance.guild.available) return;
+    
     const self = data.channelInstance.guild.me;
     if (!self.permissionsIn(data.channelInstance).has('SEND_MESSAGES')) return;
     if (!self.permissionsIn(data.channelInstance).has('VIEW_CHANNEL')) return;
+    if (!self.permissionsIn(data.channelInstance).has('EMBED_LINKS')
+       && Const.themesWithEmbeds.includes(data.theme)) return;
+    if (!self.permissionsIn(data.channelInstance).has('EXTERNAL_EMOJIS')
+       && Const.themesWithExtemotes[data.theme]) data.theme = Const.themesWithExtemotes[data.theme];
+
     const messageContent = this.buildMessage(content, data, test);
     if (!messageContent) return;
     let setNoMention = false;

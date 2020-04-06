@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongo_adapter_1 = require("./mongo.adapter");
+const MongoAdapter_1 = require("./MongoAdapter");
 class Database {
     constructor() {
     }
     static init() {
-        Database.client = mongo_adapter_1.default.client;
+        Database.client = MongoAdapter_1.default.client;
     }
     static get(name) {
         return this.client ? this.client.db(name) : null;
@@ -15,4 +15,4 @@ class Database {
     }
 }
 exports.default = Database;
-//# sourceMappingURL=database.js.map
+//# sourceMappingURL=Database.js.map

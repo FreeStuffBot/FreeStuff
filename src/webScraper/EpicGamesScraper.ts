@@ -1,6 +1,6 @@
 import { FreeStuffData } from "types";
 import * as puppeteer from "puppeteer";
-import ScraperWorker from "./worker";
+import ScraperWorker from "./ScraperWorker";
 
 
 export default class EpicGamesScraper extends ScraperWorker {

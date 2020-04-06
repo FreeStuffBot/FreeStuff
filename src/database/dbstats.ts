@@ -1,4 +1,4 @@
-import Database, { dbcollection } from "./database";
+import Database, { dbcollection } from "./Database";
 import { RequestHandler } from "discord.js";
 import { FreeStuffBot } from "index";
 import { CronJob } from "cron";

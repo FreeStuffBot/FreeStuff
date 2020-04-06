@@ -1,8 +1,8 @@
 import { FreeStuffBot, Core } from "../index";
 import { Message } from "discord.js";
 import Const from "./Const";
-import Database from "../database/database";
-import WebScraper from "../web_scraper/scraper";
+import Database from "../database/Database";
+import WebScraper from "../webScraper/WebScraper";
 
 const AsciiTable = require('ascii-table');
 const settings = require('../../config/settings.json');
@@ -185,7 +185,8 @@ export default class AdminCommandHandler {
             .catch(console.error);
           return true;
 
-        case 'game-three':
+        case 'game-one':
+          return;
           Core.messageDistributor.distribute({
             url: 'https://store.steampowered.com/app/350300/Gang_of_Four/',
             title: 'Gang of Four',

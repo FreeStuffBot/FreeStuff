@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../index");
-const database_1 = require("../database/database");
-const scraper_1 = require("../web_scraper/scraper");
+const Database_1 = require("../database/Database");
+const WebScraper_1 = require("../webScraper/WebScraper");
 const AsciiTable = require('ascii-table');
 const settings = require('../../config/settings.json');
 const commandlist = [
@@ -60,7 +60,7 @@ class AdminCommandHandler {
                 reply('Help is on the way!', 'Available commands:\n' + commandlist.map(c => `• ${c}`).join('\n'));
                 return true;
             case 'print':
-                database_1.default
+                Database_1.default
                     .collection('guilds')
                     .findOne({ _id: orgmes.guild.id })
                     .then(data => {
@@ -90,7 +90,7 @@ class AdminCommandHandler {
                     reply('Huh', 'Missing args[0] - store URL');
                     return false;
                 }
-                scraper_1.default
+                WebScraper_1.default
                     .fetch(args[0])
                     .then(d => {
                     index_1.Core.messageDistributor.sendToGuild(orgmes.guild, d, false, false);
@@ -101,7 +101,7 @@ class AdminCommandHandler {
                 });
                 return true;
             case 'stats':
-                database_1.default
+                Database_1.default
                     .collection('guilds')
                     .find({})
                     .toArray()
@@ -160,7 +160,7 @@ class AdminCommandHandler {
                 return true;
             case 'sendfirstnews':
                 return;
-                database_1.default
+                Database_1.default
                     .collection('guilds')
                     .find({})
                     .toArray()
@@ -187,7 +187,8 @@ class AdminCommandHandler {
                 })
                     .catch(console.error);
                 return true;
-            case 'game-three':
+            case 'game-one':
+                return;
                 index_1.Core.messageDistributor.distribute({
                     url: 'https://store.steampowered.com/app/350300/Gang_of_Four/',
                     title: 'Gang of Four',

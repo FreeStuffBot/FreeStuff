@@ -1,4 +1,4 @@
-import Database, { dbcollection } from "../../database/database";
+import Database, { dbcollection } from "../../database/Database";
 
 const settings = require('../../../config/settings.json').thirdparty;
 

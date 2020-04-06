@@ -1,8 +1,8 @@
 
 import { FreeStuffData } from 'types';
-import EpicGamesScraper from './epicgames.scraper';
-import ScraperWorker from './worker';
-import SteamScraper from './steam.scraper';
+import EpicGamesScraper from './EpicGamesScraper';
+import ScraperWorker from './ScraperWorker';
+import SteamScraper from './SteamScraper';
 
 
 

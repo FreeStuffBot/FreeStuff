@@ -70,4 +70,4 @@ exports.default = WCP;
 //
 WCP.offlineMode = false;
 WCP.sysout = [];
-//# sourceMappingURL=wcp.js.map
+//# sourceMappingURL=WCP.js.map

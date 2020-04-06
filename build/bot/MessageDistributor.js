@@ -11,12 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../index");
 const Const_1 = require("./Const");
-const database_1 = require("../database/database");
+const Database_1 = require("../database/Database");
 class MessageDistributor {
     constructor(bot) {
     }
     distribute(content) {
-        database_1.default
+        Database_1.default
             .collection('guilds')
             .find({})
             .toArray()
@@ -32,7 +32,7 @@ class MessageDistributor {
             .catch(console.error);
     }
     test(guild, content) {
-        database_1.default
+        Database_1.default
             .collection('guilds')
             .findOne({ _id: guild.id })
             .then(g => {
@@ -66,6 +66,12 @@ class MessageDistributor {
                 return;
             if (!self.permissionsIn(data.channelInstance).has('VIEW_CHANNEL'))
                 return;
+            if (!self.permissionsIn(data.channelInstance).has('EMBED_LINKS')
+                && Const_1.default.themesWithEmbeds.includes(data.theme))
+                return;
+            if (!self.permissionsIn(data.channelInstance).has('EXTERNAL_EMOJIS')
+                && Const_1.default.themesWithExtemotes[data.theme])
+                data.theme = Const_1.default.themesWithExtemotes[data.theme];
             const messageContent = this.buildMessage(content, data, test);
             if (!messageContent)
                 return;

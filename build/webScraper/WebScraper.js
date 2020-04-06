@@ -9,14 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const epicgames_scraper_1 = require("./epicgames.scraper");
-const steam_scraper_1 = require("./steam.scraper");
+const EpicGamesScraper_1 = require("./EpicGamesScraper");
+const SteamScraper_1 = require("./SteamScraper");
 class WebScraper {
     constructor() { }
     static init() {
         WebScraper.scraper = {
-            'epic-games': new epicgames_scraper_1.default(),
-            'steam': new steam_scraper_1.default(),
+            'epic-games': new EpicGamesScraper_1.default(),
+            'steam': new SteamScraper_1.default(),
             'gog': undefined,
         };
     }
@@ -37,4 +37,4 @@ class WebScraper {
 exports.default = WebScraper;
 //
 WebScraper.scraper = undefined;
-//# sourceMappingURL=scraper.js.map
+//# sourceMappingURL=WebScraper.js.map

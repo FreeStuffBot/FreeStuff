@@ -1,22 +1,24 @@
 
 import { Client, Guild, User } from "discord.js";
-import WCP from './thirdparty/wcp/wcp';
+import WCP from './thirdparty/wcp/WCP';
 import * as fs from 'fs';
 import { loadavg } from 'os';
 import { Long } from 'mongodb';
-import MongoAdapter from "./database/mongo.adapter";
-import Database from "./database/database";
+import MongoAdapter from "./database/MongoAdapter";
+import Database from "./database/Database";
 import { Util } from "./util/util";
 import CommandHandler from "./bot/CommandHandler";
 import DatabaseManager from "./bot/DatabaseManager";
 import MessageDistributor from "./bot/MessageDistributor";
 import AdminCommandHandler from "./bot/AdminCommandHandler";
-import { DbStats } from "./database/dbstats";
+import { DbStats } from "./database/DbStats";
 import { logVersionDetails } from "./util/gitParser";
-import WebScraper from "./web_scraper/scraper";
+import WebScraper from "./webScraper/WebScraper";
 import * as chalk from "chalk";
 import * as DBL from "dblapi.js";
 import { config as loadDotEnv } from "dotenv";
+import parseAstr from "./scripts/astr.parser";
+import SteamdbScraper from "./webScraper/SteamdbScraper";
 
 const settings = require('../config/settings.json');
 
@@ -34,6 +36,45 @@ export class FreeStuffBot extends Client {
   constructor(options) {
     super(options);
     loadDotEnv();
+
+    // const data = {
+    //   store: 'Steam',
+    //   name: 'Cool Game',
+    //   'oldprice.eur': '2.99€',
+    //   trash: false,
+    //   'steam.subids': '4124 24124'
+    // }
+
+    // function test(a: string) {
+    //   console.log(a);
+    //   console.log(parseAstr(a, data));
+    //   console.log(' ');
+    // }
+
+    // test('=name= is free on =store=');
+    // test('The game =name= costed =oldprice.eur= before!');
+    // test('{trash? YES}{NO}');
+    // test('This game {trash? is}{is not} trash!');
+    // test('{steam.subids? =steam.subids=}{Game not from Steam}');
+    // test('{abc? ABC!}{def? DEF}{store? STORE!}{xyz? XYZ}');
+    // test('{trash?}{Ok boomerino}');
+    // test('{ok}');
+
+    // WebScraper.init();
+
+    // // WebScraper.fetch('https://store.steampowered.com/app/680360/Regions_Of_Ruin/').then(d => {
+    // //   console.log(d);
+    // // });
+    // // SteamdbScraper.fetchFreeGames().then(console.log);
+    // (async () => {
+    //   SteamdbScraper.fetchSubids('822540').then(console.log)
+    //   // let ids = await SteamdbScraper.fetchFreeGames();
+    //   // let subids = ids.map(SteamdbScraper.fetchSubids).map(async a => await a);
+    //   // let flatted = Array.prototype.concat.apply([], subids);
+    //   // console.log(flatted);
+    // })();
+
+    // return;
 
     this.devMode = process.env.ENVIRONMENT == 'dev';
 

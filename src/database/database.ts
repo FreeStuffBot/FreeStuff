@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import MongoAdapter from './mongo.adapter';
+import MongoAdapter from './MongoAdapter';
  
 export type dbcollection = 'guilds' | 'stats-usage';
 

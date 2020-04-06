@@ -1,9 +1,8 @@
 import { FreeStuffData } from "types";
 import * as puppeteer from "puppeteer";
-import ScraperWorker from "./worker";
+import ScraperWorker from "./ScraperWorker";
 
 
-// TODO this is not working
 export default class SteamScraper extends ScraperWorker {
 
   private queries = {
@@ -43,8 +42,10 @@ export default class SteamScraper extends ScraperWorker {
 
   private async grabInfo(page: puppeteer.Page, query: string, defval: string): Promise<string> {
     try {
-      let el = await page.$(query)[0];
-      return await page.evaluate(el => el.textContent, el);
+      return await page.evaluate(() => {
+        const el = document.querySelector(query);
+        return el.textContent;
+      });
     } catch (ex) {
       return defval;
     }

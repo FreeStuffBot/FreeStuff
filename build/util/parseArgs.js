@@ -35,4 +35,4 @@ class ParseArgs {
     }
 }
 exports.default = ParseArgs;
-//# sourceMappingURL=parseArgs.js.map
+//# sourceMappingURL=ParseArgs.js.map

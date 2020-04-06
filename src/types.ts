@@ -1,4 +1,5 @@
 import { TextChannel, Role } from "discord.js";
+import { Long } from "mongodb";
 
 export interface FreeStuffData {
 
@@ -30,4 +31,18 @@ export interface GuildData {
 
 }
 
+export interface GameMeta {
+
+  id: string;
+  store: Store;
+  found: Long;
+  status: GameApprovalStatus;
+  data: FreeStuffData;
+
+}
+
 export type GuildSetting = 'channel' | 'roleMention' | 'theme' | 'currency' | 'react' | 'trash' | 'price';
+
+export type Store = 'steam' | 'epic' | 'humble' | 'gog' | 'origin' | 'uplay' | 'twitch' | 'itch' | 'discord' | 'apple' | 'google' | 'other';
+
+export type GameApprovalStatus = 'pending' | 'declined' | 'accepted';

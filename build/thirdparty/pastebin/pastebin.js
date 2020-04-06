@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = require("../../database/database");
+const Database_1 = require("../../database/Database");
 const settings = require('../../../config/settings.json').thirdparty;
 /** @deprecated */
 class Pastebin {
@@ -23,7 +23,7 @@ class Pastebin {
     }
     /** @deprecated */
     static postDatabaseBump(collection) {
-        database_1.default
+        Database_1.default
             .collection(collection)
             .find({})
             .toArray()
@@ -40,4 +40,4 @@ class Pastebin {
     }
 }
 exports.default = Pastebin;
-//# sourceMappingURL=pastebin.js.map
+//# sourceMappingURL=Pastebin.js.map

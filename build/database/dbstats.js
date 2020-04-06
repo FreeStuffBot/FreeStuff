@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = require("./database");
+const Database_1 = require("./Database");
 const cron_1 = require("cron");
 const chalk = require('chalk');
 class DbStats {
@@ -36,7 +36,7 @@ class DbStatUsage {
     }
     load() {
         return __awaiter(this, void 0, void 0, function* () {
-            let c = yield database_1.default
+            let c = yield Database_1.default
                 .collection('stats-usage')
                 .find({})
                 .toArray();
@@ -82,7 +82,7 @@ class DbStatGraph {
                     while (dayId-- > this.raw.length)
                         obj['$set'][`value.${dayId}`] = 0;
                 }
-                return yield database_1.default
+                return yield Database_1.default
                     .collection(this._collectionname)
                     .updateOne(this._dbquery, obj);
             }
@@ -94,13 +94,13 @@ class DbStatGraph {
                     obj.value.push(0);
                 obj.value.push(value);
                 if (parentExists) {
-                    return yield database_1.default
+                    return yield Database_1.default
                         .collection(this._collectionname)
                         .updateOne(this._dbquery, { '$set': obj });
                 }
                 else {
                     this._fullraw.value = obj;
-                    return yield database_1.default
+                    return yield Database_1.default
                         .collection(this._collectionname)
                         .insertOne(obj);
                 }
@@ -123,4 +123,4 @@ function getDayId() {
     let day = Math.floor(diff / oneDay);
     return day - 1; // index 0 on 1st january
 }
-//# sourceMappingURL=dbstats.js.map
+//# sourceMappingURL=DbStats.js.map

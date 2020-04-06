@@ -2,7 +2,7 @@
 import { User as DiscordUser } from "discord.js";
 import { hook_std } from "./stdutils";
 import { Core, FreeStuffBot } from "../..";
-import Database from "../../database/database";
+import Database from "../../database/Database";
 import { FreeStuffData } from "types";
 
 

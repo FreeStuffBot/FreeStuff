@@ -40,17 +40,22 @@ class CommandHandler {
     }
     handleCommand(command, args, orgmes) {
         let reply = (message, content, footer, color, image) => {
-            orgmes.channel.send({ embed: {
-                    color: color || 0x2f3136,
-                    title: message,
-                    description: content,
-                    footer: {
-                        text: `@${orgmes.author.tag}` + (footer ? ` • ${footer}` : '')
-                    },
-                    image: {
-                        url: image
-                    }
-                } });
+            if (orgmes.guild.me.permissionsIn(orgmes.channel).has('EMBED_LINKS')) {
+                orgmes.channel.send({ embed: {
+                        color: color || 0x2f3136,
+                        title: message,
+                        description: content,
+                        footer: {
+                            text: `@${orgmes.author.tag}` + (footer ? ` • ${footer}` : '')
+                        },
+                        image: {
+                            url: image
+                        }
+                    } });
+            }
+            else {
+                orgmes.channel.send(`**${message}**\n${content}`);
+            }
         };
         switch (command.toLowerCase()) {
             case '':
@@ -245,6 +250,7 @@ class CommandHandler {
                             }
                             break;
                         case 'minimum':
+                        case 'minimumprice':
                         case 'min':
                         case 'price':
                         case 'cost':
@@ -308,11 +314,25 @@ class CommandHandler {
                 }
                 index_1.Core.databaseManager.getGuildData(orgmes.guild).then(d => {
                     if (!d.channelInstance) {
-                        reply('Whoops!', `Looks like there's no channel specified!\nDo \`@FreeStuff set channel #${orgmes.guild.channels.filter(c => c.type == 'text').random().name}\` to tell me where to annouce free games!`);
+                        reply('Whoops!', `I'd love to but I don't know where you'd like to have the news!\nDo \`@FreeStuff set channel #${orgmes.guild.channels.filter(c => c.type == 'text').random().name}\` to tell me where to annouce free games!`);
+                        return true;
+                    }
+                    if (!d.channelInstance.guild.me.permissionsIn(d.channelInstance).has('READ_MESSAGES')) {
+                        reply('Whoops!', `Looks like I don't have the permission to see the channel ${d.channelInstance}!`);
                         return true;
                     }
                     if (!d.channelInstance.guild.me.permissionsIn(d.channelInstance).has('SEND_MESSAGES')) {
                         reply('Whoops!', `Looks like I don't have the permission to write in that channel!`);
+                        return true;
+                    }
+                    if (!d.channelInstance.guild.me.permissionsIn(d.channelInstance).has('EMBED_LINKS')
+                        && Const_1.default.themesWithEmbeds.includes(d.theme)) {
+                        reply('Oh well...', `The theme you're using uses embeds to make the message look nicer... now the thing is, I don't have the permission to send embeds in ${d.channelInstance}! Either give me the permission \`Embed Links\` or choose a different theme that doesn't use embeds!`);
+                        return true;
+                    }
+                    if (!d.channelInstance.guild.me.permissionsIn(d.channelInstance).has('EXTERNAL_EMOJIS')
+                        && Const_1.default.themesWithExtemotes[d.theme]) {
+                        reply('Oh well...', `The theme you're using uses external emojis to create the big button. Now you either have to give me the \`Use External Emojis\` permission or tell me to use another theme which doesn't use external emojis!`);
                         return true;
                     }
                     index_1.Core.messageDistributor.test(orgmes.guild, {

@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../index");
-const database_1 = require("../database/database");
+const Database_1 = require("../database/Database");
 const mongodb_1 = require("mongodb");
 class DatabaseManager {
     constructor(bot) {
@@ -18,7 +18,7 @@ class DatabaseManager {
             // Check if any guild is not in the database yet
             // Might happen when someone adds the bot while it's offline
             // Same with leaving guilds and removing them from the db then
-            let dbGuilds = yield database_1.default.collection('guilds').find({}).toArray();
+            let dbGuilds = yield Database_1.default.collection('guilds').find({}).toArray();
             for (let guild of bot.guilds.values()) {
                 if (!dbGuilds.find(g => g._id === guild.id))
                     this.addGuild(guild);
@@ -36,7 +36,7 @@ class DatabaseManager {
         });
     }
     addGuild(guild) {
-        database_1.default
+        Database_1.default
             .collection('guilds')
             .insertOne({
             _id: guild.id,
@@ -54,13 +54,13 @@ class DatabaseManager {
         //
     }
     removeGuild(guildid) {
-        database_1.default
+        Database_1.default
             .collection('guilds')
             .deleteOne({ _id: guildid });
     }
     getGuildData(guild) {
         return __awaiter(this, void 0, void 0, function* () {
-            let obj = yield database_1.default
+            let obj = yield Database_1.default
                 .collection('guilds')
                 .findOne({ _id: guild.id })
                 .catch(console.error);
@@ -117,7 +117,7 @@ class DatabaseManager {
                 out['price'] = value;
                 break;
         }
-        database_1.default
+        Database_1.default
             .collection('guilds')
             .updateOne({ _id: guild.id }, { '$set': out });
     }

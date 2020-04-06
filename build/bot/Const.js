@@ -11,4 +11,20 @@ Const.websiteLinkClean = 'tude.ga/freestuff';
 Const.themeListLink = 'https://tude.ga/freestuff/themes';
 Const.testGameLink = 'https://tude.ga/freestuff/testgame';
 Const.topGGLink = 'https://top.gg/bot/672822334641537041';
+Const.themesWithEmbeds = [0, 1, 2, 3, 4, 5];
+Const.themesWithExtemotes = { 0: 1, 2: 3 };
+Const.storeDisplayNames = {
+    steam: 'Steam',
+    epic: 'Epic Games Store',
+    humble: 'Humble Bundle',
+    gog: 'GOG.com',
+    origin: 'Origin',
+    uplay: 'Uplay',
+    twitch: 'Twitch',
+    itch: 'itch.io',
+    discord: 'Discord',
+    apple: 'Apple App Store',
+    google: 'Google Play',
+    other: 'Other'
+};
 //# sourceMappingURL=Const.js.map
