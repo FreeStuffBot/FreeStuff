@@ -24,7 +24,6 @@ const WebScraper_1 = require("./webScraper/WebScraper");
 const chalk = require("chalk");
 const DBL = require("dblapi.js");
 const dotenv_1 = require("dotenv");
-const SteamdbScraper_1 = require("./webScraper/SteamdbScraper");
 const settings = require('../config/settings.json');
 class FreeStuffBot extends discord_js_1.Client {
     constructor(options) {
@@ -50,19 +49,19 @@ class FreeStuffBot extends discord_js_1.Client {
         // test('{abc? ABC!}{def? DEF}{store? STORE!}{xyz? XYZ}');
         // test('{trash?}{Ok boomerino}');
         // test('{ok}');
-        WebScraper_1.default.init();
-        // WebScraper.fetch('https://store.steampowered.com/app/680360/Regions_Of_Ruin/').then(d => {
-        //   console.log(d);
-        // });
-        // SteamdbScraper.fetchFreeGames().then(console.log);
-        (() => __awaiter(this, void 0, void 0, function* () {
-            SteamdbScraper_1.default.fetchSubids('822540').then(console.log);
-            // let ids = await SteamdbScraper.fetchFreeGames();
-            // let subids = ids.map(SteamdbScraper.fetchSubids).map(async a => await a);
-            // let flatted = Array.prototype.concat.apply([], subids);
-            // console.log(flatted);
-        }))();
-        return;
+        // WebScraper.init();
+        // // WebScraper.fetch('https://store.steampowered.com/app/680360/Regions_Of_Ruin/').then(d => {
+        // //   console.log(d);
+        // // });
+        // // SteamdbScraper.fetchFreeGames().then(console.log);
+        // (async () => {
+        //   SteamdbScraper.fetchSubids('822540').then(console.log)
+        //   // let ids = await SteamdbScraper.fetchFreeGames();
+        //   // let subids = ids.map(SteamdbScraper.fetchSubids).map(async a => await a);
+        //   // let flatted = Array.prototype.concat.apply([], subids);
+        //   // console.log(flatted);
+        // })();
+        // return;
         this.devMode = process.env.ENVIRONMENT == 'dev';
         if (this.devMode) {
             console.log(chalk.bgRedBright.black(' RUNNING DEV MODE '));
