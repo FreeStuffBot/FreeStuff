@@ -60,21 +60,21 @@ export class FreeStuffBot extends Client {
     // test('{trash?}{Ok boomerino}');
     // test('{ok}');
 
-    // WebScraper.init();
+    WebScraper.init();
 
-    // // WebScraper.fetch('https://store.steampowered.com/app/680360/Regions_Of_Ruin/').then(d => {
-    // //   console.log(d);
-    // // });
-    // // SteamdbScraper.fetchFreeGames().then(console.log);
-    // (async () => {
-    //   SteamdbScraper.fetchSubids('822540').then(console.log)
-    //   // let ids = await SteamdbScraper.fetchFreeGames();
-    //   // let subids = ids.map(SteamdbScraper.fetchSubids).map(async a => await a);
-    //   // let flatted = Array.prototype.concat.apply([], subids);
-    //   // console.log(flatted);
-    // })();
+    // WebScraper.fetch('https://store.steampowered.com/app/680360/Regions_Of_Ruin/').then(d => {
+    //   console.log(d);
+    // });
+    // SteamdbScraper.fetchFreeGames().then(console.log);
+    (async () => {
+      SteamdbScraper.fetchSubids('822540').then(console.log)
+      // let ids = await SteamdbScraper.fetchFreeGames();
+      // let subids = ids.map(SteamdbScraper.fetchSubids).map(async a => await a);
+      // let flatted = Array.prototype.concat.apply([], subids);
+      // console.log(flatted);
+    })();
 
-    // return;
+    return;
 
     this.devMode = process.env.ENVIRONMENT == 'dev';
 
