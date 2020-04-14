@@ -1,24 +1,22 @@
 
 import { Client, Guild, User } from "discord.js";
-import WCP from './thirdparty/wcp/WCP';
+import WCP from './thirdparty/wcp/wcp';
 import * as fs from 'fs';
 import { loadavg } from 'os';
 import { Long } from 'mongodb';
-import MongoAdapter from "./database/MongoAdapter";
-import Database from "./database/Database";
+import MongoAdapter from "./database/mongoAdapter";
+import Database from "./database/database";
 import { Util } from "./util/util";
-import CommandHandler from "./bot/CommandHandler";
-import DatabaseManager from "./bot/DatabaseManager";
-import MessageDistributor from "./bot/MessageDistributor";
-import AdminCommandHandler from "./bot/AdminCommandHandler";
-import { DbStats } from "./database/DbStats";
+import CommandHandler from "./bot/commandHandler";
+import DatabaseManager from "./bot/databaseManager";
+import MessageDistributor from "./bot/messageDistributor";
+import AdminCommandHandler from "./bot/adminCommandHandler";
+import { DbStats } from "./database/dbStats";
 import { logVersionDetails } from "./util/gitParser";
-import WebScraper from "./webScraper/WebScraper";
 import * as chalk from "chalk";
 import * as DBL from "dblapi.js";
 import { config as loadDotEnv } from "dotenv";
 import parseAstr from "./scripts/astr.parser";
-import SteamdbScraper from "./webScraper/SteamdbScraper";
 
 const settings = require('../config/settings.json');
 
@@ -87,7 +85,7 @@ export class FreeStuffBot extends Client {
     // fixReactionEvent(this);
 
     Util.init();
-    WCP.init(this.devMode);
+    WCP.init(false);
     // Pastebin.init();
 
     MongoAdapter.connect(settings.mongodb.url)
@@ -115,9 +113,7 @@ export class FreeStuffBot extends Client {
         this.on('ready', () => {
           console.log('Bot ready! Logged in as ' + chalk.yellowBright(this.user.tag));
           WCP.send({ status_discord: '+Connected' });
-          this.user.setActivity('@FreeStuff ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://tude.ga/freestuff', { type: 'WATCHING' });
-
-          WebScraper.init();
+          this.user.setActivity('@FreeStuff ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://freestuffbot.xyz/', { type: 'WATCHING' });
 
           // WebScraper.fetch('https://store.steampowered.com/app/442070/Drawful_2/').then(d => {
           //   // this.messageDistributor.distribute(d);
@@ -137,7 +133,7 @@ export const Core = new FreeStuffBot (
     disabledEvents: [
       // 'READY',
       // 'RESUMED',
-      'GUILD_SYNC',
+      // 'GUILD_SYNC',
       // 'GUILD_CREATE',
       // 'GUILD_DELETE',
       // 'GUILD_UPDATE',

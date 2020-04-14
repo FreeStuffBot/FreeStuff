@@ -1,7 +1,7 @@
 import { FreeStuffBot, Core } from "../index";
 import { Message, Guild, TextChannel, RichEmbedOptions, RichEmbed, MessageOptions } from "discord.js";
-import Const from "./Const";
-import Database from "../database/Database";
+import Const from "./const";
+import Database from "../database/database";
 import { Long } from "mongodb";
 import { FreeStuffData, GuildData } from "../types";
 
@@ -19,12 +19,15 @@ export default class MessageDistributor {
       .collection('guilds')
       .find({ })
       .toArray()
-      .then(guilds => {
+      .then(async guilds => {
         if (!guilds) return;
-        guilds.forEach(async g => {
+        console.log(`Starting to announce ${content.title} - ${new Date().toLocaleTimeString()}`);
+        for (const g of guilds) {
           if (!g) return;
           this.sendToGuild(g, content, false, false);
-        })
+          await new Promise(res => setTimeout(() => res(), 200));
+        }
+        console.log(`Done announcing ${content.title} - ${new Date().toLocaleTimeString()}`);
       })
       .catch(console.error);
   }

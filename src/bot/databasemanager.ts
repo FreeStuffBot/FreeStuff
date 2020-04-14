@@ -1,7 +1,7 @@
 import { FreeStuffBot, Core } from "../index";
 import { Message, Guild, TextChannel } from "discord.js";
-import Const from "./Const";
-import Database from "../database/Database";
+import Const from "./const";
+import Database from "../database/database";
 import { Long } from "mongodb";
 import { GuildSetting, GuildData } from "../types";
 

@@ -1,6 +1,6 @@
 import { FreeStuffBot, Core } from "../index";
 import { Message, TextChannel } from "discord.js";
-import Const from "./Const";
+import Const from "./const";
 
 const settings = require('../../config/settings.json');
 
