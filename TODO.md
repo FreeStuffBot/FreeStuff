@@ -25,21 +25,3 @@
   (-) Make it disable-able
 [X] APRIL FOOLS JOKE
 
-
---
-
-
-[X] Raspbian auf Raspi installieren
-[X] 11 Uhr Mathe Konferenz
-[X] FreeStuff Bot Permission checks einbauen
-[X] TudeBot und TudeApi auf OVH-Coyote
-[X] Datenbank von raspi auf Atlas
-[X] Daily rewards fixen, dass der Tag übersprungen wird
-[X] WCP wieder zum laufen kriegen
--> al dente
-
-dann noch raspi:
-[X] gitea wieder herstellen
-[X] nginx einrichten
-[ ] WCP remote sh execution auf OVH-Coyote für updates etc
-[ ] Gpios testen
