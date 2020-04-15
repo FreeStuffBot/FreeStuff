@@ -26,6 +26,7 @@ export default class Const {
     discord: 'Discord',
     apple: 'Apple App Store',
     google: 'Google Play',
+    switch: 'Nintendo Switch Store',
     other: 'Other'
   };
 

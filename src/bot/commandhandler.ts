@@ -1,5 +1,5 @@
-import { FreeStuffBot, Core } from "../index";
-import { Message, TextChannel } from "discord.js";
+import { FreeStuffBot } from "../index";
+import { Message } from "discord.js";
 import Const from "./const";
 import { Command } from "../types";
 import HelpCommand from "./commands/help.cmd";
@@ -12,12 +12,11 @@ import VoteCommand from "./commands/vote.cmd";
 const settings = require('../../config/settings.json');
 
 
-
 export default class CommandHandler {
 
   public readonly commands: Command[] = [];
 
-  constructor(bot: FreeStuffBot) {
+  public constructor(bot: FreeStuffBot) {
     this.commands.push(new HelpCommand());
     this.commands.push(new InfoCommand());
     this.commands.push(new InviteCommand());
@@ -40,7 +39,7 @@ export default class CommandHandler {
     });
   }
 
-  async handleCommand(command: string, args: string[], orgmes: Message): Promise<boolean> {
+  public async handleCommand(command: string, args: string[], orgmes: Message): Promise<boolean> {
     const reply = (message: string, content: string, footer?: string, color?: number, image?: string) => {
       if (orgmes.guild.me.permissionsIn(orgmes.channel).has('EMBED_LINKS')) {
         orgmes.channel.send({ embed: {

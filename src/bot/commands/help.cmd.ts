@@ -26,7 +26,6 @@ export default class HelpCommand extends Command {
   public handle(mes: Message, args: string[], repl: ReplyFunction): boolean {
     const cmdlist = Core.commandHandler.commands.filter(c => !c.info.hideOnHelp).map(c => `• \`@FreeStuff ${c.info.name}\` ─ ${c.info.desc}`);
     repl('Help is on the way!', '**Available commands:**\n\n' + cmdlist.join('\n\n'));
-
     return true;
   }
 

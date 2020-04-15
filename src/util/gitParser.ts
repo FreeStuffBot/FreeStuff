@@ -1,7 +1,6 @@
 import { getLastCommit } from "git-last-commit";
 import { execSync } from "child_process";
-
-const chalk = require("chalk");
+import * as chalk from "chalk";
 
 
 interface GitCommit {
@@ -33,8 +32,8 @@ export function getGitCommit(): Promise<GitCommit> {
 }
 
 export async function logVersionDetails() {
-  let commit = await getGitCommit();
-  let commitDate = new Date(commit.time);
+  const commit = await getGitCommit();
+  const commitDate = new Date(commit.time);
   console.log(`Running commit ${chalk.blueBright(commit.shortHash)} ${chalk.gray(`(${commit.subject})`)}`);
   console.log(`From ${chalk.blueBright(commitDate.toLocaleString())}`);
 }

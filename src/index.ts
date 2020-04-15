@@ -1,9 +1,6 @@
 
-import { Client, Guild, User } from "discord.js";
+import { Client, User } from "discord.js";
 import WCP from './thirdparty/wcp/wcp';
-import * as fs from 'fs';
-import { loadavg } from 'os';
-import { Long } from 'mongodb';
 import MongoAdapter from "./database/mongoAdapter";
 import Database from "./database/database";
 import { Util } from "./util/util";
@@ -16,7 +13,6 @@ import { logVersionDetails } from "./util/gitParser";
 import * as chalk from "chalk";
 import * as DBL from "dblapi.js";
 import { config as loadDotEnv } from "dotenv";
-import parseAstr from "./scripts/astr.parser";
 
 const settings = require('../config/settings.json');
 

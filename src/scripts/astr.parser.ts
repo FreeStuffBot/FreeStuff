@@ -12,7 +12,7 @@ export default function parse(template: string, data: any) {
   // parse conditional garbage
   template = template.split(TOKEN_CONDITIONAL_CLOSE + TOKEN_CONDITIONAL_OPEN).join(TOKEN_CONDITIONAL_ELSE);
   let out = '';
-  let split = template.split(TOKEN_CONDITIONAL_OPEN);
+  const split = template.split(TOKEN_CONDITIONAL_OPEN);
   out += split.splice(0, 1)[0];
   for (const part of split) {
     if (!part.includes(TOKEN_CONDITIONAL_CLOSE)) {
@@ -20,11 +20,11 @@ export default function parse(template: string, data: any) {
       continue;
     }
 
-    let conditional = part.split(TOKEN_CONDITIONAL_CLOSE)[0];
+    const conditional = part.split(TOKEN_CONDITIONAL_CLOSE)[0];
     const constant = part.substr(conditional.length + TOKEN_CONDITIONAL_CLOSE.length);
 
     blockloop:
-    for (let block of conditional.split(TOKEN_CONDITIONAL_ELSE)) {
+    for (const block of conditional.split(TOKEN_CONDITIONAL_ELSE)) {
       if (block.includes(TOKEN_CONDITIONAL_BOOLEAN)) {
         const condition = block.split(TOKEN_CONDITIONAL_BOOLEAN)[0];
         if (data[condition]) {

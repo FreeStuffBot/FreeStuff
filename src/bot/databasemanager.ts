@@ -1,16 +1,13 @@
 import { FreeStuffBot, Core } from "../index";
-import { Message, Guild, TextChannel } from "discord.js";
-import Const from "./const";
+import { Guild, TextChannel } from "discord.js";
 import Database from "../database/database";
 import { Long } from "mongodb";
 import { GuildSetting, GuildData } from "../types";
 
 
-
-
 export default class DatabaseManager {
 
-  constructor(bot: FreeStuffBot) {
+  public constructor(bot: FreeStuffBot) {
     bot.on('ready', async () => {
       // Check if any guild is not in the database yet
       // Might happen when someone adds the bot while it's offline
@@ -38,7 +35,7 @@ export default class DatabaseManager {
     });
   }
 
-  addGuild(guild: Guild) {
+  public addGuild(guild: Guild) {
     Database
       .collection('guilds')
       .insertOne({
@@ -57,14 +54,14 @@ export default class DatabaseManager {
     //
   }
 
-  removeGuild(guildid: string) {
+  public removeGuild(guildid: string) {
     Database
       .collection('guilds')
       .deleteOne({ _id: guildid });
   }
 
-  async getGuildData(guild: Guild): Promise<GuildData> {
-    let obj = await Database
+  public async getGuildData(guild: Guild): Promise<GuildData> {
+    const obj = await Database
       .collection('guilds')
       .findOne({ _id: guild.id })
       .catch(console.error);
@@ -72,7 +69,7 @@ export default class DatabaseManager {
     return this.parseGuildData(obj);
   }
 
-  parseGuildData(dbObject: any): GuildData {
+  public parseGuildData(dbObject: any): GuildData {
     if (!dbObject) return undefined;
     return {
       id: dbObject._id,
@@ -95,8 +92,8 @@ export default class DatabaseManager {
     }
   }
 
-  changeSetting(guild: Guild, current: GuildData, setting: GuildSetting, value: string | number | boolean) {
-    let out = {};
+  public changeSetting(guild: Guild, current: GuildData, setting: GuildSetting, value: string | number | boolean) {
+    const out = {};
     switch (setting) {
       case 'channel':
         out['channel'] = Long.fromString(value as string);

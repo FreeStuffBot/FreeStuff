@@ -1,13 +1,10 @@
 
-import { User as DiscordUser } from "discord.js";
 import { hook_std } from "./stdutils";
-import { Core, FreeStuffBot } from "../..";
-import Database from "../../database/database";
+import { Core } from "../..";
 import { FreeStuffData } from "types";
+import * as chalk from "chalk";
+import fetch from "node-fetch";
 
-
-const fetch = require('node-fetch');
-const chalk = require('chalk');
 
 const settings = require('../../../config/settings.json').thirdparty;
 

@@ -25,9 +25,7 @@ export default class InfoCommand extends Command {
 [Report a bug or get in contact](${Const.discordInvite})`,
 'Copyright © 2020 Tude',
 0x00b0f4
-    );
-    // Haha yes, multi-line string
-
+    ); // Haha yes, multi-line string
     return true;
   }
 

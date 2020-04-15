@@ -1,8 +1,7 @@
 import { FreeStuffBot, Core } from "../index";
-import { Message, Guild, TextChannel, RichEmbedOptions, RichEmbed, MessageOptions } from "discord.js";
+import { Message, Guild, MessageOptions } from "discord.js";
 import Const from "./const";
 import Database from "../database/database";
-import { Long } from "mongodb";
 import { FreeStuffData, GuildData } from "../types";
 
 
@@ -10,11 +9,11 @@ import { FreeStuffData, GuildData } from "../types";
 
 export default class MessageDistributor {
 
-  constructor(bot: FreeStuffBot) {
-    
-  }
+  constructor(bot: FreeStuffBot) { }
 
-  distribute(content: FreeStuffData): void {
+  //
+
+  public distribute(content: FreeStuffData): void {
     Database
       .collection('guilds')
       .find({ })
@@ -32,7 +31,7 @@ export default class MessageDistributor {
       .catch(console.error);
   }
 
-  test(guild: Guild, content: FreeStuffData): void {
+  public test(guild: Guild, content: FreeStuffData): void {
     Database
       .collection('guilds')
       .findOne({ _id: guild.id })
@@ -43,7 +42,7 @@ export default class MessageDistributor {
       .catch(console.error);
   }
 
-  async sendToGuild(g: any, content: FreeStuffData, test: boolean, force: boolean) {
+  public async sendToGuild(g: any, content: FreeStuffData, test: boolean, force: boolean) {
     const data = Core.databaseManager.parseGuildData(g);
     if (!data) {
       Core.databaseManager.removeGuild(g._id);
@@ -85,7 +84,7 @@ export default class MessageDistributor {
       data.mentionRoleInstance.setMentionable(false);
   }
 
-  buildMessage(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
+  public buildMessage(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
     const builder = ([
       this.buildTheme1,
       this.buildTheme2,
@@ -101,7 +100,7 @@ export default class MessageDistributor {
     return builder(content, data, test);
   }
 
-  buildTheme1(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
+  public buildTheme1(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
     let priceString = '';
     if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
     else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
@@ -125,7 +124,7 @@ export default class MessageDistributor {
     ];
   }
 
-  buildTheme2(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
+  public buildTheme2(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
     let priceString = '';
     if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
     else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
@@ -149,7 +148,7 @@ export default class MessageDistributor {
     ];
   }
 
-  buildTheme3(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
+  public buildTheme3(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
     let priceString = '';
     if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
     else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
@@ -170,7 +169,7 @@ export default class MessageDistributor {
     ];
   }
 
-  buildTheme4(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
+  public buildTheme4(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
     let priceString = '';
     if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
     else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
@@ -191,7 +190,7 @@ export default class MessageDistributor {
     ];
   }
 
-  buildTheme5(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
+  public buildTheme5(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
     return [
       data.mentionRoleInstance ? data.mentionRoleInstance.toString() : '',
       { embed: {
@@ -208,7 +207,7 @@ export default class MessageDistributor {
     ];
   }
 
-  buildTheme6(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
+  public buildTheme6(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
     return [
       data.mentionRoleInstance ? data.mentionRoleInstance.toString() : '',
       { embed: {
@@ -228,7 +227,7 @@ export default class MessageDistributor {
     ];
   }
 
-  buildTheme7(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
+  public buildTheme7(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
     return [
       (data.mentionRoleInstance ? data.mentionRoleInstance.toString() : '')
       + ' ' + content.url,
@@ -236,7 +235,7 @@ export default class MessageDistributor {
     ];
   }
 
-  buildTheme8(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
+  public buildTheme8(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
     return [
       (data.mentionRoleInstance ? data.mentionRoleInstance.toString() : '')
       + ` <${content.url}>`,
@@ -244,7 +243,7 @@ export default class MessageDistributor {
     ];
   }
 
-  buildTheme9(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
+  public buildTheme9(content: FreeStuffData, data: GuildData, test: boolean): (string | MessageOptions)[] {
     return [
       (data.mentionRoleInstance ? data.mentionRoleInstance.toString() : '')
       + ` **${content.title}** is free!\n<${content.url}>`,

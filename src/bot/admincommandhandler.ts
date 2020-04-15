@@ -1,11 +1,10 @@
 import { FreeStuffBot, Core } from "../index";
 import { Message } from "discord.js";
-import Const from "./const";
 import Database from "../database/database";
+import { GuildData } from "types";
+import * as AsciiTable from "ascii-table";
 
-const AsciiTable = require('ascii-table');
 const settings = require('../../config/settings.json');
-
 
 
 const commandlist = [
@@ -18,7 +17,7 @@ const commandlist = [
 
 export default class AdminCommandHandler {
 
-  constructor(bot: FreeStuffBot) {
+  public constructor(bot: FreeStuffBot) {
     bot.on('message', m => {
       if (m.author.bot) return;
       if (!m.guild) return;
@@ -34,7 +33,7 @@ export default class AdminCommandHandler {
     });
   }
 
-  handleCommand(command: string, args: string[], orgmes: Message): boolean {
+  public handleCommand(command: string, args: string[], orgmes: Message): boolean {
     let reply = (message: string, content: string, footer?: string, color?: number, image?: string) => {
       orgmes.channel.send({ embed: {
         color: color || 0x2f3136,
@@ -88,7 +87,7 @@ export default class AdminCommandHandler {
             .find({ })
             .toArray()
             .then(a => {
-              const guildData = a.map(Core.databaseManager.parseGuildData);
+              const guildData: GuildData[] = a.map(Core.databaseManager.parseGuildData);
               let total = guildData.length;
               let channelSet = 0;
               let dollar = 0;
@@ -99,7 +98,7 @@ export default class AdminCommandHandler {
               let themes = [];
               for (let i = 0; i < 16; i++) themes.push(0);
 
-              for (let data of guildData) {
+              for (const data of guildData) {
                 if (data.channelInstance) channelSet++;
                 if (data.currency == 'usd') dollar++;
                 if (data.react) react++;
