@@ -1,15 +1,15 @@
 
 import { Client, User } from "discord.js";
 import WCP from './thirdparty/wcp/wcp';
-import MongoAdapter from "./database/mongoAdapter";
+import MongoAdapter from "./database/mongo-adapter";
 import Database from "./database/database";
 import { Util } from "./util/util";
-import CommandHandler from "./bot/commandHandler";
-import DatabaseManager from "./bot/databaseManager";
-import MessageDistributor from "./bot/messageDistributor";
-import AdminCommandHandler from "./bot/adminCommandHandler";
+import CommandHandler from "./bot/command-handler";
+import DatabaseManager from "./bot/database-manager";
+import MessageDistributor from "./bot/message-distributor";
+import AdminCommandHandler from "./bot/admin-command-handler";
 import { DbStats } from "./database/dbStats";
-import { logVersionDetails } from "./util/gitParser";
+import { logVersionDetails } from "./util/git-parser";
 import * as chalk from "chalk";
 import * as DBL from "dblapi.js";
 import { config as loadDotEnv } from "dotenv";
