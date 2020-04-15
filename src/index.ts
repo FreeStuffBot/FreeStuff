@@ -8,7 +8,7 @@ import CommandHandler from "./bot/command-handler";
 import DatabaseManager from "./bot/database-manager";
 import MessageDistributor from "./bot/message-distributor";
 import AdminCommandHandler from "./bot/admin-command-handler";
-import { DbStats } from "./database/dbStats";
+import { DbStats } from "./database/db-stats";
 import { logVersionDetails } from "./util/git-parser";
 import * as chalk from "chalk";
 import * as DBL from "dblapi.js";
