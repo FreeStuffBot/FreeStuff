@@ -20,10 +20,9 @@
     ],
     "baseUrl": "./src",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "resolveJsonModule": true
+    "emitDecoratorMetadata": true
   },
   "include": [
-    "./src/**/*", "src/bot/messagedistributer.ts"
+    "./src/**/*"
   ]
 }
