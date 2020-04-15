@@ -1,6 +1,6 @@
 import { hookStd } from "./stdutils";
 import { Core } from "../..";
-import { FreeStuffData } from "types";
+import { GameInfo } from "types";
 import * as chalk from "chalk";
 import fetch from "node-fetch";
 
@@ -114,7 +114,7 @@ export default class WCP {
 
   private static handleBack(data: any) {
     if (data.new_freestuff) {
-      Core.messageDistributor.distribute(JSON.parse(data.new_freestuff) as FreeStuffData);
+      Core.messageDistributor.distribute(JSON.parse(data.new_freestuff) as GameInfo);
     }
   }
 

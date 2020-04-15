@@ -63,10 +63,17 @@ export default class TestCommand extends Command {
           euro: 19.99,
           dollar: 19.99
         },
-        store: 'Store xyz',
+        price: {
+          euro: 0,
+          dollar: 0
+        },
+        store: 'other',
         thumbnail: this.thumbsUpImages[Math.floor(Math.random() * this.thumbsUpImages.length)],
+        org_url: Const.testGameLink,
         url: Const.testGameLink,
-        trash: false
+        trash: false,
+        steamSubids: '',
+        type: 'free'
       });
     }).catch(err => {
       repl('An error occured!', 'We\'re trying to fix this issue as soon as possible!');

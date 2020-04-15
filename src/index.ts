@@ -7,6 +7,7 @@ import CommandHandler from "./bot/command-handler";
 import DatabaseManager from "./bot/database-manager";
 import MessageDistributor from "./bot/message-distributor";
 import AdminCommandHandler from "./bot/admin-command-handler";
+import DataFetcher from "./bot/data-fetcher";
 import { DbStats } from "./database/db-stats";
 import { logVersionDetails } from "./util/git-parser";
 import * as chalk from "chalk";
@@ -22,6 +23,7 @@ export class FreeStuffBot extends Client {
   public databaseManager: DatabaseManager;
   public messageDistributor: MessageDistributor;
   public adminCommandHandler: AdminCommandHandler;
+  public dataFetcher: DataFetcher;
   
   public dbl: any;
   public readonly devMode;
@@ -81,7 +83,6 @@ export class FreeStuffBot extends Client {
 
     Util.init();
     WCP.init(false);
-    // Pastebin.init();
 
     MongoAdapter.connect(settings.mongodb.url)
       .catch(err => {
@@ -98,6 +99,7 @@ export class FreeStuffBot extends Client {
         this.databaseManager = new DatabaseManager(this);
         this.messageDistributor = new MessageDistributor(this);
         this.adminCommandHandler = new AdminCommandHandler(this);
+        this.dataFetcher = new DataFetcher(this);
 
         DbStats.startMonitoring(this);
 
@@ -109,11 +111,6 @@ export class FreeStuffBot extends Client {
           console.log('Bot ready! Logged in as ' + chalk.yellowBright(this.user.tag));
           WCP.send({ status_discord: '+Connected' });
           this.user.setActivity('@FreeStuff ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://freestuffbot.xyz/', { type: 'WATCHING' });
-
-          // WebScraper.fetch('https://store.steampowered.com/app/442070/Drawful_2/').then(d => {
-          //   // this.messageDistributor.distribute(d);
-          //   console.log(d);
-          // });
         });
 
         this.login(settings.bot.token);
