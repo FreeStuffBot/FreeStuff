@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc && node ./build/index.js",
-    "build": "tsc --forceConsistentCasingInFileNames",
+    "build": "tsc",
     "test": "echo \"No test specified\" && exit 0"
   },
   "author": "",
