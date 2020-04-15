@@ -116,16 +116,15 @@ class AdminCommandHandler {
                             priceChanged++;
                         themes[data.theme]++;
                     }
-                    let priceKept = total - priceChanged;
                     let round = (a) => Math.round(a * 1000) / 10;
                     let table = new AsciiTable();
                     table.setHeading('changed to', 'amount', 'changed%', 'amount', 'default');
                     table.addRow('channel set', channelSet, round(channelSet / total) + '%', total - channelSet, 'not set');
                     table.addRow('dollar', dollar, round(dollar / total) + '%', total - dollar, 'euro');
-                    table.addRow('react', react, round(react / total) + '%', total - react, 'don\'t react');
-                    table.addRow('mention', roleMention, round(roleMention / total) + '%', total - roleMention, 'don\'t mention');
+                    table.addRow('react', react, round(react / total) + '%', total - react, 'dont react');
+                    table.addRow('mention', roleMention, round(roleMention / total) + '%', total - roleMention, 'dont mention');
                     table.addRow('trash', trashGames, round(trashGames / total) + '%', total - trashGames, 'no trash');
-                    table.addRow('3€ price', priceKept, round(priceKept / total) + '%', total - priceKept, 'price changed');
+                    table.addRow('price changed', priceChanged, round(priceChanged / total) + '%', total - priceChanged, '3€ price');
                     let themeStr = 'Themes:';
                     for (let i = 0; i < 16; i++)
                         themeStr += `\n• Theme ${i + 1}: ${themes[i]} guilds`;
