@@ -1,4 +1,4 @@
-import { hook_std } from "./stdutils";
+import { hookStd } from "./stdutils";
 import { Core } from "../..";
 import { FreeStuffData } from "types";
 import * as chalk from "chalk";
@@ -70,8 +70,8 @@ export default class WCP {
       }
     }, 1000);
 
-    hook_std((o) => WCP.sysout.push(o), process.stdout);
-    hook_std((o) => WCP.sysout.push(chalk.bold.redBright(o)), process.stderr);
+    hookStd((o) => WCP.sysout.push(o), process.stdout);
+    hookStd((o) => WCP.sysout.push(chalk.bold.redBright(o)), process.stderr);
   }
 
   public static reload() {
