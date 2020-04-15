@@ -167,7 +167,7 @@ export const Core = new FreeStuffBot (
   }
 );
 
-
+/*
 function fixReactionEvent(bot: FreeStuffBot) {
   const events = {
     MESSAGE_REACTION_ADD: 'messageReactionAdd',
@@ -187,3 +187,4 @@ function fixReactionEvent(bot: FreeStuffBot) {
     bot.emit(events[ev.t], reaction, user);
   });
 }
+*/
