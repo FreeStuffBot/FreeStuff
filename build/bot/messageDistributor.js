@@ -13,8 +13,8 @@ const index_1 = require("../index");
 const const_1 = require("./const");
 const database_1 = require("../database/database");
 class MessageDistributor {
-    constructor(bot) {
-    }
+    constructor(bot) { }
+    //
     distribute(content) {
         database_1.default
             .collection('guilds')

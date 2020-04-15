@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../index");
 const database_1 = require("../database/database");
-const AsciiTable = require('ascii-table');
+const AsciiTable = require("ascii-table");
 const settings = require('../../config/settings.json');
 const commandlist = [
     '`$FreeStuff help` - Shows this help page',
@@ -101,7 +101,7 @@ class AdminCommandHandler {
                     let themes = [];
                     for (let i = 0; i < 16; i++)
                         themes.push(0);
-                    for (let data of guildData) {
+                    for (const data of guildData) {
                         if (data.channelInstance)
                             channelSet++;
                         if (data.currency == 'usd')

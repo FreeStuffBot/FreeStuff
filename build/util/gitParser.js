@@ -27,8 +27,8 @@ function getGitCommit() {
 exports.getGitCommit = getGitCommit;
 function logVersionDetails() {
     return __awaiter(this, void 0, void 0, function* () {
-        let commit = yield getGitCommit();
-        let commitDate = new Date(commit.time);
+        const commit = yield getGitCommit();
+        const commitDate = new Date(commit.time);
         console.log(`Running commit ${chalk.blueBright(commit.shortHash)} ${chalk.gray(`(${commit.subject})`)}`);
         console.log(`From ${chalk.blueBright(commitDate.toLocaleString())}`);
     });

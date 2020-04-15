@@ -11,14 +11,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("./database");
 const cron_1 = require("cron");
-const chalk = require('chalk');
+const chalk = require("chalk");
 class DbStats {
     constructor() { }
+    //
     static startMonitoring(bot) {
         new cron_1.CronJob('0 0 0 * * *', () => {
             setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-                let guildCount = bot.guilds.size;
-                let guildMemberCount = bot.guilds.array().count(g => g.memberCount);
+                const guildCount = bot.guilds.size;
+                const guildMemberCount = bot.guilds.array().count(g => g.memberCount);
                 console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.size}; Members: ${guildMemberCount}`));
                 (yield this.usage).guilds.updateYesterday(guildCount, false);
                 (yield this.usage).members.updateYesterday(guildMemberCount, false);
@@ -31,16 +32,18 @@ class DbStats {
 }
 exports.DbStats = DbStats;
 class DbStatUsage {
+    //
     constructor() {
         this.raw = {};
     }
+    //
     load() {
         return __awaiter(this, void 0, void 0, function* () {
-            let c = yield database_1.default
+            const c = yield database_1.default
                 .collection('stats-usage')
                 .find({})
                 .toArray();
-            for (let temp of c)
+            for (const temp of c)
                 this.raw[temp._id] = temp.value;
             return this;
         });
@@ -60,6 +63,7 @@ class DbStatGraph {
         this.raw = raw;
         this._fullraw = _fullraw;
     }
+    //
     get today() {
         if (!this.raw)
             return 0;
@@ -87,8 +91,8 @@ class DbStatGraph {
                     .updateOne(this._dbquery, obj);
             }
             else {
-                let parentExists = Object.keys(this._fullraw).length > 0;
-                let obj = parentExists ? {} : this._dbquery;
+                const parentExists = Object.keys(this._fullraw).length > 0;
+                const obj = parentExists ? {} : this._dbquery;
                 obj.value = [];
                 for (let i = 0; i < dayId; i++)
                     obj.value.push(0);
@@ -116,11 +120,11 @@ class DbStatGraph {
 }
 exports.DbStatGraph = DbStatGraph;
 function getDayId() {
-    let now = new Date();
-    let start = new Date(2020, 0, 0);
-    let diff = now.getTime() - start.getTime();
-    let oneDay = 1000 * 60 * 60 * 24;
-    let day = Math.floor(diff / oneDay);
+    const now = new Date();
+    const start = new Date(2020, 0, 0);
+    const diff = now.getTime() - start.getTime();
+    const oneDay = 1000 * 60 * 60 * 24;
+    const day = Math.floor(diff / oneDay);
     return day - 1; // index 0 on 1st january
 }
 //# sourceMappingURL=dbStats.js.map

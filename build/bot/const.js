@@ -25,6 +25,7 @@ Const.storeDisplayNames = {
     discord: 'Discord',
     apple: 'Apple App Store',
     google: 'Google Play',
+    switch: 'Nintendo Switch Store',
     other: 'Other'
 };
 //# sourceMappingURL=const.js.map

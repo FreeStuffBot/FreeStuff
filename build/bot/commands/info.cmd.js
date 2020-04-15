@@ -17,8 +17,7 @@ class InfoCommand extends types_1.Command {
 
 [Click here to add it to your server](${const_1.default.inviteLink})
 
-[Report a bug or get in contact](${const_1.default.discordInvite})`, 'Copyright © 2020 Tude', 0x00b0f4);
-        // Haha yes, multi-line string
+[Report a bug or get in contact](${const_1.default.discordInvite})`, 'Copyright © 2020 Tude', 0x00b0f4); // Haha yes, multi-line string
         return true;
     }
 }

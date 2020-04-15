@@ -2,8 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoAdapter_1 = require("./mongoAdapter");
 class Database {
-    constructor() {
-    }
+    //
+    constructor() { }
+    //
     static init() {
         Database.client = mongoAdapter_1.default.client;
     }

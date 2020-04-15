@@ -60,7 +60,7 @@ class DatabaseManager {
     }
     getGuildData(guild) {
         return __awaiter(this, void 0, void 0, function* () {
-            let obj = yield database_1.default
+            const obj = yield database_1.default
                 .collection('guilds')
                 .findOne({ _id: guild.id })
                 .catch(console.error);
@@ -93,7 +93,7 @@ class DatabaseManager {
         };
     }
     changeSetting(guild, current, setting, value) {
-        let out = {};
+        const out = {};
         switch (setting) {
             case 'channel':
                 out['channel'] = mongodb_1.Long.fromString(value);

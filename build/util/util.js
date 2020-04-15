@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class Util {
     constructor() { }
+    //
     static init() {
         Object.defineProperties(Array.prototype, {
             stack: {

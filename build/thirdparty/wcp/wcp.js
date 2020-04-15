@@ -11,8 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const stdutils_1 = require("./stdutils");
 const __1 = require("../..");
-const fetch = require('node-fetch');
-const chalk = require('chalk');
+const chalk = require("chalk");
+const node_fetch_1 = require("node-fetch");
 const settings = require('../../../config/settings.json').thirdparty;
 class WCP {
     static get endpoint() {
@@ -60,7 +60,7 @@ class WCP {
     //
     static send(data) {
         return new Promise((resolve, reject) => {
-            fetch(this.endpoint, {
+            node_fetch_1.default(this.endpoint, {
                 method: 'post',
                 headers: { 'authorization': this.secret, 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)

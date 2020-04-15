@@ -1,10 +1,9 @@
 "use strict";
-/**
- * @author Maanex (maanex.tk)
- */
 Object.defineProperty(exports, "__esModule", { value: true });
+/** @author Maanex (maanex.tk) */
 class ParseArgs {
     constructor() { }
+    //
     static parse(input) {
         if (typeof input == 'string')
             input = input.split(' ');
