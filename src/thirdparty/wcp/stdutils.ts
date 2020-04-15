@@ -1,6 +1,7 @@
 
-export function hook_std(callback, std) {
-  var old_write = std.write
+
+export function hookStd(callback, std) {
+  var oldWrite = std.write
 
   // @ts-ignore
   std.write = (function (write) {
@@ -11,6 +12,6 @@ export function hook_std(callback, std) {
   })(std.write)
 
   return function () {
-    std.write = old_write
+    std.write = oldWrite
   }
 }

@@ -5,8 +5,6 @@ import Database from "../database/database";
 import { FreeStuffData, GuildData } from "../types";
 
 
-
-
 export default class MessageDistributor {
 
   constructor(bot: FreeStuffBot) { }

@@ -1,4 +1,3 @@
-
 import { Client, User } from "discord.js";
 import WCP from './thirdparty/wcp/wcp';
 import MongoAdapter from "./database/mongo-adapter";
