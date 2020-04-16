@@ -30,5 +30,21 @@ export default class Const {
     other: 'Other'
   };
 
+  public static readonly storeEmojis = {
+    steam: '<:store_steam:700096501728411739>',
+    epic: '<:store_epic:700094298984808468>',
+    humble: '<:store_humble:700096326133743759>',
+    gog: '<:store_gog:700096328151072800>',
+    origin: '<:store_origin:700096326196658178>',
+    uplay: '<:store_uplay:700098098080251924>',
+    twitch: '<:store_twitch:700098446333313126>',
+    itch: '<:store_itch:700097690431651921>',
+    discord: '<:store_discord:700097689139937320>',
+    apple: '<:store_apple:700097690653949952>',
+    google: '<:store_google:700097689194594305>',
+    switch: '<:store_switch:700097951032147988>',
+    other: ':grey_question:'
+  };
+
 
 }
