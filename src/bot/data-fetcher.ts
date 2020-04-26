@@ -2,8 +2,6 @@ import { FreeStuffBot, Core } from "../index";
 import { GameData } from "types";
 import Database from "../database/database";
 
-const settings = require('../../config/settings.json');
-
 
 export default class DataFetcher {
 

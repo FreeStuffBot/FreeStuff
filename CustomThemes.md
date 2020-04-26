@@ -15,6 +15,7 @@ basic
    {newprice.eur} - Same as above but always in Euro - and 0.00€ instead of 'Free'
    {newprice.usd} - Same as above but always in Dollar - and $0.00 instead of 'Free'
             {url} - Store url
+     {url.direct} - Direct url, like open up steam client directly. Will be regular url if not available
       {url.clean} - Store url but easier on the eyes, like no https:// etc
       {thumbnail} - Thumbnail url
           {store} - Name of the store
@@ -24,6 +25,7 @@ advanced
 {thumbnail.color} - Primary color in the thumbnail. To use as embed stip color for instance
           {trash} - Weather a game is marked as trash or not.
          {rating} - Game's rating - only available on some stores
+  {store.isSteam} - Weather the game is from Steam. Available for all stores
 
 
 # conditional

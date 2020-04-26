@@ -1,3 +1,8 @@
+import { config as loadDotEnv } from "dotenv";
+loadDotEnv();
+export const config = require('../config.js');
+
+
 import { Client, User } from "discord.js";
 import WCP from './thirdparty/wcp/wcp';
 import MongoAdapter from "./database/mongo-adapter";
@@ -12,9 +17,6 @@ import { DbStats } from "./database/db-stats";
 import { logVersionDetails } from "./util/git-parser";
 import * as chalk from "chalk";
 import * as DBL from "dblapi.js";
-import { config as loadDotEnv } from "dotenv";
-
-const settings = require('../config/settings.json');
 
 
 export class FreeStuffBot extends Client {
@@ -30,7 +32,6 @@ export class FreeStuffBot extends Client {
 
   constructor(options) {
     super(options);
-    loadDotEnv();
 
     // const data = {
     //   store: 'Steam',
@@ -71,7 +72,7 @@ export class FreeStuffBot extends Client {
 
     // return;
 
-    this.devMode = process.env.ENVIRONMENT == 'dev';
+    this.devMode = process.env.NODE_ENV == 'dev';
 
     if (this.devMode) {
       console.log(chalk.bgRedBright.black(' RUNNING DEV MODE '));
@@ -84,7 +85,7 @@ export class FreeStuffBot extends Client {
     Util.init();
     WCP.init(false);
 
-    MongoAdapter.connect(settings.mongodb.url)
+    MongoAdapter.connect(config.mongodb.url)
       .catch(err => {
         console.error(err);
         WCP.send({ status_mongodb: '-Connection failed' });
@@ -104,7 +105,7 @@ export class FreeStuffBot extends Client {
         DbStats.startMonitoring(this);
 
         if (!this.devMode) {
-          this.dbl = new DBL(settings.thirdparty.topgg.apitoken, this);
+          this.dbl = new DBL(config.thirdparty.topgg.apitoken, this);
         }
 
         this.on('ready', () => {
@@ -113,7 +114,7 @@ export class FreeStuffBot extends Client {
           this.user.setActivity('@FreeStuff ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://freestuffbot.xyz/', { type: 'WATCHING' });
         });
 
-        this.login(settings.bot.token);
+        this.login(config.bot.token);
       });
   }
 

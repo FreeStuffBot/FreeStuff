@@ -21,8 +21,11 @@ export default class MessageDistributor {
     console.log(`Starting to announce ${content.title} - ${new Date().toLocaleTimeString()}`);
     for (const g of guilds) {
       if (!g) return;
-      this.sendToGuild(g, content, false, false);
-      await new Promise(res => setTimeout(() => res(), 200));
+      try {
+        const successful = this.sendToGuild(g, content, false, false);
+        if (successful)
+          await new Promise(res => setTimeout(() => res(), 200));
+      } catch(ex) { console.error(ex); }
     }
     console.log(`Done announcing ${content.title} - ${new Date().toLocaleTimeString()}`);
   }
@@ -38,34 +41,35 @@ export default class MessageDistributor {
       .catch(console.error);
   }
 
-  public async sendToGuild(g: any, content: GameInfo, test: boolean, force: boolean) {
+  public async sendToGuild(g: any, content: GameInfo, test: boolean, force: boolean): Promise<boolean> {
     const data = Core.databaseManager.parseGuildData(g);
     if (!data) {
-      Core.databaseManager.removeGuild(g._id);
-      return;
+      // WHY ARE YOU RUNNING?
+      // Core.databaseManager.removeGuild(g._id);
+      return false;
     }
 
     if (!force) {
-      if (data.price > content.org_price[data.currency == 'euro' ? 'euro' : 'dollar']) return;
-      if (content.trash && !data.trashGames) return;
+      if (data.price > content.org_price[data.currency == 'euro' ? 'euro' : 'dollar']) return false;
+      if (content.trash && !data.trashGames) return false;
     }
 
-    if (!data.channelInstance) return;
-    if (!data.channelInstance.send) return;
-    if (!data.channelInstance.guild.available) return;
+    if (!data.channelInstance) return false;
+    if (!data.channelInstance.send) return false;
+    if (!data.channelInstance.guild.available) return false;
     
     const self = data.channelInstance.guild.me;
-    if (!self.permissionsIn(data.channelInstance).has('SEND_MESSAGES')) return;
-    if (!self.permissionsIn(data.channelInstance).has('VIEW_CHANNEL')) return;
+    if (!self.permissionsIn(data.channelInstance).has('SEND_MESSAGES')) return false;
+    if (!self.permissionsIn(data.channelInstance).has('VIEW_CHANNEL')) return false;
     if (!self.permissionsIn(data.channelInstance).has('EMBED_LINKS')
-       && Const.themesWithEmbeds.includes(data.theme)) return;
+       && Const.themesWithEmbeds.includes(data.theme)) return false;
     if (!self.permissionsIn(data.channelInstance).has('EXTERNAL_EMOJIS')
        && Const.themesWithExtemotes[data.theme]) data.theme = Const.themesWithExtemotes[data.theme];
 
     if (!content.url) content.url = content.org_url;
 
     const messageContent = this.buildMessage(content, data, test);
-    if (!messageContent) return;
+    if (!messageContent) return false;
     let setNoMention = false;
     if (data.mentionRoleInstance) {
       if (!data.mentionRoleInstance.mentionable
@@ -80,6 +84,7 @@ export default class MessageDistributor {
       await mes.react('🆓');
     if (setNoMention)
       data.mentionRoleInstance.setMentionable(false);
+    return true;
   }
 
   public buildMessage(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {

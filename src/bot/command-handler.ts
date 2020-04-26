@@ -1,4 +1,4 @@
-import { FreeStuffBot } from "../index";
+import { FreeStuffBot, config } from "../index";
 import { Message } from "discord.js";
 import Const from "./const";
 import { Command } from "../types";
@@ -8,8 +8,6 @@ import InviteCommand from "./commands/invite.cmd";
 import SettingsCommand from "./commands/settings.cmd";
 import TestCommand from "./commands/test.cmd";
 import VoteCommand from "./commands/vote.cmd";
-
-const settings = require('../../config/settings.json');
 
 
 export default class CommandHandler {
@@ -81,8 +79,8 @@ export default class CommandHandler {
     }
 
     if (handler.info.serverManagerOnly) {
-      if (!orgmes.member.hasPermission('MANAGE_GUILD') && !settings.admins.includes(orgmes.member.id)) {
-        reply('No permission!', 'You need the `manage server` permission to change my settings!', undefined, undefined, 'https://media.discordapp.net/attachments/672907465670787083/672907481957007400/unknown.png');
+      if (!orgmes.member.hasPermission('MANAGE_GUILD') && !config.admins.includes(orgmes.member.id)) {
+        reply('No permission!', 'You need the `manage server` permission to do that!', undefined, undefined, 'https://media.discordapp.net/attachments/672907465670787083/672907481957007400/unknown.png');
         return true;
       }
     }

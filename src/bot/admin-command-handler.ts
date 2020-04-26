@@ -1,10 +1,8 @@
-import { FreeStuffBot, Core } from "../index";
+import { FreeStuffBot, Core, config } from "../index";
 import { Message } from "discord.js";
 import Database from "../database/database";
 import { GuildData } from "types";
 import * as AsciiTable from "ascii-table";
-
-const settings = require('../../config/settings.json');
 
 
 const commandlist = [
@@ -23,7 +21,7 @@ export default class AdminCommandHandler {
       if (!m.guild) return;
       if (!m.content.toLowerCase().startsWith('$freestuff')) return;
       if (!m.guild.me.permissionsIn(m.channel).has('SEND_MESSAGES')) return;
-      if (!settings.admins.includes(m.author.id)) return;
+      if (!config.admins.includes(m.author.id)) return;
 
       let args = m.content.split(' ');
       args.splice(0, 1);
@@ -70,8 +68,9 @@ export default class AdminCommandHandler {
           + `\`\`\`\n`;
           let i = 0;
           let remaining = Core.guilds.size - i;
+          const list = Core.guilds.array().sort((a, b) => b.memberCount - a.memberCount);
           while (out.length < 1900 && remaining) {
-            let guild = Core.guilds.array()[i++];
+            let guild = list[i++];
             out += `${guild.name} - ${guild.memberCount}\n`;
             remaining = Core.guilds.size - i;
           }

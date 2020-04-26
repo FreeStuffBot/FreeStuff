@@ -1,11 +1,9 @@
 import { hookStd } from "./stdutils";
-import { Core } from "../..";
+import { Core, config } from "../..";
 import { GameInfo } from "types";
 import * as chalk from "chalk";
 import fetch from "node-fetch";
 
-
-const settings = require('../../../config/settings.json').thirdparty;
 
 export interface WcpData {
   ping?: boolean;
@@ -27,11 +25,11 @@ export interface WcpData {
 export default class WCP {
 
   public static get endpoint() {
-    return settings.wcp.endpoint;
+    return config.thirdparty.wcp.endpoint;
   }
 
   public static get secret() {
-    return settings.wcp.secret;
+    return config.thirdparty.wcp.secret;
   }
 
   //

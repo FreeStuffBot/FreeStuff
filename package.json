@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && node ./build/index.js",
+    "start": "node ./build/index.js",
     "build": "tsc",
+    "dev": "tsc && node ./build/index.js",
     "test": "echo \"No test specified\" && exit 0"
   },
   "author": "",
