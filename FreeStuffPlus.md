@@ -14,3 +14,4 @@
 ! No ads
 ! Cool role on support server
 ! Support the devs
+? make the bot delete announcements that are no longer valid

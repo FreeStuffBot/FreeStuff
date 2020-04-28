@@ -25,3 +25,6 @@
   (-) Make it disable-able
 [X] APRIL FOOLS JOKE
 
+[ ] command to see which games are currently free
+
+[!] When running on multiple shards make sure that we don't whipe out all of the database entries because each of the shards clears every server it's not responsible for. Check if the guildid % shardcount = shardid before whiping
