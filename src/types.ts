@@ -114,3 +114,16 @@ export abstract class Command {
 }
 
 export type ReplyFunction = (message: string, content: string, footer?: string, color?: number, image?: string) => void;
+
+
+/*
+ * PROTOTYPE OVERRIDES
+ */
+
+declare global {
+  interface Array<T> {
+    stack(): number;
+    count(counter: (item: T) => number): number;
+    iterate(run: (item: T, current: T | undefined) => any): any;
+  }
+}

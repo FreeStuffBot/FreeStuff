@@ -9,7 +9,6 @@ export interface WcpData {
   ping?: boolean;
   status_mode?: string;
   status_discord?: string;
-  status_tudeapi?: string;
   status_mongodb?: string;
   status_current_version?: string;
   status_current_latest_build?: string;
@@ -47,7 +46,6 @@ export default class WCP {
       running: true,
       status_mode: '+Productive',
       status_discord: '*Connecting...',
-      status_tudeapi: '*Connecting...',
       status_mongodb: '*Connecting...',
       status_current_version: '1.0',
       status_current_latest_build: '1.0',

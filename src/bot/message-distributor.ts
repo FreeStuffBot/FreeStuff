@@ -115,7 +115,7 @@ export default class MessageDistributor {
           name: 'Free Game!'
         },
         title: content.title,
-        description: `~~${priceString}~~ **Free** • ${Const.storeDisplayNames[content.store]}\n\n[<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>](${content.url})`,
+        description: `~~${priceString}~~ **Free** • ${Const.storeDisplayNames[content.store]}${content.trash ? ' • Low Quality' : ''}\n\n[<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>](${content.url})`,
         image: {
           url: content.thumbnail
         },
@@ -139,7 +139,7 @@ export default class MessageDistributor {
           name: 'Free Game!'
         },
         title: content.title,
-        description: `~~${priceString}~~ **Free** • ${Const.storeDisplayNames[content.store]}\n\n[Get it now](${content.url})`,
+        description: `~~${priceString}~~ **Free** • ${Const.storeDisplayNames[content.store]}${content.trash ? ' • Low Quality' : ''}\n\n[Get it now](${content.url})`,
         image: {
           url: content.thumbnail
         },
@@ -163,7 +163,7 @@ export default class MessageDistributor {
           name: 'Free Game!'
         },
         title: content.title,
-        description: `~~${priceString}~~ **Free** • ${Const.storeDisplayNames[content.store]}\n\n[<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>](${content.url})`,
+        description: `~~${priceString}~~ **Free** • ${Const.storeDisplayNames[content.store]}${content.trash ? ' • Low Quality' : ''}\n\n[<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>](${content.url})`,
         footer: {
           text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const.websiteLinkClean}`
         },
@@ -184,7 +184,7 @@ export default class MessageDistributor {
           name: 'Free Game!'
         },
         title: content.title,
-        description: `~~${priceString}~~ **Free** • ${Const.storeDisplayNames[content.store]}\n\n[Get it now](${content.url})`,
+        description: `~~${priceString}~~ **Free** • ${Const.storeDisplayNames[content.store]}${content.trash ? ' • Low Quality' : ''}\n\n[Get it now](${content.url})`,
         footer: {
           text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const.websiteLinkClean}`
         },
