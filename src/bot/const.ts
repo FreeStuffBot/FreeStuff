@@ -27,6 +27,8 @@ export default class Const {
     apple: 'Apple App Store',
     google: 'Google Play',
     switch: 'Nintendo Switch Store',
+    ps: 'Play Station',
+    xbox: 'Xbox',
     other: 'Other'
   };
 
@@ -43,6 +45,8 @@ export default class Const {
     apple: '<:store_apple:700097690653949952>',
     google: '<:store_google:700097689194594305>',
     switch: '<:store_switch:700097951032147988>',
+    ps: ':grey_question:',
+    xbox: ':grey_question:',
     other: ':grey_question:'
   };
 
