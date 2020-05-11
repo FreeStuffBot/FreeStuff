@@ -1,5 +1,5 @@
 import Database, { dbcollection } from "./database";
-import { FreeStuffBot } from "index";
+import { FreeStuffBot, Core } from "../index";
 import { CronJob } from "cron";
 import * as chalk from "chalk";
 
@@ -15,9 +15,16 @@ export class DbStats {
       setTimeout(async () => {
         const guildCount = bot.guilds.size;
         const guildMemberCount = bot.guilds.array().count(g => g.memberCount);
-        console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.size}; Members: ${guildMemberCount}`));
-        (await this.usage).guilds.updateYesterday(guildCount, false);
-        (await this.usage).members.updateYesterday(guildMemberCount, false);
+
+        if (Core.singleShard) {
+          console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.size}; Members: ${guildMemberCount}`));
+          (await this.usage).guilds.updateYesterday(guildCount, false);
+          (await this.usage).members.updateYesterday(guildMemberCount, false);
+        } else {
+          console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.size}; Members: ${guildMemberCount}; Shard ${Core.options.shardId}`));
+          (await this.usage).guilds.updateYesterday(guildCount, true);
+          (await this.usage).members.updateYesterday(guildMemberCount, true);
+        }
       }, 60000);
     }).start();
   }

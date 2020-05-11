@@ -3,8 +3,7 @@
 export default class Const {
 
   public static readonly inviteLink = 'https://discordapp.com/oauth2/authorize?redirect_uri=https%3A%2F%2Ffreestuffbot.xyz%2Fcallback&client_id=672822334641537041&permissions=445504&scope=bot&response_type=code';
-  // public static readonly discordInvite = 'https://discord.gg/mJnQXet';
-  public static readonly discordInvite = 'https://discord.gg/5nB7pAM';
+  public static readonly discordInvite = 'https://discord.gg/WrnKKF8';
   public static readonly websiteLink = 'https://freestuffbot.xyz/';
   public static readonly websiteLinkClean = 'freestuffbot.xyz';
   public static readonly themeListLink = 'https://freestuffbot.xyz/themes';

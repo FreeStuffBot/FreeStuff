@@ -1,4 +1,6 @@
-FROM node:10
+FROM node:alpine
+
+RUN apk add git
 
 WORKDIR /opt/freestuff/bot
 

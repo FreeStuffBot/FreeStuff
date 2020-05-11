@@ -1,15 +1,19 @@
 {
-  "name": "free-stuff-bot",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "freestuff-bot",
+  "version": "1.1.0",
+  "description": "Discord Bot for the FreeStuff system",
+  "main": "build/index.js",
   "scripts": {
     "start": "node ./build/index.js",
     "build": "tsc",
-    "dev": "tsc && node ./build/index.js",
+    "dev": "tsc && node ./build/index.js --noSharding",
     "test": "echo \"No test specified\" && exit 0"
   },
-  "author": "",
+  "author": "FreeStuff Bot Team",
+  "contributors": [
+    "Maanex (https://maanex.tk)",
+    "Badosz (https://badosz.com)"
+  ],
   "license": "ISC",
   "dependencies": {
     "ascii-table": "0.0.9",

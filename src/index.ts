@@ -3,7 +3,7 @@ loadDotEnv();
 export const config = require('../config.js');
 
 
-import { Client, User } from "discord.js";
+import { Client, User, ClientOptions } from "discord.js";
 import WCP from './thirdparty/wcp/wcp';
 import MongoAdapter from "./database/mongo-adapter";
 import Database from "./database/database";
@@ -13,10 +13,12 @@ import DatabaseManager from "./bot/database-manager";
 import MessageDistributor from "./bot/message-distributor";
 import AdminCommandHandler from "./bot/admin-command-handler";
 import DataFetcher from "./bot/data-fetcher";
+import Sharder from "./bot/sharder";
 import { DbStats } from "./database/db-stats";
 import { logVersionDetails } from "./util/git-parser";
 import * as chalk from "chalk";
 import * as DBL from "dblapi.js";
+import ParseArgs from "./util/parse-args";
 
 
 export class FreeStuffBot extends Client {
@@ -26,11 +28,13 @@ export class FreeStuffBot extends Client {
   public messageDistributor: MessageDistributor;
   public adminCommandHandler: AdminCommandHandler;
   public dataFetcher: DataFetcher;
+  public sharder: Sharder;
   
   public dbl: any;
-  public readonly devMode;
+  public readonly devMode: boolean;
+  public readonly singleShard: boolean;
 
-  constructor(options) {
+  constructor(options: ClientOptions, params: any) {
     super(options);
 
     // const data = {
@@ -73,6 +77,7 @@ export class FreeStuffBot extends Client {
     // return;
 
     this.devMode = process.env.NODE_ENV == 'dev';
+    this.singleShard = !!params.noShard;
 
     if (this.devMode) {
       console.log(chalk.bgRedBright.black(' RUNNING DEV MODE '));
@@ -101,6 +106,7 @@ export class FreeStuffBot extends Client {
         this.messageDistributor = new MessageDistributor(this);
         this.adminCommandHandler = new AdminCommandHandler(this);
         this.dataFetcher = new DataFetcher(this);
+        this.sharder = new Sharder(this);
 
         DbStats.startMonitoring(this);
 
@@ -109,7 +115,7 @@ export class FreeStuffBot extends Client {
         }
 
         this.on('ready', () => {
-          console.log('Bot ready! Logged in as ' + chalk.yellowBright(this.user.tag));
+          console.log(chalk`Bot ready! Logged in as {yellowBright ${this.user.tag}} {gray (${params.noSharding ? 'No Sharding' : `Shard ${options.shardId} / ${options.shardCount}`})}`);
           WCP.send({ status_discord: '+Connected' });
           this.user.setActivity('@FreeStuff ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://freestuffbot.xyz/', { type: 'WATCHING' });
         });
@@ -120,6 +126,20 @@ export class FreeStuffBot extends Client {
 
 }
 
+
+const params = ParseArgs.parse(process.argv);
+
+const sharding = !params.noSharding;
+if (sharding && (!params.shardCount || !params.shardId)) {
+  console.error(chalk.red`Missing --shardCount or --shardId`);
+  process.exit(-1);
+}
+const shardCount = parseInt(params.shardCount as string);
+const shardId = parseInt(params.shardId as string);
+if (sharding && (!params.shardCount || !params.shardId)) {
+  console.error(chalk.red`Invalid --shardCount or --shardId`);
+  process.exit(-1);
+}
 
 export const Core = new FreeStuffBot (
   {
@@ -165,7 +185,10 @@ export const Core = new FreeStuffBot (
     messageSweepInterval: 5,
     messageCacheLifetime: 5,
     messageCacheMaxSize: 5,
-  }
+    shardCount: sharding ? shardCount : 1,
+    shardId: sharding ? shardId : 0
+  },
+  params
 );
 
 function fixReactionEvent(bot: FreeStuffBot) {
