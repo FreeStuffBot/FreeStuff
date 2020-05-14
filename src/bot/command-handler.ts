@@ -62,8 +62,9 @@ export default class CommandHandler {
       reply(`Hey ${orgmes.author.username}!`, 'Type `@FreeStuff help` for a help page!\nType `@FreeStuff info` for information about the bot!\n[Or click here for more info](' + Const.websiteLink + ')');
       return true;
     }
-    if (command == 'egg') {
-      orgmes.channel.send(':egg:');
+    const egg = this.eastereggs(command);
+    if (egg != '') {
+      orgmes.channel.send(egg);
       return true;
     }
 
@@ -93,6 +94,23 @@ export default class CommandHandler {
     let back = handler.handle(orgmes, args, reply);
     if (back['then']) back = await (back as Promise<boolean>);
     return back as boolean;
+  }
+
+  private eastereggs(command: string): String {
+    switch (command.toLowerCase()) {
+      case 'egg': return ':egg:';
+      case 'what is 1 + 1': return '3';
+      case 'do a barrel roll': return 'no';
+      case 'why are you running?': return ':eyes:';
+      case 'is gay': return 'no u';
+      case 'sucks': return 'no u';
+      case 'is bad': return 'no u';
+      case 'is cool': return ':sunglasses:';
+      case 'is awesome': return ':sunglasses:';
+      case 'is amazing': return ':sunglasses:';
+
+      default: return '';
+    }
   }
 
 }
