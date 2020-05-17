@@ -115,10 +115,6 @@ export class FreeStuffBot extends Client {
             this.dbl = new DBL(config.thirdparty.topgg.apitoken, this);
           } else {
             this.dbl = new DBL(config.thirdparty.topgg.apitoken);
-            this.dbl.postStats(this.guilds.size, this.options.shardId, this.options.shardCount);
-            this.setInterval(() => {
-              this.dbl.postStats(this.guilds.size, this.options.shardId, this.options.shardCount);
-            }, 1800000);
           }
         }
 
@@ -126,6 +122,13 @@ export class FreeStuffBot extends Client {
           console.log(chalk`Bot ready! Logged in as {yellowBright ${this.user.tag}} {gray (${params.noSharding ? 'No Sharding' : `Shard ${options.shardId} / ${options.shardCount}`})}`);
           WCP.send({ status_discord: '+Connected' });
           this.user.setActivity('@FreeStuff help​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://freestuffbot.xyz/', { type: 'WATCHING' });
+
+          if (!this.singleShard) {
+            this.dbl.postStats(this.guilds.size, this.options.shardId, this.options.shardCount);
+            this.setInterval(() => {
+              this.dbl.postStats(this.guilds.size, this.options.shardId, this.options.shardCount);
+            }, 1800000);
+          }
         });
 
         this.login(config.bot.token);
