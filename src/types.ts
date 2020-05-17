@@ -78,6 +78,7 @@ export enum GameFlag {
 export interface DatabaseGuildData {
 
   _id: Long;
+  sharder: Long;
   channel: Long | null;
   role: Long | null;
   settings: number;

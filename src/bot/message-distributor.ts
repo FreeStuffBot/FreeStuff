@@ -21,7 +21,7 @@ export default class MessageDistributor {
       .find(
         Core.singleShard
           ? { channel: { $ne: null } }
-          : { _id: { $mod: [Core.options.shardCount, Core.options.shardId] },
+          : { sharder: { $mod: [Core.options.shardCount, Core.options.shardId] },
               channel: { $ne: null } }
       )
       .toArray();

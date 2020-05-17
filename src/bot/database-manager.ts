@@ -70,7 +70,7 @@ export default class DatabaseManager {
         .find(
           Core.singleShard
             ? { }
-            : { _id: { $mod: [Core.options.shardCount, Core.options.shardId] } }
+            : { sharder: { $mod: [Core.options.shardCount, Core.options.shardId] } }
         )
         .toArray();
   }
@@ -82,6 +82,7 @@ export default class DatabaseManager {
   public addGuild(guild: Guild) {
     const data: DatabaseGuildData = {
       _id: Long.fromString(guild.id),
+      sharder: Long.fromString(guild.id).shiftRight(22),
       channel: null,
       role: null,
       price: 3,
