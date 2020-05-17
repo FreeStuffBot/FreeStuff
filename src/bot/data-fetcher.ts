@@ -1,5 +1,5 @@
 import { FreeStuffBot, Core } from "../index";
-import { GameData } from "types";
+import { GameData, DatabaseGuildData } from "types";
 import Database from "../database/database";
 
 
@@ -20,11 +20,12 @@ export default class DataFetcher {
         .then((waiting: GameData[]) => {
           if (!waiting || !waiting.length) return;
           for (const entry of waiting) {
-            if (!this.announcementQueue.find(i => i._id == entry._id)) {
-              // entry.info.url = this.generateProxyUrl(entry);
-              entry.info.url = entry.info.org_url;
-              this.announcementQueue.push(entry);
-            }
+            if (!!this.announcementQueue.find(i => i._id == entry._id)) continue;
+            if (!Core.singleShard && entry.outgoing && entry.outgoing.includes(Core.options.shardId)) continue;
+
+            // entry.info.url = this.generateProxyUrl(entry);
+            entry.info.url = entry.info.org_url;
+            this.announcementQueue.push(entry);
           }
 
           if (this.announcementQueue.length)
@@ -40,18 +41,38 @@ export default class DataFetcher {
 
   public async nextAnnouncement() {
     if (!this.announcementQueue.length) return;
-    const announcement = this.announcementQueue.splice(0, 1)[0];
     this.currentlyAnnouncing = true;
+    const announcement = this.announcementQueue.splice(0, 1)[0];
     Database
       .collection('games')
       .updateOne({ _id: announcement._id }, {
-        '$set': {
-          status: 'published',
-          published: Math.ceil(Date.now() / 1000),
-        }
+        '$push': Core.singleShard
+          ? undefined
+          : { outgoing: Core.options.shardId }
       });
-    await Core.messageDistributor.distribute(announcement.info);
+    await Core.messageDistributor.distribute(announcement.info, announcement._id);
     this.currentlyAnnouncing = false;
+    Database
+      .collection('games')
+      .findOne({ _id: announcement._id })
+      .then((game: GameData) => {
+        if (!game.outgoing) return;
+        if (game.outgoing.length < Core.options.shardCount) return;
+        if (game.status != 'accepted') return;
+
+        Database
+          .collection('games')
+          .updateOne({ _id: announcement._id }, {
+            '$set': {
+              status: 'published',
+              published: Math.ceil(Date.now() / 1000)
+            },
+            '$unset': {
+              outgoing: null
+            }
+          })
+      })
+      .catch(() => {});
   }
 
 }

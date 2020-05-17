@@ -2,7 +2,9 @@ import { FreeStuffBot, Core } from "../index";
 import { Message, Guild, MessageOptions } from "discord.js";
 import Const from "./const";
 import Database from "../database/database";
-import { GameInfo, GuildData, GameData } from "../types";
+import { GameInfo, GuildData, GameData, DatabaseGuildData, GameFlag } from "../types";
+import { Long } from "mongodb";
+import { DbStats } from "../database/db-stats";
 
 
 export default class MessageDistributor {
@@ -11,37 +13,58 @@ export default class MessageDistributor {
 
   //
 
-  public async distribute(content: GameInfo) {
-    const guilds = await Database
+  public async distribute(content: GameInfo, announcementId: number) {
+    if (content.type != 'free') return; // TODO
+
+    const guilds: DatabaseGuildData[] = await Database
       .collection('guilds')
-      .find({ })
+      .find(
+        Core.singleShard
+          ? { channel: { $ne: null } }
+          : { _id: { $mod: [Core.options.shardCount, Core.options.shardId] },
+              channel: { $ne: null } }
+      )
       .toArray();
     if (!guilds) return;
 
     console.log(`Starting to announce ${content.title} - ${new Date().toLocaleTimeString()}`);
+    console.log(guilds)
+    let announcementsMade = 0;
     for (const g of guilds) {
       if (!g) return;
       try {
         const successful = this.sendToGuild(g, content, false, false);
-        if (successful)
+        if (await successful) {
           await new Promise(res => setTimeout(() => res(), 200));
+          announcementsMade++;
+        }
       } catch(ex) { console.error(ex); }
     }
     console.log(`Done announcing ${content.title} - ${new Date().toLocaleTimeString()}`);
+
+    (await DbStats.usage).announcements.updateToday(announcementsMade, true);
+    if (announcementId >= 0) {
+      Database
+        .collection('games')
+        .updateOne(
+          { _id: announcementId },
+          { '$inc': { 'analytics.reach': announcementsMade } }
+        );
+    }
   }
 
   public test(guild: Guild, content: GameInfo): void {
     Database
       .collection('guilds')
-      .findOne({ _id: guild.id })
-      .then(g => {
+      .findOne({ _id: Long.fromString(guild.id) })
+      .then((g: DatabaseGuildData) => {
         if (!g) return;
         this.sendToGuild(g, content, true, true);
       })
       .catch(console.error);
   }
 
-  public async sendToGuild(g: any, content: GameInfo, test: boolean, force: boolean): Promise<boolean> {
+  public async sendToGuild(g: DatabaseGuildData, content: GameInfo, test: boolean, force: boolean): Promise<boolean> {
     const data = Core.databaseManager.parseGuildData(g);
     if (!data) {
       // WHY ARE YOU RUNNING?
@@ -51,7 +74,7 @@ export default class MessageDistributor {
 
     if (!force) {
       if (data.price > content.org_price[data.currency == 'euro' ? 'euro' : 'dollar']) return false;
-      if (content.trash && !data.trashGames) return false;
+      if (!!content.flags?.includes(GameFlag.TRASH) && !data.trashGames) return false;
     }
 
     if (!data.channelInstance) return false;
@@ -71,11 +94,11 @@ export default class MessageDistributor {
     const messageContent = this.buildMessage(content, data, test);
     if (!messageContent) return false;
     let setNoMention = false;
-    if (data.mentionRoleInstance) {
-      if (!data.mentionRoleInstance.mentionable
+    if (data.roleInstance) {
+      if (!data.roleInstance.mentionable
       && (data.channelInstance.guild.me.hasPermission('MANAGE_ROLES')
        || data.channelInstance.guild.me.hasPermission('MANAGE_ROLES_OR_PERMISSIONS'))) {
-        await data.mentionRoleInstance.setMentionable(true);
+        await data.roleInstance.setMentionable(true);
         setNoMention = true;
        }
     }
@@ -83,7 +106,7 @@ export default class MessageDistributor {
     if (data.react && self.permissionsIn(data.channelInstance).has('ADD_REACTIONS'))
       await mes.react('🆓');
     if (setNoMention)
-      data.mentionRoleInstance.setMentionable(false);
+      data.roleInstance.setMentionable(false);
     return true;
   }
 
@@ -107,15 +130,23 @@ export default class MessageDistributor {
     let priceString = '';
     if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
     else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
+    const date = new Date(Date.now() + content.until * 1000 * 60 * 60 * 24);
+    const until = !content.until || content.until < 0
+      ? ''
+      : content.until < 7
+        ? `until ${date.toLocaleDateString('en-US', { weekday: 'long' })}`
+        : content.until == 7
+          ? 'for a week'
+          : `until ${date.toLocaleDateString('en-US', { weekday: 'long' })} next Week`;
 
     return [
-      data.mentionRoleInstance ? data.mentionRoleInstance.toString() : '',
+      data.roleInstance ? data.roleInstance.toString() : '',
       { embed: {
         author: {
           name: 'Free Game!'
         },
         title: content.title,
-        description: `~~${priceString}~~ **Free** • ${Const.storeDisplayNames[content.store]}${content.trash ? ' • Low Quality' : ''}\n\n[<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>](${content.url})`,
+        description: `~~${priceString}~~ **Free** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ' • Low Quality' : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ' • Third Party Provider' : ''}\n\n[<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>](${content.url})`,
         image: {
           url: content.thumbnail
         },
@@ -131,15 +162,23 @@ export default class MessageDistributor {
     let priceString = '';
     if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
     else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
+    const date = new Date(Date.now() + content.until * 1000 * 60 * 60 * 24);
+    const until = !content.until || content.until < 0
+      ? ''
+      : content.until < 7
+        ? `until ${date.toLocaleDateString('en-US', { weekday: 'long' })}`
+        : content.until == 7
+          ? 'for a week'
+          : `until ${date.toLocaleDateString('en-US', { weekday: 'long' })} next Week`;
 
     return [
-      data.mentionRoleInstance ? data.mentionRoleInstance.toString() : '',
+      data.roleInstance ? data.roleInstance.toString() : '',
       { embed: {
         author: {
           name: 'Free Game!'
         },
         title: content.title,
-        description: `~~${priceString}~~ **Free** • ${Const.storeDisplayNames[content.store]}${content.trash ? ' • Low Quality' : ''}\n\n[Get it now](${content.url})`,
+        description: `~~${priceString}~~ **Free** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ' • Low Quality' : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ' • Third Party Provider' : ''}\n\n[Get it now](${content.url})`,
         image: {
           url: content.thumbnail
         },
@@ -155,15 +194,23 @@ export default class MessageDistributor {
     let priceString = '';
     if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
     else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
+    const date = new Date(Date.now() + content.until * 1000 * 60 * 60 * 24);
+    const until = !content.until || content.until < 0
+      ? ''
+      : content.until < 7
+        ? `until ${date.toLocaleDateString('en-US', { weekday: 'long' })}`
+        : content.until == 7
+          ? 'for a week'
+          : `until ${date.toLocaleDateString('en-US', { weekday: 'long' })} next Week`;
 
     return [
-      data.mentionRoleInstance ? data.mentionRoleInstance.toString() : '',
+      data.roleInstance ? data.roleInstance.toString() : '',
       { embed: {
         author: {
           name: 'Free Game!'
         },
         title: content.title,
-        description: `~~${priceString}~~ **Free** • ${Const.storeDisplayNames[content.store]}${content.trash ? ' • Low Quality' : ''}\n\n[<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>](${content.url})`,
+        description: `~~${priceString}~~ **Free** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ' • Low Quality' : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ' • Third Party Provider' : ''}\n\n[<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>](${content.url})`,
         footer: {
           text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const.websiteLinkClean}`
         },
@@ -176,15 +223,23 @@ export default class MessageDistributor {
     let priceString = '';
     if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
     else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
+    const date = new Date(Date.now() + content.until * 1000 * 60 * 60 * 24);
+    const until = !content.until || content.until < 0
+      ? ''
+      : content.until < 7
+        ? `until ${date.toLocaleDateString('en-US', { weekday: 'long' })}`
+        : content.until == 7
+          ? 'for a week'
+          : `until ${date.toLocaleDateString('en-US', { weekday: 'long' })} next Week`;
 
     return [
-      data.mentionRoleInstance ? data.mentionRoleInstance.toString() : '',
+      data.roleInstance ? data.roleInstance.toString() : '',
       { embed: {
         author: {
           name: 'Free Game!'
         },
         title: content.title,
-        description: `~~${priceString}~~ **Free** • ${Const.storeDisplayNames[content.store]}${content.trash ? ' • Low Quality' : ''}\n\n[Get it now](${content.url})`,
+        description: `~~${priceString}~~ **Free** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ' • Low Quality' : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ' • Third Party Provider' : ''}\n\n[Get it now](${content.url})`,
         footer: {
           text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const.websiteLinkClean}`
         },
@@ -195,7 +250,7 @@ export default class MessageDistributor {
 
   public buildTheme5(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
     return [
-      data.mentionRoleInstance ? data.mentionRoleInstance.toString() : '',
+      data.roleInstance ? data.roleInstance.toString() : '',
       { embed: {
         author: {
           name: 'Free Game!'
@@ -212,7 +267,7 @@ export default class MessageDistributor {
 
   public buildTheme6(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
     return [
-      data.mentionRoleInstance ? data.mentionRoleInstance.toString() : '',
+      data.roleInstance ? data.roleInstance.toString() : '',
       { embed: {
         author: {
           name: 'Free Game!'
@@ -232,7 +287,7 @@ export default class MessageDistributor {
 
   public buildTheme7(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
     return [
-      (data.mentionRoleInstance ? data.mentionRoleInstance.toString() : '')
+      (data.roleInstance ? data.roleInstance.toString() : '')
       + ' ' + content.url,
       {}
     ];
@@ -240,7 +295,7 @@ export default class MessageDistributor {
 
   public buildTheme8(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
     return [
-      (data.mentionRoleInstance ? data.mentionRoleInstance.toString() : '')
+      (data.roleInstance ? data.roleInstance.toString() : '')
       + ` <${content.url}>`,
       {}
     ];
@@ -248,7 +303,7 @@ export default class MessageDistributor {
 
   public buildTheme9(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
     return [
-      (data.mentionRoleInstance ? data.mentionRoleInstance.toString() : '')
+      (data.roleInstance ? data.roleInstance.toString() : '')
       + ` **${content.title}** is free!\n<${content.url}>`,
       {}
     ];

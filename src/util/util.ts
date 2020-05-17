@@ -1,3 +1,5 @@
+import { Core } from "../index";
+import { Long } from "mongodb";
 
 
 
@@ -33,7 +35,11 @@ export class Util {
     });
   }
 
+  public static belongsToShard(id: Long) {
+    if (Core.singleShard) return true;
+    return id
+      .modulo(Long.fromNumber(Core.options.shardCount))
+      .equals(Long.fromNumber(Core.options.shardId));
+  }
+
 }
-
-
-export let rand = max => Math.floor(Math.random() * max);

@@ -56,11 +56,15 @@ export class DbStatUsage {
   }
 
   get guilds(): DbStatGraph {
-    return new DbStatGraph('stats-usage', { _id: 'guilds' }, this.raw['guilds'], this.raw);
+    return new DbStatGraph('stats-usage', { _id: 'guilds' }, this.raw['guilds'] || [], this.raw);
   }
 
   get members(): DbStatGraph {
-    return new DbStatGraph('stats-usage', { _id: 'members' }, this.raw['members'], this.raw);
+    return new DbStatGraph('stats-usage', { _id: 'members' }, this.raw['members'] || [], this.raw);
+  }
+
+  get announcements(): DbStatGraph {
+    return new DbStatGraph('stats-usage', { _id: 'announcements' }, this.raw['announcements'] || [], this.raw);
   }
 
 }

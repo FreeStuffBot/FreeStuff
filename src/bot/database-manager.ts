@@ -2,7 +2,9 @@ import { FreeStuffBot, Core } from "../index";
 import { Guild, TextChannel } from "discord.js";
 import Database from "../database/database";
 import { Long } from "mongodb";
-import { GuildSetting, GuildData } from "../types";
+import { GuildSetting, GuildData, DatabaseGuildData } from "../types";
+import { Util } from "../util/util";
+import { CronJob } from "cron";
 
 
 export default class DatabaseManager {
@@ -13,82 +15,141 @@ export default class DatabaseManager {
       // Might happen when someone adds the bot while it's offline
       // Same with leaving guilds and removing them from the db then
 
-      let dbGuilds = await Database.collection('guilds').find({ }).toArray();
+      const dbGuilds = await this.getAssignedGuilds();
 
-      for (let guild of bot.guilds.values()) {
-        if (!dbGuilds.find(g => g._id === guild.id))
+      for (const guild of bot.guilds.values()) {
+        if (!dbGuilds.find(g => g._id.toString() == guild.id))
           this.addGuild(guild);
       }
 
-      for (let guild of dbGuilds) {
-        if (!bot.guilds.get(guild._id))
-          this.removeGuild(guild._id);
-      }
+      // for (const guild of dbGuilds) {
+      //   if (!bot.guilds.get(guild._id.toString()))
+      //     this.removeGuild(guild._id);
+      // }
     });
 
-    bot.on('guildCreate', guild => {
+    bot.on('guildCreate', async guild => {
+      if (await Database
+          .collection('guilds')
+          .findOne({ _id: Long.fromString(guild.id) }))
+        return;
+
       this.addGuild(guild);
     });
 
-    bot.on('guildDelete', guild => {
-      this.removeGuild(guild.id);
-    });
+    // bot.on('guildDelete', guild => {
+    //   this.removeGuild(Long.fromString(guild.id));
+    // });
+
+    /** Guild remover */
+    new CronJob('0 0 0 * * *', async () => {
+      const dbGuilds = await this.getAssignedGuilds();
+      const removalQueue: DatabaseGuildData[] = [];
+      for (const guild of dbGuilds) {
+        if (!bot.guilds.get(guild._id.toString()))
+          removalQueue.push(guild);
+      }
+
+      setTimeout(async () => {
+        const dbGuilds = await this.getAssignedGuilds();
+        for (const guild of dbGuilds) {
+          if (!bot.guilds.get(guild._id.toString())) {
+            if (removalQueue.find(g => g._id.equals(guild._id))) {
+              this.removeGuild(guild._id);
+            }
+          }
+        }
+      }, 1000 * 60 * 30);
+    }).start();
   }
 
+  public async getAssignedGuilds(): Promise<DatabaseGuildData[]> {
+    return await Database
+        .collection('guilds')
+        .find(
+          Core.singleShard
+            ? { }
+            : { _id: { $mod: [Core.options.shardCount, Core.options.shardId] } }
+        )
+        .toArray();
+  }
+
+  /**
+   * Add a guild to the database
+   * @param guild guild object
+   */
   public addGuild(guild: Guild) {
+    const data: DatabaseGuildData = {
+      _id: Long.fromString(guild.id),
+      channel: null,
+      role: null,
+      price: 3,
+      settings: 0
+    }
     Database
       .collection('guilds')
-      .insertOne({
-        _id: guild.id,
-        channel: undefined,
-        role: undefined,
-        price: 3,
-        settings: 0
-      });
-    // settings: _ _ _ _______
-    // 0 0 0 0 0 0 0 0 0 0 0 0
-    //           | | |  theme
-    //           | | currency (on = usd, off = eur)
-    //           | react with :free: emoji
-    //           show trash games? 0 is no, 1 is yes
-    //
+      .insertOne(data);
   }
 
-  public removeGuild(guildid: string) {
+  /**
+   * Remove a guild from the database
+   * @param guildid guild id
+   * @param force weather to force a removal or not. if not forced this method will not remove guilds that are managed by another shard
+   */
+  public removeGuild(guildid: Long, force = false) {
+    if (!force && !Util.belongsToShard(guildid)) return;
     Database
       .collection('guilds')
       .deleteOne({ _id: guildid });
   }
 
-  public async getGuildData(guild: Guild): Promise<GuildData> {
+  /**
+   * Get the raw / unparsed guilds data from the database
+   * @param guild guild object
+   */
+  public async getRawGuildData(guild: Guild): Promise<DatabaseGuildData> {
     const obj = await Database
       .collection('guilds')
-      .findOne({ _id: guild.id })
+      .findOne({ _id: Long.fromString(guild.id) })
       .catch(console.error);
     if (!obj) return undefined;
-    return this.parseGuildData(obj);
+    return obj;
   }
 
-  public parseGuildData(dbObject: any): GuildData {
+  /**
+   * Get the guilds data from the database
+   * @param guild guild object
+   */
+  public async getGuildData(guild: Guild): Promise<GuildData> {
+    const obj = await this.getRawGuildData(guild);
+    return obj ? this.parseGuildData(obj) : undefined;
+  }
+
+  /**
+   * Parse a DatabaseGuildData object to a GuildData object
+   * @param dbObject raw input
+   */
+  public parseGuildData(dbObject: DatabaseGuildData): GuildData {
     if (!dbObject) return undefined;
+    const responsible = Core.singleShard || Util.belongsToShard(dbObject._id);
     return {
-      id: dbObject._id,
-      channel: dbObject.channel,
-      channelInstance: dbObject.channel
-        ? (Core.guilds.get(dbObject._id).channels.get((dbObject.channel as Long).toString()) as TextChannel)
+      ...dbObject,
+      channelInstance: dbObject.channel && responsible
+        ? (Core
+            .guilds
+            .get(dbObject._id.toString())
+            .channels
+            .get((dbObject.channel as Long).toString()) as TextChannel)
         : undefined,
-      settings: dbObject.settings,
-      mentionRole: dbObject.role,
-      mentionRoleInstance: dbObject.role
-        ? (dbObject.role == 1
-          ? Core.guilds.get(dbObject._id).defaultRole
-          : Core.guilds.get(dbObject._id).roles.get((dbObject.role as Long).toString()))
+      roleInstance: dbObject.role && responsible
+        ? (dbObject.role.toString() == '1'
+          ? Core.guilds.get(dbObject._id.toString()).defaultRole
+          : Core.guilds.get(dbObject._id.toString()).roles.get((dbObject.role as Long).toString()))
         : undefined,
       currency: (dbObject.settings & 0b10000) == 0 ? 'euro' : 'usd',
       react: (dbObject.settings & 0b100000) != 0,
       trashGames: (dbObject.settings & 0b1000000) != 0,
-      theme: dbObject.settings & 0b1111,
-      price: dbObject.price
+      theme: dbObject.settings & 0b1111
     }
   }
 
@@ -119,7 +180,7 @@ export default class DatabaseManager {
     }
     Database
       .collection('guilds')
-      .updateOne({ _id: guild.id }, { '$set': out });
+      .updateOne({ _id: Long.fromString(guild.id) }, { '$set': out });
   }
 
 }

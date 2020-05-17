@@ -110,7 +110,7 @@ export default class WCP {
 
   private static handleBack(data: any) {
     if (data.new_freestuff) {
-      Core.messageDistributor.distribute(JSON.parse(data.new_freestuff) as GameInfo);
+      Core.messageDistributor.distribute(JSON.parse(data.new_freestuff) as GameInfo, -1);
     }
   }
 

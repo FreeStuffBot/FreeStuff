@@ -3,6 +3,8 @@ import { Message } from "discord.js";
 import Database from "../database/database";
 import { GuildData } from "types";
 import * as AsciiTable from "ascii-table";
+import { hostname } from "os";
+import { Long } from "mongodb";
 
 
 const commandlist = [
@@ -54,8 +56,12 @@ export default class AdminCommandHandler {
         case 'print':
           Database
             .collection('guilds')
-            .findOne({ _id: orgmes.guild.id })
-            .then(data => {
+            .findOne({ _id: Long.fromString(orgmes.guild.id) })
+            .then(async data => {
+              data['_'] = {
+                responsibleShard: Core.singleShard ? 'Single' : Core.options.shardId,
+                runningOnServer: await hostname(),
+              }
               orgmes.channel.send('```json\n' + JSON.stringify(data, null, 2) + '```');
             })
             .catch(console.error);
@@ -101,7 +107,7 @@ export default class AdminCommandHandler {
                 if (data.channelInstance) channelSet++;
                 if (data.currency == 'usd') dollar++;
                 if (data.react) react++;
-                if (data.mentionRoleInstance) roleMention++;
+                if (data.roleInstance) roleMention++;
                 if (data.trashGames) trashGames++;
                 if (data.price !== 3) priceChanged++;
                 themes[data.theme]++;
@@ -142,7 +148,7 @@ export default class AdminCommandHandler {
                 if (!g) return;
                 const data = Core.databaseManager.parseGuildData(g);
                 if (!data) {
-                  Core.databaseManager.removeGuild(g._id);
+                  // Core.databaseManager.removeGuild(g._id);
                   return;
                 }
                 if (!data.channelInstance) return;

@@ -8,6 +8,8 @@ import InviteCommand from "./commands/invite.cmd";
 import SettingsCommand from "./commands/settings.cmd";
 import TestCommand from "./commands/test.cmd";
 import VoteCommand from "./commands/vote.cmd";
+import CheckCommand from "./commands/check.cmd";
+import HereCommand from "./commands/here.cmd";
 
 
 export default class CommandHandler {
@@ -21,6 +23,8 @@ export default class CommandHandler {
     this.commands.push(new SettingsCommand());
     this.commands.push(new TestCommand());
     this.commands.push(new VoteCommand());
+    this.commands.push(new CheckCommand());
+    this.commands.push(new HereCommand());
 
     bot.on('message', m => {
       if (m.author.bot) return;
@@ -33,7 +37,7 @@ export default class CommandHandler {
       this.handleCommand(args.splice(0, 1)[0] || '', args, m).then(success => {
         if (!success && m.guild.me.permissionsIn(m.channel).has('ADD_REACTIONS'))
           m.react('🤔');
-      }).catch(e=>{});
+      }).catch(e => { });
     });
   }
 
@@ -62,7 +66,7 @@ export default class CommandHandler {
       reply(`Hey ${orgmes.author.username}!`, 'Type `@FreeStuff help` for a help page!\nType `@FreeStuff info` for information about the bot!\n[Or click here for more info](' + Const.websiteLink + ')');
       return true;
     }
-    const egg = this.eastereggs(command);
+    const egg = this.eastereggs([command, ...args].join(' '));
     if (egg != '') {
       orgmes.channel.send(egg);
       return true;
@@ -108,6 +112,7 @@ export default class CommandHandler {
       case 'is cool': return ':sunglasses:';
       case 'is awesome': return ':sunglasses:';
       case 'is amazing': return ':sunglasses:';
+      case 'easteregg': return ':eyes:';
 
       default: return '';
     }

@@ -32,7 +32,7 @@ export default class SettingsCommand extends Command {
           color: 0x2f3136,
           fields: [
             '`' + c + ' channel #' + ((guilddata && guilddata.channelInstance) ? guilddata.channelInstance.name : 'channel') + '` change the channel the bot will announce stuff in!',
-            '`' + c + ' mention @' + ((guilddata && guilddata.mentionRoleInstance) ? guilddata.mentionRoleInstance.name : 'role') + '` let the bot mention a certain role. Useful for self-roles etc.',
+            '`' + c + ' mention @' + ((guilddata && guilddata.roleInstance) ? guilddata.roleInstance.name : 'role') + '` let the bot mention a certain role. Useful for self-roles etc.',
             '`' + c + ' mention` to not let the bot mention anyone. The bot won\'t mention anyone by default!',
             '`' + c + ' theme ' + (guilddata ? (guilddata.theme + 1) : 1) + '` change the theme in which the bot will display the annoucement. See all available themes [here](' + Const.themeListLink + ')',
             '`' + c + ' currency ' + (guilddata ? (guilddata.currency == 'euro' ? '€' : '$') : '€') + '` to change the currency displayed in the announcement. You can use € or $.',
@@ -126,7 +126,7 @@ export default class SettingsCommand extends Command {
 
   private subcmdMention(orgmes: Message, args: string[], guilddata: GuildData, reply: ReplyFunction) {
     if (args.length < 2) {
-      if (guilddata.mentionRole) {
+      if (guilddata.role) {
         Core.databaseManager.changeSetting(orgmes.guild, guilddata, 'roleMention', undefined);
         reply('As you wish!', 'I will now no longer ping any roles when games are free!');
       } else {
@@ -186,12 +186,10 @@ export default class SettingsCommand extends Command {
   
   private subcmdReact(orgmes: Message, args: string[], guilddata: GuildData, reply: ReplyFunction) {
     if (args.length < 2) {
-      reply(`I'm currently ${guilddata.react ? 'reacting to annoucements!' : 'not reacting to announcements!'}`, 'To change that, use `@FreeStuff set reaction on/off`');
+      reply(`I'm currently ${guilddata.react ? 'reacting to annoucements!' : 'not reacting to announcements!'}`, `To change that, use \`@FreeStuff set reaction ${guilddata.react ? 'off' : 'on'}\``);
       return;
     }
-    if (args[1].toLowerCase() == 'on/off') {
-      reply('Well you can\'t have both!', 'Choose either on or off!');
-    } else if (['on', 'true', '1'].includes(args[1].toLowerCase())) {
+    if (['on', 'true', '1'].includes(args[1].toLowerCase())) {
       if (!guilddata.react)
         Core.databaseManager.changeSetting(orgmes.guild, guilddata, 'react', 1);
       reply('As you command!', 'I will now add a :free: reaction to every free game I announce!');
@@ -219,7 +217,7 @@ export default class SettingsCommand extends Command {
         Core.databaseManager.changeSetting(orgmes.guild, guilddata, 'trash', 0);
       reply('Yeah I\'d do the same tbo!', 'No more trash games in this server!');
     } else {
-      reply('YES OR NO? ☎️', `The connection here is really bad atm... I only understand ${args[1]}. What do you mean?`);
+      reply('YES OR NO? ☎️', `The connection here is really bad atm... I only understand ${args[1]}. What do you want trash games? Yes or no?`);
     }
   }
 
@@ -250,7 +248,7 @@ export default class SettingsCommand extends Command {
       reply(`Let's not get ridiculous!`, `Which game that costs over ${pricestr} will ever be free? Choose something more reasonable please!`);
     } else {
       if (price == 69) reply(`Nice!`, `You'll only get the good stuff!`);
-      else if (price == 0) reply(`As you wish, no price filter!`, `Now each and every game will be announced, no matter how expensive it is... or was`);
+      else if (price == 0) reply(`As you wish, no price filter!`, `Now each and every game will be announced, no matter how expensive it is. Or better: was`);
       else reply(`Excellent choice ${orgmes.author.username}!`, `Every game cheaper than ${pricestr} will no longer make it to this server!`);
       Core.databaseManager.changeSetting(orgmes.guild, guilddata, 'price', price);
     }
