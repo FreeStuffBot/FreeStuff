@@ -38,6 +38,7 @@ export class Util {
   public static belongsToShard(id: Long) {
     if (Core.singleShard) return true;
     return id
+      .shiftRight(22)
       .modulo(Long.fromNumber(Core.options.shardCount))
       .equals(Long.fromNumber(Core.options.shardId));
   }
