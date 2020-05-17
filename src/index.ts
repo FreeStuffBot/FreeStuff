@@ -115,7 +115,8 @@ export class FreeStuffBot extends Client {
             this.dbl = new DBL(config.thirdparty.topgg.apitoken, this);
           } else {
             this.dbl = new DBL(config.thirdparty.topgg.apitoken);
-            this.setTimeout(() => {
+            this.dbl.postStats(this.guilds.size, this.options.shardId, this.options.shardCount);
+            this.setInterval(() => {
               this.dbl.postStats(this.guilds.size, this.options.shardId, this.options.shardCount);
             }, 1800000);
           }
