@@ -18,7 +18,6 @@ export default class DatabaseManager {
       const dbGuilds = await this.getAssignedGuilds();
 
       for (const guild of bot.guilds.values()) {
-        if (parseInt(guild.id.substr(-6)) % Core.options.shardCount != Core.options.shardId) continue;
         if (!dbGuilds.find(g => g._id.toString() == guild.id))
           this.addGuild(guild);
       }
