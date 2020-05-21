@@ -28,7 +28,6 @@ export default class MessageDistributor {
     if (!guilds) return;
 
     console.log(`Starting to announce ${content.title} - ${new Date().toLocaleTimeString()}`);
-    console.log(guilds)
     let announcementsMade = 0;
     for (const g of guilds) {
       if (!g) return;
