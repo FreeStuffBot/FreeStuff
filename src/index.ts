@@ -43,14 +43,16 @@ export class FreeStuffBot extends Client {
 
     if (this.devMode) {
       console.log(chalk.bgRedBright.black(' RUNNING DEV MODE '));
+      console.log(chalk.yellowBright('Skipped Sentry initialization'));
+    } else {
+      console.log(chalk.yellowBright('Initializing Sentry'));
+      SentryManager.init();
+      console.log(chalk.green('Sentry initialized.'));
     }
     
     logVersionDetails();
     
     // fixReactionEvent(this);
-    console.log(chalk.yellowBright('Initializing Sentry'));
-    SentryManager.init();
-    console.log(chalk.green('Sentry initialized.'));
     
     Util.init();
     WCP.init(false);
