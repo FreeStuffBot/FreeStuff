@@ -16,6 +16,7 @@
   ],
   "license": "ISC",
   "dependencies": {
+    "@sentry/node": "^5.15.5",
     "ascii-table": "0.0.9",
     "chalk": "^3.0.0",
     "cron": "^1.8.2",

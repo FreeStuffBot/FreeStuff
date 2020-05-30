@@ -19,6 +19,7 @@ import { logVersionDetails } from "./util/git-parser";
 import * as chalk from "chalk";
 import * as DBL from "dblapi.js";
 import ParseArgs from "./util/parse-args";
+import SentryManager from "./thirdparty/sentry/sentry";
 
 
 export class FreeStuffBot extends Client {
@@ -37,56 +38,20 @@ export class FreeStuffBot extends Client {
   constructor(options: ClientOptions, params: any) {
     super(options);
 
-    // const data = {
-    //   store: 'Steam',
-    //   name: 'Cool Game',
-    //   'oldprice.eur': '2.99€',
-    //   trash: false,
-    //   'steam.subids': '4124 24124'
-    // }
-
-    // function test(a: string) {
-    //   console.log(a);
-    //   console.log(parseAstr(a, data));
-    //   console.log(' ');
-    // }
-
-    // test('=name= is free on =store=');
-    // test('The game =name= costed =oldprice.eur= before!');
-    // test('{trash? YES}{NO}');
-    // test('This game {trash? is}{is not} trash!');
-    // test('{steam.subids? =steam.subids=}{Game not from Steam}');
-    // test('{abc? ABC!}{def? DEF}{store? STORE!}{xyz? XYZ}');
-    // test('{trash?}{Ok boomerino}');
-    // test('{ok}');
-
-    // WebScraper.init();
-
-    // // WebScraper.fetch('https://store.steampowered.com/app/680360/Regions_Of_Ruin/').then(d => {
-    // //   console.log(d);
-    // // });
-    // // SteamdbScraper.fetchFreeGames().then(console.log);
-    // (async () => {
-    //   SteamdbScraper.fetchSubids('822540').then(console.log)
-    //   // let ids = await SteamdbScraper.fetchFreeGames();
-    //   // let subids = ids.map(SteamdbScraper.fetchSubids).map(async a => await a);
-    //   // let flatted = Array.prototype.concat.apply([], subids);
-    //   // console.log(flatted);
-    // })();
-
-    // return;
-
     this.devMode = process.env.NODE_ENV == 'dev';
-    this.singleShard = !!params.noShard;
+    this.singleShard = !!params.noSharding;
 
     if (this.devMode) {
       console.log(chalk.bgRedBright.black(' RUNNING DEV MODE '));
     }
-
+    
     logVersionDetails();
-
+    
     // fixReactionEvent(this);
-
+    console.log(chalk.yellowBright('Initializing Sentry'));
+    SentryManager.init();
+    console.log(chalk.green('Sentry initialized.'));
+    
     Util.init();
     WCP.init(false);
 
