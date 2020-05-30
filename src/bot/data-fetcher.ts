@@ -1,6 +1,7 @@
 import { FreeStuffBot, Core } from "../index";
 import { GameData, DatabaseGuildData } from "types";
 import Database from "../database/database";
+import FreeCommand from "./commands/free.cmd";
 
 
 export default class DataFetcher {
@@ -43,12 +44,10 @@ export default class DataFetcher {
     if (!this.announcementQueue.length) return;
     this.currentlyAnnouncing = true;
     const announcement = this.announcementQueue.splice(0, 1)[0];
-    Database
+    if (!Core.singleShard) Database
       .collection('games')
       .updateOne({ _id: announcement._id }, {
-        '$push': Core.singleShard
-          ? undefined
-          : { outgoing: Core.options.shardId }
+        '$push': { outgoing: Core.options.shardId }
       });
     await Core.messageDistributor.distribute(announcement.info, announcement._id);
     this.currentlyAnnouncing = false;
@@ -56,8 +55,10 @@ export default class DataFetcher {
       .collection('games')
       .findOne({ _id: announcement._id })
       .then((game: GameData) => {
-        if (!game.outgoing) return;
-        if (game.outgoing.length < Core.options.shardCount) return;
+        if (!Core.singleShard) {
+          if (!game.outgoing) return;
+          if (game.outgoing.length < Core.options.shardCount) return;
+        }
         if (game.status != 'accepted') return;
 
         Database
@@ -70,7 +71,9 @@ export default class DataFetcher {
             '$unset': {
               outgoing: null
             }
-          })
+          });
+          
+        FreeCommand.updateCurrentFreebies();
       })
       .catch(() => {});
   }

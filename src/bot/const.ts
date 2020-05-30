@@ -49,5 +49,7 @@ export default class Const {
     other: ':grey_question:'
   };
 
+  public static readonly bigSpace = '<:nothing:716252611962994718>';
+
 
 }

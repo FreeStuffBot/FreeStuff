@@ -41,6 +41,11 @@ export default class HereCommand extends Command {
         })()
       : 'No channel set!';
 
+    guildData['_currency'] = (guildData.settings & 0b10000) == 0 ? 'euro' : 'usd';
+    guildData['_react'] = (guildData.settings & 0b100000) != 0;
+    guildData['_trashGames'] = (guildData.settings & 0b1000000) != 0;
+    guildData['_theme'] = guildData.settings & 0b1111;
+
     const webhook = new WebhookClient(config.supportWebhook.id, config.supportWebhook.token);
     webhook.send('', {
       username: mes.author.tag,

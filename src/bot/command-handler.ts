@@ -10,6 +10,7 @@ import TestCommand from "./commands/test.cmd";
 import VoteCommand from "./commands/vote.cmd";
 import CheckCommand from "./commands/check.cmd";
 import HereCommand from "./commands/here.cmd";
+import FreeCommand from "./commands/free.cmd";
 
 
 export default class CommandHandler {
@@ -25,6 +26,7 @@ export default class CommandHandler {
     this.commands.push(new VoteCommand());
     this.commands.push(new CheckCommand());
     this.commands.push(new HereCommand());
+    this.commands.push(new FreeCommand());
 
     bot.on('message', m => {
       if (m.author.bot) return;

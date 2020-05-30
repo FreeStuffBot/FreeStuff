@@ -21,13 +21,13 @@ export default class AdminCommandHandler {
     bot.on('message', m => {
       if (m.author.bot) return;
       if (!m.guild) return;
-      if (!m.content.toLowerCase().startsWith('$freestuff')) return;
+      if (!m.content.toLowerCase().startsWith(Core.devMode ? '$kabi' : '$freestuff')) return;
       if (!m.guild.me.permissionsIn(m.channel).has('SEND_MESSAGES')) return;
       if (!config.admins.includes(m.author.id)) return;
 
-      let args = m.content.split(' ');
+      const args = m.content.split(' ');
       args.splice(0, 1);
-      let success = this.handleCommand(args.splice(0, 1)[0] || '', args, m);
+      const success = this.handleCommand(args.splice(0, 1)[0] || '', args, m);
       if (!success && m.guild.me.permissionsIn(m.channel).has('ADD_REACTIONS'))
         m.react('🤔');
     });
