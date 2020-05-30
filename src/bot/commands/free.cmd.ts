@@ -4,6 +4,7 @@ import Database from "../../database/database";
 import SentryManager from "../../thirdparty/sentry/sentry";
 import Const from "../const";
 import { Core } from "../../index";
+import { CronJob } from "cron";
 
 
 export default class FreeCommand extends Command {
@@ -15,7 +16,9 @@ export default class FreeCommand extends Command {
       trigger: [ 'free', 'currenlty', 'current', 'what', 'whats', 'what\'s', 'what´s', 'what`s' ]
     });
 
-    // TODO CRONTIMER, 2h updateCurrentFreebies
+    setInterval(() => {
+      FreeCommand.updateCurrentFreebies();
+    }, 1000 * 60 * 60 * 1);
     FreeCommand.updateCurrentFreebies();
   }
 
