@@ -12,7 +12,7 @@ export default class FreeCommand extends Command {
   public constructor() {
     super({
       name: 'free',
-      desc: 'Want to know which games are currenlty free? Do this.',
+      desc: 'Want to know which games are currently free? Do this.',
       trigger: [ 'free', 'currenlty', 'current', 'what', 'whats', 'what\'s', 'what´s', 'what`s' ]
     });
 
