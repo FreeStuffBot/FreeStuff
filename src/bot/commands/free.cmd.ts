@@ -32,7 +32,8 @@ export default class FreeCommand extends Command {
       const freeLonger: string[] = [];
       const freeToday: string[] = [];
       for (const game of FreeCommand.current) {
-        const str = `${Const.storeEmojis[game.store] || ':gray_question:'} **[${game.title}](${game.org_url})**\n${Const.bigSpace} ~~${d.currency == 'euro' ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • until ${(game['_ends'] as Date).toLocaleDateString('en-GB')}\n`;
+        // d happens to be undefined here at times, investigate
+        const str = `${Const.storeEmojis[game.store] || ':gray_question:'} **[${game.title}](${game.org_url})**\n${Const.bigSpace} ~~${d?.currency == 'euro' ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • until ${(game['_ends'] as Date).toLocaleDateString('en-GB')}\n`;
         if (game['_today']) freeToday.push(str);
         else freeLonger.push(str);
       }
