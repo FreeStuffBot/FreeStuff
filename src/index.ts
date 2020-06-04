@@ -4,7 +4,6 @@ export const config = require('../config.js');
 
 
 import { Client, User, ClientOptions } from "discord.js";
-import WCP from './thirdparty/wcp/wcp';
 import MongoAdapter from "./database/mongo-adapter";
 import Database from "./database/database";
 import { Util } from "./util/util";
@@ -43,28 +42,23 @@ export class FreeStuffBot extends Client {
 
     if (this.devMode) {
       console.log(chalk.bgRedBright.black(' RUNNING DEV MODE '));
-      console.log(chalk.yellowBright('Skipped Sentry initialization'));
+      console.log(chalk.yellowBright('Skipping Sentry initialization ...'));
     } else {
-      console.log(chalk.yellowBright('Initializing Sentry'));
+      console.log(chalk.yellowBright('Initializing Sentry ...'));
       SentryManager.init();
-      console.log(chalk.green('Sentry initialized.'));
+      console.log(chalk.green('Sentry initialized'));
     }
     
     logVersionDetails();
     
-    // fixReactionEvent(this);
-    
     Util.init();
-    WCP.init(false);
 
     MongoAdapter.connect(config.mongodb.url)
       .catch(err => {
         console.error(err);
-        WCP.send({ status_mongodb: '-Connection failed' });
       })
       .then(async () => {
         console.log('Connected to Mongo');
-        WCP.send({ status_mongodb: '+Connected' });
 
         await Database.init();
     
@@ -87,7 +81,6 @@ export class FreeStuffBot extends Client {
 
         this.on('ready', () => {
           console.log(chalk`Bot ready! Logged in as {yellowBright ${this.user.tag}} {gray (${params.noSharding ? 'No Sharding' : `Shard ${options.shardId} / ${options.shardCount}`})}`);
-          WCP.send({ status_discord: '+Connected' });
           this.user.setActivity('@FreeStuff help​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://freestuffbot.xyz/', { type: 'WATCHING' });
 
           if (!this.singleShard) {
@@ -119,7 +112,7 @@ if (sharding && (!params.shardCount || !params.shardId)) {
   process.exit(-1);
 }
 
-export const Core = new FreeStuffBot (
+export const Core = new FreeStuffBot(
   {
     disabledEvents: [
       // 'READY',
@@ -168,23 +161,3 @@ export const Core = new FreeStuffBot (
   },
   params
 );
-
-function fixReactionEvent(bot: FreeStuffBot) {
-  const events = {
-    MESSAGE_REACTION_ADD: 'messageReactionAdd',
-    MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
-  }
-
-  bot.on('raw', async (event: Event) => {
-    const ev: any = event;
-    if (!events.hasOwnProperty(ev.t)) return
-    const data = ev.d;
-    const user: User = bot.users.get(data.user_id);
-    const channel: any = bot.channels.get(data.channel_id) || await user.createDM();
-    if (channel.messages.has(data.message_id)) return;
-    const message = await channel.fetchMessage(data.message_id);
-    const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-    const reaction = message.reactions.get(emojiKey);
-    bot.emit(events[ev.t], reaction, user);
-  });
-}
