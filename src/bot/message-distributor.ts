@@ -9,7 +9,7 @@ import { DbStats } from "../database/db-stats";
 
 export default class MessageDistributor {
 
-  constructor(bot: FreeStuffBot) { }
+  public constructor(bot: FreeStuffBot) { }
 
   //
 
@@ -65,21 +65,20 @@ export default class MessageDistributor {
 
   public async sendToGuild(g: DatabaseGuildData, content: GameInfo, test: boolean, force: boolean): Promise<boolean> {
     const data = Core.databaseManager.parseGuildData(g);
-    if (!data) {
-      // WHY ARE YOU RUNNING?
-      // Core.databaseManager.removeGuild(g._id);
-      return false;
-    }
+    if (!data) return false;
 
+    // forced will ignore filter settings
     if (!force) {
       if (data.price > content.org_price[data.currency == 'euro' ? 'euro' : 'dollar']) return false;
       if (!!content.flags?.includes(GameFlag.TRASH) && !data.trashGames) return false;
     }
 
+    // check if channel is valid
     if (!data.channelInstance) return false;
     if (!data.channelInstance.send) return false;
     if (!data.channelInstance.guild.available) return false;
-    
+
+    // check if permissions match
     const self = data.channelInstance.guild.me;
     if (!self.permissionsIn(data.channelInstance).has('SEND_MESSAGES')) return false;
     if (!self.permissionsIn(data.channelInstance).has('VIEW_CHANNEL')) return false;
@@ -88,8 +87,10 @@ export default class MessageDistributor {
     if (!self.permissionsIn(data.channelInstance).has('EXTERNAL_EMOJIS')
        && Const.themesWithExtemotes[data.theme]) data.theme = Const.themesWithExtemotes[data.theme];
 
+    // set content url
     if (!content.url) content.url = content.org_url;
 
+    // build message object
     const messageContent = this.buildMessage(content, data, test);
     if (!messageContent) return false;
     let setNoMention = false;
@@ -99,9 +100,11 @@ export default class MessageDistributor {
        || data.channelInstance.guild.me.hasPermission('MANAGE_ROLES_OR_PERMISSIONS'))) {
         await data.roleInstance.setMentionable(true);
         setNoMention = true;
-       }
+      }
     }
-    let mes: Message = await data.channelInstance.send(...messageContent) as Message;
+
+    // send the message
+    const mes: Message = await data.channelInstance.send(...messageContent) as Message;
     if (data.react && self.permissionsIn(data.channelInstance).has('ADD_REACTIONS'))
       await mes.react('🆓');
     if (setNoMention)

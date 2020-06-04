@@ -36,6 +36,10 @@ export default class DataFetcher {
     }, 1000 * 60);
   }
 
+  /**
+   * The page proxy is currently not used
+   * @param content game data
+   */
   public generateProxyUrl(content: GameData): string {
     return `https://game.freestuffbot.xyz/${content._id}/${content.info.title.split(/\s/).join('-').split(/[^A-Za-z0-9\-]/).join('')}`;
   }

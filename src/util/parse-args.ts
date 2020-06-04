@@ -1,6 +1,6 @@
 
 
-/** @author Maanex (maanex.tk) */
+/** @author Andreas May (maanex.tk) */
 export default class ParseArgs {
 
   private constructor() { }
@@ -14,7 +14,7 @@ export default class ParseArgs {
     let currentFlag = '_';
     let out = {};
 
-    for (let token of input) {
+    for (const token of input) {
       if (token.charAt(0) == '-') {
         if (token.charAt(1) == '-') {
           if (!out[currentFlag] && currentFlag != '_')
@@ -22,7 +22,7 @@ export default class ParseArgs {
           currentFlag = token.substring(2);
           continue;
         }
-        for (let digit of token.substring(1).split('')) {
+        for (const digit of token.substring(1).split('')) {
           out[digit] = true;
           currentFlag = digit;
         }

@@ -71,7 +71,7 @@ export class DbStatUsage {
 
 export class DbStatGraph {
 
-  constructor(
+  public constructor(
     private _collectionname: string,
     private _dbquery: any,
     public readonly raw: number[],

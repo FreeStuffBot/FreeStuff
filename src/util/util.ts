@@ -2,7 +2,6 @@ import { Core } from "../index";
 import { Long } from "mongodb";
 
 
-
 export class Util {
 
   private constructor() { }

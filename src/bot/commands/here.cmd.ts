@@ -1,4 +1,4 @@
-import { Message, Webhook, WebhookClient } from "discord.js";
+import { Message, WebhookClient } from "discord.js";
 import { ReplyFunction, Command } from "../../types";
 import { Core, config } from "../../index";
 

@@ -4,7 +4,6 @@ import Database from "../../database/database";
 import SentryManager from "../../thirdparty/sentry/sentry";
 import Const from "../const";
 import { Core } from "../../index";
-import { CronJob } from "cron";
 
 
 export default class FreeCommand extends Command {

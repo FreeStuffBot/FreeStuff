@@ -1,5 +1,5 @@
 import { FreeStuffBot, Core, config } from "../index";
-import { GameData, ShardStatusPayload } from "types";
+import { ShardStatusPayload } from "types";
 import fetch from "node-fetch";
 import { hostname } from "os";
 
@@ -20,7 +20,7 @@ export default class Sharder {
       id: Core.options.shardId,
       totalShardCount: Core.options.shardCount,
       guildCount: Core.guilds.size,
-      lastHeatbeat: Date.now(),
+      lastHeartbeat: Date.now(),
       server: serverName,
       status: 'ok'
     }

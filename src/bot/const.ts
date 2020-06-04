@@ -51,5 +51,4 @@ export default class Const {
 
   public static readonly bigSpace = '<:nothing:716252611962994718>';
 
-
 }

@@ -13,7 +13,6 @@ export default class DatabaseManager {
     bot.on('ready', async () => {
       // Check if any guild is not in the database yet
       // Might happen when someone adds the bot while it's offline
-      // Same with leaving guilds and removing them from the db then
 
       const dbGuilds = await this.getAssignedGuilds();
 
@@ -21,27 +20,27 @@ export default class DatabaseManager {
         if (!dbGuilds.find(g => g._id.toString() == guild.id))
           this.addGuild(guild);
       }
-
-      // for (const guild of dbGuilds) {
-      //   if (!bot.guilds.get(guild._id.toString()))
-      //     this.removeGuild(guild._id);
-      // }
     });
 
     bot.on('guildCreate', async guild => {
       if (await Database
-          .collection('guilds')
-          .findOne({ _id: Long.fromString(guild.id) }))
-        return;
+        .collection('guilds')
+        .findOne({
+          _id: Long.fromString(guild.id)
+        })) return;
 
       this.addGuild(guild);
     });
 
-    // bot.on('guildDelete', guild => {
-    //   this.removeGuild(Long.fromString(guild.id));
-    // });
+    this.startGarbageCollector(bot);
+  }
 
-    /** Guild remover */
+  /**
+   * Start a scheduled cron task that once a day will remove all data from guilds that no longer have the bot on them from the database
+   * ! Do not run this method multiple times without canceling the task first !
+   * @param bot bot instance
+   */
+  private startGarbageCollector(bot: FreeStuffBot): void {
     new CronJob('0 0 0 * * *', async () => {
       const dbGuilds = await this.getAssignedGuilds();
       const removalQueue: DatabaseGuildData[] = [];
@@ -63,15 +62,18 @@ export default class DatabaseManager {
     }).start();
   }
 
+  /**
+   * Returns an array of the guilddata from each of the guilds belonging to the current shard
+   */
   public async getAssignedGuilds(): Promise<DatabaseGuildData[]> {
     return await Database
-        .collection('guilds')
-        .find(
-          Core.singleShard
-            ? { }
-            : { sharder: { $mod: [Core.options.shardCount, Core.options.shardId] } }
-        )
-        .toArray();
+      .collection('guilds')
+      .find(
+        Core.singleShard
+          ? { }
+          : { sharder: { $mod: [Core.options.shardCount, Core.options.shardId] } }
+      )
+      .toArray();
   }
 
   /**
@@ -154,6 +156,13 @@ export default class DatabaseManager {
     }
   }
 
+  /**
+   * Change a guild's setting
+   * @param guild guild instance
+   * @param current current guild data object
+   * @param setting the setting to change
+   * @param value it's new value
+   */
   public changeSetting(guild: Guild, current: GuildData, setting: GuildSetting, value: string | number | boolean) {
     const out = {};
     switch (setting) {

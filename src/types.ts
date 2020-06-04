@@ -8,7 +8,7 @@ import { Long } from "mongodb";
  */
 
 /** This is the object that gets stored long term for the following uses:
- * - Tell the proxy where to redirect the links to
+ * - Tell the proxy where to redirect the links to (redundant as the proxy is not in use yet)
  * - Contain analytics data
  * - Queue up for approval process
  */
@@ -27,7 +27,7 @@ export interface GameData {
     };
   };
   info: GameInfo; // Info about the game
-  outgoing?: number[]; // Array that gradually fills up with all the shards that have picked up the announcement. Last shard that would make the list full, will remove the object from the entry
+  outgoing?: number[]; // Array that gradually fills up with all the shards that have picked up the announcement. Last shard that would make the list full will remove the object from the entry
 
 }
 
@@ -40,6 +40,7 @@ export interface GameSource {
 
 }
 
+/** The data that can be found by the web scrapers */
 export interface ScrapeableGameInfo {
 
   title: string; // Game's title
@@ -70,8 +71,8 @@ export interface GameInfo extends ScrapeableGameInfo {
 }
 
 export enum GameFlag {
-  TRASH = 'TRASH',
-  THIRDPARTY = 'THIRDPARTY',
+  TRASH = 'TRASH', // Low quality game
+  THIRDPARTY = 'THIRDPARTY', // Third party key provider
 }
 
 /** The data that gets stored in the database */
@@ -116,7 +117,7 @@ export interface Shard {
   id: number;
   server: string;
   status: 'ok' | 'timeout' | 'offline' | 'crashed';
-  lastHeatbeat: number;
+  lastHeartbeat: number;
   guildCount: number;
 
 }

@@ -1,6 +1,5 @@
 import * as Sentry from '@sentry/node';
 import { Core, config } from '../../index';
-import * as chalk from 'chalk';
 
 
 export default class SentryManager {

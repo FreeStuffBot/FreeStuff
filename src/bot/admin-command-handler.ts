@@ -6,6 +6,12 @@ import * as AsciiTable from "ascii-table";
 import { hostname } from "os";
 import { Long } from "mongodb";
 
+/*
+
+THIS CLASS CLEARLY NEEDS SOME CLEANUP
+
+*/
+
 
 const commandlist = [
   '`$FreeStuff help` - Shows this help page',
