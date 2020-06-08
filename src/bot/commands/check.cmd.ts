@@ -27,6 +27,11 @@ export default class CheckCommand extends Command {
       return true;
     }
     Core.databaseManager.getGuildData(mes.guild).then(d => {
+      if (!d) {
+        Core.databaseManager.addGuild(mes.guild);
+        repl('A wild error occurred!', `Can you please try that again? If this message keeps appearing please wait a bit or [reach out to our support team](${Const.discordInvite}), thanks.`)
+        return;
+      }
       if (!d.channelInstance) {
         repl(':x:', `I don't know where to post the announcements!\nDo \`@FreeStuff set channel #${mes.guild.channels.filter(c => c.type == 'text').random().name}\``);
         return true;

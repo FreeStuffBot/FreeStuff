@@ -14,7 +14,7 @@ export default class InviteCommand extends Command {
   }
 
   public handle(mes: Message, args: string[], repl: ReplyFunction): boolean {
-    repl('Sure!', `[Click here to add me to your server!](${Const.inviteLink})`);
+    repl(':eyes:', `[Click here to add me to your server!](${Const.inviteLink})`);
     return true;
   }
 

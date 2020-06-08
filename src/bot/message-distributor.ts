@@ -93,22 +93,11 @@ export default class MessageDistributor {
     // build message object
     const messageContent = this.buildMessage(content, data, test);
     if (!messageContent) return false;
-    let setNoMention = false;
-    if (data.roleInstance) {
-      if (!data.roleInstance.mentionable
-      && (data.channelInstance.guild.me.hasPermission('MANAGE_ROLES')
-       || data.channelInstance.guild.me.hasPermission('MANAGE_ROLES_OR_PERMISSIONS'))) {
-        await data.roleInstance.setMentionable(true);
-        setNoMention = true;
-      }
-    }
 
     // send the message
     const mes: Message = await data.channelInstance.send(...messageContent) as Message;
     if (data.react && self.permissionsIn(data.channelInstance).has('ADD_REACTIONS'))
       await mes.react('🆓');
-    if (setNoMention)
-      data.roleInstance.setMentionable(false);
     return true;
   }
 
