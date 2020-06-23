@@ -150,7 +150,12 @@ export default class MessageDistributor {
             ? Core.text(data, '=announcement_footer_test')
             : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
         },
-        color: 0x2f3136
+        color: 0x2f3136,
+        thumbnail: {
+          url: Const.storeIcons[content.store],
+          width: 128,
+          height: 128
+        }
       }}
     ];
   }
@@ -184,7 +189,12 @@ export default class MessageDistributor {
             ? Core.text(data, '=announcement_footer_test')
             : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
         },
-        color: 0x2f3136
+        color: 0x2f3136,
+        thumbnail: {
+          url: Const.storeIcons[content.store],
+          width: 128,
+          height: 128
+        }
       }}
     ];
   }
@@ -287,7 +297,12 @@ export default class MessageDistributor {
         image: {
           url: content.thumbnail
         },
-        color: 0x2f3136
+        color: 0x2f3136,
+        thumbnail: {
+          url: Const.storeIcons[content.store] + '&size=32',
+          width: 32,
+          height: 32
+        }
       }}
     ];
   }

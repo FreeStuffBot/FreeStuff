@@ -71,8 +71,8 @@ export default class HereCommand extends Command {
     })
 
     repl(
-      Core.text(g, 'cmd_here_1'),
-      Core.text(g, 'cmd_here_2')
+      Core.text(g, '=cmd_here_1'),
+      Core.text(g, '=cmd_here_2')
     );
     return true;
   }

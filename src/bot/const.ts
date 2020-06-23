@@ -49,6 +49,24 @@ export default class Const {
     other: ':grey_question:'
   };
 
+  public static readonly storeIcons = {
+    steam: 'https://cdn.discordapp.com/emojis/700096501728411739.png?v=1',
+    epic: 'https://cdn.discordapp.com/emojis/700094298984808468.png?v=1',
+    humble: 'https://cdn.discordapp.com/emojis/700096326133743759.png?v=1',
+    gog: 'https://cdn.discordapp.com/emojis/700096328151072800.png?v=1',
+    origin: 'https://cdn.discordapp.com/emojis/700096326196658178.png?v=1',
+    uplay: 'https://cdn.discordapp.com/emojis/700098098080251924.png?v=1',
+    twitch: 'https://cdn.discordapp.com/emojis/700098446333313126.png?v=1',
+    itch: 'https://cdn.discordapp.com/emojis/700097690431651921.png?v=1',
+    discord: 'https://cdn.discordapp.com/emojis/700097689139937320.png?v=1',
+    apple: 'https://cdn.discordapp.com/emojis/700097690653949952.png?v=1',
+    google: 'https://cdn.discordapp.com/emojis/700097689194594305.png?v=1',
+    switch: 'https://cdn.discordapp.com/emojis/700097951032147988.png?v=1',
+    ps: '',
+    xbox: '',
+    other: ''
+  };
+
   public static readonly bigSpace = '<:nothing:716252611962994718>';
 
 }

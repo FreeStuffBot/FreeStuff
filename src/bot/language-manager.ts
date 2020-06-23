@@ -32,7 +32,6 @@ export default class LanguageManager {
   }
 
   public getRaw(language: string, key: string, fallback = true): string {
-    console.log(...arguments)
     if (!this.list.length) return key;
     if (!fallback) this.getText(language, key);
     if (!this.texts[language]) return this.getText(this.list[0], key);

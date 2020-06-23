@@ -19,8 +19,8 @@ export default class HelpCommand extends Command {
       .filter(c => !c.info.hideOnHelp)
       .map(c => `• \`@FreeStuff ${c.info.name}\` ─ ${Core.text(g, c.info.desc)}`);
     repl(
-      Core.text(g, 'cmd_help_1'),
-      Core.text(g, 'cmd_help_2') + '\n\n' + cmdlist.join('\n\n')
+      Core.text(g, '=cmd_help_1'),
+      Core.text(g, '=cmd_help_2') + '\n\n' + cmdlist.join('\n\n')
     );
     return true;
   }
