@@ -21,19 +21,21 @@ export default class ThemeThree implements Theme {
 
     return [
       data.roleInstance ? data.roleInstance.toString() : '',
-      { embed: {
-        author: {
-          name: Core.text(data, '=announcement_header')
-        },
-        title: content.title,
-        description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n[${Const.announcementButton}](${content.url})`,
-        footer: {
-          text: test
-            ? Core.text(data, '=announcement_footer_test')
-            : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
-        },
-        color: 0x2f3136
-      }}
+      {
+        embed: {
+          author: {
+            name: Core.text(data, '=announcement_header')
+          },
+          title: content.title,
+          description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n[${Const.announcementButton}](${content.url})`,
+          footer: {
+            text: test
+              ? Core.text(data, '=announcement_footer_test')
+              : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
+          },
+          color: 0x2f3136
+        }
+      }
     ];
   }
 

@@ -152,6 +152,7 @@ export default class DatabaseManager {
       currency: (dbObject.settings & 0b10000) == 0 ? 'euro' : 'usd',
       react: (dbObject.settings & 0b100000) != 0,
       trashGames: (dbObject.settings & 0b1000000) != 0,
+      altDateFormat: (dbObject.settings & 0b10000000) != 0,
       theme: dbObject.settings & 0b1111,
       language: 'de' // TODO
     }

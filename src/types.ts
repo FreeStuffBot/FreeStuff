@@ -97,6 +97,7 @@ export interface GuildData extends DatabaseGuildData {
   react: boolean;
   trashGames: boolean;
   language: string;
+  altDateFormat: boolean;
 
 }
 
