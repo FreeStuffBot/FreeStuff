@@ -1,7 +1,7 @@
 import { FreeStuffBot, Core } from "../index";
 import { GameData, DatabaseGuildData } from "types";
 import Database from "../database/database";
-import FreeCommand from "./commands/free.cmd";
+import FreeCommand from "./commands/free";
 
 
 export default class DataFetcher {

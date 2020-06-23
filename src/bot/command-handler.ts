@@ -2,15 +2,15 @@ import { FreeStuffBot, config, Core } from "../index";
 import { Message } from "discord.js";
 import Const from "./const";
 import { Command, GuildData } from "../types";
-import HelpCommand from "./commands/help.cmd";
-import InfoCommand from "./commands/info.cmd";
-import InviteCommand from "./commands/invite.cmd";
-import SettingsCommand from "./commands/settings.cmd";
-import TestCommand from "./commands/test.cmd";
-import VoteCommand from "./commands/vote.cmd";
-import CheckCommand from "./commands/check.cmd";
-import HereCommand from "./commands/here.cmd";
-import FreeCommand from "./commands/free.cmd";
+import HelpCommand from "./commands/help";
+import InfoCommand from "./commands/info";
+import InviteCommand from "./commands/invite";
+import SettingsCommand from "./commands/settings";
+import TestCommand from "./commands/test";
+import VoteCommand from "./commands/vote";
+import CheckCommand from "./commands/check";
+import HereCommand from "./commands/here";
+import FreeCommand from "./commands/free";
 
 
 export default class CommandHandler {

@@ -2,14 +2,33 @@ import { FreeStuffBot, Core } from "../index";
 import { Message, Guild, MessageOptions } from "discord.js";
 import Const from "./const";
 import Database from "../database/database";
-import { GameInfo, GuildData, GameData, DatabaseGuildData, GameFlag } from "../types";
+import { GameInfo, GuildData, GameData, DatabaseGuildData, GameFlag, Theme } from "../types";
 import { Long } from "mongodb";
 import { DbStats } from "../database/db-stats";
+import ThemeOne from "./themes/1";
+import ThemeTwo from "./themes/2";
+import ThemeThree from "./themes/3";
+import ThemeFour from "./themes/4";
+import ThemeFive from "./themes/5";
+import ThemeSix from "./themes/6";
+import ThemeSeven from "./themes/7";
+import ThemeEight from "./themes/8";
+import ThemeNine from "./themes/9";
 
 
 export default class MessageDistributor {
 
-  private static readonly BUTTON_STRING = '<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>';
+  private readonly themes: Theme[] = [
+    new ThemeOne(),
+    new ThemeTwo(),
+    new ThemeThree(),
+    new ThemeFour(),
+    new ThemeFive(),
+    new ThemeSix(),
+    new ThemeSeven(),
+    new ThemeEight(),
+    new ThemeNine(),
+  ];
 
   //
 
@@ -106,230 +125,9 @@ export default class MessageDistributor {
   }
 
   public buildMessage(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
-    const builder = ([
-      this.buildTheme1,
-      this.buildTheme2,
-      this.buildTheme3,
-      this.buildTheme4,
-      this.buildTheme5,
-      this.buildTheme6,
-      this.buildTheme7,
-      this.buildTheme8,
-      this.buildTheme9,
-    ])[data.theme];
-    if (!builder) return undefined;
-    return builder(content, data, test);
-  }
-
-  public buildTheme1(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
-    let priceString = '';
-    if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
-    else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
-    const date = new Date(Date.now() + content.until * 1000 * 60 * 60 * 24);
-    const until = !content.until || content.until < 0
-      ? ''
-      : content.until < 7
-        ? `until ${date.toLocaleDateString('en-US', { weekday: 'long' })}`
-        : content.until == 7
-          ? 'for a week'
-          : `until ${date.toLocaleDateString('en-US', { weekday: 'long' })} next Week`;
-
-    return [
-      data.roleInstance ? data.roleInstance.toString() : '',
-      { embed: {
-        author: {
-          name: Core.text(data, '=announcement_header')
-        },
-        title: content.title,
-        description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n[${MessageDistributor.BUTTON_STRING}](${content.url})`,
-        image: {
-          url: content.thumbnail
-        },
-        footer: {
-          text: test
-            ? Core.text(data, '=announcement_footer_test')
-            : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
-        },
-        color: 0x2f3136,
-        thumbnail: {
-          url: Const.storeIcons[content.store],
-          width: 128,
-          height: 128
-        }
-      }}
-    ];
-  }
-
-  public buildTheme2(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
-    let priceString = '';
-    if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
-    else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
-    const date = new Date(Date.now() + content.until * 1000 * 60 * 60 * 24);
-    const until = !content.until || content.until < 0
-      ? ''
-      : content.until < 7
-        ? `until ${date.toLocaleDateString('en-US', { weekday: 'long' })}`
-        : content.until == 7
-          ? 'for a week'
-          : `until ${date.toLocaleDateString('en-US', { weekday: 'long' })} next Week`;
-
-    return [
-      data.roleInstance ? data.roleInstance.toString() : '',
-      { embed: {
-        author: {
-          name: Core.text(data, '=announcement_header')
-        },
-        title: content.title,
-        description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n[${Core.text(data, '=announcement_button_text')}](${content.url})`,
-        image: {
-          url: content.thumbnail
-        },
-        footer: {
-          text: test
-            ? Core.text(data, '=announcement_footer_test')
-            : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
-        },
-        color: 0x2f3136,
-        thumbnail: {
-          url: Const.storeIcons[content.store],
-          width: 128,
-          height: 128
-        }
-      }}
-    ];
-  }
-
-  public buildTheme3(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
-    let priceString = '';
-    if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
-    else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
-    const date = new Date(Date.now() + content.until * 1000 * 60 * 60 * 24);
-    const until = !content.until || content.until < 0
-      ? ''
-      : content.until < 7
-        ? `until ${date.toLocaleDateString('en-US', { weekday: 'long' })}`
-        : content.until == 7
-          ? 'for a week'
-          : `until ${date.toLocaleDateString('en-US', { weekday: 'long' })} next Week`;
-
-    return [
-      data.roleInstance ? data.roleInstance.toString() : '',
-      { embed: {
-        author: {
-          name: Core.text(data, '=announcement_header')
-        },
-        title: content.title,
-        description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n[${MessageDistributor.BUTTON_STRING}](${content.url})`,
-        footer: {
-          text: test
-            ? Core.text(data, '=announcement_footer_test')
-            : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
-        },
-        color: 0x2f3136
-      }}
-    ];
-  }
-
-  public buildTheme4(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
-    let priceString = '';
-    if (data.currency == 'euro') priceString = `${content.org_price.euro} €`;
-    else if (data.currency == 'usd') priceString = `$${content.org_price.dollar}`;
-    const date = new Date(Date.now() + content.until * 1000 * 60 * 60 * 24);
-    const until = !content.until || content.until < 0
-      ? ''
-      : content.until < 7
-        ? `until ${date.toLocaleDateString('en-US', { weekday: 'long' })}`
-        : content.until == 7
-          ? 'for a week'
-          : `until ${date.toLocaleDateString('en-US', { weekday: 'long' })} next Week`;
-
-    return [
-      data.roleInstance ? data.roleInstance.toString() : '',
-      { embed: {
-        author: {
-          name: Core.text(data, '=announcement_header')
-        },
-        title: content.title,
-        description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n[${Core.text(data, '=announcement_button_text')}](${content.url})`,
-        footer: {
-          text: test
-            ? Core.text(data, '=announcement_footer_test')
-            : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
-        },
-        color: 0x2f3136
-      }}
-    ];
-  }
-
-  public buildTheme5(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
-    return [
-      data.roleInstance ? data.roleInstance.toString() : '',
-      { embed: {
-        author: {
-          name: Core.text(data, '=announcement_header')
-        },
-        title: content.title,
-        url: content.url,
-        footer: {
-          text: test
-            ? Core.text(data, '=announcement_footer_test')
-            : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
-        },
-        color: 0x2f3136
-      }}
-    ];
-  }
-
-  public buildTheme6(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
-    return [
-      data.roleInstance ? data.roleInstance.toString() : '',
-      { embed: {
-        author: {
-          name: Core.text(data, '=announcement_header')
-        },
-        title: content.title,
-        url: content.url,
-        footer: {
-          text: test
-            ? Core.text(data, '=announcement_footer_test')
-            : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
-        },
-        image: {
-          url: content.thumbnail
-        },
-        color: 0x2f3136,
-        thumbnail: {
-          url: Const.storeIcons[content.store] + '&size=32',
-          width: 32,
-          height: 32
-        }
-      }}
-    ];
-  }
-
-  public buildTheme7(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
-    return [
-      (data.roleInstance ? data.roleInstance.toString() : '')
-      + ' ' + content.url,
-      {}
-    ];
-  }
-
-  public buildTheme8(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
-    return [
-      (data.roleInstance ? data.roleInstance.toString() : '')
-      + ` <${content.url}>`,
-      {}
-    ];
-  }
-
-  public buildTheme9(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
-    return [
-      (data.roleInstance ? data.roleInstance.toString() : '')
-      + ' '
-      + Core.text(data, '=announcement_theme9'),
-      {}
-    ];
+    const theme = this.themes[data.theme];
+    if (!theme) return undefined;
+    return theme.build(content, data, test);
   }
 
 }

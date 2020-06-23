@@ -1,4 +1,4 @@
-import { TextChannel, Role, Message } from "discord.js";
+import { TextChannel, Role, Message, MessageOptions } from "discord.js";
 import { Long } from "mongodb";
 
 
@@ -155,6 +155,12 @@ export abstract class Command {
 }
 
 export type ReplyFunction = (message: string, content: string, footer?: string, color?: number, image?: string) => void;
+
+export interface Theme {
+
+  build(content: GameInfo, data: GuildData, test: boolean): [string, MessageOptions];
+
+}
 
 
 /*
