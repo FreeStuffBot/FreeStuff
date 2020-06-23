@@ -96,6 +96,7 @@ export interface GuildData extends DatabaseGuildData {
   currency: 'euro' | 'usd';
   react: boolean;
   trashGames: boolean;
+  language: string;
 
 }
 
@@ -149,7 +150,7 @@ export abstract class Command {
     if (info.hideOnHelp === undefined) info.hideOnHelp = false;
   }
   
-  public abstract handle(mes: Message, args: string[], repl: ReplyFunction): boolean | Promise<boolean>;
+  public abstract handle(mes: Message, args: string[], data: GuildData, repl: ReplyFunction): boolean | Promise<boolean>;
   
 }
 

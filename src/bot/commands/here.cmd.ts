@@ -1,5 +1,5 @@
 import { Message, WebhookClient } from "discord.js";
-import { ReplyFunction, Command } from "../../types";
+import { ReplyFunction, Command, GuildData } from "../../types";
 import { Core, config } from "../../index";
 
 
@@ -8,13 +8,13 @@ export default class HereCommand extends Command {
   public constructor() {
     super({
       name: 'here',
-      desc: 'Only execute this command when prompted to do so by the FreeStuff support team!',
+      desc: '=cmd_here_desc',
       trigger: [ 'here' ],
       hideOnHelp: true
     });
   }
 
-  public async handle(mes: Message, args: string[], repl: ReplyFunction): Promise<boolean> {
+  public async handle(mes: Message, args: string[], g: GuildData, repl: ReplyFunction): Promise<boolean> {
     const guild = mes.guild;
     let userPermissions = [];
     if (mes.member.hasPermission('ADMINISTRATOR')) userPermissions.push('Admin');
@@ -28,10 +28,9 @@ export default class HereCommand extends Command {
       Features: ${guild.features.join(', ')}
       User's Permissions: ${userPermissions.join(', ')}
       User Owner?: ${guild.ownerID == mes.author.id}`;
-    const guildData = await Core.databaseManager.getRawGuildData(guild);
-    const permissionCheck = guildData.channel
+    const permissionCheck = g?.channel
       ? (() => {
-          const perms = guild.me.permissionsIn(guild.channels.get(guildData.channel.toString()));
+          const perms = guild.me.permissionsIn(guild.channels.get(g.channel.toString()));
           const out = [];
           out.push(perms.has('READ_MESSAGES') ? 'Can read messages' : 'CANNOT READ MESSAGES');
           out.push(perms.has('SEND_MESSAGES') ? 'Can send messages' : 'CANNOT SEND MESSAGES');
@@ -41,10 +40,12 @@ export default class HereCommand extends Command {
         })()
       : 'No channel set!';
 
-    guildData['_currency'] = (guildData.settings & 0b10000) == 0 ? 'euro' : 'usd';
-    guildData['_react'] = (guildData.settings & 0b100000) != 0;
-    guildData['_trashGames'] = (guildData.settings & 0b1000000) != 0;
-    guildData['_theme'] = guildData.settings & 0b1111;
+    if (g) {
+      g['_currency'] = (g.settings & 0b10000) == 0 ? 'euro' : 'usd';
+      g['_react'] = (g.settings & 0b100000) != 0;
+      g['_trashGames'] = (g.settings & 0b1000000) != 0;
+      g['_theme'] = g.settings & 0b1111;
+    }
 
     const webhook = new WebhookClient(config.supportWebhook.id, config.supportWebhook.token);
     webhook.send('', {
@@ -59,7 +60,7 @@ export default class HereCommand extends Command {
           },
           {
             name: 'Guild Data',
-            value: `\`\`\`json\n${JSON.stringify(guildData, null, 2)}\`\`\``
+            value: `\`\`\`json\n${JSON.stringify(g || { error: 'Guild Data Error' }, null, 2)}\`\`\``
           },
           {
             name: 'Permission Check',
@@ -69,7 +70,10 @@ export default class HereCommand extends Command {
       }]
     })
 
-    repl('Alright thank you!', 'We will investigate your issue, hold on a bit...');
+    repl(
+      Core.text(g, 'cmd_here_1'),
+      Core.text(g, 'cmd_here_2')
+    );
     return true;
   }
 

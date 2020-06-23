@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
-import { ReplyFunction, Command } from "../../types";
+import { ReplyFunction, Command, GuildData } from "../../types";
 import Const from "../const";
+import { Core } from "../../index";
 
 
 export default class InviteCommand extends Command {
@@ -8,13 +9,16 @@ export default class InviteCommand extends Command {
   public constructor() {
     super({
       name: 'invite',
-      desc: 'Get an invite link to add the bot to your own server!',
+      desc: '=cmd_invite_desc',
       trigger: [ 'get', 'link', 'invite', 'add', 'join' ]
     });
   }
 
-  public handle(mes: Message, args: string[], repl: ReplyFunction): boolean {
-    repl(':eyes:', `[Click here to add me to your server!](${Const.inviteLink})`);
+  public handle(mes: Message, args: string[], g: GuildData, repl: ReplyFunction): boolean {
+    repl(
+      Core.text(g, '=cmd_invite_1'),
+      Core.text(g, '=cmd_invite_2', { inviteLink: Const.inviteLink })
+    );
     return true;
   }
 

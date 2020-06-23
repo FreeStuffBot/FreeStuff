@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { ReplyFunction, Command, GameInfo, GameData } from "../../types";
+import { ReplyFunction, Command, GameInfo, GameData, GuildData } from "../../types";
 import Database from "../../database/database";
 import SentryManager from "../../thirdparty/sentry/sentry";
 import Const from "../const";
@@ -11,7 +11,7 @@ export default class FreeCommand extends Command {
   public constructor() {
     super({
       name: 'free',
-      desc: 'Want to know which games are currently free? Do this.',
+      desc: '=cmd_free_desc',
       trigger: [ 'free', 'currenlty', 'current', 'what', 'whats', 'what\'s', 'what´s', 'what`s' ]
     });
 
@@ -21,26 +21,24 @@ export default class FreeCommand extends Command {
     FreeCommand.updateCurrentFreebies();
   }
 
-  public handle(mes: Message, args: string[], repl: ReplyFunction): boolean {
+  public handle(mes: Message, args: string[], g: GuildData, repl: ReplyFunction): boolean {
     const cont = mes.content.toLowerCase();
     if (cont.startsWith('what')) {
       if (!cont.match(/what.? ?i?s? +(currently)? ?free/)) return;
     }
 
-    Core.databaseManager.getGuildData(mes.guild).then(d => {
-      const freeLonger: string[] = [];
-      const freeToday: string[] = [];
-      for (const game of FreeCommand.current) {
-        // d happens to be undefined here at times, investigate
-        const str = `${Const.storeEmojis[game.store] || ':gray_question:'} **[${game.title}](${game.org_url})**\n${Const.bigSpace} ~~${d?.currency == 'euro' ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • until ${(game['_ends'] as Date).toLocaleDateString('en-GB')}\n`;
-        if (game['_today']) freeToday.push(str);
-        else freeLonger.push(str);
-      }
-      
-      let replyText = `${freeLonger.join('\n')}`;
-      if (freeToday.length) replyText += `\n\n**Ends soon:** (or possibly already has ended)\n\n${freeToday.join('\n')}`;
-      repl(`These games are currently free:`, replyText);
-    });
+    const freeLonger: string[] = [];
+    const freeToday: string[] = [];
+    for (const game of FreeCommand.current) {
+      // d happens to be undefined here at times, investigate
+      const str = `${Const.storeEmojis[game.store] || ':gray_question:'} **[${game.title}](${game.org_url})**\n${Const.bigSpace} ~~${g?.currency == 'euro' ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • ${Core.text(g, '=cmd_free_until')} ${(game['_ends'] as Date).toLocaleDateString(Core.languageManager.get(g, 'date_format'))}\n`;
+      if (game['_today']) freeToday.push(str);
+      else freeLonger.push(str);
+    }
+    
+    let replyText = `${freeLonger.join('\n')}`;
+    if (freeToday.length) replyText += `\n\n${Core.text(g, '=cmd_free_ends_soon')}\n\n${freeToday.join('\n')}`;
+    repl(Core.text(g, '=cmd_free_title'), replyText);
     return true;
   }
 

@@ -13,12 +13,14 @@ import MessageDistributor from "./bot/message-distributor";
 import AdminCommandHandler from "./bot/admin-command-handler";
 import DataFetcher from "./bot/data-fetcher";
 import Sharder from "./bot/sharder";
+import LanguageManager from "./bot/language-manager";
 import { DbStats } from "./database/db-stats";
 import { logVersionDetails } from "./util/git-parser";
 import * as chalk from "chalk";
 import * as DBL from "dblapi.js";
 import ParseArgs from "./util/parse-args";
 import SentryManager from "./thirdparty/sentry/sentry";
+import { GuildData } from "types";
 
 
 export class FreeStuffBot extends Client {
@@ -29,6 +31,7 @@ export class FreeStuffBot extends Client {
   public adminCommandHandler: AdminCommandHandler;
   public dataFetcher: DataFetcher;
   public sharder: Sharder;
+  public languageManager: LanguageManager;
   
   public dbl: any;
   public readonly devMode: boolean;
@@ -68,6 +71,7 @@ export class FreeStuffBot extends Client {
         this.adminCommandHandler = new AdminCommandHandler(this);
         this.dataFetcher = new DataFetcher(this);
         this.sharder = new Sharder(this);
+        this.languageManager = new LanguageManager(this);
 
         DbStats.startMonitoring(this);
 
@@ -93,6 +97,18 @@ export class FreeStuffBot extends Client {
 
         this.login(config.bot.token);
       });
+  }
+
+  public text(d: GuildData, text: string, replace?: { [varname: string]: string }): string {
+    let out = (text.startsWith('=')
+      ? this.languageManager.getRaw(d.language, text.substr(1), true)
+      : text);
+    if (replace) {
+      for (const key in replace) {
+        out = out.split(`{${key}}`).join(replace[key]);
+      }
+    }
+    return out;
   }
 
 }

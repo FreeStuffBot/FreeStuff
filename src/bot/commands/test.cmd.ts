@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { ReplyFunction, Command } from "../../types";
+import { ReplyFunction, Command, GuildData } from "../../types";
 import { Core } from "../../index";
 import Const from "../const";
 
@@ -21,71 +21,90 @@ export default class TestCommand extends Command {
   public constructor() {
     super({
       name: 'test',
-      desc: 'Run a test announcement to see if you\'ve set up everything correctly. Requires you to have the __Manage Server__ permission.',
+      desc: '=cmd_test_desc',
       trigger: [ 'test' ],
       serverManagerOnly: true
     });
   }
 
-  public handle(mes: Message, args: string[], repl: ReplyFunction): boolean {
+  public handle(mes: Message, args: string[], g: GuildData, repl: ReplyFunction): boolean {
     if (this.testCooldownHarsh.includes(mes.guild.id))
       return true;
     if (this.testCooldown.includes(mes.guild.id)) {
-      repl('Command is on cooldown!', 'This command has a 10 second cooldown, please wait a bit!');
+      repl(
+        Core.text(g, '=cmd_on_cooldown_1'),
+        Core.text(g, '=cmd_on_cooldown_2', { time: '10' })
+      );
       this.testCooldownHarsh.push(mes.guild.id);
       return true;
     }
-    Core.databaseManager.getGuildData(mes.guild).then(d => {
-      if (!d) {
-        Core.databaseManager.addGuild(mes.guild);
-        repl('A wild error occurred!', `Can you please try that again? If this message keeps appearing please wait a bit or [reach out to our support team](${Const.discordInvite}), thanks.`)
-        return;
-      }
-      if (!d.channelInstance) {
-        repl('Whoops!', `I'd love to but I don't know where you'd like to have the news!\nDo \`@FreeStuff set channel #${mes.guild.channels.filter(c => c.type == 'text').random().name}\` to tell me where to annouce free games!`);
-        return true;
-      }
-      if (!d.channelInstance.guild.me.permissionsIn(d.channelInstance).has('READ_MESSAGES')) {
-        repl('Whoops!', `Looks like I don't have the permission to see the channel ${d.channelInstance}!`);
-        return true;
-      }
-      if (!d.channelInstance.guild.me.permissionsIn(d.channelInstance).has('SEND_MESSAGES')) {
-        repl('Whoops!', `Looks like I don't have the permission to send messages in ${d.channelInstance}!`);
-        return true;
-      }
-      if (!d.channelInstance.guild.me.permissionsIn(d.channelInstance).has('EMBED_LINKS')
-          && Const.themesWithEmbeds.includes(d.theme)) {
-          repl('Oh well...', `The theme you're using uses embeds to make the message look nicer... now the thing is, I don't have the permission to send embeds in ${d.channelInstance}! Either give me the permission \`Embed Links\` or choose a different theme that doesn't use embeds!`);
-        return true;
-      }
-      if (!d.channelInstance.guild.me.permissionsIn(d.channelInstance).has('EXTERNAL_EMOJIS')
-          && Const.themesWithExtemotes[d.theme]) {
-          repl('Oh well...', `The theme you're using uses external emojis to create the big button. Now you either have to give me the \`Use External Emojis\` permission or tell me to use another theme which doesn't use external emojis!`);
-        return true;
-      }
-      Core.messageDistributor.test(mes.guild, {
-        title: 'Game name here',
-        org_price: {
-          euro: 19.99,
-          dollar: 19.99
-        },
-        price: {
-          euro: 0,
-          dollar: 0
-        },
-        store: 'steam',
-        thumbnail: this.thumbsUpImages[Math.floor(Math.random() * this.thumbsUpImages.length)],
-        org_url: Const.testGameLink,
-        url: Const.testGameLink,
-        flags: [],
-        steamSubids: '',
-        until: -1,
-        type: 'free'
-      });
-    }).catch(err => {
-      repl('An error occured!', 'We\'re trying to fix this issue as soon as possible!');
-      console.log(err);
+
+    if (!g) {
+      Core.databaseManager.addGuild(mes.guild);
+      repl(
+        Core.text(g, '=cmd_error_fixable_1'),
+        Core.text(g, '=cmd_error_fixable_2', { discordInvite: Const.discordInvite })
+      );
+      return;
+    }
+    if (!g.channelInstance) { 
+      repl(
+        Core.text(g, '=cmd_test_nochannel_1'),
+        Core.text(g, '=cmd_test_nochannel_2', { channel: `#${mes.guild.channels.filter(c => c.type == 'text').random().name}` })
+      );
+      return true;
+    }
+    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('READ_MESSAGES')) {        
+      repl(
+        Core.text(g, '=cmd_test_nosee_1'),
+        Core.text(g, '=cmd_test_nosee_2', { channel: g.channelInstance.toString() })
+      );
+      return true;
+    }
+    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('SEND_MESSAGES')) {
+      repl(
+        Core.text(g, '=cmd_test_nosend_1'),
+        Core.text(g, '=cmd_test_nosend_2', { channel: g.channelInstance.toString() })
+      );
+      return true;
+    }
+    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('EMBED_LINKS')
+        && Const.themesWithEmbeds.includes(g.theme)) {
+        repl(
+          Core.text(g, '=cmd_test_noembeds_1'),
+          Core.text(g, '=cmd_test_noembeds_2', { channel: g.channelInstance.toString() })
+        );
+      return true;
+    }
+    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('EXTERNAL_EMOJIS')
+        && Const.themesWithExtemotes[g.theme]) {
+        repl(
+          Core.text(g, '=cmd_test_extemotes_1'),
+          Core.text(g, '=cmd_test_extemotes_2')
+        );
+      return true;
+    }
+    
+    Core.messageDistributor.test(mes.guild, {
+      title: Core.text(g, '=cmd_test_announcement_header'),
+      org_price: {
+        euro: 19.99,
+        dollar: 19.99
+      },
+      price: {
+        euro: 0,
+        dollar: 0
+      },
+      store: 'steam',
+      thumbnail: this.thumbsUpImages[Math.floor(Math.random() * this.thumbsUpImages.length)],
+      org_url: Const.testGameLink,
+      url: Const.testGameLink,
+      flags: [],
+      steamSubids: '',
+      until: -1,
+      type: 'free'
     });
+    
     this.testCooldown.push(mes.guild.id);
     setTimeout(() => {
       this.testCooldown.splice(this.testCooldown.indexOf(mes.guild.id), 1);

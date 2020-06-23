@@ -9,6 +9,10 @@ import { DbStats } from "../database/db-stats";
 
 export default class MessageDistributor {
 
+  private static readonly BUTTON_STRING = '<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>';
+
+  //
+
   public constructor(bot: FreeStuffBot) { }
 
   //
@@ -134,15 +138,17 @@ export default class MessageDistributor {
       data.roleInstance ? data.roleInstance.toString() : '',
       { embed: {
         author: {
-          name: 'Free Game!'
+          name: Core.text(data, '=announcement_header')
         },
         title: content.title,
-        description: `~~${priceString}~~ **Free** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ' • Low Quality' : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ' • Third Party Provider' : ''}\n\n[<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>](${content.url})`,
+        description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n[${MessageDistributor.BUTTON_STRING}](${content.url})`,
         image: {
           url: content.thumbnail
         },
         footer: {
-          text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const.websiteLinkClean}`
+          text: test
+            ? Core.text(data, '=announcement_footer_test')
+            : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
         },
         color: 0x2f3136
       }}
@@ -166,15 +172,17 @@ export default class MessageDistributor {
       data.roleInstance ? data.roleInstance.toString() : '',
       { embed: {
         author: {
-          name: 'Free Game!'
+          name: Core.text(data, '=announcement_header')
         },
         title: content.title,
-        description: `~~${priceString}~~ **Free** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ' • Low Quality' : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ' • Third Party Provider' : ''}\n\n[Get it now](${content.url})`,
+        description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n[${Core.text(data, '=announcement_button_text')}](${content.url})`,
         image: {
           url: content.thumbnail
         },
         footer: {
-          text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const.websiteLinkClean}`
+          text: test
+            ? Core.text(data, '=announcement_footer_test')
+            : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
         },
         color: 0x2f3136
       }}
@@ -198,12 +206,14 @@ export default class MessageDistributor {
       data.roleInstance ? data.roleInstance.toString() : '',
       { embed: {
         author: {
-          name: 'Free Game!'
+          name: Core.text(data, '=announcement_header')
         },
         title: content.title,
-        description: `~~${priceString}~~ **Free** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ' • Low Quality' : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ' • Third Party Provider' : ''}\n\n[<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>](${content.url})`,
+        description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n[${MessageDistributor.BUTTON_STRING}](${content.url})`,
         footer: {
-          text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const.websiteLinkClean}`
+          text: test
+            ? Core.text(data, '=announcement_footer_test')
+            : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
         },
         color: 0x2f3136
       }}
@@ -227,12 +237,14 @@ export default class MessageDistributor {
       data.roleInstance ? data.roleInstance.toString() : '',
       { embed: {
         author: {
-          name: 'Free Game!'
+          name: Core.text(data, '=announcement_header')
         },
         title: content.title,
-        description: `~~${priceString}~~ **Free** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ' • Low Quality' : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ' • Third Party Provider' : ''}\n\n[Get it now](${content.url})`,
+        description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Const.storeDisplayNames[content.store]}${content.flags?.includes(GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${content.flags?.includes(GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n[${Core.text(data, '=announcement_button_text')}](${content.url})`,
         footer: {
-          text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const.websiteLinkClean}`
+          text: test
+            ? Core.text(data, '=announcement_footer_test')
+            : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
         },
         color: 0x2f3136
       }}
@@ -244,12 +256,14 @@ export default class MessageDistributor {
       data.roleInstance ? data.roleInstance.toString() : '',
       { embed: {
         author: {
-          name: 'Free Game!'
+          name: Core.text(data, '=announcement_header')
         },
         title: content.title,
         url: content.url,
         footer: {
-          text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const.websiteLinkClean}`
+          text: test
+            ? Core.text(data, '=announcement_footer_test')
+            : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
         },
         color: 0x2f3136
       }}
@@ -261,12 +275,14 @@ export default class MessageDistributor {
       data.roleInstance ? data.roleInstance.toString() : '',
       { embed: {
         author: {
-          name: 'Free Game!'
+          name: Core.text(data, '=announcement_header')
         },
         title: content.title,
         url: content.url,
         footer: {
-          text: test ? 'Looking good? If not, do: @FreeStuff settings' : `via ${Const.websiteLinkClean}`
+          text: test
+            ? Core.text(data, '=announcement_footer_test')
+            : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
         },
         image: {
           url: content.thumbnail
@@ -295,7 +311,8 @@ export default class MessageDistributor {
   public buildTheme9(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
     return [
       (data.roleInstance ? data.roleInstance.toString() : '')
-      + ` **${content.title}** is free!\n<${content.url}>`,
+      + ' '
+      + Core.text(data, '=announcement_theme9'),
       {}
     ];
   }

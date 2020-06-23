@@ -1,7 +1,7 @@
-import { FreeStuffBot, config } from "../index";
+import { FreeStuffBot, config, Core } from "../index";
 import { Message } from "discord.js";
 import Const from "./const";
-import { Command } from "../types";
+import { Command, GuildData } from "../types";
 import HelpCommand from "./commands/help.cmd";
 import InfoCommand from "./commands/info.cmd";
 import InviteCommand from "./commands/invite.cmd";
@@ -37,14 +37,21 @@ export default class CommandHandler {
 
       const args = m.content.split(' ');
       args.splice(0, 1);
-      this.handleCommand(args.splice(0, 1)[0] || '', args, m).then(success => {
-        if (!success && m.guild.me.permissionsIn(m.channel).has('ADD_REACTIONS'))
-          m.react('🤔');
-      }).catch(e => { });
+      Core.databaseManager.getGuildData(m.guild).then(g => {
+        this.handleCommand(args.splice(0, 1)[0] || '', args, m, g).then(success => {
+          if (!success && m.guild.me.permissionsIn(m.channel).has('ADD_REACTIONS'))
+            m.react('🤔');
+        }).catch(e => { });
+      }).catch(err => {
+        try {
+          // no translaton in case the above failes due to language manager issues
+          m.reply(`An error occured! Please try again later. If this error persists, try removing the bot from your server and adding it back up. For additional support visit our support server: ${Const.discordInvite}`);
+        } catch(ex) { }
+      });
     });
   }
 
-  public async handleCommand(command: string, args: string[], orgmes: Message): Promise<boolean> {
+  public async handleCommand(command: string, args: string[], orgmes: Message, g: GuildData): Promise<boolean> {
     const reply = (message: string, content: string, footer?: string, color?: number, image?: string) => {
       if (orgmes.guild.me.permissionsIn(orgmes.channel).has('EMBED_LINKS')) {
         orgmes.channel.send({ embed: {
@@ -66,7 +73,10 @@ export default class CommandHandler {
     //
 
     if (command == '') {
-      reply(`Hey ${orgmes.author.username}!`, 'Type `@FreeStuff help` for a help page!\nType `@FreeStuff info` for information about the bot!\n[Or click here for more info](' + Const.websiteLink + ')');
+      reply(
+        Core.text(g, '=cmd_freestuff_1', { username: orgmes.author.username }),
+        Core.text(g, '=cmd_freestuff_2', { website: Const.websiteLink })
+      );
       return true;
     }
     const egg = this.eastereggs([command, ...args].join(' '));
@@ -80,7 +90,10 @@ export default class CommandHandler {
     const handler = this.commands.find(c => c.info.trigger.includes(command.toLowerCase()));
     if (!handler) {  
       if (/set.*/.test(command.toLowerCase())) {
-        reply('You\'re missing a space between the `set` and the `' + command.toLowerCase().substr(3) + '`!', 'To see all available settings use `@FreeStuff settings`');
+        reply(
+          Core.text(g, '=cmd_missing_space_1', { command: command.toLowerCase().substr(3)}),
+          Core.text(g, '=cmd_missing_space_2')
+        );
         return true;
       }
       return false;
@@ -88,7 +101,13 @@ export default class CommandHandler {
 
     if (handler.info.serverManagerOnly) {
       if (!orgmes.member.hasPermission('MANAGE_GUILD') && !config.admins.includes(orgmes.member.id)) {
-        reply('No permission!', 'You need the `manage server` permission to do that!', undefined, undefined, 'https://media.discordapp.net/attachments/672907465670787083/672907481957007400/unknown.png');
+        reply(
+          Core.text(g, '=cmd_no_permission_1', { command: command.toLowerCase().substr(3)}),
+          Core.text(g, '=cmd_no_permission_2'),
+          undefined,
+          undefined,
+          'https://media.discordapp.net/attachments/672907465670787083/672907481957007400/unknown.png'
+        );
         return true;
       }
     }
@@ -98,7 +117,7 @@ export default class CommandHandler {
       return true;
     }
 
-    let back = handler.handle(orgmes, args, reply);
+    let back = handler.handle(orgmes, args, g, reply);
     if (back['then']) back = await (back as Promise<boolean>);
     return back as boolean;
   }
