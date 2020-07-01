@@ -210,7 +210,7 @@ export default class SettingsCommand extends Command {
       );
       return;
     }
-    if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(args[1])) {
+    if (['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].includes(args[1])) {
       Core.databaseManager.changeSetting(orgmes.guild, g, 'theme', parseInt(args[1]) - 1);
       reply(
         Core.text(g, '=cmd_set_theme_success_1'),

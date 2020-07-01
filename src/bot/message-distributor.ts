@@ -14,6 +14,7 @@ import ThemeSix from "./themes/6";
 import ThemeSeven from "./themes/7";
 import ThemeEight from "./themes/8";
 import ThemeNine from "./themes/9";
+import ThemeTen from "./themes/10";
 
 
 export default class MessageDistributor {
@@ -28,6 +29,7 @@ export default class MessageDistributor {
     new ThemeSeven(),
     new ThemeEight(),
     new ThemeNine(),
+    new ThemeTen()
   ];
 
   //
