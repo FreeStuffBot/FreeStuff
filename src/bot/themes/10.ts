@@ -15,7 +15,7 @@ export default class ThemeTen implements Theme {
           author: {
             name: Core.text(data, '=announcement_header')
           },
-          description: `\`\`\`yaml\n  Name: ${content.title}\n Store: ${Const.storeDisplayNames[content.store]}\n Price: $${content.org_price.dollar} | €${content.org_price.euro}\n Until: ${date.toLocaleDateString(Core.languageManager.get(data, 'date_format'))}\nSubids: ${content.steamSubids}\n\`\`\`\n[Open in Browser](${content.url})\n[Open in Steam Client](https://todo.com/)`,
+          description: `\`\`\`yaml\n  Name: ${content.title}\n Store: ${Const.storeDisplayNames[content.store]}\n Price: $${content.org_price.dollar} | €${content.org_price.euro}\n Until: ${date.toLocaleDateString(Core.languageManager.get(data, 'date_format'))}\nSubids: ${content.steamSubids}\n\n!addlicense asf ${content.steamSubids.split(' ').join(',')}\`\`\`\n[Open in Browser](${content.url})\n[Open in Steam Client](https://todo.com/)`,
           footer: {
             text: test
               ? Core.text(data, '=announcement_footer_test')

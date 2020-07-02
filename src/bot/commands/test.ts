@@ -100,7 +100,7 @@ export default class TestCommand extends Command {
       org_url: Const.testGameLink,
       url: Const.testGameLink,
       flags: [],
-      steamSubids: '',
+      steamSubids: '12345 98760',
       until: -1,
       type: 'free'
     });
