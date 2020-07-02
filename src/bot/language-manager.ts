@@ -8,6 +8,7 @@ export default class LanguageManager {
   private static readonly BASE_URI = './resources/lang/';
 
   private list = [];
+  private idmap = {};
   private texts = {};
 
   public constructor(bot: FreeStuffBot) {
@@ -20,6 +21,7 @@ export default class LanguageManager {
 
     const index = fs.readFileSync(LanguageManager.BASE_URI + 'language-index.json').toString();
     this.list = JSON.parse(index).languages;
+    this.idmap = JSON.parse(index).idmap;
 
     for (let langCode of this.list) {
       const raw = fs.readFileSync(LanguageManager.BASE_URI + langCode + '.json').toString();
@@ -40,6 +42,18 @@ export default class LanguageManager {
 
   private getText(language: string, key: string): string {
     return this.texts[language][key];
+  }
+
+  public languageById(id: number | string): string {
+    return this.idmap[id + ''] || this.list[0];
+  }
+
+  public languageToId(lang: string): number {
+    for (const key in this.idmap) {
+      if (this.idmap[key] == lang)
+        return parseInt(key);
+    }
+    return -1;
   }
 
 }

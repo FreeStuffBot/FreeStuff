@@ -149,12 +149,12 @@ export default class DatabaseManager {
           ? Core.guilds.get(dbObject._id.toString()).defaultRole
           : Core.guilds.get(dbObject._id.toString()).roles.get((dbObject.role as Long).toString()))
         : undefined,
-      currency: (dbObject.settings & 0b10000) == 0 ? 'euro' : 'usd',
-      react: (dbObject.settings & 0b100000) != 0,
-      trashGames: (dbObject.settings & 0b1000000) != 0,
-      altDateFormat: (dbObject.settings & 0b10000000) != 0,
+      currency: (dbObject.settings & (1 << 4)) == 0 ? 'euro' : 'usd',
+      react: (dbObject.settings & (1 << 5)) != 0,
+      trashGames: (dbObject.settings & (1 << 6)) != 0,
+      altDateFormat: (dbObject.settings & (1 << 7)) != 0,
       theme: dbObject.settings & 0b1111,
-      language: 'de' // TODO
+      language: Core.languageManager.languageById((dbObject.settings & (0b1111 << 8)))
     }
   }
 
@@ -178,21 +178,38 @@ export default class DatabaseManager {
         out['settings'] = ((current.settings >> 4) << 4) + (value as number);
         break;
       case 'currency':
-        out['settings'] = (current.settings | 0b10000) ^ (value ? 0 : 0b10000);
+        out['settings'] = (current.settings | (1 << 4)) ^ (value ? 0 : (1 << 4));
         break;
       case 'react':
-        out['settings'] = (current.settings | 0b100000) ^ (value ? 0 : 0b100000);
+        out['settings'] = (current.settings | (1 << 5)) ^ (value ? 0 : (1 << 5));
         break;
       case 'trash':
-        out['settings'] = (current.settings | 0b1000000) ^ (value ? 0 : 0b1000000);
+        out['settings'] = (current.settings | (1 << 6)) ^ (value ? 0 : (1 << 6));
         break;
       case 'price':
         out['price'] = value as number;
+        break;
+      case 'altdate':
+        out['settings'] = (current.settings | (1 << 7)) ^ (value ? 0 : (1 << 7));
+        break;
+      case 'language':
+        out['settings'] = (current.settings | (0b1111 << 8)) ^ (value ? 0 : (0b1111 << 8));
         break;
     }
     Database
       .collection('guilds')
       .updateOne({ _id: Long.fromString(guild.id) }, { '$set': out });
   }
+
+  // 3__ 2__________________ 1__________________ 0__________________
+  // 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+  // settings:                               _______ _ _ _ _ _______
+  // 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  //                                         |       | | | |  theme
+  //                                         |       | | | currency (on = usd, off = eur)
+  //                                         |       | | react with :free: emoji
+  //                                         |       | show trash games
+  //                                         |       alternative date format
+  //                                         language
 
 }

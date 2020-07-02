@@ -96,12 +96,12 @@ export interface GuildData extends DatabaseGuildData {
   currency: 'euro' | 'usd';
   react: boolean;
   trashGames: boolean;
-  language: string;
   altDateFormat: boolean;
+  language: string;
 
 }
 
-export type GuildSetting = 'channel' | 'roleMention' | 'theme' | 'currency' | 'react' | 'trash' | 'price';
+export type GuildSetting = 'channel' | 'roleMention' | 'theme' | 'currency' | 'react' | 'trash' | 'price' | 'altdate' | 'language';
 
 export type Store = 'steam' | 'epic' | 'humble' | 'gog' | 'origin' | 'uplay' | 'twitch' | 'itch' | 'discord' | 'apple' | 'google' | 'switch' | 'ps' | 'xbox' | 'other';
 

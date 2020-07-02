@@ -2,9 +2,21 @@
   "languages": [
     "en-US",
     "en-GB",
-    "de",
+    "de-DE",
     "pl",
     "bg",
     "ar-SY"
-  ]
+  ],
+  "idmap": {
+    "_": "Yes kinda obsolete since you could just take it from the array but just in case someone accedently changes the order above...",
+    "0": "en-US",
+    "1": "en-GB",
+    "2": "de-DE",
+    "3": "pl",
+    "4": "bg",
+    "5": "ar-SY",
+    "6": "da",
+    "7": "pt-BR",
+    "8": "zh-CN"
+  }
 }
