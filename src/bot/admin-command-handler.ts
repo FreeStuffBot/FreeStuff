@@ -17,7 +17,6 @@ const commandlist = [
   '`$FreeStuff help` - Shows this help page',
   '`$FreeStuff print` - Shows info about this guild',
   '`$FreeStuff guildlist` - Shows a list of all guilds this bot is on',
-  '`$FreeStuff scrape <url> [--confirm]` - Scrapes a webstore to fetch the data. Use --confirm to publish to all guilds.',
   '`$FreeStuff stats` - Shows some stats',
 ];
 
@@ -140,73 +139,9 @@ export default class AdminCommandHandler {
               console.error(err);
             });
           return true;
-
-        case 'sendfirstnews':
-          return;
-          Database
-            .collection('guilds')
-            .find({ })
-            .toArray()
-            .then(guilds => {
-              if (!guilds) return;
-              const sentTo = [ ];
-              guilds.forEach(async g => {
-                if (!g) return;
-                const data = Core.databaseManager.parseGuildData(g);
-                if (!data) {
-                  // Core.databaseManager.removeGuild(g._id);
-                  return;
-                }
-                if (!data.channelInstance) return;
-                const owner = data.channelInstance.guild.owner;
-                if (sentTo.includes(owner.id)) return;
-                owner.send(firstNewsDM(data.currency == 'euro' ? '3.00€' : '$3.00', owner.user.username)).catch(err => console.log('One person didn\'t let me!'));
-                sentTo.push(owner.id);
-              })
-            })
-            .catch(console.error);
-          return true;
     }
 
     return false;
   }
 
-}
-
-function firstNewsDM(defaultPrice: string, username: string) {
-  return {
-    embed: {
-      "title": `Hey ${username}! Good news!`,
-      "description": "This is a quick info for server owners like you that have the FreeStuff Bot added to one of their servers. **tl;dr at the end!**",
-      "color": 13455313,
-      "footer": {
-        "text": "Messages like these will be really rare. Don't worry, we hate spam too!"
-      },
-      "thumbnail": {
-        "url": "https://tude.ga/favicon.freestuff.png"
-      },
-      "fields": [
-        {
-          "name": "Lots of games recently huh?",
-          "value": "The bot really got some attention lately and as a result of that we got more and more free games reported by various people. Now while some of you might wanna catch every freebie they can get, you might aswell be one of those who rather take it slow and prefer quality over quantity. Now to tackle this issue and reduce the spam, we added some new features to the bot:"
-        },
-        {
-          "name": "Minimum original price",
-          "value": `First new setting you can set in your server is the \`@FreeStuff set minimum price <price>\` with <price> being an amount of your choice. Whenever a game is free the bot will from now on first check if the original price - before the sale - was equal or greater than what you've set before it announces the game. We've set the minimum for your server to **${defaultPrice}** now but of course you can change this to your likings at any time!`
-        },
-        {
-          "name": "Trash games",
-          "value": "We now also occasionally mark games as 'trash'. Which games are trash and which not gets decided by the FreeStuff content moderators and while you might not agree with every decision we make, a game is usually marked as trash if it has really bad reviews or is of generally poor quality. Low prices don't make a game 'trash' since you can filter them out with the minimum price filter as said above. Trash games will now by default no longer reach your server, if you do want to get them though you can re-enable them using `@FreeStuff set trash on`."
-        },
-        {
-          "name": "That's it for now!",
-          "value": "This DM did not get sent to every user in your server, don't panic! Only you as the server owner recieved it. We're planning on sending out more messages like these in the furure whenever there's things you as the server owner absolutely have to know! But don't stress out, we won't spam your DMs in the slightest - only when it's really necessary, pinky promise! We're also currently moving servers so if anything works not as expected, we're sorry. And stay tuned, we got some more cool stuff in the works :o"
-        },
-        {
-          "name": "tl;dr 👇",
-          "value": "There is now a setting `@FreeStuff set minimum price <price>` and the bot will no longer annouce games cheaper than that! Oh and we also filter out trash games now, you're welcome! <3"
-        }
-      ]
-    }
-  }
 };
