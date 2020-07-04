@@ -1,0 +1,27 @@
+
++ "cmd_settings_change_mention_noone": "to not let the bot mention anyone. The bot won't mention anyone by default!",
+
+- Your language name in English, lowercase only
++ "lang_name_en": "english",
+
++ "cmd_settings_change_language": "change the bot's language",
+
+- Here, preferably use a language specific saying. Idk how to explain it but like... something that makes it clear that it's not just google translated :P
++ "cmd_set_language_status_1": "English. And English only.",
+
++ "cmd_set_language_status_2": "If you want me to talk in a different language, type `@FreeStuff set language <language>`. Choose your language from the list below:",
+
+- The following two lines appear if you type exactly @FreeStuff set language <language>
++ "cmd_set_language_notfound_easteregg_1": "No no no no, look:",
+
++ "cmd_set_language_notfound_easteregg_2": "`@FreeStuff set language` is the right start. But instead of `<language>` you type the language you want me to use, okay? :)",
+
++ "cmd_set_language_notfound_1": "There's thousands of languages in the world...",
+
++ "cmd_set_language_notfound_2": "But I can't speak all of them. Please pick one from the following list of available languages:",
+
+- Don't translate this word by word.
++ "cmd_set_language_success_1": "Oi mate!",
+
+- And don't say back to <yourlanguage> here. Use smth like "Now using English in this server! Yay!" instead. But with our language ofc. Not with English.
++ "cmd_set_language_success_2": "Back to English!",

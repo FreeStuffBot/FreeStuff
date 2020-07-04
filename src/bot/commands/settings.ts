@@ -2,6 +2,7 @@ import { Message, TextChannel } from "discord.js";
 import { ReplyFunction, GuildData, Command } from "../../types";
 import { Core } from "../../index";
 import Const from "../const";
+import LanguageManager from "bot/language-manager";
 
 
 export default class SettingsCommand extends Command {
@@ -43,6 +44,7 @@ export default class SettingsCommand extends Command {
           '`' + c + ' reaction ' + (g ? (g.react ? 'on' : 'off') : 'off') + '` ' + Core.text(g, '=cmd_settings_change_reaction'),
           '`' + c + ' trash ' + (g ? (g.trashGames ? 'on' : 'off') : 'off') + '` ' + Core.text(g, '=cmd_settings_change_trash'),
           '`' + c + ' minimum price ' + (g ? g.price : '3') + '` ' + Core.text(g, '=cmd_settings_change_min_price'),
+          '`' + c + ' language ' + Core.text(g, '=lang_name_en') + '` ' + Core.text(g, '=cmd_settings_change_language'),
         ].map(l => { return { name: l.split('` ')[0] + '`', value: l.split('` ')[1] }})
       }});
       return true;
@@ -83,6 +85,13 @@ export default class SettingsCommand extends Command {
       case 'price':
       case 'cost':
         this.subcmdMinPrice(mes, args, g, repl);
+        break;
+
+      case 'language':
+      case 'lang':
+      case 'local':
+      case 'locale':
+        this.subcmdLanguage(mes, args, g, repl);
         break;
 
       default:
@@ -373,6 +382,45 @@ export default class SettingsCommand extends Command {
       }
       Core.databaseManager.changeSetting(orgmes.guild, g, 'price', price);
     }
+  }
+
+  private subcmdLanguage(orgmes: Message, args: string[], g: GuildData, reply: ReplyFunction) {
+    if (args.length < 2) {
+      reply(
+        Core.text(g, '=cmd_set_language_status_1'),
+        Core.text(g, '=cmd_set_language_status_2')
+          + (g.language.startsWith('en') ? '' : '\n\n' + Core.text(g, '=cmd_set_language_status_2_en', { language: Core.text(g, '=lang_name_en') }))
+          + '\n\n' + Core.languageManager.displayLangList().map(l => `• ${l}`).join('\n')
+      );
+      return;
+    }
+
+    if (args[1].toLowerCase() == '<language>') {
+      reply(
+        Core.text(g, '=cmd_set_language_notfound_easteregg_1'),
+        Core.text(g, '=cmd_set_language_notfound_easteregg_2')
+      );
+      return;
+    }
+
+    const lang = Core.languageManager.languageByName(args[1]);
+    if (!lang) {
+      reply(
+        Core.text(g, '=cmd_set_language_notfound_1'),
+        Core.text(g, '=cmd_set_language_notfound_2')
+        + (g.language.startsWith('en') ? '' : '\n\n' + Core.text(g, '=cmd_set_language_notfound_2_en'))
+        + '\n\n' + Core.languageManager.displayLangList().map(l => `• ${l}`).join('\n')
+      );
+      return;
+    }
+    
+    const langid = Core.languageManager.languageToId(lang);
+    Core.databaseManager.changeSetting(orgmes.guild, g, 'language', langid);
+
+    reply(
+      Core.languageManager.getRaw(lang, 'cmd_set_language_success_1'),
+      Core.languageManager.getRaw(lang, 'cmd_set_language_success_2')
+    );
   }
   
 }

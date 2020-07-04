@@ -154,7 +154,7 @@ export default class DatabaseManager {
       trashGames: (dbObject.settings & (1 << 6)) != 0,
       altDateFormat: (dbObject.settings & (1 << 7)) != 0,
       theme: dbObject.settings & 0b1111,
-      language: Core.languageManager.languageById((dbObject.settings & (0b1111 << 8)))
+      language: Core.languageManager.languageById((dbObject.settings >> 8 & 0b1111))
     }
   }
 
@@ -167,6 +167,8 @@ export default class DatabaseManager {
    */
   public changeSetting(guild: Guild, current: GuildData, setting: GuildSetting, value: string | number | boolean) {
     const out = {};
+    let bits = 0;
+    const c = current.settings;
     switch (setting) {
       case 'channel':
         out['channel'] = Long.fromString(value as string);
@@ -174,31 +176,41 @@ export default class DatabaseManager {
       case 'roleMention':
         out['role'] = value ? Long.fromString(value as string) : null;
         break;
-      case 'theme':
-        out['settings'] = ((current.settings >> 4) << 4) + (value as number);
-        break;
-      case 'currency':
-        out['settings'] = (current.settings | (1 << 4)) ^ (value ? 0 : (1 << 4));
-        break;
-      case 'react':
-        out['settings'] = (current.settings | (1 << 5)) ^ (value ? 0 : (1 << 5));
-        break;
-      case 'trash':
-        out['settings'] = (current.settings | (1 << 6)) ^ (value ? 0 : (1 << 6));
-        break;
       case 'price':
         out['price'] = value as number;
         break;
+      case 'theme':
+        bits = (value as number) & 0b1111;
+        out['settings'] = this.modifyBits(c, 0, 4, bits);
+        break;
+      case 'currency':
+        bits = value ? 1 : 0;
+        out['settings'] = this.modifyBits(c, 4, 1, bits);
+        break;
+      case 'react':
+        bits = value ? 1 : 0;
+        out['settings'] = this.modifyBits(c, 5, 1, bits);
+        break;
+      case 'trash':
+        bits = value ? 1 : 0;
+        out['settings'] = this.modifyBits(c, 6, 1, bits);
+        break;
       case 'altdate':
-        out['settings'] = (current.settings | (1 << 7)) ^ (value ? 0 : (1 << 7));
+        bits = value ? 1 : 0;
+        out['settings'] = this.modifyBits(c, 7, 1, bits);
         break;
       case 'language':
-        out['settings'] = (current.settings | (0b1111 << 8)) ^ (value ? 0 : (0b1111 << 8));
+        bits = (value as number) & 0b1111;
+        out['settings'] = this.modifyBits(c, 8, 4, bits);
         break;
     }
     Database
       .collection('guilds')
       .updateOne({ _id: Long.fromString(guild.id) }, { '$set': out });
+  }
+
+  private modifyBits(input: number, lshift: number, bits: number, value: number): number {
+    return (input & ~((2 ** bits - 1) << lshift)) | (value << lshift);
   }
 
   // 3__ 2__________________ 1__________________ 0__________________

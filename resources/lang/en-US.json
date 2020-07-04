@@ -1,6 +1,7 @@
 {
   "translators": "Maanex",
   "lang_name": "English",
+  "lang_name_en": "english",
   "date_format": "en-US",
   "currency_sign_euro_position": "before",
   "currency_sign_dollar_position": "before",
@@ -90,6 +91,7 @@
   "cmd_settings_change_reaction": "toggle auto reaction on or off. This will make the bot react with the :free: emoji on every new announcement.",
   "cmd_settings_change_trash": "toggle whether you want to get notified about games with really bad rating or low quality.",
   "cmd_settings_change_min_price": "set the minimum price a game had to have before it became free for it to be announced.",
+  "cmd_settings_change_language": "change the bot's language",
   "cmd_settings_not_found_1": "Setting {name} not found!",
   "cmd_settings_not_found_2": "Type `@FreeStuff settings` for an overview over all available settings!",
   "cmd_set_channel_missing_args_1": "Sure, just tell me where!",
@@ -163,5 +165,17 @@
   "cmd_set_price_success_all_1": "As you wish, no price filter!",
   "cmd_set_price_success_all_2": "Now each and every game will be announced, no matter how expensive it is. Or better: was",
   "cmd_set_price_success_1": "Excellent choice {username}",
-  "cmd_set_price_success_2": "Every game cheaper than {price} will no longer make it to this server!"
+  "cmd_set_price_success_2": "Every game cheaper than {price} will no longer make it to this server!",
+  "cmd_set_language_status_1": "English. And English only.",
+  "cmd_set_language_status_2": "If you want me to talk in a different language, type `@FreeStuff set language <language>`. Choose your language from the list below:",
+  "cmd_set_language_notfound_easteregg_1": "No no no no, look:",
+  "cmd_set_language_notfound_easteregg_2": "`@FreeStuff set language` is the right start. But instead of `<language>` you type the language you want me to use, okay? :)",
+  "cmd_set_language_notfound_1": "There's thousands of languages in the world...",
+  "cmd_set_language_notfound_2": "But I can't speak all of them. Please pick one from the following list of available languages:",
+  "cmd_set_language_success_1": "Oi mate!",
+  "cmd_set_language_success_2": "Back to English!",
+  
+  "_comment_48124": "do NOT translate the lines below",
+  "cmd_set_language_status_2_en": "I am currently sending my messages in {language}. To change that type `@FreeStuff set language <language>` with <language> being one of the languages below:",
+  "cmd_set_language_notfound_2_en": "I don't know that language. Please pick one from the following list of available languages:"
 }

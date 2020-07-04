@@ -1,6 +1,7 @@
 {
   "translators": "Maanex, MagicalL",
   "lang_name": "Deutsch",
+  "lang_name_en": "german",
   "date_format": "de-de",
   "currency_sign_euro_position": "after",
   "currency_sign_dollar_position": "before",
@@ -30,14 +31,14 @@
   "cmd_error_fatal_2": "Wir versuchen den Fehler so schnell wie möglich zu beheben!",
   "cmd_freestuff_1": "Hey {username}",
   "cmd_freestuff_2": "Gib `@FreeStuff help` ein um eine Hilfeseite angezeigt zu bekommen!\nSchreibe `@FreeStuff info` für mehr Informationen über diesen Bot!\n[Oder klicke hier um unsere Webseite zu besuchen]({website})",
-  
-  "cmd_missing_space_1": "You're missing a space between the `set` and the `{command}`!",
-  "cmd_missing_space_2": "To see all available settings use `@FreeStuff settings`",
-  "cmd_no_permission_1": "No permission!",
-  "cmd_no_permission_2": "You need the `manage server` permission to do that!",
-  "cmd_info_desc": "Who? What? How?",
+  "cmd_missing_space_1": "Yo, dir fehlt da ein Leerzeichen zwischen dem `set` und dem `{command}`!",
+  "cmd_missing_space_2": "Um alle verfügbaren Einstellungen anzuzeigen, schreibe `@FreeStuff settings`",
+  "cmd_no_permission_1": "Nope, du nicht!",
+  "cmd_no_permission_2": "Du brauchst die `server verwalten` Berechtigung um das zu tun!",
+  "cmd_info_desc": "Wer? Was? Wie?",
   "cmd_info_1": "FreeStuff Bot",
-  "cmd_info_2": "Bot made with :heart: by the [Tude Team]({teamWebsite})\nwith help from [some amazing people]({amazingPeople})\n\n[About / Website]({website})\n\n[Click here to add it to your server]({inviteLink})\n[Report a bug or get in contact]({discordInvite})",
+  "cmd_info_2": "Vom [Tude Team]({teamWebsite}) mit :heart: erschaffen!\nMit Unterstützung von ein paar [sehr coolen Leuten]({amazingPeople})\n\n[Über uns / Webseite]({website})\n\n[Klicke hier um den Bot zu deinem Discord hinzuzufügen]({inviteLink})\n[Fehler melden oder in Kontakt treten]({discordInvite})",
+
   "cmd_invite_desc": "Get an invite link to add the bot to your own server!",
   "cmd_invite_1": ":eyes:",
   "cmd_invite_2": "[Click here to add me to your server!]({inviteLink})",
@@ -164,5 +165,14 @@
   "cmd_set_price_success_all_1": "As you wish, no price filter!",
   "cmd_set_price_success_all_2": "Now each and every game will be announced, no matter how expensive it is. Or better: was",
   "cmd_set_price_success_1": "Excellent choice {username}",
-  "cmd_set_price_success_2": "Every game cheaper than {price} will no longer make it to this server!"
+  "cmd_set_price_success_2": "Every game cheaper than {price} will no longer make it to this server!",
+
+  "cmd_set_language_status_1": "Deutsche Sprache, beste Sprache",
+  "cmd_set_language_status_2": "Wenn ich eine andere Sprache benutzen soll, gib `@FreeStuff set language <sprache>` ein. Wähle dazu eine der folgenden Sprachen aus:",
+  "cmd_set_language_notfound_easteregg_1": "Nein nein nein! Schau her:",
+  "cmd_set_language_notfound_easteregg_2": "`@FreeStuff set language` ist schon mal ein guter Start. Aber statt `<language>` schreibst du die Sprache die ich benutzen soll, okay? :)",
+  "cmd_set_language_notfound_1": "Es gibt tausende Sprachen auf dieser Welt...",
+  "cmd_set_language_notfound_2": "Aber ich kann sie nicht alle sprechen. Bitte wähle eine der Folgenden aus:",
+  "cmd_set_language_success_1": "Jawoll!",
+  "cmd_set_language_success_2": "Deutsch ist einfach eine schöne Sprache, dem kann ich nur zustimmen!"
 }

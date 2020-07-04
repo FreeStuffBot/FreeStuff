@@ -40,11 +40,18 @@ export default class HereCommand extends Command {
         })()
       : 'No channel set!';
 
-    if (g) {
-      g['_currency'] = (g.settings & 0b10000) == 0 ? 'euro' : 'usd';
-      g['_react'] = (g.settings & 0b100000) != 0;
-      g['_trashGames'] = (g.settings & 0b1000000) != 0;
-      g['_theme'] = g.settings & 0b1111;
+    let gd = JSON.parse(JSON.stringify(g));
+    if (gd) {
+      delete gd['channelInstance'];
+      delete gd['roleInstance'];
+    }
+
+    let guilddata = `\`\`\`json\n${JSON.stringify(gd || { error: 'Guild Data Error' }, null, 2)}\`\`\``;
+    if (guilddata.length > 1024) guilddata = `\`\`\`json\n${JSON.stringify(gd || { error: 'Guild Data Error' }, null, 1)}\`\`\``
+    if (guilddata.length > 1024) guilddata = `\`\`\`json\n${JSON.stringify(gd || { error: 'Guild Data Error' })}\`\`\``
+    if (guilddata.length > 1024) {
+      console.log(JSON.stringify(gd, null, 2));
+      guilddata = 'Guild data too long. Check logs.'
     }
 
     const webhook = new WebhookClient(config.supportWebhook.id, config.supportWebhook.token);
@@ -60,7 +67,7 @@ export default class HereCommand extends Command {
           },
           {
             name: 'Guild Data',
-            value: `\`\`\`json\n${JSON.stringify(g || { error: 'Guild Data Error' }, null, 2)}\`\`\``
+            value: guilddata
           },
           {
             name: 'Permission Check',

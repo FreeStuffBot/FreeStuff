@@ -56,4 +56,23 @@ export default class LanguageManager {
     return -1;
   }
 
+  public languageByName(query: string): string {
+    query = query.toLowerCase();
+    for (const lang of this.list) {
+      if (this.getText(lang, 'lang_name').toLowerCase() == query) return lang;
+      if (this.getText(lang, 'lang_name_en').toLowerCase() == query) return lang;
+    }
+    for (const lang of this.list) {
+      if (lang.startsWith(query)) return lang;
+    }
+    return '';
+  }
+
+  public displayLangList(): string[] {
+    const out: string[] = [];
+    for (const lang of this.list)
+      out.push(`**${this.getText(lang, 'lang_name')}** (${this.getText(lang, 'lang_name_en')})`);
+    return out;
+  }
+
 }
