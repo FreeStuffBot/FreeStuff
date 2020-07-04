@@ -25,3 +25,25 @@
 
 - And don't say back to <yourlanguage> here. Use smth like "Now using English in this server! Yay!" instead. But with our language ofc. Not with English.
 + "cmd_set_language_success_2": "Back to English!",
+
++ "cmd_settings_change_until": "with most of the themes the bot will tell you for how long the game is free. Use this command to change how that gets displayed.",
+
++ "cmd_set_until_date_status_1": "Free until 11/2/2024",
+
++ "cmd_set_until_date_status_2": "That's how I currently spell it out. If you would like me to use the weekday instead, type `@FreeStuff set until weekday`",
+
++ "cmd_set_until_date_success_1": "Free until 11/2/2024",
+
++ "cmd_set_until_date_success_2": "Yeah that sounds good. I'll do it that way from now on.",
+
++ "cmd_set_until_weekday_status_1": "Free until next Friday!",
+
++ "cmd_set_until_weekday_status_2": "That's how I currently spell it out. If you would like me to use a date instead, type `@FreeStuff set until date`",
+
++ "cmd_set_until_weekday_success_1": "Free until next Friday",
+
++ "cmd_set_until_weekday_success_2": "I can see why one would prefer that. Good choice if you ask me, I'll do it that way from now on!",
+
++ "cmd_set_until_not_found_1": "I'm sorry, what?",
+
++ "cmd_set_until_not_found_2": "Whenever I announce free games I also tell you for how long they are free. Please type\n`@FreeStuff set until date` if you want me to put a date there. For example: *Free until 11/2/2024*\n`@FreeStuff set until weekday` if you want me to do it this way: *Free until next Friday*",

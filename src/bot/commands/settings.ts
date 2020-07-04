@@ -45,6 +45,7 @@ export default class SettingsCommand extends Command {
           '`' + c + ' trash ' + (g ? (g.trashGames ? 'on' : 'off') : 'off') + '` ' + Core.text(g, '=cmd_settings_change_trash'),
           '`' + c + ' minimum price ' + (g ? g.price : '3') + '` ' + Core.text(g, '=cmd_settings_change_min_price'),
           '`' + c + ' language ' + Core.text(g, '=lang_name_en') + '` ' + Core.text(g, '=cmd_settings_change_language'),
+          '`' + c + ' until ' + (g ? (g.altDateFormat ? 'date' : 'weekday') : 'weekday') + '` ' + Core.text(g, '=cmd_settings_change_until'),
         ].map(l => { return { name: l.split('` ')[0] + '`', value: l.split('` ')[1] }})
       }});
       return true;
@@ -92,6 +93,10 @@ export default class SettingsCommand extends Command {
       case 'local':
       case 'locale':
         this.subcmdLanguage(mes, args, g, repl);
+        break;
+
+      case 'until':
+        this.subcmdAltDateFormat(mes, args, g, repl);
         break;
 
       default:
@@ -421,6 +426,37 @@ export default class SettingsCommand extends Command {
       Core.languageManager.getRaw(lang, 'cmd_set_language_success_1'),
       Core.languageManager.getRaw(lang, 'cmd_set_language_success_2')
     );
+  }
+  
+  private subcmdAltDateFormat(orgmes: Message, args: string[], g: GuildData, reply: ReplyFunction) {
+    if (args.length < 2) {
+      reply(
+        Core.text(g, g.altDateFormat ? '=cmd_set_until_weekday_status_1' : '=cmd_set_until_date_status_1'),
+        Core.text(g, g.altDateFormat ? '=cmd_set_until_weekday_status_2' : '=cmd_set_until_date_status_2')
+      );
+      return;
+    }
+
+    if (['day', 'name', 'week', 'weekday'].includes(args[1].toLowerCase())) {
+      if (!g.altDateFormat)
+        Core.databaseManager.changeSetting(orgmes.guild, g, 'altdate', 1);
+      reply(
+        Core.text(g, '=cmd_set_until_weekday_success_1'),
+        Core.text(g, '=cmd_set_until_weekday_success_2')
+      );
+    } else if (['date', 'time'].includes(args[1].toLowerCase())) {
+      if (g.altDateFormat)
+        Core.databaseManager.changeSetting(orgmes.guild, g, 'altdate', 0);
+      reply(
+        Core.text(g, '=cmd_set_until_date_success_1'),
+        Core.text(g, '=cmd_set_until_date_success_2')
+      );
+    } else {
+      reply(
+        Core.text(g, '=cmd_set_until_not_found_1'),
+        Core.text(g, '=cmd_set_until_not_found_2', { text: args[1] })
+      );
+    }
   }
   
 }

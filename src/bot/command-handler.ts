@@ -75,7 +75,7 @@ export default class CommandHandler {
     if (command == '') {
       const langNotif = g.language.startsWith('en')
         ? ''
-        : '\n\n*Use `@FreeStuff set language` to change the language*';
+        : '\n\n' + Core.text(g, '=cmd_freestuff_2_en');
       reply(
         Core.text(g, '=cmd_freestuff_1', { username: orgmes.author.username }),
         Core.text(g, '=cmd_freestuff_2', { website: Const.websiteLink }) + langNotif

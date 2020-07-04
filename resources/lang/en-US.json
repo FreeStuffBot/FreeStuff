@@ -92,6 +92,7 @@
   "cmd_settings_change_trash": "toggle whether you want to get notified about games with really bad rating or low quality.",
   "cmd_settings_change_min_price": "set the minimum price a game had to have before it became free for it to be announced.",
   "cmd_settings_change_language": "change the bot's language",
+  "cmd_settings_change_until": "with most of the themes the bot will tell you for how long the game is free. Use this command to change how that gets displayed.",
   "cmd_settings_not_found_1": "Setting {name} not found!",
   "cmd_settings_not_found_2": "Type `@FreeStuff settings` for an overview over all available settings!",
   "cmd_set_channel_missing_args_1": "Sure, just tell me where!",
@@ -174,8 +175,19 @@
   "cmd_set_language_notfound_2": "But I can't speak all of them. Please pick one from the following list of available languages:",
   "cmd_set_language_success_1": "Oi mate!",
   "cmd_set_language_success_2": "Back to English!",
+  "cmd_set_until_date_status_1": "Free until 11/2/2024",
+  "cmd_set_until_date_status_2": "That's how I currently spell it out. If you would like me to use the weekday instead, type `@FreeStuff set until weekday`",
+  "cmd_set_until_date_success_1": "Free until 11/2/2024",
+  "cmd_set_until_date_success_2": "Yeah that sounds good. I'll do it that way from now on.",
+  "cmd_set_until_weekday_status_1": "Free until next Friday!",
+  "cmd_set_until_weekday_status_2": "That's how I currently spell it out. If you would like me to use a date instead, type `@FreeStuff set until date`",
+  "cmd_set_until_weekday_success_1": "Free until next Friday",
+  "cmd_set_until_weekday_success_2": "I can see why one would prefer that. Good choice if you ask me, I'll do it that way from now on!",
+  "cmd_set_until_not_found_1": "I'm sorry, what?",
+  "cmd_set_until_not_found_2": "Whenever I announce free games I also tell you for how long they are free. Please type\n`@FreeStuff set until date` if you want me to put a date there. For example: *Free until 11/2/2024*\n`@FreeStuff set until weekday` if you want me to do it this way: *Free until next Friday*",
   
   "_comment_48124": "do NOT translate the lines below",
+  "cmd_freestuff_2_en": "*Use `@FreeStuff set language` to change the language*",
   "cmd_set_language_status_2_en": "I am currently sending my messages in {language}. To change that type `@FreeStuff set language <language>` with <language> being one of the languages below:",
   "cmd_set_language_notfound_2_en": "I don't know that language. Please pick one from the following list of available languages:"
 }
