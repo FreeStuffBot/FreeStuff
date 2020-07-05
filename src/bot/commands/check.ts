@@ -76,6 +76,11 @@ export default class CheckCommand extends Command {
       return true;
     }
 
+    repl(
+      Core.text(g, '=cmd_check_success_1'),
+      Core.text(g, '=cmd_check_success_2')
+    );
+
     this.checkCooldown.push(mes.guild.id);
     setTimeout(() => {
       this.checkCooldown.splice(this.checkCooldown.indexOf(mes.guild.id), 1);
