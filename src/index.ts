@@ -14,6 +14,7 @@ import AdminCommandHandler from "./bot/admin-command-handler";
 import DataFetcher from "./bot/data-fetcher";
 import Sharder from "./bot/sharder";
 import LanguageManager from "./bot/language-manager";
+import Localisation from "./bot/localisation";
 import { DbStats } from "./database/db-stats";
 import { logVersionDetails } from "./util/git-parser";
 import * as chalk from "chalk";
@@ -32,6 +33,7 @@ export class FreeStuffBot extends Client {
   public dataFetcher: DataFetcher;
   public sharder: Sharder;
   public languageManager: LanguageManager;
+  public localisation: Localisation;
   
   public dbl: any;
   public readonly devMode: boolean;
@@ -72,6 +74,7 @@ export class FreeStuffBot extends Client {
         this.dataFetcher = new DataFetcher(this);
         this.sharder = new Sharder(this);
         this.languageManager = new LanguageManager(this);
+        this.localisation = new Localisation(this);
 
         DbStats.startMonitoring(this);
 

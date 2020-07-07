@@ -1,7 +1,8 @@
 import { Message } from "discord.js";
-import { ReplyFunction, Command, GuildData } from "../../types";
-import { Core } from "../../index";
+import { ReplyFunction, Command, GuildData, Store } from "../../types";
+import { Core, config } from "../../index";
 import Const from "../const";
+import ParseArgs from "../../util/parse-args";
 
 
 export default class TestCommand extends Command {
@@ -84,27 +85,42 @@ export default class TestCommand extends Command {
         );
       return true;
     }
+
+    const flags = ParseArgs.parse(args);
     
-    Core.messageDistributor.test(mes.guild, {
-      title: Core.text(g, '=cmd_test_announcement_header'),
-      org_price: {
-        euro: 19.99,
-        dollar: 19.99
-      },
-      price: {
-        euro: 0,
-        dollar: 0
-      },
-      store: 'steam',
-      thumbnail: this.thumbsUpImages[Math.floor(Math.random() * this.thumbsUpImages.length)],
-      org_url: Const.testGameLink,
-      url: Const.testGameLink,
-      flags: [],
-      steamSubids: '12345 98760',
-      until: -1,
-      type: 'free'
-    });
+    try {
+      Core.messageDistributor.test(mes.guild, {
+        title: Core.text(g, '=cmd_test_announcement_header'),
+        org_price: {
+          euro: parseFloat(flags.price + '') || 19.99,
+          dollar: parseFloat(flags.price + '') || 19.99
+        },
+        price: {
+          euro: 0,
+          dollar: 0
+        },
+        store: (Const.storeDisplayNames[flags.store + ''] ? flags.store as Store : '') || 'steam',
+        thumbnail: this.thumbsUpImages[Math.floor(Math.random() * this.thumbsUpImages.length)],
+        org_url: Const.testGameLink,
+        url: Const.testGameLink,
+        flags: [],
+        steamSubids: '12345 98760',
+        until: flags.until ? parseInt(flags.until + '') : -1,
+        type: 'free'
+      });
+    } catch (ex) {
+      if (Object.keys(flags)) {
+        repl('Yikes', 'Some of the flags you set caused errors. Try removing them.');
+      } else {
+        repl(
+          Core.text(g, '=cmd_error_fixable_1'),
+          Core.text(g, '=cmd_error_fixable_2')
+        );
+      }
+    }
     
+    if (config.admins.includes(mes.author.id)) return true;
+
     this.testCooldown.push(mes.guild.id);
     setTimeout(() => {
       this.testCooldown.splice(this.testCooldown.indexOf(mes.guild.id), 1);

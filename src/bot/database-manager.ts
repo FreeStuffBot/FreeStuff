@@ -154,7 +154,7 @@ export default class DatabaseManager {
       trashGames: (dbObject.settings & (1 << 6)) != 0,
       altDateFormat: (dbObject.settings & (1 << 7)) != 0,
       theme: dbObject.settings & 0b1111,
-      language: Core.languageManager.languageById((dbObject.settings >> 8 & 0b1111))
+      language: Core.languageManager.languageById((dbObject.settings >> 8 & 0b11111))
     }
   }
 
@@ -181,27 +181,27 @@ export default class DatabaseManager {
         break;
       case 'theme':
         bits = (value as number) & 0b1111;
-        out['settings'] = this.modifyBits(c, 0, 4, bits);
+        out['settings'] = Util.modifyBits(c, 0, 4, bits);
         break;
       case 'currency':
         bits = value ? 1 : 0;
-        out['settings'] = this.modifyBits(c, 4, 1, bits);
+        out['settings'] = Util.modifyBits(c, 4, 1, bits);
         break;
       case 'react':
         bits = value ? 1 : 0;
-        out['settings'] = this.modifyBits(c, 5, 1, bits);
+        out['settings'] = Util.modifyBits(c, 5, 1, bits);
         break;
       case 'trash':
         bits = value ? 1 : 0;
-        out['settings'] = this.modifyBits(c, 6, 1, bits);
+        out['settings'] = Util.modifyBits(c, 6, 1, bits);
         break;
       case 'altdate':
         bits = value ? 1 : 0;
-        out['settings'] = this.modifyBits(c, 7, 1, bits);
+        out['settings'] = Util.modifyBits(c, 7, 1, bits);
         break;
       case 'language':
         bits = (value as number) & 0b1111;
-        out['settings'] = this.modifyBits(c, 8, 4, bits);
+        out['settings'] = Util.modifyBits(c, 8, 5, bits);
         break;
     }
     Database
@@ -209,19 +209,15 @@ export default class DatabaseManager {
       .updateOne({ _id: Long.fromString(guild.id) }, { '$set': out });
   }
 
-  private modifyBits(input: number, lshift: number, bits: number, value: number): number {
-    return (input & ~((2 ** bits - 1) << lshift)) | (value << lshift);
-  }
-
   // 3__ 2__________________ 1__________________ 0__________________
   // 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
-  // settings:                               _______ _ _ _ _ _______
+  // settings:                             _________ _ _ _ _ _______
   // 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-  //                                         |       | | | |  theme
-  //                                         |       | | | currency (on = usd, off = eur)
-  //                                         |       | | react with :free: emoji
-  //                                         |       | show trash games
-  //                                         |       alternative date format
-  //                                         language
+  //                                       |         | | | |  theme [0< 4]
+  //                                       |         | | | currency (on = usd, off = eur) [4< 1]
+  //                                       |         | | react with :free: emoji [5< 1]
+  //                                       |         | show trash games [6< 1]
+  //                                       |         alternative date format [7< 1]
+  //                                       language [8< 5]
 
 }

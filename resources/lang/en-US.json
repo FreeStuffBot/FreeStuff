@@ -9,7 +9,6 @@
   "translation_by": "English translation by:",
   "announcement_free_until_date": "until {date}",
   "announcement_free_until_day": "until {day}",
-  "announcement_free_until_date_next_week": "until {date} next week",
   "announcement_free_until_day_next_week": "until {day} next week",
   "announcement_free_for_a_week": "for a week",
   "announcement_free_for_a_long_time": "for a very long time",
@@ -21,6 +20,7 @@
   "announcement_theme9": "**{name}** is free!\n<{url}>",
   "game_meta_flag_trash": "Low Quality",
   "game_meta_flag_thirdparty": "Third Party Provider",
+  "translation_available": "English translation available! If you want me to use English, type `@FreeStuff set language english`",
   "cmd_on_cooldown_1": "Command is on cooldown!",
   "cmd_on_cooldown_2": "This command has a {time} second cooldown, please wait a bit!",
   "cmd_error_fixable_1": "A wild error occurred!",
@@ -170,7 +170,7 @@
   "cmd_set_language_status_1": "English. And English only.",
   "cmd_set_language_status_2": "If you want me to talk in a different language, type `@FreeStuff set language <language>`. Choose your language from the list below:",
   "cmd_set_language_notfound_easteregg_1": "No no no no, look:",
-  "cmd_set_language_notfound_easteregg_2": "`@FreeStuff set language` is the right start. But instead of `<language>` you type the language you want me to use, okay? :)",
+  "cmd_set_language_notfound_easteregg_2": "`@FreeStuff set language` is the right start. But instead of `{input}` you type the language you want me to use, okay? :)",
   "cmd_set_language_notfound_1": "There's thousands of languages in the world...",
   "cmd_set_language_notfound_2": "But I can't speak all of them. Please pick one from the following list of available languages:",
   "cmd_set_language_success_1": "Oi mate!",
@@ -189,5 +189,6 @@
   "_comment_48124": "do NOT translate the lines below",
   "cmd_freestuff_2_en": "*Use `@FreeStuff set language` to change the language*",
   "cmd_set_language_status_2_en": "I am currently sending my messages in {language}. To change that type `@FreeStuff set language <language>` with <language> being one of the languages below:",
-  "cmd_set_language_notfound_2_en": "I don't know that language. Please pick one from the following list of available languages:"
+  "cmd_set_language_notfound_2_en": "I don't know that language. Please pick one from the following list of available languages:",
+  "translation_available_generic": "English is not your primary language? This bot has many translations available, use `@FreeStuff set language` for more info."
 }

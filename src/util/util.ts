@@ -41,5 +41,9 @@ export class Util {
       .modulo(Long.fromNumber(Core.options.shardCount))
       .equals(Long.fromNumber(Core.options.shardId));
   }
+  
+  public static modifyBits(input: number, lshift: number, bits: number, value: number): number {
+    return (input & ~((2 ** bits - 1) << lshift)) | (value << lshift);
+  }
 
 }

@@ -400,10 +400,10 @@ export default class SettingsCommand extends Command {
       return;
     }
 
-    if (args[1].toLowerCase() == '<language>') {
+    if (args[1].startsWith('<')) {
       reply(
         Core.text(g, '=cmd_set_language_notfound_easteregg_1'),
-        Core.text(g, '=cmd_set_language_notfound_easteregg_2')
+        Core.text(g, '=cmd_set_language_notfound_easteregg_2', { input: args[1] })
       );
       return;
     }

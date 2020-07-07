@@ -4,9 +4,9 @@
   "description": "Discord Bot for the FreeStuff system",
   "main": "build/index.js",
   "scripts": {
-    "start": "node ./build/index.js",
+    "start": "node --icu-data-dir=node_modules\\full-icu ./build/index.js",
     "build": "tsc",
-    "dev": "tsc && node ./build/index.js --noSharding",
+    "dev": "tsc && node --icu-data-dir=node_modules\\full-icu ./build/index.js --noSharding",
     "test": "echo \"No test specified\" && exit 0"
   },
   "author": "FreeStuff Bot Team",
@@ -24,6 +24,7 @@
     "discord.js": "^11.6.3",
     "dotenv": "^8.2.0",
     "fs": "0.0.1-security",
+    "full-icu": "^1.3.1",
     "git-last-commit": "^1.0.0",
     "mongodb": "^3.5.5",
     "node-fetch": "^2.6.0",

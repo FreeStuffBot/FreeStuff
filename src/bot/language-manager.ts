@@ -1,4 +1,4 @@
-import { FreeStuffBot, Core, config } from "../index";
+import { FreeStuffBot } from "../index";
 import * as fs from "fs";
 import { GuildData } from "types";
 
@@ -64,6 +64,10 @@ export default class LanguageManager {
     }
     for (const lang of this.list) {
       if (lang.startsWith(query)) return lang;
+    }
+    for (const lang of this.list) {
+      if (this.getText(lang, 'lang_name').toLowerCase().includes(query)) return lang;
+      if (this.getText(lang, 'lang_name_en').toLowerCase().includes(query)) return lang;
     }
     return '';
   }
