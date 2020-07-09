@@ -11,5 +11,5 @@ New theme, theme 10. This theme is meant for people using ArchiSteamFarm or simi
 Store icon now appears in the top right corner of themes that use images.
 
 And last but not least.... as requested many many times... **WE ARE GOING OPEN SOURCE! :tada:**
-More on our decision making here: [BLOG POST LINK]
+More on our decision making here: [BLOG POST LINK] (Also includes some stats and behind the scenes info)
 

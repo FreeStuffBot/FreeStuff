@@ -47,7 +47,7 @@ export default class FreeCommand extends Command {
   public static updateCurrentFreebies() {
     Database
       .collection('games')
-      .find({ status: 'published' })
+      .find({ $or: [{status: 'published'}, {status: 'accepted'}] })
       .sort({ published: -1 })
       .limit(20)
       .toArray()
