@@ -5,10 +5,12 @@
     "de-DE",
     "pl",
     "bg",
-    "ar-SY"
+    "ar-SY",
+    "vi-VN",
+    "dk"
   ],
   "idmap": {
-    "_": "Yes kinda obsolete since you could just take it from the array but just in case someone accedently changes the order above...",
+    "_": "Yes kinda obsolete since you could just take it from the array but just in case *someone* accedently changes the order above...",
     "0": "en-US",
     "1": "en-GB",
     "2": "de-DE",
@@ -20,6 +22,6 @@
     "8": "zh-CN",
     "9": "sv-SE",
     "10": "fi",
-    "11": "vi"
+    "11": "vi-VN"
   }
 }

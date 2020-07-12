@@ -185,6 +185,8 @@
   "cmd_set_until_weekday_success_2": "I can see why one would prefer that. Good choice if you ask me, I'll do it that way from now on!",
   "cmd_set_until_not_found_1": "I'm sorry, what?",
   "cmd_set_until_not_found_2": "Whenever I announce free games I also tell you for how long they are free. Please type\n`@FreeStuff set until date` if you want me to put a date there. For example: *Free until 11/2/2024*\n`@FreeStuff set until weekday` if you want me to do it this way: *Free until next Friday*",
+  "cmd_change_prefix_1": "Nope, not possible!",
+  "cmd_change_prefix_2": "You cannot change the prefix. Just use @FreeStuff",
   
   "__comment_48124": "DO NOT TRANSLATE THE LINES BELOW. you may remove them entirely",
   "cmd_freestuff_2_en": "*Use `@FreeStuff set language` to change the language*\n[Visit our website for more info]({website})",

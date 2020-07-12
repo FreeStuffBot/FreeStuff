@@ -99,6 +99,13 @@ export default class SettingsCommand extends Command {
         this.subcmdAltDateFormat(mes, args, g, repl);
         break;
 
+      case 'prefix':
+        repl(
+          Core.text(g, '=cmd_change_prefix_1'),
+          Core.text(g, '=cmd_change_prefix_2'),
+        );
+        break;
+
       default:
         repl(
           Core.text(g, '=cmd_settings_not_found_1', { name: args[0] }),
@@ -395,7 +402,7 @@ export default class SettingsCommand extends Command {
         Core.text(g, '=cmd_set_language_status_1'),
         Core.text(g, '=cmd_set_language_status_2')
           + (g.language.startsWith('en') ? '' : '\n\n' + Core.text(g, '=cmd_set_language_status_2_en', { language: Core.text(g, '=lang_name_en') }))
-          + '\n\n' + Core.languageManager.displayLangList().map(l => `•‎ ${l}`).join('\n')
+          + '\n\n' + Core.languageManager.displayLangList().map(l => `${l.endsWith(Core.languageManager.get(g, 'lang_name_en') + ')') ? '☛' : '•'}‎ ${l}`).join('\n')
       );
       return;
     }
@@ -408,13 +415,14 @@ export default class SettingsCommand extends Command {
       return;
     }
 
-    const lang = Core.languageManager.languageByName(args[1]);
+    let lang = Core.languageManager.languageByName(args[1]);
+    if (lang == 'en-US' && args.join(' ').includes('eu')) lang = 'en-GB';
     if (!lang) {
       reply(
         Core.text(g, '=cmd_set_language_notfound_1'),
         Core.text(g, '=cmd_set_language_notfound_2')
         + (g.language.startsWith('en') ? '' : '\n\n' + Core.text(g, '=cmd_set_language_notfound_2_en'))
-        + '\n\n' + Core.languageManager.displayLangList().map(l => `•‎ ${l}`).join('\n')
+        + '\n\n' + Core.languageManager.displayLangList().map(l => `${l.endsWith(Core.languageManager.get(g, 'lang_name_en') + ')') ? '☛' : '•'}‎ ${l}`).join('\n')
       );
       return;
     }
