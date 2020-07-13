@@ -185,5 +185,5 @@
     "cmd_set_until_weekday_success_2": "Ja lige hvad jeg ledte efter noget pænt og lidt fancy, serveren kommer til at bruge det fremadrettet",
     "cmd_set_until_not_found_1": "Uhh jeg tror du skrev noget forkeret",
     "cmd_set_until_not_found_2": "Hver gang jeg annoncerer gratis spil fortæller jeg dig også hvor længe de er gratis. Skriv\n`@FreeStuff set until date` Hvis du vil have en dato der fx.: *Gratis indtil 11/2/2024*\n`@FreeStuff set until weekday` Hvid du vil have jeg skriver navnet på dagen fx. *Gratis indtil næste fredag*",
-    "translation_available": "Dansk oversættelse tilgængelig! Vis du vil have den danske version af mig, skriv `@FreeStuff set language danish`",
+    "translation_available": "Dansk oversættelse tilgængelig! Vis du vil have den danske version af mig, skriv `@FreeStuff set language danish`"
 }
