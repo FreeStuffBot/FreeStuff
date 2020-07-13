@@ -2,7 +2,7 @@ import { FreeStuffBot, Core } from "../index";
 import { Message, Guild, MessageOptions } from "discord.js";
 import Const from "./const";
 import Database from "../database/database";
-import { GameInfo, GuildData, GameData, DatabaseGuildData, GameFlag, Theme } from "../types";
+import { GameInfo, GuildData, DatabaseGuildData, GameFlag, Theme } from "../types";
 import { Long } from "mongodb";
 import { DbStats } from "../database/db-stats";
 import ThemeOne from "./themes/1";

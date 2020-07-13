@@ -79,15 +79,19 @@ export default class DatabaseManager {
   /**
    * Add a guild to the database
    * @param guild guild object
+   * @param autoSettings whether the default settings should automatically be adjusted to the server (e.g: server region -> language)
    */
-  public addGuild(guild: Guild) {
+  public addGuild(guild: Guild, autoSettings = true) {
+    const settings = autoSettings
+      ? Core.localisation.getDefaultSettings(guild)
+      : 0;
     const data: DatabaseGuildData = {
       _id: Long.fromString(guild.id),
       sharder: Long.fromString(guild.id).shiftRight(22),
       channel: null,
       role: null,
       price: 3,
-      settings: 0
+      settings: settings
     }
     Database
       .collection('guilds')

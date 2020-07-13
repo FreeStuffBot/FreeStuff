@@ -2,7 +2,6 @@ import { Message, TextChannel } from "discord.js";
 import { ReplyFunction, GuildData, Command } from "../../types";
 import { Core } from "../../index";
 import Const from "../const";
-import LanguageManager from "bot/language-manager";
 
 
 export default class SettingsCommand extends Command {

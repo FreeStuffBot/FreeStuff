@@ -3,7 +3,7 @@ loadDotEnv();
 export const config = require('../config.js');
 
 
-import { Client, User, ClientOptions } from "discord.js";
+import { Client, ClientOptions } from "discord.js";
 import MongoAdapter from "./database/mongo-adapter";
 import Database from "./database/database";
 import { Util } from "./util/util";

@@ -1,4 +1,4 @@
-import { GameInfo, GuildData, Theme, GameFlag } from "../../types";
+import { GameInfo, GuildData, Theme } from "../../types";
 import { MessageOptions } from "discord.js";
 import { Core } from "../../index";
 import Const from "../const";

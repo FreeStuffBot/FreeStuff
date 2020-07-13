@@ -1,5 +1,5 @@
 import { FreeStuffBot, Core } from "../index";
-import { GameData, DatabaseGuildData } from "types";
+import { GameData } from "types";
 import Database from "../database/database";
 import FreeCommand from "./commands/free";
 
