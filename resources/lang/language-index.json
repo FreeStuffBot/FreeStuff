@@ -7,7 +7,8 @@
     "bg",
     "ar-SY",
     "vi-VN",
-    "dk"
+    "dk",
+    "pt-BR"
   ],
   "idmap": {
     "_": "Yes kinda obsolete since you could just take it from the array but just in case *someone* accedently changes the order above...",

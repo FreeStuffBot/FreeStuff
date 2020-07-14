@@ -74,7 +74,7 @@ export default class CommandHandler {
 
     if (command == '') {
       const langNotif = g.language.startsWith('en')
-        ? Core.localisation.getTranslationHint(orgmes.guild)
+        ? (Core.localisation.getTranslationHint(orgmes.guild) && orgmes.member.hasPermission('MANAGE_GUILD'))
           ? '\n\n' + Core.localisation.getTranslationHint(orgmes.guild)
           : ''
         : '\n\n' + Core.text(g, '=cmd_freestuff_2_en', { website: Const.websiteLink });

@@ -184,5 +184,5 @@
   "cmd_set_until_weekday_success_2": "Dobry wybór, od teraz tak będzie!",
   "cmd_set_until_not_found_1": "Eeee... Słucham?",
   "cmd_set_until_not_found_2": "Przy ogłaszaniu darmowych gier chciałbym mógłbym do kiedy one są. Proszę użyj\n`@FreeStuff set until date` jeżeli mam też dawać date. Na przykład: *do 11/2/2024*\n`@FreeStuff set until weekday` jeżeli ma być tak: *do Piątku*",
-  "translation_available": "Polskie tłumaczenie dostępne! Jak ma być wszystko po angielsku, użyj `@FreeStuff set language english`"
+  "translation_available": "Polskie tłumaczenie dostępne! Jak ma być wszystko po angielsku, użyj `@FreeStuff set language polish`"
 }
