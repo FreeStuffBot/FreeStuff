@@ -174,7 +174,7 @@
   "cmd_set_language_notfound_1": "Es gibt tausende Sprachen auf dieser Welt...",
   "cmd_set_language_notfound_2": "Aber ich kann sie nicht alle sprechen. Bitte wähle eine der Folgenden aus:",
   "cmd_set_language_success_1": "Jawoll!",
-  "cmd_set_language_success_2": "Deutsch ist einfach eine schöne Sprache, dem kann ich nur zustimmen!",
+  "cmd_set_language_success_2": "Ab sofort wird hier nur noch Deutsch gesprochen!\nKeine Ausnahmen!",
   "cmd_set_until_date_status_1": "Gratis bis 11/2/2024",
   "cmd_set_until_date_status_2": "So schreib ich das momentan. Wenn ich lieber den Wochentag nennen soll, gib `@FreeStuff set until weekday` ein",
   "cmd_set_until_date_success_1": "Gratis bis 11/2/2024",

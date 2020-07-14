@@ -171,7 +171,7 @@
   "cmd_set_language_notfound_easteregg_2": "`@FreeStuff set language` é um bom começo. Mas ao invés de `{input}` você digita o idioma que quer que eu use, ok? :P",
   "cmd_set_language_notfound_1": "Tem mais de 1000 idiomas no mundo...",
   "cmd_set_language_notfound_2": "Mas eu não posso falar todos eles. Escolha um da seguinte lista de idiomas disponíveis:",
-  "cmd_set_language_success_1": "Si!",
+  "cmd_set_language_success_1": "Sim!",
   "cmd_set_language_success_2": "Agora é Portugues, c:",
   "cmd_settings_change_until": "com a maioria dos temas, o bot informará por quanto tempo o jogo é gratuito. Use este comando para alterar como isso é exibido.",
   "cmd_set_until_date_status_1": "Grátis até 2/11/2024",
