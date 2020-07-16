@@ -93,7 +93,7 @@ export default class CommandHandler {
     //
 
     const handler = this.commands.find(c => c.info.trigger.includes(command.toLowerCase()));
-    if (!handler) {  
+    if (!handler) {
       if (/set.*/.test(command.toLowerCase())) {
         reply(
           Core.text(g, '=cmd_missing_space_1', { command: command.toLowerCase().substr(3)}),

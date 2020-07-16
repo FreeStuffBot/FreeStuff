@@ -105,7 +105,7 @@ export default class TestCommand extends Command {
         url: Const.testGameLink,
         flags: [],
         steamSubids: '12345 98760',
-        until: flags.until ? parseInt(flags.until + '') : -1,
+        until: flags.until ? parseInt(flags.until + '', 10) : -1,
         type: 'free'
       });
     } catch (ex) {

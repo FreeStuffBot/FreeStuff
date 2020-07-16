@@ -127,7 +127,7 @@ export default class SettingsCommand extends Command {
     }
     let channel = orgmes.mentions.channels.first();
     if (!channel) {
-      const result = isNaN(parseInt(args[1]))
+      const result = isNaN(parseInt(args[1], 10))
         ? orgmes.guild.channels.find(find => find.name.toLowerCase() == args[1].toLowerCase())
         : orgmes.guild.channels.find(find => find.id == args[1]);
       if (!result) {
@@ -231,7 +231,7 @@ export default class SettingsCommand extends Command {
       return;
     }
     if (['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].includes(args[1])) {
-      Core.databaseManager.changeSetting(orgmes.guild, g, 'theme', parseInt(args[1]) - 1);
+      Core.databaseManager.changeSetting(orgmes.guild, g, 'theme', parseInt(args[1], 10) - 1);
       reply(
         Core.text(g, '=cmd_set_theme_success_1'),
         Core.text(g, '=cmd_set_theme_success_2')

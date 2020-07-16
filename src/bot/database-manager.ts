@@ -66,7 +66,7 @@ export default class DatabaseManager {
    * Returns an array of the guilddata from each of the guilds belonging to the current shard
    */
   public async getAssignedGuilds(): Promise<DatabaseGuildData[]> {
-    return await Database
+    return Database
       .collection('guilds')
       .find(
         Core.singleShard

@@ -124,8 +124,8 @@ if (sharding && (!params.shardCount || !params.shardId)) {
   console.error(chalk.red`Missing --shardCount or --shardId`);
   process.exit(-1);
 }
-const shardCount = parseInt(params.shardCount as string);
-const shardId = parseInt(params.shardId as string);
+const shardCount = parseInt(params.shardCount as string, 10);
+const shardId = parseInt(params.shardId as string, 10);
 if (sharding && (!params.shardCount || !params.shardId)) {
   console.error(chalk.red`Invalid --shardCount or --shardId`);
   process.exit(-1);

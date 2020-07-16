@@ -51,7 +51,7 @@ export default class LanguageManager {
   public languageToId(lang: string): number {
     for (const key in this.idmap) {
       if (this.idmap[key] == lang)
-        return parseInt(key);
+        return parseInt(key, 10);
     }
     return -1;
   }
