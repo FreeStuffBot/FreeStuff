@@ -9,7 +9,7 @@ export default class ThemeNine implements Theme {
     return [
       (data.roleInstance ? data.roleInstance.toString() : '')
       + ' '
-      + Core.text(data, '=announcement_theme9'),
+      + Core.text(data, '=announcement_theme9', { name: content.title, url: content.url }),
       {}
     ];
   }
