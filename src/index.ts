@@ -90,7 +90,7 @@ export class FreeStuffBot extends Client {
           console.log(chalk`Bot ready! Logged in as {yellowBright ${this.user.tag}} {gray (${params.noSharding ? 'No Sharding' : `Shard ${options.shardId} / ${options.shardCount}`})}`);
           this.user.setActivity('@FreeStuff help​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://freestuffbot.xyz/', { type: 'WATCHING' });
 
-          if (!this.singleShard) {
+          if (!this.devMode && !this.singleShard) {
             this.dbl.postStats(this.guilds.size, this.options.shardId, this.options.shardCount);
             this.setInterval(() => {
               this.dbl.postStats(this.guilds.size, this.options.shardId, this.options.shardCount);
