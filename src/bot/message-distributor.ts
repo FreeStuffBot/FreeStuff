@@ -15,6 +15,7 @@ import ThemeSeven from "./themes/7";
 import ThemeEight from "./themes/8";
 import ThemeNine from "./themes/9";
 import ThemeTen from "./themes/10";
+import SentryManager from "thirdparty/sentry/sentry";
 
 
 export default class MessageDistributor {
@@ -55,14 +56,17 @@ export default class MessageDistributor {
     console.log(`Starting to announce ${content.title} - ${new Date().toLocaleTimeString()}`);
     let announcementsMade = 0;
     for (const g of guilds) {
-      if (!g) return;
+      if (!g) continue;
       try {
         const successful = this.sendToGuild(g, content, false, false);
         if (await successful) {
           await new Promise(res => setTimeout(() => res(), 200));
           announcementsMade++;
         }
-      } catch(ex) { console.error(ex); }
+      } catch(ex) {
+        console.error(ex);
+        SentryManager.report(ex);
+      }
     }
     console.log(`Done announcing ${content.title} - ${new Date().toLocaleTimeString()}`);
 
@@ -105,12 +109,11 @@ export default class MessageDistributor {
 
     // check if permissions match
     const self = data.channelInstance.guild.me;
-    if (!self.permissionsIn(data.channelInstance).has('SEND_MESSAGES')) return false;
-    if (!self.permissionsIn(data.channelInstance).has('VIEW_CHANNEL')) return false;
-    if (!self.permissionsIn(data.channelInstance).has('EMBED_LINKS')
-       && Const.themesWithEmbeds.includes(data.theme)) return false;
-    if (!self.permissionsIn(data.channelInstance).has('EXTERNAL_EMOJIS')
-       && Const.themesWithExtemotes[data.theme]) data.theme = Const.themesWithExtemotes[data.theme];
+    const permissions = self.permissionsIn(data.channelInstance);
+    if (!permissions.has('SEND_MESSAGES')) return false;
+    if (!permissions.has('VIEW_CHANNEL')) return false;
+    if (!permissions.has('EMBED_LINKS') && Const.themesWithEmbeds.includes(data.theme)) return false;
+    if (!permissions.has('EXTERNAL_EMOJIS') && Const.themesWithExtemotes[data.theme]) data.theme = Const.themesWithExtemotes[data.theme];
 
     // set content url
     if (!content.url) content.url = content.org_url;
@@ -121,7 +124,7 @@ export default class MessageDistributor {
 
     // send the message
     const mes: Message = await data.channelInstance.send(...messageContent) as Message;
-    if (data.react && self.permissionsIn(data.channelInstance).has('ADD_REACTIONS'))
+    if (data.react && permissions.has('ADD_REACTIONS'))
       await mes.react('🆓');
     return true;
   }

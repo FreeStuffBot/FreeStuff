@@ -28,16 +28,14 @@ export default class Sharder {
   }
 
   public sendToManager(payload: ShardStatusPayload) {
-    try {
-      fetch(config.sharder.url, {
-        headers: {
-          'Content-Type': 'application/json',
-          'authorization': config.sharder.auth
-        },
-        method: 'POST',
-        body: JSON.stringify(payload)
-      });
-    } catch (ex) { }
+    fetch(config.sharder.url, {
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': config.sharder.auth
+      },
+      method: 'POST',
+      body: JSON.stringify(payload)
+    }).catch(ex => console.warn('Failed to report status to manager service.'))
   }
 
 }

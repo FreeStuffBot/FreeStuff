@@ -22,6 +22,7 @@ import * as DBL from "dblapi.js";
 import ParseArgs from "./util/parse-args";
 import SentryManager from "./thirdparty/sentry/sentry";
 import { GuildData } from "types";
+import { Long } from "mongodb";
 
 
 export class FreeStuffBot extends Client {
