@@ -1,7 +1,7 @@
 import { FreeStuffBot, Core, config } from "../index";
 import { Message } from "discord.js";
 import Database from "../database/database";
-import { GuildData } from "types";
+import { GameData, DatabaseGuildData, GameInfo } from "types";
 import * as AsciiTable from "ascii-table";
 import { hostname } from "os";
 import { Long } from "mongodb";
@@ -69,6 +69,25 @@ export default class AdminCommandHandler {
             })
             .catch(console.error);
           return true;
+
+        case 'distribute':
+          if (args.length < 3) {
+            reply('no', '$FreeStuff distribute <gameid> <serverid> [...serverid]');
+            return;
+          }
+          Database
+            .collection('games')
+            .findOne({ _id: parseInt(args[1], 10) })
+            .then(async (data: GameData) => {
+              args.splice(0, 2);
+              for (let guildid of args) {
+                const guild = await Database
+                  .collection('guilds')
+                  .findOne({ _id: Long.fromString(guildid) }) as DatabaseGuildData;
+                Core.messageDistributor.sendToGuild(guild, data.info, false, false);
+              }
+            })
+            .catch(err => reply('error', err));
     }
 
     return false;
