@@ -31,8 +31,11 @@ export default class AdminCommandHandler {
       const args = m.content.split(' ');
       args.splice(0, 1);
       const success = this.handleCommand(args.splice(0, 1)[0] || '', args, m);
-      if (!success && m.guild.me.permissionsIn(m.channel).has('ADD_REACTIONS'))
+      if (!success
+        && m.guild.me.permissionsIn(m.channel).has('ADD_REACTIONS')
+        && m.guild.me.permissionsIn(m.channel).has('READ_MESSAGE_HISTORY')) {
         m.react('🤔');
+      }
     });
   }
 

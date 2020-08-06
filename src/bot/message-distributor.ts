@@ -124,7 +124,7 @@ export default class MessageDistributor {
 
     // send the message
     const mes: Message = await data.channelInstance.send(...messageContent) as Message;
-    if (data.react && permissions.has('ADD_REACTIONS'))
+    if (data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
       await mes.react('🆓');
     return true;
   }
