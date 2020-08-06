@@ -15,7 +15,7 @@ import ThemeSeven from "./themes/7";
 import ThemeEight from "./themes/8";
 import ThemeNine from "./themes/9";
 import ThemeTen from "./themes/10";
-import SentryManager from "thirdparty/sentry/sentry";
+import SentryManager from "../thirdparty/sentry/sentry";
 
 
 export default class MessageDistributor {
