@@ -139,19 +139,16 @@ export default class DatabaseManager {
   public parseGuildData(dbObject: DatabaseGuildData): GuildData {
     if (!dbObject) return undefined;
     const responsible = Core.singleShard || Util.belongsToShard(dbObject._id);
+    const guildInstance = Core.guilds.get(dbObject._id.toString());
     return {
       ...dbObject,
-      channelInstance: dbObject.channel && responsible
-        ? (Core
-            .guilds
-            .get(dbObject._id.toString())
-            .channels
-            .get((dbObject.channel as Long).toString()) as TextChannel)
+      channelInstance: dbObject.channel && responsible && guildInstance
+        ? (guildInstance.channels.get((dbObject.channel as Long).toString()) as TextChannel)
         : undefined,
       roleInstance: dbObject.role && responsible
-        ? (dbObject.role.toString() == '1'
-          ? Core.guilds.get(dbObject._id.toString()).defaultRole
-          : Core.guilds.get(dbObject._id.toString()).roles.get((dbObject.role as Long).toString()))
+        ? (dbObject.role.toString() == '1' && guildInstance
+          ? guildInstance.defaultRole
+          : guildInstance.roles.get((dbObject.role as Long).toString()))
         : undefined,
       currency: (dbObject.settings & (1 << 4)) == 0 ? 'euro' : 'usd',
       react: (dbObject.settings & (1 << 5)) != 0,

@@ -39,8 +39,11 @@ export default class CommandHandler {
       args.splice(0, 1);
       Core.databaseManager.getGuildData(m.guild).then(g => {
         this.handleCommand(args.splice(0, 1)[0] || '', args, m, g).then(success => {
-          if (!success && m.guild.me.permissionsIn(m.channel).has('ADD_REACTIONS'))
+          if (!success
+            && m.guild.me.permissionsIn(m.channel).has('ADD_REACTIONS')
+            && m.guild.me.permissionsIn(m.channel).has('READ_MESSAGE_HISTORY')) {
             m.react('🤔');
+          }
         }).catch(e => { });
       }).catch(err => {
         try {
