@@ -67,6 +67,9 @@ export class FreeStuffBot extends Client {
         console.log('Connected to Mongo');
 
         await Database.init();
+
+        console.log(await Database.collection('guilds').findOne({_id:Long.fromString('463985565058990080')}))
+        return;
     
         this.commandHandler = new CommandHandler(this);
         this.databaseManager = new DatabaseManager(this);
