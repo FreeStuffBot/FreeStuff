@@ -24,7 +24,7 @@ export default class LanguageManager {
     this.idmap = JSON.parse(index).idmap;
 
     for (let langCode of this.list) {
-      const raw = fs.readFileSync(LanguageManager.BASE_URI + langCode + '.json').toString();
+      const raw = fs.readFileSync(LanguageManager.BASE_URI + langCode + '.json').toString().replace('\\\\', '\\');
       this.texts[langCode] = JSON.parse(raw);
     }
   }

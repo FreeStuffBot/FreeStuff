@@ -96,8 +96,8 @@ export default class TestCommand extends Command {
           dollar: parseFloat(flags.price + '') || 19.99
         },
         price: {
-          euro: 0,
-          dollar: 0
+          euro: g.price,
+          dollar: g.price
         },
         store: (Const.storeDisplayNames[flags.store + ''] ? flags.store as Store : '') || 'steam',
         thumbnail: this.thumbsUpImages[Math.floor(Math.random() * this.thumbsUpImages.length)],

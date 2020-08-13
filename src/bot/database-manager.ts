@@ -145,8 +145,8 @@ export default class DatabaseManager {
       channelInstance: dbObject.channel && responsible && guildInstance
         ? (guildInstance.channels.get((dbObject.channel as Long).toString()) as TextChannel)
         : undefined,
-      roleInstance: dbObject.role && responsible
-        ? (dbObject.role.toString() == '1' && guildInstance
+      roleInstance: dbObject.role && responsible && guildInstance
+        ? (dbObject.role.toString() == '1'
           ? guildInstance.defaultRole
           : guildInstance.roles.get((dbObject.role as Long).toString()))
         : undefined,

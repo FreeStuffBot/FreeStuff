@@ -7,11 +7,12 @@ import { hostname } from "os";
 export default class Sharder {
 
   public constructor(bot: FreeStuffBot) {
-    if (Core.singleShard) return;
+    // if (Core.singleShard) return;
     this.updateManager();
     setInterval(() => {
       this.updateManager();
-    }, 1000 * 60);
+    }, 1000 * 3);
+    // }, 1000 * 60);
   }
 
   public async updateManager() {
@@ -35,7 +36,31 @@ export default class Sharder {
       },
       method: 'POST',
       body: JSON.stringify(payload)
-    }).catch(ex => console.warn('Failed to report status to manager service.'))
+    })
+    .then(res => res.json())
+    .then(data => data.messages && this.evaluateManagerMessage(data.messages))
+    .catch(ex => console.warn('Failed to report status to manager service.'));
+  }
+
+  public evaluateManagerMessage(input: string[]) {
+    for (let message of input) {
+      const command = message.split('=')[0];
+      const args = message.substr(command.length);
+      this.executeCommand(command, args);
+    }
+  }
+
+  public executeCommand(command: string, args?: string) {
+    switch(command) {
+      case 'shutdown':
+        console.log('Recieved shut down command from manager. Exit with code 0')
+        process.exit(0);
+
+      case 'reload_lang':
+        // TODO
+        break;
+      
+    }
   }
 
 }

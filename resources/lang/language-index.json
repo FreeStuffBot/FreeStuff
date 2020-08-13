@@ -6,9 +6,9 @@
     "pl",
     "bg",
     "ar-SY",
+    "pt-BR",
     "vi-VN",
-    "da",
-    "pt-BR"
+    "da"
   ],
   "idmap": {
     "_": "Yes kinda obsolete since you could just take it from the array but just in case *someone* accedently changes the order above...",
