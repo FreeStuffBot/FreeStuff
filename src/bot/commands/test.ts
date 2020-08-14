@@ -89,15 +89,22 @@ export default class TestCommand extends Command {
     const flags = ParseArgs.parse(args);
     
     try {
+      let price = parseFloat(flags.price + '');
+      // if (!price) {
+      //   price = g.price;
+      //   if (!(price + '').includes('.'))
+      //     price = parseFloat(`${price}.00`);
+      // }
+      if (!price) price = 19.99;
       Core.messageDistributor.test(mes.guild, {
         title: Core.text(g, '=cmd_test_announcement_header'),
         org_price: {
-          euro: parseFloat(flags.price + '') || 19.99,
-          dollar: parseFloat(flags.price + '') || 19.99
+          euro: price,
+          dollar: price
         },
         price: {
-          euro: g.price,
-          dollar: g.price
+          euro: 0,
+          dollar: 0
         },
         store: (Const.storeDisplayNames[flags.store + ''] ? flags.store as Store : '') || 'steam',
         thumbnail: this.thumbsUpImages[Math.floor(Math.random() * this.thumbsUpImages.length)],

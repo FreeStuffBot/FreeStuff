@@ -2,6 +2,7 @@ import { FreeStuffBot, Core } from "../index";
 import { GameData } from "types";
 import Database from "../database/database";
 import FreeCommand from "./commands/free";
+import Redis from "../database/redis";
 
 
 export default class DataFetcher {
@@ -11,29 +12,51 @@ export default class DataFetcher {
   public currentlyAnnouncing = false;
 
   public constructor(bot: FreeStuffBot) {
-    setInterval(() => {
+    const checkInterval = bot.devMode ? 5 : 60;
+
+    setInterval(async () => {
       if (this.currentlyAnnouncing) return;
 
-      Database
-        .collection('games')
-        .find({ status: 'accepted' })
-        .toArray()
-        .then((waiting: GameData[]) => {
-          if (!waiting || !waiting.length) return;
-          for (const entry of waiting) {
-            if (!!this.announcementQueue.find(i => i._id == entry._id)) continue;
-            if (!Core.singleShard && entry.outgoing && entry.outgoing.includes(Core.options.shardId)) continue;
+      const pending = await Redis.getSharded('pending');
+      if (pending) {
+        this.finishAnnouncement(parseInt(pending, 10));
+      } else {
+        this.checkMongoQueue();
+      }
+    }, checkInterval * 1000);
+  }
 
-            // entry.info.url = this.generateProxyUrl(entry);
-            entry.info.url = entry.info.org_url;
-            this.announcementQueue.push(entry);
-          }
+  private async checkMongoQueue() {
+    const waiting: GameData[] = await Database
+      .collection('games')
+      .find({ status: 'accepted' })
+      .toArray()
+    
+    if (!waiting || !waiting.length) return;
+    for (const entry of waiting) {
+      if (!!this.announcementQueue.find(i => i._id == entry._id)) continue;
+      if (!Core.singleShard && entry.outgoing && entry.outgoing.includes(Core.options.shardId)) continue;
 
-          if (this.announcementQueue.length)
-            this.nextAnnouncement();
-        })
-        .catch(() => {});
-    }, 1000 * 60);
+      // entry.info.url = this.generateProxyUrl(entry);
+      entry.info.url = entry.info.org_url;
+      this.announcementQueue.push(entry);
+    }
+
+    if (this.announcementQueue.length)
+      this.nextAnnouncement();
+  }
+
+  private async finishAnnouncement(id: number) {
+    const game: GameData = await Database
+      .collection('games')
+      .findOne({ _id: id });
+    if (!game) {
+      Redis.setSharded('pending', '');
+      return;
+    }
+
+    this.announcementQueue.push(game);
+    this.nextAnnouncement();
   }
 
   /**
@@ -48,13 +71,21 @@ export default class DataFetcher {
     if (!this.announcementQueue.length) return;
     this.currentlyAnnouncing = true;
     const announcement = this.announcementQueue.splice(0, 1)[0];
-    if (!Core.singleShard) Database
-      .collection('games')
-      .updateOne({ _id: announcement._id }, {
-        '$push': { outgoing: Core.options.shardId }
-      });
+    Redis.setSharded('pending', announcement._id + '');
+
+    if (!Core.singleShard && announcement.status == 'accepted') {
+      Database
+        .collection('games')
+        .updateOne({ _id: announcement._id }, {
+          '$push': { outgoing: Core.options.shardId }
+        });
+    }
+
     await Core.messageDistributor.distribute(announcement.info, announcement._id);
+
     this.currentlyAnnouncing = false;
+    Redis.setSharded('pending', '');
+
     Database
       .collection('games')
       .findOne({ _id: announcement._id })

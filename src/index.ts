@@ -22,7 +22,7 @@ import * as DBL from "dblapi.js";
 import ParseArgs from "./util/parse-args";
 import SentryManager from "./thirdparty/sentry/sentry";
 import { GuildData } from "types";
-import { Long } from "mongodb";
+import Redis from "./database/redis";
 
 
 export class FreeStuffBot extends Client {
@@ -67,6 +67,7 @@ export class FreeStuffBot extends Client {
         console.log('Connected to Mongo');
 
         await Database.init();
+        await Redis.init();
     
         this.commandHandler = new CommandHandler(this);
         this.databaseManager = new DatabaseManager(this);
@@ -90,6 +91,7 @@ export class FreeStuffBot extends Client {
         this.on('ready', () => {
           console.log(chalk`Bot ready! Logged in as {yellowBright ${this.user.tag}} {gray (${params.noSharding ? 'No Sharding' : `Shard ${options.shardId} / ${options.shardCount}`})}`);
           this.user.setActivity('@FreeStuff help​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://freestuffbot.xyz/', { type: 'WATCHING' });
+          DbStats.usage.then(u => u.reconnects.updateToday(1, true));
 
           if (!this.devMode && !this.singleShard) {
             this.dbl.postStats(this.guilds.size, this.options.shardId, this.options.shardCount);

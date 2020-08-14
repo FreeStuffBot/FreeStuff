@@ -11,7 +11,7 @@ export default class Sharder {
     this.updateManager();
     setInterval(() => {
       this.updateManager();
-    }, 1000 * 3);
+    }, 1000 * 20);
     // }, 1000 * 60);
   }
 

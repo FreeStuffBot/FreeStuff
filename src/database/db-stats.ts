@@ -67,6 +67,10 @@ export class DbStatUsage {
     return new DbStatGraph('stats-usage', { _id: 'announcements' }, this.raw['announcements'] || [], this.raw);
   }
 
+  get reconnects(): DbStatGraph {
+    return new DbStatGraph('stats-usage', { _id: 'reconnects' }, this.raw['reconnects'] || [], this.raw);
+  }
+
 }
 
 export class DbStatGraph {

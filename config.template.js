@@ -10,6 +10,8 @@ module.exports = {
   mongodb: {
     url: "URL"
   },
+  redis: {
+  },
   thirdparty: {
     topgg: {
       apitoken: "TOKEN"
