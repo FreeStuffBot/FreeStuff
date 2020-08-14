@@ -46,20 +46,22 @@ export default class MessageDistributor {
     const lga = await Redis.getSharded('lga');
     const startAt = lga ? parseInt(lga, 10) : 0;
 
+    const query = Core.singleShard
+      ? { sharder: { $gt: startAt },
+          channel: { $ne: null } }
+      : { sharder: { $mod: [Core.options.shardCount, Core.options.shardId], $gt: startAt },
+          channel: { $ne: null } };
+
+    console.log(query);
+
     const guilds: DatabaseGuildData[] = await Database
       .collection('guilds')
-      .find(
-        Core.singleShard
-          ? { sharder: { $gt: startAt },
-              channel: { $ne: null } }
-          : { sharder: { $mod: [Core.options.shardCount, Core.options.shardId], $gt: startAt },
-              channel: { $ne: null } }
-      )
+      .find(query)
       .sort({ sharder: 1 })
       .toArray();
     if (!guilds) return;
 
-    console.log(`Starting to announce ${content.title} - ${new Date().toLocaleTimeString()}`);
+    console.log(`Starting to announce ${content.title} - ${new Date().toLocaleTimeString()} on ${guilds.length} guilds`);
     /** announcementsMade */
     Redis.setSharded('am', '0');
     for (const g of guilds) {
