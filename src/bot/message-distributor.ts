@@ -69,7 +69,7 @@ export default class MessageDistributor {
       try {
         /** Last Guild Announced */
         Redis.setSharded('lga', g.sharder + '');
-        console.log(g._id)
+        console.log(g._id.toString())
         const successful = this.sendToGuild(g, content, false, false);
         if (await successful) {
           await new Promise(res => setTimeout(() => res(), 200));
