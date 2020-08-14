@@ -69,6 +69,7 @@ export default class MessageDistributor {
       try {
         /** Last Guild Announced */
         Redis.setSharded('lga', g.sharder + '');
+        console.log(g._id)
         const successful = this.sendToGuild(g, content, false, false);
         if (await successful) {
           await new Promise(res => setTimeout(() => res(), 200));
@@ -109,25 +110,25 @@ export default class MessageDistributor {
 
   public async sendToGuild(g: DatabaseGuildData, content: GameInfo, test: boolean, force: boolean): Promise<boolean> {
     const data = Core.databaseManager.parseGuildData(g);
-    if (!data) return false;
+    if (!data) {console.log('r0');return false;}
 
     // forced will ignore filter settings
     if (!force) {
-      if (data.price > content.org_price[data.currency == 'euro' ? 'euro' : 'dollar']) return false;
-      if (!!content.flags?.includes(GameFlag.TRASH) && !data.trashGames) return false;
+      if (data.price > content.org_price[data.currency == 'euro' ? 'euro' : 'dollar']) {console.log('r1');return false;}
+      if (!!content.flags?.includes(GameFlag.TRASH) && !data.trashGames) {console.log('r2');return false;}
     }
 
     // check if channel is valid
-    if (!data.channelInstance) return false;
-    if (!data.channelInstance.send) return false;
-    if (!data.channelInstance.guild.available) return false;
+    if (!data.channelInstance) {console.log('r3');return false;}
+    if (!data.channelInstance.send) {console.log('r4');return false;}
+    if (!data.channelInstance.guild.available) {console.log('r5');return false;}
 
     // check if permissions match
     const self = data.channelInstance.guild.me;
     const permissions = self.permissionsIn(data.channelInstance);
-    if (!permissions.has('SEND_MESSAGES')) return false;
-    if (!permissions.has('VIEW_CHANNEL')) return false;
-    if (!permissions.has('EMBED_LINKS') && Const.themesWithEmbeds.includes(data.theme)) return false;
+    if (!permissions.has('SEND_MESSAGES')) {console.log('r6');return false;}
+    if (!permissions.has('VIEW_CHANNEL')) {console.log('r7');return false;}
+    if (!permissions.has('EMBED_LINKS') && Const.themesWithEmbeds.includes(data.theme)) {console.log('r8');return false;}
     if (!permissions.has('EXTERNAL_EMOJIS') && Const.themesWithExtemotes[data.theme]) data.theme = Const.themesWithExtemotes[data.theme];
 
     // set content url
@@ -138,9 +139,10 @@ export default class MessageDistributor {
     if (!messageContent) return false;
 
     // send the message
-    const mes: Message = await data.channelInstance.send(...messageContent) as Message;
-    if (data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
-      await mes.react('🆓');
+    // const mes: Message = await data.channelInstance.send(...messageContent) as Message;
+    // if (data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
+    //   await mes.react('🆓');
+    console.log('yes')
     return true;
   }
 
