@@ -6,12 +6,12 @@
   "scripts": {
     "start": "node --icu-data-dir=node_modules\\full-icu ./build/index.js",
     "build": "tsc",
-    "dev": "tsc && node --icu-data-dir=node_modules\\full-icu ./build/index.js --noSharding",
+    "dev": "tsc && node --icu-data-dir=node_modules\\full-icu --trace-warnings ./build/index.js --noSharding",
     "test": "echo \"No test specified\" && exit 0"
   },
   "author": "FreeStuff Bot Team",
   "contributors": [
-    "Maanex (https://maanex.tk)",
+    "Maanex (https://maanex.me)",
     "Badosz (https://badosz.com)"
   ],
   "license": "ISC",

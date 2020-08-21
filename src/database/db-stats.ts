@@ -2,6 +2,7 @@ import Database, { dbcollection } from "./database";
 import { FreeStuffBot, Core } from "../index";
 import { CronJob } from "cron";
 import * as chalk from "chalk";
+import { Invite, Guild } from "discord.js";
 
 
 export class DbStats {
@@ -25,12 +26,38 @@ export class DbStats {
           (await this.usage).guilds.updateYesterday(guildCount, true);
           (await this.usage).members.updateYesterday(guildMemberCount, true);
         }
+
+        this.updateTopClients();
       }, 60000);
     }).start();
+
+    Core.on('ready', this.updateTopClients);
   }
 
-  static get usage(): Promise<DbStatUsage> {
+  public static get usage(): Promise<DbStatUsage> {
     return new DbStatUsage().load();
+  }
+
+  public static async updateTopClients() {
+    const top = Core.guilds.sort((a, b) => b.memberCount - a.memberCount).values();
+    const top10 = Array.from(top).splice(0, 10);
+    const out = top10.map(async g => { return {
+      name: g.name,
+      size: g.memberCount,
+      icon: g.iconURL,
+      features: g.features,
+      setup: !!(await Core.databaseManager.getGuildData(g)).channelInstance
+    }});
+    
+    Promise.all(out).then(out => {
+      Database
+        .collection('stats-top-clients')
+        .findOneAndUpdate(
+          { _id: Core.options.shardId || 0 },
+          { $set: { value: out } },
+          { upsert: true }
+        );
+    });
   }
 
 }
