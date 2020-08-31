@@ -2,7 +2,7 @@ import { FreeStuffBot, Core } from "../index";
 import { Guild, TextChannel } from "discord.js";
 import Database from "../database/database";
 import { Long } from "mongodb";
-import { GuildSetting, GuildData, DatabaseGuildData } from "../types";
+import { GuildSetting, GuildData, DatabaseGuildData, FilterableStore, Store } from "../types";
 import { Util } from "../util/util";
 import { CronJob } from "cron";
 
@@ -155,8 +155,32 @@ export default class DatabaseManager {
       trashGames: (dbObject.settings & (1 << 6)) != 0,
       altDateFormat: (dbObject.settings & (1 << 7)) != 0,
       theme: dbObject.settings & 0b1111,
-      language: Core.languageManager.languageById((dbObject.settings >> 8 & 0b11111))
+      language: Core.languageManager.languageById((dbObject.settings >> 8 & 0b11111)),
+      storesRaw: (dbObject.settings >> 13 & 0b11111),
+      storesList: this.storesRawToList(dbObject.settings >> 13 & 0b11111),
     }
+  }
+
+  public storesRawToList(raw: number): Store[] {
+    const out = [] as Store[];
+    if ((raw & FilterableStore.STEAM) != 0) out.push('steam');
+    if ((raw & FilterableStore.EPIC) != 0) out.push('epic');
+    if ((raw & FilterableStore.HUMBLE) != 0) out.push('humble');
+    if ((raw & FilterableStore.GOG) != 0) out.push('gog');
+    if ((raw & FilterableStore.ORIGIN) != 0) out.push('origin');
+    if ((raw & FilterableStore.UPLAY) != 0) out.push('uplay');
+    if ((raw & FilterableStore.ITCH) != 0) out.push('itch');
+    if ((raw & FilterableStore.OTHER) != 0) {
+      out.push('apple');
+      out.push('discord');
+      out.push('google');
+      out.push('ps');
+      out.push('xbox');
+      out.push('switch');
+      out.push('twitch');
+      out.push('other');
+    }
+    return out;
   }
 
   /**
@@ -204,6 +228,10 @@ export default class DatabaseManager {
         bits = (value as number) & 0b1111;
         out['settings'] = Util.modifyBits(c, 8, 5, bits);
         break;
+      case 'stores':
+        bits = (value as number) & 0b11111111;
+        out['settings'] = Util.modifyBits(c, 13, 8, bits);
+        break;
     }
     Database
       .collection('guilds')
@@ -212,13 +240,14 @@ export default class DatabaseManager {
 
   // 3__ 2__________________ 1__________________ 0__________________
   // 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
-  // settings:                             _________ _ _ _ _ _______
+  // settings:             _______________ _________ _ _ _ _ _______
   // 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-  //                                       |         | | | |  theme [0< 4]
-  //                                       |         | | | currency (on = usd, off = eur) [4< 1]
-  //                                       |         | | react with :free: emoji [5< 1]
-  //                                       |         | show trash games [6< 1]
-  //                                       |         alternative date format [7< 1]
-  //                                       language [8< 5]
+  //                       |               |         | | | |  theme [0< 4]
+  //                       |               |         | | | currency (on = usd, off = eur) [4< 1]
+  //                       |               |         | | react with :free: emoji [5< 1]
+  //                       |               |         | show trash games [6< 1]
+  //                       |               |         alternative date format [7< 1]
+  //                       |               language [8< 5]
+  //                       stores [13< 8] (other itch uplay origin gog humble epic steam)
 
 }

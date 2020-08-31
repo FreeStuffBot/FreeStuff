@@ -98,6 +98,13 @@ export default class SettingsCommand extends Command {
         this.subcmdAltDateFormat(mes, args, g, repl);
         break;
 
+      // TODO
+      // case 'store':
+      // case 'shop':
+      // case 'platform':
+      //   this.subcmdStore(mes, args, g, repl);
+      //   break;
+
       case 'prefix':
         repl(
           Core.text(g, '=cmd_change_prefix_1'),
@@ -415,7 +422,12 @@ export default class SettingsCommand extends Command {
     }
 
     let lang = Core.languageManager.languageByName(args[1]);
-    if (lang == 'en-US' && args.join(' ').includes('eu')) lang = 'en-GB';
+    if (lang.startsWith('en')) lang = Core.localisation.isGuildInEurope(orgmes.guild) ? 'en-GB' : 'en-US';
+
+    const details = args.join(' ').toLocaleLowerCase();
+    if (lang == 'en-US' && (details.includes('eu') || details.includes('gb') || details.includes('brit'))) lang = 'en-GB';
+    if (lang == 'en-GB' && (details.includes('us') || details.includes('america'))) lang = 'en-US';
+
     if (!lang) {
       reply(
         Core.text(g, '=cmd_set_language_notfound_1'),
@@ -464,6 +476,32 @@ export default class SettingsCommand extends Command {
         Core.text(g, '=cmd_set_until_not_found_2', { text: args[1] })
       );
     }
+  }
+
+  private subcmdStore(orgmes: Message, args: string[], g: GuildData, reply: ReplyFunction) {
+    if (args.length < 2) {
+      reply(
+        Core.text(g, '=cmd_set_store_missing_args_1'),
+        Core.text(g, '=cmd_set_store_missing_args_2')
+      );
+      return;
+    }
+
+    let store = args[1].toLowerCase();
+    if (store.endsWith('game')) store = store.substr(0, store.length - 4);
+    if (store.endsWith('games')) store = store.substr(0, store.length - 5);
+
+    
+
+    // if (args.length < 3) {
+    //   reply(
+    //     Core.text(g, on ? '=cmd_set_store_status_on_1' : '=cmd_set_store_status_off_1', { store: 'STEAM' }),
+    //     Core.text(g, on ? '=cmd_set_store_status_on_2' : '=cmd_set_store_status_off_2', { store: 'STEAM' })
+    //   );
+    //   return;
+    // }
+
+
   }
   
 }

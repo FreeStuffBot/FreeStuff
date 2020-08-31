@@ -175,9 +175,9 @@ export const Core = new FreeStuffBot(
       'RELATIONSHIP_REMOVE',
       'WEBHOOKS_UPDATE'
     ],
-    messageSweepInterval: 5,
-    messageCacheLifetime: 5,
-    messageCacheMaxSize: 5,
+    messageSweepInterval: 3,
+    messageCacheLifetime: 3,
+    messageCacheMaxSize: 3,
     shardCount: sharding ? shardCount : 1,
     shardId: sharding ? shardId : 0
   },

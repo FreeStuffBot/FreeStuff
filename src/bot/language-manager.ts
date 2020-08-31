@@ -1,11 +1,9 @@
 import { FreeStuffBot } from "../index";
-import * as fs from "fs";
 import { GuildData } from "types";
+import Database from "../database/database";
 
 
 export default class LanguageManager {
-
-  private static readonly BASE_URI = './resources/lang/';
 
   private list = [];
   private idmap = {};
@@ -17,15 +15,24 @@ export default class LanguageManager {
 
   public async load() {
     this.list = [];
+    this.idmap = {};
     this.texts = {};
 
-    const index = fs.readFileSync(LanguageManager.BASE_URI + 'language-index.json').toString();
-    this.list = JSON.parse(index).languages;
-    this.idmap = JSON.parse(index).idmap;
+    const all = await Database
+      .collection('language')
+      .find({ })
+      .sort({ _index: 1 })
+      .toArray();
 
-    for (let langCode of this.list) {
-      const raw = fs.readFileSync(LanguageManager.BASE_URI + langCode + '.json').toString().replace('\\\\', '\\');
-      this.texts[langCode] = JSON.parse(raw);
+    for (const lang of all) {
+      for (const key in lang) {
+        if (key.startsWith('_')) continue;
+        lang[key] = lang[key].split('\\n').join('\n');
+      }
+
+      this.list.push(lang._id);
+      this.idmap[lang._index] = lang._id;
+      this.texts[lang._id] = lang;
     }
   }
 
@@ -35,7 +42,7 @@ export default class LanguageManager {
 
   public getRaw(language: string, key: string, fallback = true): string {
     if (!this.list.length) return key;
-    if (!fallback) this.getText(language, key);
+    if (!fallback) return this.getText(language, key);
     if (!this.texts[language]) return this.getText(this.list[0], key);
     return this.getText(language, key) || this.getText(this.list[0], key);
   }

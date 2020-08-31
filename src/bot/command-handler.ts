@@ -35,7 +35,7 @@ export default class CommandHandler {
         && !m.content.toLowerCase().startsWith('@freestuff')) return;
       if (!m.guild.me.permissionsIn(m.channel).has('SEND_MESSAGES')) return;
 
-      const args = m.content.split(' ');
+      const args = m.content.split(/ +/);
       args.splice(0, 1);
       Core.databaseManager.getGuildData(m.guild).then(g => {
         this.handleCommand(args.splice(0, 1)[0] || '', args, m, g).then(success => {
@@ -47,7 +47,7 @@ export default class CommandHandler {
         }).catch(e => { });
       }).catch(err => {
         try {
-          // no translaton in case the above failes due to language manager issues
+          /** no translaton in case the above failes due to language manager issues */
           m.reply(`An error occured! Please try again later. If this error persists, try removing the bot from your server and adding it back up. For additional support visit our support server: ${Const.discordInvite}`);
         } catch(ex) { }
       });
@@ -121,7 +121,7 @@ export default class CommandHandler {
     }
 
     if (handler.info.adminOnly) {
-      reply('TODO', 'TODO TODO TODO @Maanex');
+      reply('Nope', 'Don\'t even try!'); // TODO
       return true;
     }
 
@@ -143,6 +143,9 @@ export default class CommandHandler {
       case 'is awesome': return ':sunglasses:';
       case 'is amazing': return ':sunglasses:';
       case 'easteregg': return ':eyes:';
+      case 'what is the meaning of life': return '42';
+      case 'meaning of life': return '42';
+      case 'maanex': return '<:yeehawmaanex:720381548955697313>';
 
       default: return '';
     }

@@ -29,12 +29,16 @@ export default class Localisation {
   public constructor(bot: FreeStuffBot) {
   }
 
-  public getDefaultSettings(guild: Guild): number {
+  public isGuildInEurope(guild: Guild) {
     const region = guild.region;
     const europe = Localisation.EUROPEAN_REGIONS.includes(region);
+    return europe;
+  }
 
+  public getDefaultSettings(guild: Guild): number {
+    const europe = this.isGuildInEurope(guild);
     const useEuro = europe;
-    const defaultLang = europe ? 'en-GB' : 'en-US';
+    const defaultLang = europe ? 'en-GB' : 'en-US';    
 
     return 0
       | Util.modifyBits(0, 1, 1, useEuro ? 0 : 1)

@@ -98,16 +98,30 @@ export interface GuildData extends DatabaseGuildData {
   trashGames: boolean;
   altDateFormat: boolean;
   language: string;
+  storesRaw: number;
+  storesList: Store[];
 
 }
 
-export type GuildSetting = 'channel' | 'roleMention' | 'theme' | 'currency' | 'react' | 'trash' | 'price' | 'altdate' | 'language';
+export type GuildSetting = 'channel' | 'roleMention' | 'theme' | 'currency' | 'react' | 'trash' | 'price' | 'altdate' | 'language' | 'stores';
 
 export type Store = 'steam' | 'epic' | 'humble' | 'gog' | 'origin' | 'uplay' | 'twitch' | 'itch' | 'discord' | 'apple' | 'google' | 'switch' | 'ps' | 'xbox' | 'other';
 
 export type GameApprovalStatus = 'pending' | 'declined' | 'accepted' | 'published' | 'scheduled';
 
 export type AnnouncementType = 'free' | 'weekend' | 'discount' | 'ad' | 'unknown';
+
+
+export enum FilterableStore {
+  STEAM = 1 << 0,
+  EPIC = 1 << 1,
+  HUMBLE = 1 << 2,
+  GOG = 1 << 3,
+  ORIGIN = 1 << 4,
+  UPLAY = 1 << 5,
+  ITCH = 1 << 6,
+  OTHER = 1 << 7,
+}
 
 
 /*

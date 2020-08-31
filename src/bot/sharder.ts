@@ -43,7 +43,7 @@ export default class Sharder {
   }
 
   public evaluateManagerMessage(input: string[]) {
-    for (let message of input) {
+    for (const message of input) {
       const command = message.split('=')[0];
       const args = message.substr(command.length);
       this.executeCommand(command, args);
@@ -53,11 +53,12 @@ export default class Sharder {
   public executeCommand(command: string, args?: string) {
     switch(command) {
       case 'shutdown':
-        console.log('Recieved shut down command from manager. Exit with code 0')
+        console.log('[MANAGER] Shutdown.')
         process.exit(0);
 
       case 'reload_lang':
-        // TODO
+        Core.languageManager.load();
+        console.log('[MANAGER] Reload language cache.')
         break;
       
     }
