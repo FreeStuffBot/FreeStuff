@@ -14,16 +14,18 @@ export default class DataFetcher {
   public constructor(bot: FreeStuffBot) {
     const checkInterval = bot.devMode ? 5 : 60;
 
-    setInterval(async () => {
-      if (this.currentlyAnnouncing) return;
-
-      const pending = await Redis.getSharded('pending');
-      if (pending) {
-        this.finishAnnouncement(parseInt(pending, 10));
-      } else {
-        this.checkMongoQueue();
-      }
-    }, checkInterval * 1000);
+    bot.on('ready', () => {
+      setInterval(async () => {
+        if (this.currentlyAnnouncing) return;
+  
+        const pending = await Redis.getSharded('pending');
+        if (pending) {
+          this.finishAnnouncement(parseInt(pending, 10));
+        } else {
+          this.checkMongoQueue();
+        }
+      }, checkInterval * 1000);
+    });
   }
 
   private async checkMongoQueue() {
