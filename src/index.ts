@@ -88,9 +88,16 @@ export class FreeStuffBot extends Client {
           }
         }
 
+        const manualConnectTimer = setTimeout(() => {
+          // @ts-ignore
+          this.ws.connection.triggerReady()
+        }, 30000)
+      
+
         this.on('ready', () => {
           console.log(chalk`Bot ready! Logged in as {yellowBright ${this.user.tag}} {gray (${params.noSharding ? 'No Sharding' : `Shard ${options.shardId} / ${options.shardCount}`})}`);
           this.user.setActivity('@FreeStuff help​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://freestuffbot.xyz/', { type: 'WATCHING' });
+          clearTimeout(manualConnectTimer)
           DbStats.usage.then(u => u.reconnects.updateToday(1, true));
 
           if (!this.devMode && !this.singleShard) {
