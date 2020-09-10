@@ -98,7 +98,6 @@ export default class SettingsCommand extends Command {
         this.subcmdAltDateFormat(mes, args, g, repl);
         break;
 
-      // TODO
       // case 'store':
       // case 'shop':
       // case 'platform':
@@ -478,30 +477,29 @@ export default class SettingsCommand extends Command {
     }
   }
 
-  private subcmdStore(orgmes: Message, args: string[], g: GuildData, reply: ReplyFunction) {
-    if (args.length < 2) {
-      reply(
-        Core.text(g, '=cmd_set_store_missing_args_1'),
-        Core.text(g, '=cmd_set_store_missing_args_2')
-      );
-      return;
-    }
+  // private subcmdStore(orgmes: Message, args: string[], g: GuildData, reply: ReplyFunction) {
+  //   if (args.length < 2) {
+  //     reply(
+  //       Core.text(g, '=cmd_set_store_missing_args_1'),
+  //       Core.text(g, '=cmd_set_store_missing_args_2')
+  //     );
+  //     return;
+  //   }
 
-    let store = args[1].toLowerCase();
-    if (store.endsWith('game')) store = store.substr(0, store.length - 4);
-    if (store.endsWith('games')) store = store.substr(0, store.length - 5);
-
+  //   let store = args[1].toLowerCase();
+  //   if (store.endsWith('game')) store = store.substr(0, store.length - 4);
+  //   if (store.endsWith('games')) store = store.substr(0, store.length - 5);
     
 
-    // if (args.length < 3) {
-    //   reply(
-    //     Core.text(g, on ? '=cmd_set_store_status_on_1' : '=cmd_set_store_status_off_1', { store: 'STEAM' }),
-    //     Core.text(g, on ? '=cmd_set_store_status_on_2' : '=cmd_set_store_status_off_2', { store: 'STEAM' })
-    //   );
-    //   return;
-    // }
+  //   if (args.length < 3) {
+  //     reply(
+  //       Core.text(g, on ? '=cmd_set_store_status_on_1' : '=cmd_set_store_status_off_1', { store: 'STEAM' }),
+  //       Core.text(g, on ? '=cmd_set_store_status_on_2' : '=cmd_set_store_status_off_2', { store: 'STEAM' })
+  //     );
+  //     return;
+  //   }
 
 
-  }
+  // }
   
 }

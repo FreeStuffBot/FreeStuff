@@ -45,7 +45,7 @@ export default class Redis {
   }
 
   public static incSharded(key: string): void {
-    this.inc(`s${Core.shard}_${key}`);
+    this.inc(`s${Core.options.shardId}_${key}`);
   }
 
 }

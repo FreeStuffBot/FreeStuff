@@ -20,7 +20,7 @@ export default class LanguageManager {
 
     const all = await Database
       .collection('language')
-      .find({ })
+      .find({ _enabled: true })
       .sort({ _index: 1 })
       .toArray();
 

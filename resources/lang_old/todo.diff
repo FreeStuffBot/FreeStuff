@@ -2,3 +2,7 @@
 + "cmd_change_prefix_1": "Nope, not possible!",
 
 + "cmd_change_prefix_2": "You cannot change the prefix. Just use @FreeStuff",
+
++ {pricestr} -> {price}
+
++ new info screen. not part of tude anymore.
