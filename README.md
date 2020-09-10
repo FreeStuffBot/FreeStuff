@@ -21,6 +21,10 @@ Roadmap, Todo, Suggestions, etc: https://trello.com/b/Zhw6umTy/freestuff
 
 #### Preperation:
 
+Make sure to have typescript installed globally or modify the building scripts accordingly.
+
+Make sure to `npm i` after cloning.
+
 In the root directory, rename the file `config.template.js` to `config.js`. Open the file and edit it:
 
 `bot.token` is your discord bot token.
@@ -65,3 +69,6 @@ $ npm start
 $ yarn start
 ```
 
+#### Support
+
+If you need any help, feel free to ask in our [discord server](https://freestuffbot.xyz/discord). Unfortunately we cannot guarantee to be able to help you with any problem that might occur.
