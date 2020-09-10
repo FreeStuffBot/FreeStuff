@@ -6,21 +6,22 @@ import { hostname } from "os";
 
 export default class Sharder {
 
+  private errorCounter = 0;
+
   public constructor(bot: FreeStuffBot) {
     // if (Core.singleShard) return;
     this.updateManager();
     setInterval(() => {
       this.updateManager();
     }, 1000 * 20);
-    // }, 1000 * 60);
   }
 
   public async updateManager() {
     const serverName = await hostname();
     const payload: ShardStatusPayload = {
-      id: Core.options.shardId,
+      id: Core.options.shards[0],
       totalShardCount: Core.options.shardCount,
-      guildCount: Core.guilds.size,
+      guildCount: Core.guilds.cache.size,
       lastHeartbeat: Date.now(),
       server: serverName,
       status: 'ok'
@@ -39,7 +40,10 @@ export default class Sharder {
     })
     .then(res => res.json())
     .then(data => data.messages && this.evaluateManagerMessage(data.messages))
-    .catch(ex => console.warn('Failed to report status to manager service.'));
+    .catch(ex => {
+      if (this.errorCounter++ % 10 == 0)
+        console.warn(`Failed to report status to manager service. (${this.errorCounter - 1})`)
+    });
   }
 
   public evaluateManagerMessage(input: string[]) {

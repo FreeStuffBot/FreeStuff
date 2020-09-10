@@ -1,6 +1,6 @@
 
 
-/** @author Andreas May (maanex.tk) */
+/** @author Andreas May (maanex.me) */
 export default class ParseArgs {
 
   private constructor() { }

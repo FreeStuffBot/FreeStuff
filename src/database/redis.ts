@@ -29,7 +29,7 @@ export default class Redis {
   }
 
   public static async getSharded(key: string): Promise<any> {
-    return this.get(`s${Core.options.shardId}_${key}`);
+    return this.get(`s${Core.options.shards[0]}_${key}`);
   }
 
   public static set(key: string, value: string): void {
@@ -37,7 +37,7 @@ export default class Redis {
   }
 
   public static setSharded(key: string, value: string): void {
-    this.set(`s${Core.options.shardId}_${key}`, value);
+    this.set(`s${Core.options.shards[0]}_${key}`, value);
   }
 
   public static inc(key: string): void {
@@ -45,7 +45,7 @@ export default class Redis {
   }
 
   public static incSharded(key: string): void {
-    this.inc(`s${Core.options.shardId}_${key}`);
+    this.inc(`s${Core.options.shards[0]}_${key}`);
   }
 
 }

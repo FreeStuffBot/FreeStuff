@@ -37,7 +37,7 @@ export default class DataFetcher {
     if (!waiting || !waiting.length) return;
     for (const entry of waiting) {
       if (!!this.announcementQueue.find(i => i._id == entry._id)) continue;
-      if (!Core.singleShard && entry.outgoing && entry.outgoing.includes(Core.options.shardId)) continue;
+      if (!Core.singleShard && entry.outgoing && entry.outgoing.includes(Core.options.shards[0])) continue;
 
       // entry.info.url = this.generateProxyUrl(entry);
       entry.info.url = entry.info.org_url;
@@ -79,7 +79,7 @@ export default class DataFetcher {
       Database
         .collection('games')
         .updateOne({ _id: announcement._id }, {
-          '$push': { outgoing: Core.options.shardId }
+          '$push': { outgoing: Core.options.shards[0] }
         });
     }
 

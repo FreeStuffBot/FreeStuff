@@ -44,11 +44,11 @@ export default class LanguageManager {
     if (!this.list.length) return key;
     if (!fallback) return this.getText(language, key);
     if (!this.texts[language]) return this.getText(this.list[0], key);
-    return this.getText(language, key) || this.getText(this.list[0], key);
+    return this.getText(language, key) || this.getText(this.list[0], key) || key;
   }
 
   private getText(language: string, key: string): string {
-    return this.texts[language][key];
+    return this.texts[language] && this.texts[language][key];
   }
 
   public languageById(id: number | string): string {

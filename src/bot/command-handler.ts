@@ -11,6 +11,9 @@ import VoteCommand from "./commands/vote";
 import CheckCommand from "./commands/check";
 import HereCommand from "./commands/here";
 import FreeCommand from "./commands/free";
+import ResetCommand from "./commands/reset";
+import MydataCommand from "./commands/mydata";
+import AdvancedCommand from "./commands/advanced";
 
 
 export default class CommandHandler {
@@ -27,6 +30,9 @@ export default class CommandHandler {
     this.commands.push(new CheckCommand());
     this.commands.push(new HereCommand());
     this.commands.push(new FreeCommand());
+    this.commands.push(new ResetCommand());
+    this.commands.push(new MydataCommand());
+    this.commands.push(new AdvancedCommand());
 
     bot.on('message', m => {
       if (m.author.bot) return;

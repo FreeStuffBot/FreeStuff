@@ -16,7 +16,7 @@ export default class DatabaseManager {
 
       const dbGuilds = await this.getAssignedGuilds();
 
-      for (const guild of bot.guilds.values()) {
+      for (const guild of bot.guilds.cache.values()) {
         if (!dbGuilds.find(g => g._id.toString() == guild.id))
           this.addGuild(guild);
       }
@@ -45,14 +45,14 @@ export default class DatabaseManager {
       const dbGuilds = await this.getAssignedGuilds();
       const removalQueue: DatabaseGuildData[] = [];
       for (const guild of dbGuilds) {
-        if (!bot.guilds.get(guild._id.toString()))
+        if (!bot.guilds.cache.get(guild._id.toString()))
           removalQueue.push(guild);
       }
 
       setTimeout(async () => {
         const dbGuilds = await this.getAssignedGuilds();
         for (const guild of dbGuilds) {
-          if (!bot.guilds.get(guild._id.toString())) {
+          if (!bot.guilds.cache.get(guild._id.toString())) {
             if (removalQueue.find(g => g._id.equals(guild._id))) {
               this.removeGuild(guild._id);
             }
@@ -71,7 +71,7 @@ export default class DatabaseManager {
       .find(
         Core.singleShard
           ? { }
-          : { sharder: { $mod: [Core.options.shardCount, Core.options.shardId] } }
+          : { sharder: { $mod: [Core.options.shardCount, Core.options.shards[0]] } }
       )
       .toArray();
   }
@@ -81,7 +81,7 @@ export default class DatabaseManager {
    * @param guild guild object
    * @param autoSettings whether the default settings should automatically be adjusted to the server (e.g: server region -> language)
    */
-  public addGuild(guild: Guild, autoSettings = true) {
+  public async addGuild(guild: Guild, autoSettings = true) {
     const settings = autoSettings
       ? Core.localisation.getDefaultSettings(guild)
       : 0;
@@ -93,7 +93,7 @@ export default class DatabaseManager {
       price: 3,
       settings: settings
     }
-    Database
+    await Database
       .collection('guilds')
       .insertOne(data);
   }
@@ -103,9 +103,9 @@ export default class DatabaseManager {
    * @param guildid guild id
    * @param force weather to force a removal or not. if not forced this method will not remove guilds that are managed by another shard
    */
-  public removeGuild(guildid: Long, force = false) {
+  public async removeGuild(guildid: Long, force = false) {
     if (!force && !Util.belongsToShard(guildid)) return;
-    Database
+    await Database
       .collection('guilds')
       .deleteOne({ _id: guildid });
   }
@@ -136,21 +136,21 @@ export default class DatabaseManager {
    * Parse a DatabaseGuildData object to a GuildData object
    * @param dbObject raw input
    */
-  public parseGuildData(dbObject: DatabaseGuildData): GuildData {
+  public async parseGuildData(dbObject: DatabaseGuildData): Promise<GuildData> {
     if (!dbObject) return undefined;
     const responsible = Core.singleShard || Util.belongsToShard(dbObject._id);
-    const guildInstance = Core.guilds.get(dbObject._id.toString());
+    const guildInstance = await Core.guilds.fetch(dbObject._id.toString());
     return {
       ...dbObject,
       channelInstance: dbObject.channel && responsible && guildInstance
-        ? (guildInstance.channels.get((dbObject.channel as Long).toString()) as TextChannel)
+        ? (guildInstance.channels.resolve((dbObject.channel as Long).toString()) as TextChannel)
         : undefined,
       roleInstance: dbObject.role && responsible && guildInstance
         ? (dbObject.role.toString() == '1'
-          ? guildInstance.defaultRole
-          : guildInstance.roles.get((dbObject.role as Long).toString()))
+          ? guildInstance.roles.everyone
+          : guildInstance.roles.resolve((dbObject.role as Long).toString()))
         : undefined,
-      currency: (dbObject.settings & (1 << 4)) == 0 ? 'euro' : 'usd',
+      currency: ((dbObject.settings & (1 << 4)) == 0 ? 'euro' : 'usd') as ('euro' | 'usd'),
       react: (dbObject.settings & (1 << 5)) != 0,
       trashGames: (dbObject.settings & (1 << 6)) != 0,
       altDateFormat: (dbObject.settings & (1 << 7)) != 0,

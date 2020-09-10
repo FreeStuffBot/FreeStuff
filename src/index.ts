@@ -81,11 +81,7 @@ export class FreeStuffBot extends Client {
         DbStats.startMonitoring(this);
 
         if (!this.devMode) {
-          if (this.singleShard) {
-            this.dbl = new DBL(config.thirdparty.topgg.apitoken, this);
-          } else {
-            this.dbl = new DBL(config.thirdparty.topgg.apitoken);
-          }
+          this.dbl = new DBL(config.thirdparty.topgg.apitoken);
         }
 
         // TODO find an actual fix for this instead of this garbage lol
@@ -93,19 +89,21 @@ export class FreeStuffBot extends Client {
           // @ts-ignore
           this.ws.connection.triggerReady();
         }, 30000);
-      
 
         this.on('ready', () => {
-          console.log(chalk`Bot ready! Logged in as {yellowBright ${this.user.tag}} {gray (${params.noSharding ? 'No Sharding' : `Shard ${options.shardId} / ${options.shardCount}`})}`);
-          this.user.setActivity('@FreeStuff help​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://freestuffbot.xyz/', { type: 'WATCHING' });
+          console.log(chalk`Bot ready! Logged in as {yellowBright ${this.user.tag}} {gray (${params.noSharding ? 'No Sharding' : `Shard ${(options.shards as number[]).join(', ')} / ${options.shardCount}`})}`);
+
+          const updateActivity = (u) => u.setActivity('@FreeStuff help​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://freestuffbot.xyz/', { type: 'WATCHING' });
+          setInterval(updateActivity, 1000 * 60 * 15, this.user);
+          updateActivity(this.user);
+
           clearTimeout(manualConnectTimer);
           DbStats.usage.then(u => u.reconnects.updateToday(1, true));
 
-          if (!this.devMode && !this.singleShard) {
-            this.dbl.postStats(this.guilds.size, this.options.shardId, this.options.shardCount);
-            this.setInterval(() => {
-              this.dbl.postStats(this.guilds.size, this.options.shardId, this.options.shardCount);
-            }, 1800000);
+          if (!this.devMode) {
+            const updateStats = (c) => c.dbl.postStats(c.guilds.cache.size, c.options.shards[0], c.options.shardCount);
+            this.setInterval(updateStats, 1000 * 60 * 30, this);
+            updateStats(this);
           }
         });
 
@@ -118,9 +116,8 @@ export class FreeStuffBot extends Client {
       ? this.languageManager.getRaw(d.language, text.substr(1), true)
       : text);
     if (replace) {
-      for (const key in replace) {
+      for (const key in replace)
         out = out.split(`{${key}}`).join(replace[key]);
-      }
     }
     return out;
   }
@@ -144,50 +141,18 @@ if (sharding && (!params.shardCount || !params.shardId)) {
 
 export const Core = new FreeStuffBot(
   {
-    disabledEvents: [
-      // 'READY',
-      // 'RESUMED',
-      // 'GUILD_SYNC',
-      // 'GUILD_CREATE',
-      // 'GUILD_DELETE',
-      // 'GUILD_UPDATE',
-      'GUILD_MEMBER_ADD',
-      'GUILD_MEMBER_REMOVE',
-      // 'GUILD_MEMBER_UPDATE',
-      'GUILD_MEMBERS_CHUNK',
-      'GUILD_INTEGRATIONS_UPDATE',
-      // 'GUILD_ROLE_CREATE',
-      // 'GUILD_ROLE_DELETE',
-      // 'GUILD_ROLE_UPDATE',
-      'GUILD_BAN_ADD',
-      'GUILD_BAN_REMOVE',
-      // 'CHANNEL_CREATE',
-      // 'CHANNEL_DELETE',
-      // 'CHANNEL_UPDATE',
-      'CHANNEL_PINS_UPDATE',
-      // 'MESSAGE_CREATE',
-      'MESSAGE_DELETE',
-      'MESSAGE_UPDATE',
-      'MESSAGE_DELETE_BULK',
-      'MESSAGE_REACTION_ADD',
-      'MESSAGE_REACTION_REMOVE',
-      'MESSAGE_REACTION_REMOVE_ALL',
-      // 'USER_UPDATE',
-      'USER_NOTE_UPDATE',
-      'USER_SETTINGS_UPDATE',
-      'PRESENCE_UPDATE',
-      'VOICE_STATE_UPDATE',
-      'TYPING_START',
-      'VOICE_SERVER_UPDATE',
-      'RELATIONSHIP_ADD',
-      'RELATIONSHIP_REMOVE',
-      'WEBHOOKS_UPDATE'
-    ],
-    messageSweepInterval: 3,
-    messageCacheLifetime: 3,
-    messageCacheMaxSize: 3,
+    ws: {
+      intents: [
+        'GUILDS',
+        'GUILD_MESSAGES',
+      ]
+    },
+    disableMentions: 'none',
+    messageSweepInterval: 2,
+    messageCacheLifetime: 2,
+    messageCacheMaxSize: 2,
     shardCount: sharding ? shardCount : 1,
-    shardId: sharding ? shardId : 0
+    shards: [ (sharding ? shardId : 0) ]
   },
   params
 );

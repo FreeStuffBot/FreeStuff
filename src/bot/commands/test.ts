@@ -7,12 +7,7 @@ import ParseArgs from "../../util/parse-args";
 
 export default class TestCommand extends Command {
 
-  private readonly thumbsUpImages = [
-    // 'https://cdn.discordapp.com/attachments/672907465670787083/673119991649796106/unknown.png',
-    // 'https://media.discordapp.net/attachments/672907465670787083/693591561262465124/fetchimage.png',
-    // 'https://media.discordapp.net/attachments/672907465670787083/693591793479975013/1562325563_hidethepainharold_promotions.png',
-    // 'https://media.discordapp.net/attachments/672907465670787083/693592156530540595/106479_Medium.png',
-    // 'https://media.discordapp.net/attachments/672907465670787083/693592862763515914/23silg.png?width=1204&height=677',
+  private readonly placeholderThumbnails = [
     'https://media.discordapp.net/attachments/672907465670787083/710466653380411462/thumbnail_placeholder.png'
   ];
 
@@ -51,11 +46,11 @@ export default class TestCommand extends Command {
     if (!g.channelInstance) { 
       repl(
         Core.text(g, '=cmd_test_nochannel_1'),
-        Core.text(g, '=cmd_test_nochannel_2', { channel: `#${mes.guild.channels.filter(c => c.type == 'text').random().name}` })
+        Core.text(g, '=cmd_test_nochannel_2', { channel: `#${mes.guild.channels.cache.filter(c => c.type == 'text').random().name}` })
       );
       return true;
     }
-    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('READ_MESSAGES')) {        
+    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('VIEW_CHANNEL')) {        
       repl(
         Core.text(g, '=cmd_test_nosee_1'),
         Core.text(g, '=cmd_test_nosee_2', { channel: g.channelInstance.toString() })
@@ -77,7 +72,7 @@ export default class TestCommand extends Command {
         );
       return true;
     }
-    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('EXTERNAL_EMOJIS')
+    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('USE_EXTERNAL_EMOJIS')
         && Const.themesWithExtemotes[g.theme]) {
         repl(
           Core.text(g, '=cmd_test_extemotes_1'),
@@ -90,11 +85,6 @@ export default class TestCommand extends Command {
     
     try {
       let price = parseFloat(flags.price + '');
-      // if (!price) {
-      //   price = g.price;
-      //   if (!(price + '').includes('.'))
-      //     price = parseFloat(`${price}.00`);
-      // }
       if (!price) price = 19.99;
       Core.messageDistributor.test(mes.guild, {
         title: Core.text(g, '=cmd_test_announcement_header'),
@@ -107,7 +97,7 @@ export default class TestCommand extends Command {
           dollar: 0
         },
         store: (Const.storeDisplayNames[flags.store + ''] ? flags.store as Store : '') || 'steam',
-        thumbnail: this.thumbsUpImages[Math.floor(Math.random() * this.thumbsUpImages.length)],
+        thumbnail: this.placeholderThumbnails[Math.floor(Math.random() * this.placeholderThumbnails.length)],
         org_url: Const.testGameLink,
         url: Const.testGameLink,
         flags: [],
@@ -132,7 +122,7 @@ export default class TestCommand extends Command {
     setTimeout(() => {
       this.testCooldown.splice(this.testCooldown.indexOf(mes.guild.id), 1);
       this.testCooldownHarsh.splice(this.testCooldownHarsh.indexOf(mes.guild.id), 1);
-    }, 10_000);
+    }, 1000 * 10);
     return true;
   }
 

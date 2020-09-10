@@ -155,7 +155,13 @@ export interface CommandInfo {
 
 }
 
-export abstract class Command {
+export interface CommandHandler {
+
+  handle(mes: Message, args: string[], data: GuildData, reply: ReplyFunction): boolean | Promise<boolean>;
+
+}
+
+export abstract class Command implements CommandHandler {
 
   public constructor(
     public readonly info: CommandInfo
@@ -167,6 +173,13 @@ export abstract class Command {
   
   public abstract handle(mes: Message, args: string[], data: GuildData, repl: ReplyFunction): boolean | Promise<boolean>;
   
+}
+
+export interface SettingsSubcommand {
+
+  /** [ usage, description, description variables ] */
+  getMetaInfo(g: GuildData): [ string, string, any? ] | ([ string, string, any? ])[];
+
 }
 
 export type ReplyFunction = (message: string, content: string, footer?: string, color?: number, image?: string) => void;

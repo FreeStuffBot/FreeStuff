@@ -1,6 +1,7 @@
 import { Message, WebhookClient } from "discord.js";
 import { ReplyFunction, Command, GuildData } from "../../types";
 import { Core, config } from "../../index";
+import guildDataToViewString from "../../util/guilddata-visualizer";
 
 
 export default class HereCommand extends Command {
@@ -30,34 +31,22 @@ export default class HereCommand extends Command {
       User Owner?: ${guild.ownerID == mes.author.id}`;
     const permissionCheck = g?.channel
       ? (() => {
-          const perms = guild.me.permissionsIn(guild.channels.get(g.channel.toString()));
+          const perms = guild.me.permissionsIn(guild.channels.cache.get(g.channel.toString()));
           const out = [];
-          out.push(perms.has('READ_MESSAGES') ? 'Can read messages' : 'CANNOT READ MESSAGES');
+          out.push(perms.has('VIEW_CHANNEL') ? 'Can view channel' : 'CANNOT VIEW CHANNEL');
           out.push(perms.has('SEND_MESSAGES') ? 'Can send messages' : 'CANNOT SEND MESSAGES');
           out.push(perms.has('EMBED_LINKS') ? 'Can embed links' : 'CANNOT EMBED LINKS');
-          out.push(perms.has('EXTERNAL_EMOJIS') ? 'Can use external emotes' : 'CANNOT USE EXTERNAL EMOTES');
+          out.push(perms.has('USE_EXTERNAL_EMOJIS') ? 'Can use external emotes' : 'CANNOT USE EXTERNAL EMOTES');
           return out.join('\n');
         })()
       : 'No channel set!';
 
-    let gd = JSON.parse(JSON.stringify(g));
-    if (gd) {
-      delete gd['channelInstance'];
-      delete gd['roleInstance'];
-    }
-
-    let guilddata = `\`\`\`json\n${JSON.stringify(gd || { error: 'Guild Data Error' }, null, 2)}\`\`\``;
-    if (guilddata.length > 1024) guilddata = `\`\`\`json\n${JSON.stringify(gd || { error: 'Guild Data Error' }, null, 1)}\`\`\``
-    if (guilddata.length > 1024) guilddata = `\`\`\`json\n${JSON.stringify(gd || { error: 'Guild Data Error' })}\`\`\``
-    if (guilddata.length > 1024) {
-      console.log(JSON.stringify(gd, null, 2));
-      guilddata = 'Guild data too long. Check logs.'
-    }
+    const guilddata = guildDataToViewString(g);
 
     const webhook = new WebhookClient(config.supportWebhook.id, config.supportWebhook.token);
     webhook.send('', {
       username: mes.author.tag,
-      avatarURL: mes.author.avatarURL,
+      avatarURL: mes.author.avatarURL(),
       embeds: [{
         title: '@FreeStuff here',
         fields: [
@@ -75,7 +64,7 @@ export default class HereCommand extends Command {
           }
         ]
       }]
-    })
+    });
 
     repl(
       Core.text(g, '=cmd_here_1'),

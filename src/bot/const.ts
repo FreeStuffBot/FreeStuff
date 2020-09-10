@@ -9,6 +9,8 @@ export default class Const {
   public static readonly themeListLink = 'https://freestuffbot.xyz/themes';
   public static readonly testGameLink = 'https://freestuffbot.xyz/testgame';
   public static readonly topGGLink = 'https://top.gg/bot/672822334641537041';
+  public static readonly privacyPolicyLink = 'https://freestuffbot.xyz/privacy';
+  public static readonly termsOfServiceLink = 'https://freestuffbot.xyz/terms';
 
   public static readonly themesWithEmbeds = [ 0, 1, 2, 3, 4, 5 ];
   public static readonly themesWithExtemotes = { 0: 1, 2: 3 };

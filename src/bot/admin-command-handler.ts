@@ -65,7 +65,7 @@ export default class AdminCommandHandler {
             .findOne({ _id: Long.fromString(orgmes.guild.id) })
             .then(async data => {
               data['_'] = {
-                responsibleShard: Core.singleShard ? 'Single' : Core.options.shardId,
+                responsibleShard: Core.singleShard ? 'Single' : Core.options.shards[0],
                 runningOnServer: await hostname(),
               }
               orgmes.channel.send('```json\n' + JSON.stringify(data, null, 2) + '```');

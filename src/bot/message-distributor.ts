@@ -49,7 +49,7 @@ export default class MessageDistributor {
     const query = Core.singleShard
       ? { sharder: { $gt: startAt },
           channel: { $ne: null } }
-      : { sharder: { $mod: [Core.options.shardCount, Core.options.shardId], $gt: startAt },
+      : { sharder: { $mod: [Core.options.shardCount, Core.options.shards[0]], $gt: startAt },
           channel: { $ne: null } };
 
     const guilds: DatabaseGuildData[] = await Database
@@ -80,8 +80,8 @@ export default class MessageDistributor {
     console.log(`Done announcing ${content.title} - ${new Date().toLocaleTimeString()}`);
     const announcementsMade = parseInt(await Redis.getSharded('am'), 10);
 
-    Redis.setSharded('am', '0');
-    Redis.setSharded('lga', '');
+    Redis.setSharded('am', '0'); // AMount (of announcements done)
+    Redis.setSharded('lga', ''); // Last Guild Announced (guild id)
 
     (await DbStats.usage).announcements.updateToday(announcementsMade, true);
     if (announcementId >= 0) {
@@ -106,7 +106,7 @@ export default class MessageDistributor {
   }
 
   public async sendToGuild(g: DatabaseGuildData, content: GameInfo, test: boolean, force: boolean): Promise<boolean> {
-    const data = Core.databaseManager.parseGuildData(g);
+    const data = await Core.databaseManager.parseGuildData(g);
     if (!data) return false;
 
     // forced will ignore filter settings
@@ -126,7 +126,7 @@ export default class MessageDistributor {
     if (!permissions.has('SEND_MESSAGES')) return false;
     if (!permissions.has('VIEW_CHANNEL')) return false;
     if (!permissions.has('EMBED_LINKS') && Const.themesWithEmbeds.includes(data.theme)) return false;
-    if (!permissions.has('EXTERNAL_EMOJIS') && Const.themesWithExtemotes[data.theme]) data.theme = Const.themesWithExtemotes[data.theme];
+    if (!permissions.has('USE_EXTERNAL_EMOJIS') && Const.themesWithExtemotes[data.theme]) data.theme = Const.themesWithExtemotes[data.theme];
 
     // set content url
     if (!content.url) content.url = content.org_url;
@@ -142,7 +142,7 @@ export default class MessageDistributor {
     return true;
   }
 
-  public buildMessage(content: GameInfo, data: GuildData, test: boolean): (string | MessageOptions)[] {
+  public buildMessage(content: GameInfo, data: GuildData, test: boolean): [ string, MessageOptions? ] {
     const theme = this.themes[data.theme];
     if (!theme) return undefined;
     return theme.build(content, data, test);

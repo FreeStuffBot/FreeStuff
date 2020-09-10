@@ -14,6 +14,7 @@ export default class CheckCommand extends Command {
       name: 'check',
       desc: '=cmd_check_desc',
       trigger: [ 'check' ],
+      hideOnHelp: true,
       serverManagerOnly: true
     });
   }
@@ -41,11 +42,11 @@ export default class CheckCommand extends Command {
     if (!g.channelInstance) { 
       repl(
         Core.text(g, '=cmd_check_nochannel_1'),
-        Core.text(g, '=cmd_check_nochannel_2', { channel: `#${mes.guild.channels.filter(c => c.type == 'text').random().name}` })
+        Core.text(g, '=cmd_check_nochannel_2', { channel: `#${mes.guild.channels.cache.filter(c => c.type == 'text').random().name}` })
       );
       return true;
     }
-    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('READ_MESSAGES')) {        
+    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('VIEW_CHANNEL')) {        
       repl(
         Core.text(g, '=cmd_check_nosee_1'),
         Core.text(g, '=cmd_check_nosee_2', { channel: g.channelInstance.toString() })
@@ -67,7 +68,7 @@ export default class CheckCommand extends Command {
         );
       return true;
     }
-    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('EXTERNAL_EMOJIS')
+    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('USE_EXTERNAL_EMOJIS')
         && Const.themesWithExtemotes[g.theme]) {
         repl(
           Core.text(g, '=cmd_check_extemotes_1'),

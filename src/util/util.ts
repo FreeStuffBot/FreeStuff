@@ -39,7 +39,7 @@ export class Util {
     return id
       .shiftRight(22)
       .modulo(Long.fromNumber(Core.options.shardCount))
-      .equals(Long.fromNumber(Core.options.shardId));
+      .equals(Long.fromNumber(Core.options.shards[0]));
   }
   
   public static modifyBits(input: number, lshift: number, bits: number, value: number): number {

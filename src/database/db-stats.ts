@@ -2,7 +2,6 @@ import Database, { dbcollection } from "./database";
 import { FreeStuffBot, Core } from "../index";
 import { CronJob } from "cron";
 import * as chalk from "chalk";
-import { Invite, Guild } from "discord.js";
 
 
 export class DbStats {
@@ -14,15 +13,15 @@ export class DbStats {
   public static startMonitoring(bot: FreeStuffBot) {
     new CronJob('0 0 0 * * *', () => {
       setTimeout(async () => {
-        const guildCount = bot.guilds.size;
-        const guildMemberCount = bot.guilds.array().count(g => g.memberCount);
+        const guildCount = bot.guilds.cache.size;
+        const guildMemberCount = bot.guilds.cache.array().count(g => g.memberCount);
 
         if (Core.singleShard) {
-          console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.size}; Members: ${guildMemberCount}`));
+          console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.cache.size}; Members: ${guildMemberCount}`));
           (await this.usage).guilds.updateYesterday(guildCount, false);
           (await this.usage).members.updateYesterday(guildMemberCount, false);
         } else {
-          console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.size}; Members: ${guildMemberCount}; Shard ${Core.options.shardId}`));
+          console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.cache.size}; Members: ${guildMemberCount}; Shard ${Core.options.shards[0]}`));
           (await this.usage).guilds.updateYesterday(guildCount, true);
           (await this.usage).members.updateYesterday(guildMemberCount, true);
         }
@@ -39,7 +38,7 @@ export class DbStats {
   }
 
   public static async updateTopClients() {
-    const top = Core.guilds.sort((a, b) => b.memberCount - a.memberCount).values();
+    const top = Core.guilds.cache.sort((a, b) => b.memberCount - a.memberCount).values();
     const top10 = Array.from(top).splice(0, 10);
     const out = top10.map(async g => { return {
       name: g.name,
@@ -53,7 +52,7 @@ export class DbStats {
       Database
         .collection('stats-top-clients')
         .findOneAndUpdate(
-          { _id: Core.options.shardId || 0 },
+          { _id: Core.options.shards[0] || 0 },
           { $set: { value: out } },
           { upsert: true }
         );
