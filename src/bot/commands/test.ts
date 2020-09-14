@@ -100,7 +100,7 @@ export default class TestCommand extends Command {
         thumbnail: this.placeholderThumbnails[Math.floor(Math.random() * this.placeholderThumbnails.length)],
         org_url: Const.testGameLink,
         url: Const.testGameLink,
-        flags: [],
+        flags: 0,
         steamSubids: '12345 98760',
         until: flags.until ? parseInt(flags.until + '', 10) : -1,
         type: 'free'

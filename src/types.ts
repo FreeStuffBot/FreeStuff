@@ -20,14 +20,27 @@ export interface GameData {
   responsible: string; // User id of the moderator, responsible for checking the info and publishing the announcement
   status: GameApprovalStatus; // Current status of the game
   analytics: {
-    reach: number; // Number of servers it got announced in
-    clicks: number; // Clicks in total
-    guilds: {
-      [guildId: string]: number; // Clicks per guild
+    discord: {
+      reach: number; // Number of servers it got announced in
+      clicks: number; // Clicks in total
+    };
+    telegram: {
+      reach: {
+        users: 0; // Private messages to specific users.
+        groups: 0; // Supergroups excluded
+        supergroups: 0; // Public groups with huge number of users.
+        groupUsers: 0; // A sum of the users count in all the groups.
+        channels: 0;
+        channelUsers: 0; // The sum of subscribed users count in all the channels.
+      };
+      clicks: number; // Clicks in total
     };
   };
   info: GameInfo; // Info about the game
-  outgoing?: number[]; // Array that gradually fills up with all the shards that have picked up the announcement. Last shard that would make the list full will remove the object from the entry
+  outgoing: {
+    discord?: number[]; // Array that gradually fills up with all the shards that have picked up the announcement. Last shard that would make the list full will remove the object from the entry
+    telegram?: boolean; // Queued up. True if needs to be announced. Never false. Gets removed when one.
+  }
 
 }
 
@@ -53,7 +66,7 @@ export interface ScrapeableGameInfo {
     dollar: number;
   };
   thumbnail: string; // Url to the thumbnail image
-  until: number; // How many days the offer is valid
+  until: number; // UNIX Timestamp in seconds of when the sale is going to end
   steamSubids?: string; // For steam games, subids with a space between, for other stores just an empty string
 
 }
@@ -64,16 +77,19 @@ export interface GameInfo extends ScrapeableGameInfo {
   url: string; // Proxy url
   org_url: string; // The direct link to the store page
   store: Store; // Game's store
-  flags: GameFlag[]; // Flags
+  flags: GameFlags; // Flags
   type: AnnouncementType; // Type of annoucement
   steamSubids: string; // Now required
 
 }
 
 export enum GameFlag {
-  TRASH = 'TRASH', // Low quality game
-  THIRDPARTY = 'THIRDPARTY', // Third party key provider
+  TRASH = 1 << 0, // Low quality game
+  THIRDPARTY = 1 << 1, // Third party key provider
 }
+
+/** @see GameFlag */
+export type GameFlags = number;
 
 /** The data that gets stored in the database */
 export interface DatabaseGuildData {

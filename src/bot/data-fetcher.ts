@@ -37,10 +37,9 @@ export default class DataFetcher {
     if (!waiting || !waiting.length) return;
     for (const entry of waiting) {
       if (!!this.announcementQueue.find(i => i._id == entry._id)) continue;
-      if (!Core.singleShard && entry.outgoing && entry.outgoing.includes(Core.options.shards[0])) continue;
+      if (!Core.singleShard && (!entry.outgoing.discord || entry.outgoing.discord.includes(Core.options.shards[0]))) continue;
 
       // entry.info.url = this.generateProxyUrl(entry);
-      entry.info.url = entry.info.org_url;
       this.announcementQueue.push(entry);
     }
 
@@ -59,14 +58,6 @@ export default class DataFetcher {
 
     this.announcementQueue.push(game);
     this.nextAnnouncement();
-  }
-
-  /**
-   * The page proxy is currently not used
-   * @param content game data
-   */
-  public generateProxyUrl(content: GameData): string {
-    return `https://game.freestuffbot.xyz/${content._id}/${content.info.title.split(/\s/).join('-').split(/[^A-Za-z0-9\-]/).join('')}`;
   }
 
   public async nextAnnouncement() {
@@ -93,20 +84,20 @@ export default class DataFetcher {
       .findOne({ _id: announcement._id })
       .then((game: GameData) => {
         if (!Core.singleShard) {
-          if (!game.outgoing) return;
-          if (game.outgoing.length < Core.options.shardCount) return;
+          if (!game.outgoing.discord) return;
+          if (game.outgoing.discord.length < Core.options.shardCount) return;
         }
         if (game.status != 'accepted') return;
 
         Database
           .collection('games')
           .updateOne({ _id: announcement._id }, {
-            '$set': {
-              status: 'published',
-              published: Math.ceil(Date.now() / 1000)
-            },
+            // '$set': {
+            //   status: 'published',
+            //   published: Math.ceil(Date.now() / 1000)
+            // },
             '$unset': {
-              outgoing: null
+              'outgoing.discord': null
             }
           });
           

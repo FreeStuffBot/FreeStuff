@@ -2,7 +2,7 @@ import { FreeStuffBot, Core } from "../index";
 import { Message, Guild, MessageOptions } from "discord.js";
 import Const from "./const";
 import Database from "../database/database";
-import { GameInfo, GuildData, DatabaseGuildData, GameFlag, Theme } from "../types";
+import { GameInfo, GuildData, DatabaseGuildData, GameFlag, Theme, GameData } from "../types";
 import { Long } from "mongodb";
 import { DbStats } from "../database/db-stats";
 import ThemeOne from "./themes/1";
@@ -112,7 +112,7 @@ export default class MessageDistributor {
     // forced will ignore filter settings
     if (!force) {
       if (data.price > content.org_price[data.currency == 'euro' ? 'euro' : 'dollar']) return false;
-      if (!!content.flags?.includes(GameFlag.TRASH) && !data.trashGames) return false;
+      if ((content.flags & GameFlag.TRASH) && !data.trashGames) return false;
     }
 
     // check if channel is valid
@@ -129,7 +129,7 @@ export default class MessageDistributor {
     if (!permissions.has('USE_EXTERNAL_EMOJIS') && Const.themesWithExtemotes[data.theme]) data.theme = Const.themesWithExtemotes[data.theme];
 
     // set content url
-    if (!content.url) content.url = content.org_url;
+    if (!content.url) content.url = this.generateProxyUrl(content, data);
 
     // build message object
     const messageContent = this.buildMessage(content, data, test);
@@ -146,6 +146,25 @@ export default class MessageDistributor {
     const theme = this.themes[data.theme];
     if (!theme) return undefined;
     return theme.build(content, data, test);
+  }
+
+  /**
+   * The page proxy is currently not used
+   * @param content game data
+   */
+  public generateProxyUrl(content: GameInfo, guild: GuildData): string {
+    const url = content.org_url;
+    if (content.store == 'steam') {
+      const gameinfo = url.split('/app/')[1];
+      const parts = gameinfo.split('/');
+      const id = parts[0];
+      const name = parts[1] ? (parts[1] + '/') : '';
+      const guildIdBase64 = new Buffer(guild._id.toString()).toString('base64');
+      return `https://store.steampowered.com/app/${id}/${name}?curator_clanid=38741893&utm_source=discord-bot&utm_medium=theme-${guild.theme}&utm_content=${guildIdBase64}&utm_term=${guild.language}`;
+    } else {
+      return url;
+    }
+    // return `https://game.freestuffbot.xyz/${content._id}/${content.info.title.split(/\s/).join('-').split(/[^A-Za-z0-9\-]/).join('')}`;
   }
 
 }
