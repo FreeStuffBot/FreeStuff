@@ -155,9 +155,9 @@ export default class DatabaseManager {
       trashGames: (dbObject.settings & (1 << 6)) != 0,
       altDateFormat: (dbObject.settings & (1 << 7)) != 0,
       theme: dbObject.settings & 0b1111,
-      language: Core.languageManager.languageById((dbObject.settings >> 8 & 0b11111)),
-      storesRaw: (dbObject.settings >> 13 & 0b11111),
-      storesList: this.storesRawToList(dbObject.settings >> 13 & 0b11111),
+      language: Core.languageManager.languageById((dbObject.settings >> 8 & 0b111111)),
+      storesRaw: (dbObject.settings >> 14 & 0b11111),
+      storesList: this.storesRawToList(dbObject.settings >> 14 & 0b11111),
     }
   }
 
@@ -225,12 +225,12 @@ export default class DatabaseManager {
         out['settings'] = Util.modifyBits(c, 7, 1, bits);
         break;
       case 'language':
-        bits = (value as number) & 0b1111;
-        out['settings'] = Util.modifyBits(c, 8, 5, bits);
+        bits = (value as number) & 0b111111;
+        out['settings'] = Util.modifyBits(c, 8, 6, bits);
         break;
       case 'stores':
         bits = (value as number) & 0b11111111;
-        out['settings'] = Util.modifyBits(c, 13, 8, bits);
+        out['settings'] = Util.modifyBits(c, 14, 8, bits);
         break;
     }
     Database
@@ -240,14 +240,14 @@ export default class DatabaseManager {
 
   // 3__ 2__________________ 1__________________ 0__________________
   // 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
-  // settings:             _______________ _________ _ _ _ _ _______
+  // settings:           _______________ ___________ _ _ _ _ _______
   // 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-  //                       |               |         | | | |  theme [0< 4]
-  //                       |               |         | | | currency (on = usd, off = eur) [4< 1]
-  //                       |               |         | | react with :free: emoji [5< 1]
-  //                       |               |         | show trash games [6< 1]
-  //                       |               |         alternative date format [7< 1]
-  //                       |               language [8< 5]
-  //                       stores [13< 8] (other itch uplay origin gog humble epic steam)
+  //                     |               |           | | | |  theme [0< 4]
+  //                     |               |           | | | currency (on = usd, off = eur) [4< 1]
+  //                     |               |           | | react with :free: emoji [5< 1]
+  //                     |               |           | show trash games [6< 1]
+  //                     |               |           alternative date format [7< 1]
+  //                     |               language [8< 6]
+  //                     stores [14< 8] (other itch uplay origin gog humble epic steam)
 
 }

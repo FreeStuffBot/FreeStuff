@@ -23,6 +23,7 @@ import ParseArgs from "./util/parse-args";
 import SentryManager from "./thirdparty/sentry/sentry";
 import { GuildData } from "types";
 import Redis from "./database/redis";
+import Const from "./bot/const";
 
 
 export class FreeStuffBot extends Client {
@@ -93,7 +94,7 @@ export class FreeStuffBot extends Client {
         this.on('ready', () => {
           console.log(chalk`Bot ready! Logged in as {yellowBright ${this.user.tag}} {gray (${params.noSharding ? 'No Sharding' : `Shard ${(options.shards as number[]).join(', ')} / ${options.shardCount}`})}`);
 
-          const updateActivity = (u) => u.setActivity('@FreeStuff help​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​https://freestuffbot.xyz/', { type: 'WATCHING' });
+          const updateActivity = (u) => u.setActivity(`@${this.user.username} help`.padEnd(54, '~').split('~~').join(' ​').replace('~', '') + Const.websiteLink, { type: 'WATCHING' });
           setInterval(updateActivity, 1000 * 60 * 15, this.user);
           updateActivity(this.user);
 

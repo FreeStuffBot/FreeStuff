@@ -1,0 +1,34 @@
+
+# NEW LINES
+
++ cmd_change_prefix_1
++ cmd_change_prefix_2
++ cmd_advanced_desc
++ cmd_advanced_1
++ cmd_advanced_2
++ cmd_advanced_bottom_text
++ cmd_mydata_desc
++ cmd_mydata_on_cooldown_1
++ cmd_mydata_on_cooldown_2
++ cmd_mydata_confirm_1
++ cmd_mydata_confirm_2
++ cmd_mydata_incorrect_confirmation_1
++ cmd_mydata_incorrect_confirmation_2
++ cmd_mydata_success_1
++ cmd_mydata_display_error
++ cmd_reset_desc
++ cmd_reset_confirm_1
++ cmd_reset_confirm_2
++ cmd_reset_incorrect_confirmation_1
++ cmd_reset_incorrect_confirmation_2
++ cmd_reset_success_1
++ cmd_reset_success_2
++ cmd_settings_change_store
++ cmd_set_store_missing_args_1
++ cmd_set_store_missing_args_2
+
+
+# CHANGES
+
+{pricestr} -> {price}
+new info screen. not part of tude anymore.

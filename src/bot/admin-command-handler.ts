@@ -5,6 +5,7 @@ import { GameData, DatabaseGuildData, GameInfo } from "types";
 import * as AsciiTable from "ascii-table";
 import { hostname } from "os";
 import { Long } from "mongodb";
+import DatabaseManager from "./database-manager";
 
 /*
 
@@ -16,6 +17,8 @@ THIS CLASS CLEARLY NEEDS SOME CLEANUP
 const commandlist = [
   '`$FreeStuff help` - Shows this help page',
   '`$FreeStuff print` - Shows info about this guild',
+  '`$FreeStuff distribute` - ',
+  '`$FreeStuff settingbits` - ',
 ];
 
 export default class AdminCommandHandler {
@@ -91,6 +94,23 @@ export default class AdminCommandHandler {
               }
             })
             .catch(err => reply('error', err));
+          return true;
+
+        case 'settingbits':
+          Core.databaseManager.getRawGuildData(orgmes.guild).then(d => {
+            orgmes.channel.send([
+              '```',
+              d.settings.toString(2).padStart(32, '0'),
+              '          ┖──┬───┚┖─┬──┚╿╿╿╿┖┬─┚',
+              '             G      F   EDCB A  ',
+              '',
+              'A) Theme  B) Currency  C) Reaction',
+              'D) Trash Games  E) Alt Date Format',
+              'F) Language  G) Stores',
+              '```'
+            ].join('\n'))
+          }).catch(orgmes.reply);
+        return true;
     }
 
     return false;

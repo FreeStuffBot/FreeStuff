@@ -7,8 +7,8 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
 
   public getMetaInfo(g: GuildData): [ string, string, any? ] {
     return [
-      'channel #' + ((g && g.channelInstance) ? g.channelInstance.name : 'channel'),
-      '=cmd_settings_change_channel'
+      'store <store> on|off|only',
+      '=cmd_settings_change_store'
     ];
   }
 
@@ -26,13 +26,13 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
     if (store.endsWith('games')) store = store.substr(0, store.length - 5);
     
 
-    // if (args.length < 2) {
-    //   reply(
-    //     Core.text(g, on ? '=cmd_set_store_status_on_1' : '=cmd_set_store_status_off_1', { store: 'STEAM' }),
-    //     Core.text(g, on ? '=cmd_set_store_status_on_2' : '=cmd_set_store_status_off_2', { store: 'STEAM' })
-    //   );
-    //   return false;
-    // }
+    if (args.length < 2) {
+      // reply(
+      //   Core.text(g, on ? '=cmd_set_store_status_on_1' : '=cmd_set_store_status_off_1', { store: 'STEAM' }),
+      //   Core.text(g, on ? '=cmd_set_store_status_on_2' : '=cmd_set_store_status_off_2', { store: 'STEAM' })
+      // );
+      return false;
+    }
 
     return true;
   }
