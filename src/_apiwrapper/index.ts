@@ -93,9 +93,9 @@ export default class FreeStuffApi {
   private gameList_ratesRemaining = 5
   private gameList_ratesReset = 0
 
-  public async gameList(category: 'all' | 'free', useCache = true): Promise<number[]> {
+  public async getGameList(category: 'all' | 'free', useCache = true): Promise<number[]> {
     if (this.gameList_ratesRemaining == 0 && (Date.now() - this.gameList_ratesReset < 0)) {
-      return new Promise((res) => setTimeout(() => res(this.gameList(category)), this.gameList_ratesReset - Date.now()))
+      return new Promise((res) => setTimeout(() => res(this.getGameList(category)), this.gameList_ratesReset - Date.now()))
     }
 
     if (useCache) {
@@ -110,8 +110,6 @@ export default class FreeStuffApi {
     this.gameList_cacheData[category] = data.data || this.gameList_cacheData[category]
     this.gameList_cacheUpdate[category] = Date.now()
 
-    this.gameDetails([0], 'analytics', true)
-
     return <number[] | null> data.data ?? []
   }
 
@@ -123,12 +121,12 @@ export default class FreeStuffApi {
   private gameDetails_ratesReset = 0
 
   /** @access PUBLIC */
-  public async gameDetails(games: number[], lookup: 'info', useCache?: boolean): Promise<{ [id: string]: GameInfo }>
+  public async getGameDetails(games: number[], lookup: 'info', useCache?: boolean): Promise<{ [id: string]: GameInfo }>
   /** @access PARTNER ONLY */
-  public async gameDetails(games: number[], lookup: 'analytics', useCache?: boolean): Promise<{ [id: string]: GameAnalytics }>
+  public async getGameDetails(games: number[], lookup: 'analytics', useCache?: boolean): Promise<{ [id: string]: GameAnalytics }>
   /** @access PARTNER ONLY */
-  public async gameDetails(games: number[], lookup: 'all', useCache?: boolean): Promise<{ [id: string]: any }>
-  public async gameDetails(games: number[], lookup: 'info' | 'analytics' | 'all', useCache = true): Promise<{ [id: string]: any }> {
+  public async getGameDetails(games: number[], lookup: 'all', useCache?: boolean): Promise<{ [id: string]: any }>
+  public async getGameDetails(games: number[], lookup: 'info' | 'analytics' | 'all', useCache = true): Promise<{ [id: string]: any }> {
     const out = { }
 
     if (!games.length) return out
@@ -156,7 +154,7 @@ export default class FreeStuffApi {
     if (!games.length) return out
 
     if (this.gameDetails_ratesRemaining == 0 && (Date.now() - this.gameDetails_ratesReset < 0)) {
-      return new Promise((res) => setTimeout(() => res(this.gameDetails(games, <'info'> lookup, useCache)), this.gameDetails_ratesReset - Date.now()))
+      return new Promise((res) => setTimeout(() => res(this.getGameDetails(games, <'info'> lookup, useCache)), this.gameDetails_ratesReset - Date.now()))
     }
 
     const requestStack = [[]]
