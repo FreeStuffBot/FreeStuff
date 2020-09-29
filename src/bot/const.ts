@@ -19,7 +19,7 @@ export default class Const {
 
   public static readonly storeDisplayNames = {
     steam: 'Steam',
-    epic: 'Epic Games Store',
+    epic: 'Epic Games',
     humble: 'Humble Bundle',
     gog: 'GOG.com',
     origin: 'Origin',
@@ -29,7 +29,7 @@ export default class Const {
     discord: 'Discord',
     apple: 'Apple App Store',
     google: 'Google Play',
-    switch: 'Nintendo Switch Store',
+    switch: 'Nintendo Switch',
     ps: 'Play Station',
     xbox: 'Xbox',
     other: 'Other'

@@ -156,8 +156,8 @@ export default class DatabaseManager {
       altDateFormat: (dbObject.settings & (1 << 7)) != 0,
       theme: dbObject.settings & 0b1111,
       language: Core.languageManager.languageById((dbObject.settings >> 8 & 0b111111)),
-      storesRaw: (dbObject.settings >> 14 & 0b11111),
-      storesList: this.storesRawToList(dbObject.settings >> 14 & 0b11111),
+      storesRaw: (dbObject.settings >> 14 & 0b11111111),
+      storesList: this.storesRawToList(dbObject.settings >> 14 & 0b11111111),
     }
   }
 

@@ -17,6 +17,8 @@
 + cmd_mydata_success_1
 + cmd_mydata_display_error
 + cmd_reset_desc
++ cmd_reset_on_cooldown_1
++ cmd_reset_on_cooldown_2
 + cmd_reset_confirm_1
 + cmd_reset_confirm_2
 + cmd_reset_incorrect_confirmation_1
@@ -26,6 +28,26 @@
 + cmd_settings_change_store
 + cmd_set_store_missing_args_1
 + cmd_set_store_missing_args_2
++ cmd_set_store_list_enabled
++ cmd_set_store_list_enabled_none
++ cmd_set_store_list_disabled
++ cmd_set_store_list_disabled_none
++ cmd_set_store_not_found_1
++ cmd_set_store_not_found_2
++ cmd_set_store_not_supported_1
++ cmd_set_store_not_supported_2
++ cmd_set_store_status_on_1
++ cmd_set_store_status_on_2
++ cmd_set_store_status_off_1
++ cmd_set_store_status_off_2
++ cmd_set_store_success_on_1
++ cmd_set_store_success_on_2
++ cmd_set_store_success_off_1
++ cmd_set_store_success_off_2
++ cmd_set_store_success_only_1
++ cmd_set_store_success_only_2
++ cmd_set_store_invalid_setting_1
++ cmd_set_store_invalid_setting_2
 
 
 # CHANGES

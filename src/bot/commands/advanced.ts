@@ -25,7 +25,10 @@ export default class AdvancedCommand extends Command {
 
     repl(
       Core.text(g, '=cmd_advanced_1'),
-      [ Core.text(g, '=cmd_advanced_2'), commands.join('\n\n'), Core.text(g, '=cmd_advanced_bottom_text') ].join('\n\n'),
+      [
+        Core.text(g, '=cmd_advanced_2'),
+        commands.join('\n\n'), Core.text(g, '=cmd_advanced_bottom_text', { privacy: Const.privacyPolicyLink, terms: Const.termsOfServiceLink })
+      ].join('\n\n'),
     );
     return true;
   }

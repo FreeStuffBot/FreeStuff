@@ -100,6 +100,7 @@ export default class AdminCommandHandler {
           Core.databaseManager.getRawGuildData(orgmes.guild).then(d => {
             orgmes.channel.send([
               '```',
+              '._______________._______.___._..',
               d.settings.toString(2).padStart(32, '0'),
               '          ┖──┬───┚┖─┬──┚╿╿╿╿┖┬─┚',
               '             G      F   EDCB A  ',

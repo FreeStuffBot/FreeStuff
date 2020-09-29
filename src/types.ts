@@ -123,20 +123,20 @@ export type GuildSetting = 'channel' | 'roleMention' | 'theme' | 'currency' | 'r
 
 export type Store = 'steam' | 'epic' | 'humble' | 'gog' | 'origin' | 'uplay' | 'twitch' | 'itch' | 'discord' | 'apple' | 'google' | 'switch' | 'ps' | 'xbox' | 'other';
 
-export type GameApprovalStatus = 'pending' | 'declined' | 'accepted' | 'published' | 'scheduled';
+export type GameApprovalStatus = 'pending' | 'declined' | 'approved';
 
 export type AnnouncementType = 'free' | 'weekend' | 'discount' | 'ad' | 'unknown';
 
 
 export enum FilterableStore {
-  STEAM = 1 << 0,
-  EPIC = 1 << 1,
-  HUMBLE = 1 << 2,
-  GOG = 1 << 3,
-  ORIGIN = 1 << 4,
-  UPLAY = 1 << 5,
-  ITCH = 1 << 6,
-  OTHER = 1 << 7,
+  OTHER  = 1 << 0,
+  STEAM  = 1 << 1,
+  EPIC   = 1 << 2,
+  HUMBLE = 1 << 3,
+  GOG    = 1 << 4,
+  ORIGIN = 1 << 5,
+  UPLAY  = 1 << 6,
+  ITCH   = 1 << 7,
 }
 
 
@@ -203,6 +203,15 @@ export type ReplyFunction = (message: string, content: string, footer?: string, 
 export interface Theme {
 
   build(content: GameInfo, data: GuildData, test: boolean): [string, MessageOptions];
+
+}
+
+export interface StoreData {
+
+  name: string;
+  key: Store;
+  icon: string;
+  bit: number;
 
 }
 

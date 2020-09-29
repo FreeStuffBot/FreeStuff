@@ -37,7 +37,7 @@ export default class SettingsCommand extends Command {
     this.commands.set('language lang local locale', new SetLanguageHandler());
     this.commands.set('until', new SetUntilHandler());
     this.commands.set('prefix', new SetPrefixHanler());
-    this.commands.set('store shop platform', new SetStoreHandler());
+    this.commands.set('store stores shop platform', new SetStoreHandler());
   }
 
   public handle(mes: Message, args: string[], g: GuildData, repl: ReplyFunction): boolean {

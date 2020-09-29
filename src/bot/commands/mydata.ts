@@ -3,6 +3,7 @@ import { ReplyFunction, Command, GuildData } from "../../types";
 import { Core } from "../../index";
 import guildDataToViewString from "../../util/guilddata-visualizer";
 import Database from "../../database/database";
+import Const from "../const";
 
 
 export default class MydataCommand extends Command {
@@ -15,7 +16,8 @@ export default class MydataCommand extends Command {
       name: 'mydata',
       desc: '=cmd_mydata_desc',
       trigger: [ 'mydata' ],
-      hideOnHelp: true
+      hideOnHelp: true,
+      serverManagerOnly: true
     });
   }
 
@@ -66,7 +68,7 @@ export default class MydataCommand extends Command {
   }
 
   private async fetchData(g: GuildData): Promise<string> {
-    const errormsg = Core.text(g, '=cmd_mydata_display_error');
+    const errormsg = Core.text(g, '=cmd_mydata_display_error', { invite: Const.discordInvite });
     const guilddata = guildDataToViewString(g, 2000, errormsg);
     const raw = {_id:g._id,sharder:g.sharder,channel:g.channel,role:g.role,price:g.price,settings:g.settings};
     return `**What we store:**\n\`\`\`${JSON.stringify(raw)}\`\`\`\n**Human readable**:\n${guilddata}`;

@@ -66,13 +66,13 @@ export default class DataFetcher {
     const announcement = this.announcementQueue.splice(0, 1)[0];
     Redis.setSharded('pending', announcement._id + '');
 
-    if (!Core.singleShard && announcement.status == 'accepted') {
-      Database
-        .collection('games')
-        .updateOne({ _id: announcement._id }, {
-          '$push': { outgoing: Core.options.shards[0] }
-        });
-    }
+    // if (!Core.singleShard && announcement.status == 'accepted') {
+    //   Database
+    //     .collection('games')
+    //     .updateOne({ _id: announcement._id }, {
+    //       '$push': { outgoing: Core.options.shards[0] }
+    //     });
+    // }
 
     await Core.messageDistributor.distribute(announcement.info, announcement._id);
 
@@ -87,7 +87,7 @@ export default class DataFetcher {
           if (!game.outgoing.discord) return;
           if (game.outgoing.discord.length < Core.options.shardCount) return;
         }
-        if (game.status != 'accepted') return;
+        // if (game.status != 'accepted') return;
 
         Database
           .collection('games')
