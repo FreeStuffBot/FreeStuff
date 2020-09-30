@@ -37,11 +37,9 @@ In the root directory, rename the file `config.template.js` to `config.js`. Open
 
 `thirdparty.sentry.dsn` is your sentry dsn token. This token can be found in the process of setting up a new sentry project.
 
-`sharder` contains options for the communication with the management server. Since that server is not open source you will need to take a look in the source code to implement your own or remove it entirely.
+`apisettings` are the settings for the freestuff api. This object gets used as the settings for initialising the API wrapper instance.
 
 `supportWebhook` is a discord webhook url which all _@FreeStuff here_ queries will end up.
-
-`lang` is deprecated. This can be neglected.
 
 `admins` is an array of discord user ids that are allowed to run admin commands.
 
