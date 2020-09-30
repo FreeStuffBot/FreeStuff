@@ -1,7 +1,8 @@
-import { GameInfo, GuildData, Theme, GameFlag } from "../../types";
+import { GuildData, Theme } from "../../types";
 import { MessageOptions } from "discord.js";
 import { Core } from "../../index";
 import Const from "../../bot/const";
+import { GameFlag, GameInfo } from "../../_apiwrapper/types";
 
 
 export default class ThemeFour implements Theme {
@@ -15,18 +16,18 @@ export default class ThemeFour implements Theme {
         ? `${content.org_price.dollar} $`
         : `$${content.org_price.dollar}`;
 
-    const date = new Date(Date.now() + content.until * 1000 * 60 * 60 * 24);
     let until = '';
     if (content.until) {
       if (data.altDateFormat) {
-        const day = date.toLocaleDateString(Core.languageManager.get(data, 'date_format'), { weekday: 'long' });
-        if (content.until < 7) until = Core.text(data, '=announcement_free_until_day', { day });
-        else if (content.until == 7) until = Core.text(data, '=announcement_free_for_a_week', { day });
-        else if (content.until < 14) until = Core.text(data, '=announcement_free_until_day_next_week', { day });
+        const day = content.until.toLocaleDateString(Core.languageManager.get(data, 'date_format'), { weekday: 'long' });
+        const days = Math.round(Math.abs((content.until.getTime() - new Date().getTime()) / (1000*60*60*24)));
+        if (days < 7) until = Core.text(data, '=announcement_free_until_day', { day });
+        else if (days == 7) until = Core.text(data, '=announcement_free_for_a_week', { day });
+        else if (days < 14) until = Core.text(data, '=announcement_free_until_day_next_week', { day });
         else until = Core.text(data, '=announcement_free_for_a_long_time');
       } else {
         until = Core.text(data, '=announcement_free_until_date', {
-          date: date.toLocaleDateString(Core.languageManager.get(data, 'date_format'))
+          date: content.until.toLocaleDateString(Core.languageManager.get(data, 'date_format'))
         });
       }
     }

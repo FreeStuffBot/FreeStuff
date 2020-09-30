@@ -33,6 +33,7 @@ export interface RawApiResponse {
 }
 
 export interface GameInfo {
+  id: number;
   url: string
   org_url: string
   title: string
@@ -45,7 +46,7 @@ export interface GameInfo {
     dollar: number
   }
   thumbnail: string
-  until: number
+  until: Date
   store: Store
   flags: GameFlags
   type: AnnouncementType

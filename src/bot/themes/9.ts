@@ -1,6 +1,7 @@
-import { GameInfo, GuildData, Theme } from "../../types";
+import { GuildData, Theme } from "../../types";
 import { MessageOptions } from "discord.js";
 import { Core } from "../../index";
+import { GameInfo } from "../../_apiwrapper/types";
 
 
 export default class ThemeNine implements Theme {

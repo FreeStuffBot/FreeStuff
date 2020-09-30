@@ -1,9 +1,11 @@
-import { Endpoint, FreeStuffApiSettings, GameAnalytics, PartnerEndpoint, RawApiResponse } from "./types"
+import { Endpoint, FreeStuffApiSettings, GameAnalytics, GameInfo, PartnerEndpoint, RawApiResponse } from "./types"
 import axios, { AxiosResponse } from 'axios'
-import { GameInfo } from "types"
+import { hostname } from "os"
 
 
 export default class FreeStuffApi {
+
+  //#region constructor
 
   constructor(
     private settings: FreeStuffApiSettings,
@@ -28,9 +30,11 @@ export default class FreeStuffApi {
       this.settings.cacheTtl.gameList = 1000 * 60 * 5
   }
 
-  //
+  //#endregion
+  
+  //#region http core
 
-  public getHeaders(): any {
+  private getHeaders(): any {
     return {
       'Authorization': this.settings.type == 'basic'
         ? `Basic ${this.settings.key}`
@@ -80,13 +84,16 @@ export default class FreeStuffApi {
     }
   }
 
-  //
+  //#endregion
+  
+  //#region PING
 
   public async ping(): Promise<RawApiResponse> {
     return await this.makeRequest(Endpoint.PING)
   }
 
-  //
+  //#endregion
+  //#region GET game list
 
   private gameList_cacheData = {}
   private gameList_cacheUpdate = {}
@@ -113,7 +120,8 @@ export default class FreeStuffApi {
     return <number[] | null> data.data ?? []
   }
 
-  //
+  //#endregion
+  //#region GET game details
 
   private gameDetails_cacheData = {}
   private gameDetails_cacheUpdate = {}
@@ -133,21 +141,13 @@ export default class FreeStuffApi {
     if (lookup != 'info' && this.settings.type != 'partner')
       throw `FreeStuffApi Error. Tried to request partner only information. Get game details, lookup: ${lookup}. Allowed lookups: [ 'info' ]`
 
-    for (const game of games) {
-      const cid = `${game}/${lookup}`
-      if (this.gameDetails_cacheData[cid] && (Date.now() - this.gameDetails_cacheUpdate[cid] < this.settings.cacheTtl.gameDetails)) {
-        out[game + ''] = this.gameDetails_cacheData[cid]
-        games.splice(games.indexOf(game), 1)
-      }
-    }
-
-    if (!games.length) return out
-
     if (useCache) {
       for (const game of games) {
         const cid = `${game}/${lookup}`
-        if (this.gameDetails_cacheData[cid] && (Date.now() - this.gameDetails_cacheUpdate[cid] < this.settings.cacheTtl.gameDetails))
+        if (this.gameDetails_cacheData[cid] && (Date.now() - this.gameDetails_cacheUpdate[cid] < this.settings.cacheTtl.gameDetails)) {
           out[game + ''] = this.gameDetails_cacheData[cid]
+          games.splice(games.indexOf(game), 1)
+        }
       }
     }
 
@@ -169,9 +169,16 @@ export default class FreeStuffApi {
 
     for (const res of raw) {
       for (const id of Object.keys(<any> res.data || {})) {
-        out[id] = (res.data && res.data[id]) ?? null
+        let object = <GameInfo | null> (res.data && res.data[id]) ?? null
+
+        if (object) {
+          object.until = object.until ? new Date((<unknown> object.until as number) * 1000) : null;
+          object.id = parseInt(id);
+        }
+
+        out[id] = object;
         const cid = `${id}/${lookup}`
-        this.gameDetails_cacheData[cid] = out[id]
+        this.gameDetails_cacheData[cid] = object;
         this.gameDetails_cacheUpdate[cid] = Date.now()
       }
     }
@@ -182,5 +189,69 @@ export default class FreeStuffApi {
 
     return out
   }
+
+  //#endregion
+  //#region POST status
+
+  /** @access PARTNER ONLY */
+  public async postStatus(service: string, status: 'ok' | 'partial' | 'rebooting' | 'fatal', data?: any, servername?: string, suid?: string): Promise<RawApiResponse> {
+    if (this.settings.type != 'partner')
+      throw 'FreeStuffApi Error. Tried using partner-only endpoint "postStatus" as non-partner.'
+
+    data = data || {}
+    servername = servername || await hostname()
+    suid = suid || this.settings.sid
+
+    const body = {
+      data, suid, status, service,
+      server: servername
+    }
+
+    const res = await this.makeRequest(PartnerEndpoint.STATUS, body);
+
+    if (res['events'])
+      res['events'].forEach(this.emitRawEvent)
+
+    return res
+  }
+
+  //#endregion
+  
+  //#region event system
+  private listener: Map<string, ((...data: any) => any)[]> = new Map()
+
+  public on(event: 'free_games', handler: (ids: number[]) => any)
+  public on(event: 'operation', handler: (command: string, args: string[]) => any)
+  public on(event: string, handler: (...data: any) => any) {
+    if (this.listener.has(event))
+      this.listener.get(event).push(handler)
+    else
+      this.listener.set(event, [ handler ])
+  }
+
+  public unregisterEventHandler(event?: string) {
+    if (event) this.listener.delete(event)
+    else this.listener = new Map()
+  }
+
+  public emitEvent(event: string, ...data: any) {
+    if (this.listener.has(event))
+      this.listener.get(event).forEach(handler => handler(...data))
+  }
+
+  public emitRawEvent(event: { event: string, data: any }, orElse?: (event: { event:string, data: any }) => any) {
+    switch (event.event) {
+      case 'free_games':
+        this.emitEvent('free_games', event.data)
+        break;
+
+      case 'operation':
+        this.emitEvent('operation', event.data.command, event.data.arguments)
+        break;
+
+      default: orElse && orElse(event)
+    }
+  }
+  //#endregion
 
 }

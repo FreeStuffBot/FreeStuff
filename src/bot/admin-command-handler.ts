@@ -1,11 +1,9 @@
 import { FreeStuffBot, Core, config } from "../index";
 import { Message } from "discord.js";
 import Database from "../database/database";
-import { GameData, DatabaseGuildData, GameInfo } from "types";
-import * as AsciiTable from "ascii-table";
+import { GameData, DatabaseGuildData } from "types";
 import { hostname } from "os";
 import { Long } from "mongodb";
-import DatabaseManager from "./database-manager";
 
 /*
 
@@ -90,7 +88,7 @@ export default class AdminCommandHandler {
                 const guild = await Database
                   .collection('guilds')
                   .findOne({ _id: Long.fromString(guildid) }) as DatabaseGuildData;
-                Core.messageDistributor.sendToGuild(guild, data.info, false, false);
+                Core.messageDistributor.sendToGuild(guild, [ data.info ], false, false);
               }
             })
             .catch(err => reply('error', err));

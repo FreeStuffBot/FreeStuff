@@ -2,9 +2,10 @@ import { FreeStuffBot, Core } from "../index";
 import { Guild, TextChannel } from "discord.js";
 import Database from "../database/database";
 import { Long } from "mongodb";
-import { GuildSetting, GuildData, DatabaseGuildData, FilterableStore, Store } from "../types";
+import { GuildSetting, GuildData, DatabaseGuildData, FilterableStore } from "../types";
 import { Util } from "../util/util";
 import { CronJob } from "cron";
+import { Store } from "_apiwrapper/types";
 
 
 export default class DatabaseManager {

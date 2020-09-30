@@ -2,7 +2,7 @@ import { FreeStuffBot, Core } from "../index";
 import { Message, Guild, MessageOptions } from "discord.js";
 import Const from "./const";
 import Database from "../database/database";
-import { GameInfo, GuildData, DatabaseGuildData, GameFlag, Theme, GameData } from "../types";
+import { GuildData, DatabaseGuildData, Theme, GameData } from "../types";
 import { Long } from "mongodb";
 import { DbStats } from "../database/db-stats";
 import ThemeOne from "./themes/1";
@@ -17,6 +17,7 @@ import ThemeNine from "./themes/9";
 import ThemeTen from "./themes/10";
 import SentryManager from "../thirdparty/sentry/sentry";
 import Redis from "../database/redis";
+import { GameFlag, GameInfo } from "../_apiwrapper/types";
 
 
 export default class MessageDistributor {
@@ -40,8 +41,8 @@ export default class MessageDistributor {
 
   //
 
-  public async distribute(content: GameInfo, announcementId: number) {
-    if (content.type != 'free') return; // TODO
+  public async distribute(content: GameInfo[]) {
+    content = content.filter(g => g.type == 'free'); // TODO
 
     const lga = await Redis.getSharded('lga');
     const startAt = lga ? parseInt(lga, 10) : 0;
@@ -59,39 +60,41 @@ export default class MessageDistributor {
       .toArray();
     if (!guilds) return;
 
-    console.log(`Starting to announce ${content.title} - ${new Date().toLocaleTimeString()} on ${guilds.length} guilds`);
-    /** announcementsMade */
-    Redis.setSharded('am', '0');
+    console.log(`Starting to announce ${content.length} games on ${guilds.length} guilds: ${content.map(g => g.title)} - ${new Date().toLocaleTimeString()}`);
+    await Redis.setSharded('am', '0');
     for (const g of guilds) {
       if (!g) continue;
       try {
-        /** Last Guild Announced */
         Redis.setSharded('lga', g.sharder + '');
-        const successful = this.sendToGuild(g, content, false, false);
-        if (await successful) {
+        const successIn = await this.sendToGuild(g, content, false, false);
+        if (successIn.length) {
+          for (const id of successIn)
+            Redis.incSharded('am_' + id);
           await new Promise(res => setTimeout(() => res(), 200));
-          Redis.incSharded('am');
         }
       } catch(ex) {
         console.error(ex);
         SentryManager.report(ex);
       }
     }
-    console.log(`Done announcing ${content.title} - ${new Date().toLocaleTimeString()}`);
-    const announcementsMade = parseInt(await Redis.getSharded('am'), 10);
+    console.log(`Done announcing: ${content.map(g => g.title)} - ${new Date().toLocaleTimeString()}`);
+    const announcementsMade = await Promise.all(content.map(async c => parseInt(await Redis.getSharded('am_' + c.id), 10)));
+    const announcementsMadeTotal = announcementsMade.reduce((p, c) => (p + c), 0);
 
-    Redis.setSharded('am', '0'); // AMount (of announcements done)
-    Redis.setSharded('lga', ''); // Last Guild Announced (guild id)
+    content.forEach(c => Redis.setSharded('am_' + c.id, '0')); // AMount (of announcements done)
+    await Redis.setSharded('lga', ''); // Last Guild Announced (guild id)
 
-    (await DbStats.usage).announcements.updateToday(announcementsMade, true);
-    if (announcementId >= 0) {
-      Database
-        .collection('games')
-        .updateOne(
-          { _id: announcementId },
-          { '$inc': { 'analytics.reach': announcementsMade } }
-        );
-    }
+    (await DbStats.usage).announcements.updateToday(announcementsMadeTotal, true);
+
+    // TODO SEND announcementsMade over
+    // if (announcementId >= 0) {
+    //   Database
+    //     .collection('games')
+    //     .updateOne(
+    //       { _id: announcementId },
+    //       { '$inc': { 'analytics.reach': announcementsMade } }
+    //     );
+    // }
   }
 
   public test(guild: Guild, content: GameInfo): void {
@@ -100,51 +103,58 @@ export default class MessageDistributor {
       .findOne({ _id: Long.fromString(guild.id) })
       .then((g: DatabaseGuildData) => {
         if (!g) return;
-        this.sendToGuild(g, content, true, true);
+        this.sendToGuild(g, [ content ], true, true);
       })
       .catch(console.error);
   }
 
-  public async sendToGuild(g: DatabaseGuildData, content: GameInfo, test: boolean, force: boolean): Promise<boolean> {
+  public async sendToGuild(g: DatabaseGuildData, content: GameInfo[], test: boolean, force: boolean): Promise<number[]> {
     const data = await Core.databaseManager.parseGuildData(g);
-    if (!data) return false;
+    if (!data) return [];
 
     // forced will ignore filter settings
     if (!force) {
-      if (data.price > content.org_price[data.currency == 'euro' ? 'euro' : 'dollar']) return false;
-      if ((content.flags & GameFlag.TRASH) && !data.trashGames) return false;
+      content = content
+        .filter(game => data.price < game.org_price[data.currency])
+        .filter(game => data.trashGames || !(game.flags & GameFlag.TRASH))
+        .filter(game => data.storesList.includes(game.store));
+
+      if (!content.length) return [];
     }
 
     // check if channel is valid
-    if (!data.channelInstance) return false;
-    if (!data.channelInstance.send) return false;
-    if (!data.channelInstance.guild.available) return false;
+    if (!data.channelInstance) return [];
+    if (!data.channelInstance.send) return [];
+    if (!data.channelInstance.guild.available) return [];
 
     // check if permissions match
     const self = data.channelInstance.guild.me;
     const permissions = self.permissionsIn(data.channelInstance);
-    if (!permissions.has('SEND_MESSAGES')) return false;
-    if (!permissions.has('VIEW_CHANNEL')) return false;
-    if (!permissions.has('EMBED_LINKS') && Const.themesWithEmbeds.includes(data.theme)) return false;
+    if (!permissions.has('SEND_MESSAGES')) return [];
+    if (!permissions.has('VIEW_CHANNEL')) return [];
+    if (!permissions.has('EMBED_LINKS') && Const.themesWithEmbeds.includes(data.theme)) return [];
     if (!permissions.has('USE_EXTERNAL_EMOJIS') && Const.themesWithExtemotes[data.theme]) data.theme = Const.themesWithExtemotes[data.theme];
 
     // set content url
-    if (!content.url) content.url = this.generateProxyUrl(content, data);
+    content.forEach(game => game.url = this.generateProxyUrl(game, data))
 
-    // build message object
-    const messageContent = this.buildMessage(content, data, test);
-    if (!messageContent) return false;
+    // build message objects
+    let messageContents = content.map(game => this.buildMessage(game, data, test));
+    messageContents = messageContents.filter(mes => !!mes);
+    if (!messageContents.length) return [];
 
-    // send the message
-    const mes: Message = await data.channelInstance.send(...messageContent) as Message;
+    // send the messages
+    let mes: Message;
+    for (const mesCont of messageContents)
+      mes = await data.channelInstance.send(...mesCont) as Message;
     if (data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
       await mes.react('🆓');
-    return true;
+
+    return content.map(game => game.id);
   }
 
   public buildMessage(content: GameInfo, data: GuildData, test: boolean): [ string, MessageOptions? ] {
-    const theme = this.themes[data.theme];
-    if (!theme) return undefined;
+    const theme = this.themes[data.theme] || this.themes[0];
     return theme.build(content, data, test);
   }
 

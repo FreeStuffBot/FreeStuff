@@ -32,20 +32,28 @@ export default class Redis {
     return this.get(`s${Core.options.shards[0]}_${key}`);
   }
 
-  public static set(key: string, value: string): void {
-    this.client.set(key, value);
+  public static async set(key: string, value: string): Promise<string> {
+    return new Promise(res => this.client.set(key, value, (err, data) => res(value)));
   }
 
-  public static setSharded(key: string, value: string): void {
-    this.set(`s${Core.options.shards[0]}_${key}`, value);
+  public static async setSharded(key: string, value: string): Promise<string> {
+    return this.set(`s${Core.options.shards[0]}_${key}`, value);
   }
 
-  public static inc(key: string): void {
-    this.client.incr(key);
+  public static async inc(key: string, amount = 1): Promise<number> {
+    if (amount == 1) {
+      return new Promise(res => this.client.incr(key, (err, data) => res(data)));
+    } else {
+      const waitFor = [];
+      while (amount-- > 0)
+        waitFor.push(new Promise(res => this.client.incr(key, (err, data) => res(data))));
+      const out = await Promise.all(waitFor);
+      return out.sort().reverse()[0];
+    }
   }
 
-  public static incSharded(key: string): void {
-    this.inc(`s${Core.options.shards[0]}_${key}`);
+  public static async incSharded(key: string, amount = 1): Promise<number> {
+    return this.inc(`s${Core.options.shards[0]}_${key}`, amount);
   }
 
 }

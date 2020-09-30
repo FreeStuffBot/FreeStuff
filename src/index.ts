@@ -11,7 +11,7 @@ import CommandHandler from "./bot/command-handler";
 import DatabaseManager from "./bot/database-manager";
 import MessageDistributor from "./bot/message-distributor";
 import AdminCommandHandler from "./bot/admin-command-handler";
-import DataFetcher from "./bot/data-fetcher";
+import AnnouncementManager from "./bot/announcement-manager";
 import Sharder from "./bot/sharder";
 import LanguageManager from "./bot/language-manager";
 import Localisation from "./bot/localisation";
@@ -29,11 +29,13 @@ import FreeStuffApi from "./_apiwrapper";
 
 export class FreeStuffBot extends Client {
 
+  public fsapi: FreeStuffApi;
+
   public commandHandler: CommandHandler;
   public databaseManager: DatabaseManager;
   public messageDistributor: MessageDistributor;
   public adminCommandHandler: AdminCommandHandler;
-  public dataFetcher: DataFetcher;
+  public announcementManager: AnnouncementManager;
   public sharder: Sharder;
   public languageManager: LanguageManager;
   public localisation: Localisation;
@@ -70,12 +72,16 @@ export class FreeStuffBot extends Client {
 
         await Database.init();
         await Redis.init();
+
+        const apisettings = { ...config.apisettings };
+        apisettings.suid = this.singleShard ? '0' : this.options.shards[0];
+        this.fsapi = new FreeStuffApi(apisettings);
     
         this.commandHandler = new CommandHandler(this);
         this.databaseManager = new DatabaseManager(this);
         this.messageDistributor = new MessageDistributor(this);
         this.adminCommandHandler = new AdminCommandHandler(this);
-        this.dataFetcher = new DataFetcher(this);
+        this.announcementManager = new AnnouncementManager(this);
         this.sharder = new Sharder(this);
         this.languageManager = new LanguageManager(this);
         this.localisation = new Localisation(this);
@@ -125,7 +131,6 @@ export class FreeStuffBot extends Client {
   }
 
 }
-
 
 const params = ParseArgs.parse(process.argv);
 

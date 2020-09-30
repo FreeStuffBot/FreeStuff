@@ -1,8 +1,9 @@
 import { Message } from "discord.js";
-import { ReplyFunction, Command, GuildData, Store } from "../../types";
+import { ReplyFunction, Command, GuildData } from "../../types";
 import { Core, config } from "../../index";
 import Const from "../const";
 import ParseArgs from "../../util/parse-args";
+import { Store } from "_apiwrapper/types";
 
 
 export default class TestCommand extends Command {
@@ -87,6 +88,7 @@ export default class TestCommand extends Command {
       let price = parseFloat(flags.price + '');
       if (!price) price = 19.99;
       Core.messageDistributor.test(mes.guild, {
+        id: 0,
         title: Core.text(g, '=cmd_test_announcement_header'),
         org_price: {
           euro: price,
@@ -101,9 +103,11 @@ export default class TestCommand extends Command {
         org_url: Const.testGameLink,
         url: Const.testGameLink,
         flags: 0,
-        steamSubids: '12345 98760',
-        until: flags.until ? parseInt(flags.until + '', 10) : -1,
-        type: 'free'
+        until: null,
+        type: 'free',
+        store_meta: {
+          steam_subids: '12345 98760'
+        }
       });
     } catch (ex) {
       if (Object.keys(flags)) {

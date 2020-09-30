@@ -50,7 +50,19 @@
 + cmd_set_store_invalid_setting_2
 
 
+++ cmd_free_no_freebies
+++ open_in_browser
+++ open_in_steam_client
+++ open_in_epic_games_client
+++ cmd_set_store_success_all_1
+++ cmd_set_store_success_all_2
+
+
 # CHANGES
+
+cmd_free_ends_soon - (WITHOUT POSSIBLY ALREADY HAS ENDED)
+cmd_set_store_missing_args_2 - (ADD @FreeStuff set store all)
+
 
 {pricestr} -> {price}
 new info screen. not part of tude anymore.

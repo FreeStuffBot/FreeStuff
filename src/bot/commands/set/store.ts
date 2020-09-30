@@ -1,8 +1,8 @@
-import { CommandHandler, GuildData, ReplyFunction, SettingsSubcommand, FilterableStore, Store, StoreData } from "../../../types";
+import { CommandHandler, GuildData, ReplyFunction, SettingsSubcommand, FilterableStore, StoreData } from "../../../types";
 import { Core } from "../../../index";
-import { Message, Guild } from "discord.js";
+import { Message } from "discord.js";
 import Const from "../../const";
-import { Util } from "../../../util/util";
+import { Store } from "_apiwrapper/types";
 
 
 export default class SetStoreHandler implements CommandHandler, SettingsSubcommand {
@@ -48,6 +48,15 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
     if (args[1] && args[1].toLocaleLowerCase().startsWith('game')) cutoff += ' ' + args.splice(1, 1)[0];
     if (args[1] && args[1].toLocaleLowerCase().startsWith('store')) cutoff += ' ' + args.splice(1, 1)[0];
     if (args[1] && args[1].toLocaleLowerCase().startsWith('bundle')) cutoff += ' ' + args.splice(1, 1)[0];
+
+    if ([ 'all', 'everything' ].includes(storeName)) {
+      Core.databaseManager.changeSetting(mes.guild, g, 'stores', 0b11111111111111111111111);
+      reply(
+        Core.text(g, '=cmd_set_store_success_all_1'),
+        Core.text(g, '=cmd_set_store_success_all_2')
+      );
+      return;
+    }
 
     const store = this.getStoreFromKeyword(storeName);
 
@@ -119,7 +128,7 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
       name: store == 'other' ? 'Other Stores' : Const.storeDisplayNames[store],
       key: store,
       icon: Const.storeEmojis[store],
-      bit: FilterableStore[store.toUpperCase()]
+      bit: <unknown> FilterableStore[store.toUpperCase()] as number
     };
   }
 
