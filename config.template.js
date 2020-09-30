@@ -29,7 +29,6 @@ module.exports = {
     id: "123456789123456789",
     token: "abcdefghijklmnopqrstuvwxyz"
   },
-  lang: "en",
   admins: [
     "137258778092503042"
   ]
