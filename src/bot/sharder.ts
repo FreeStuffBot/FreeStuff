@@ -1,4 +1,4 @@
-import { FreeStuffBot, Core, config } from "../index";
+import { FreeStuffBot, Core } from "../index";
 
 
 export default class Sharder {

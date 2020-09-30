@@ -1,4 +1,4 @@
-import { Message, TextChannel } from "discord.js";
+import { Message } from "discord.js";
 import { ReplyFunction, GuildData, Command, SettingsSubcommand, CommandHandler } from "../../types";
 import { Core } from "../../index";
 import Const from "../const";

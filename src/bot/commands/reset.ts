@@ -2,7 +2,6 @@ import { Message } from "discord.js";
 import { ReplyFunction, Command, GuildData } from "../../types";
 import Const from "../const";
 import { Core } from "../../index";
-import { Console } from "console";
 
 
 export default class ResetCommand extends Command {

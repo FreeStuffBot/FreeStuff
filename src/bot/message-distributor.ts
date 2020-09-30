@@ -2,7 +2,7 @@ import { FreeStuffBot, Core } from "../index";
 import { Message, Guild, MessageOptions } from "discord.js";
 import Const from "./const";
 import Database from "../database/database";
-import { GuildData, DatabaseGuildData, Theme, GameData } from "../types";
+import { GuildData, DatabaseGuildData, Theme } from "../types";
 import { Long } from "mongodb";
 import { DbStats } from "../database/db-stats";
 import ThemeOne from "./themes/1";
@@ -169,7 +169,7 @@ export default class MessageDistributor {
       const parts = gameinfo.split('/');
       const id = parts[0];
       const name = parts[1] ? (parts[1] + '/') : '';
-      const guildIdBase64 = new Buffer(guild._id.toString()).toString('base64');
+      const guildIdBase64 = Buffer.from(guild._id.toString()).toString('base64');
       return `https://store.steampowered.com/app/${id}/${name}?curator_clanid=38741893&utm_source=discord-bot&utm_medium=theme-${guild.theme}&utm_content=${guildIdBase64}&utm_term=${guild.language}`;
     } else {
       return url;

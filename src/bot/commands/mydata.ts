@@ -2,7 +2,6 @@ import { Message } from "discord.js";
 import { ReplyFunction, Command, GuildData } from "../../types";
 import { Core } from "../../index";
 import guildDataToViewString from "../../util/guilddata-visualizer";
-import Database from "../../database/database";
 import Const from "../const";
 
 

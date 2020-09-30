@@ -1,6 +1,4 @@
 import { FreeStuffBot, Core } from "../index";
-import { GameData } from "types";
-import Database from "../database/database";
 import FreeCommand from "./commands/free";
 import Redis from "../database/redis";
 import { Semaphore } from 'await-semaphore';

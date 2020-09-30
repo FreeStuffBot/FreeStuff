@@ -1,7 +1,5 @@
 import { Message } from "discord.js";
 import { ReplyFunction, Command, GameData, GuildData } from "../../types";
-import Database from "../../database/database";
-import SentryManager from "../../thirdparty/sentry/sentry";
 import Const from "../const";
 import { Core } from "../../index";
 import { GameInfo } from "_apiwrapper/types";
