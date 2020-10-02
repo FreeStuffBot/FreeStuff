@@ -46,18 +46,21 @@ export default class DatabaseManager {
       const dbGuilds = await this.getAssignedGuilds();
       const removalQueue: DatabaseGuildData[] = [];
       for (const guild of dbGuilds) {
-        if (!bot.guilds.cache.get(guild._id.toString()))
-          removalQueue.push(guild);
+        bot.guilds.fetch(guild._id.toString())
+          .then(() => {})
+          .catch(err => removalQueue.push(guild));
       }
 
       setTimeout(async () => {
         const dbGuilds = await this.getAssignedGuilds();
         for (const guild of dbGuilds) {
-          if (!bot.guilds.cache.get(guild._id.toString())) {
-            if (removalQueue.find(g => g._id.equals(guild._id))) {
-              this.removeGuild(guild._id);
-            }
-          }
+          bot.guilds.fetch(guild._id.toString())
+            .then(() => {})
+            .catch(err => {
+              if (removalQueue.find(g => g._id.equals(guild._id))) {
+                this.removeGuild(guild._id);
+              }
+            });
         }
       }, 1000 * 60 * 30);
     }).start();
@@ -140,7 +143,12 @@ export default class DatabaseManager {
   public async parseGuildData(dbObject: DatabaseGuildData): Promise<GuildData> {
     if (!dbObject) return undefined;
     const responsible = Core.singleShard || Util.belongsToShard(dbObject._id);
-    const guildInstance = await Core.guilds.fetch(dbObject._id.toString());
+    let guildInstance: Guild;
+    try {
+      guildInstance = await Core.guilds.fetch(dbObject._id.toString());
+    } catch(err) {
+      return undefined;
+    }
     return {
       ...dbObject,
       channelInstance: dbObject.channel && responsible && guildInstance
