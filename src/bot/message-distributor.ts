@@ -136,7 +136,8 @@ export default class MessageDistributor {
     if (!permissions.has('USE_EXTERNAL_EMOJIS') && Const.themesWithExtemotes[data.theme]) data.theme = Const.themesWithExtemotes[data.theme];
 
     // set content url
-    content.forEach(game => game.url = this.generateProxyUrl(game, data))
+    if (!test)
+      content.forEach(game => game.url = this.generateProxyUrl(game, data))
 
     // build message objects
     let messageContents = content.map(game => this.buildMessage(game, data, test));
@@ -164,14 +165,18 @@ export default class MessageDistributor {
    */
   public generateProxyUrl(content: GameInfo, guild: GuildData): string {
     const url = content.org_url;
-    if (content.store == 'steam') {
-      const gameinfo = url.split('/app/')[1];
-      const parts = gameinfo.split('/');
-      const id = parts[0];
-      const name = parts[1] ? (parts[1] + '/') : '';
-      const guildIdBase64 = Buffer.from(guild._id.toString()).toString('base64');
-      return `https://store.steampowered.com/app/${id}/${name}?curator_clanid=38741893&utm_source=discord-bot&utm_medium=theme-${guild.theme}&utm_content=${guildIdBase64}&utm_term=${guild.language}`;
-    } else {
+    try {
+      if (content.store == 'steam') {
+        const gameinfo = url.split('/app/')[1];
+        const parts = gameinfo.split('/');
+        const id = parts[0];
+        const name = parts[1] ? (parts[1] + '/') : '';
+        const guildIdBase64 = Buffer.from(guild._id.toString()).toString('base64');
+        return `https://store.steampowered.com/app/${id}/${name}?curator_clanid=38741893&utm_source=discord-bot&utm_medium=theme-${guild.theme}&utm_content=${guildIdBase64}&utm_term=${guild.language}`;
+      } else {
+        return url;
+      }
+    } catch(err) {
       return url;
     }
     // return `https://game.freestuffbot.xyz/${content._id}/${content.info.title.split(/\s/).join('-').split(/[^A-Za-z0-9\-]/).join('')}`;

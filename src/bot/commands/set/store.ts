@@ -58,6 +58,15 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
       return;
     }
 
+    if ([ 'none', 'no' ].includes(storeName)) {
+      Core.databaseManager.changeSetting(mes.guild, g, 'stores', 0);
+      reply(
+        Core.text(g, '=cmd_set_store_success_none_1'),
+        Core.text(g, '=cmd_set_store_success_none_2')
+      );
+      return;
+    }
+
     const store = this.getStoreFromKeyword(storeName);
 
     if (!store) {

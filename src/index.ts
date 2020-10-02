@@ -74,7 +74,7 @@ export class FreeStuffBot extends Client {
         await Redis.init();
 
         const apisettings = { ...config.apisettings };
-        apisettings.suid = this.singleShard ? '0' : this.options.shards[0];
+        apisettings.sid = this.singleShard ? '0' : this.options.shards[0];
         this.fsapi = new FreeStuffApi(apisettings);
     
         this.commandHandler = new CommandHandler(this);

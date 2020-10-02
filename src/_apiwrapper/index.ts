@@ -172,13 +172,13 @@ export default class FreeStuffApi {
         let object = <GameInfo | null> (res.data && res.data[id]) ?? null
 
         if (object) {
-          object.until = object.until ? new Date((<unknown> object.until as number) * 1000) : null;
-          object.id = parseInt(id);
+          object.until = object.until ? new Date((<unknown> object.until as number) * 1000) : null
+          object.id = parseInt(id)
         }
 
-        out[id] = object;
+        out[id] = object
         const cid = `${id}/${lookup}`
-        this.gameDetails_cacheData[cid] = object;
+        this.gameDetails_cacheData[cid] = object
         this.gameDetails_cacheUpdate[cid] = Date.now()
       }
     }
@@ -194,7 +194,7 @@ export default class FreeStuffApi {
   //#region POST status
 
   /** @access PARTNER ONLY */
-  public async postStatus(service: string, status: 'ok' | 'partial' | 'rebooting' | 'fatal', data?: any, servername?: string, suid?: string): Promise<RawApiResponse> {
+  public async postStatus(service: string, status: 'ok' | 'partial' | 'offline' | 'rebooting' | 'fatal', data?: any, servername?: string, suid?: string): Promise<RawApiResponse> {
     if (this.settings.type != 'partner')
       throw 'FreeStuffApi Error. Tried using partner-only endpoint "postStatus" as non-partner.'
 
@@ -207,10 +207,10 @@ export default class FreeStuffApi {
       server: servername
     }
 
-    const res = await this.makeRequest(PartnerEndpoint.STATUS, body);
+    const res = await this.makeRequest(PartnerEndpoint.STATUS, body)
 
     if (res['events'])
-      res['events'].forEach(this.emitRawEvent)
+      res['events'].forEach(e => this.emitRawEvent(e))
 
     return res
   }
@@ -243,11 +243,11 @@ export default class FreeStuffApi {
     switch (event.event) {
       case 'free_games':
         this.emitEvent('free_games', event.data)
-        break;
+        break
 
       case 'operation':
         this.emitEvent('operation', event.data.command, event.data.arguments)
-        break;
+        break
 
       default: orElse && orElse(event)
     }

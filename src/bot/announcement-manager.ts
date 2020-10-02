@@ -22,7 +22,7 @@ export default class AnnouncementManager {
 
       await Redis.setSharded('pending', pending);
       release();
-    })
+    });
 
     bot.on('ready', () => {
       setInterval(() => this.checkQueue(), checkInterval * 1000);

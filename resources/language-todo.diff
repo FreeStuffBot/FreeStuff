@@ -56,6 +56,8 @@
 ++ open_in_epic_games_client
 ++ cmd_set_store_success_all_1
 ++ cmd_set_store_success_all_2
+++ cmd_set_store_success_none_1
+++ cmd_set_store_success_none_2
 
 
 # CHANGES
