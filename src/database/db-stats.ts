@@ -43,9 +43,9 @@ export class DbStats {
     const out = top10.map(async g => { return {
       name: g.name,
       size: g.memberCount,
-      icon: g.iconURL,
+      icon: g.iconURL(),
       features: g.features,
-      setup: !!(await Core.databaseManager.getGuildData(g)).channelInstance
+      setup: !!((await Core.databaseManager.getGuildData(g))?.channelInstance)
     }});
     
     Promise.all(out).then(out => {

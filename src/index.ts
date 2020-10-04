@@ -3,7 +3,7 @@ loadDotEnv();
 export const config = require('../config.js');
 
 
-import { Client, ClientOptions } from "discord.js";
+import { Client, ClientOptions, Permissions } from "discord.js";
 import MongoAdapter from "./database/mongo-adapter";
 import Database from "./database/database";
 import { Util } from "./util/util";
@@ -25,6 +25,7 @@ import { GuildData } from "types";
 import Redis from "./database/redis";
 import Const from "./bot/const";
 import FreeStuffApi from "./_apiwrapper";
+import { GameAnalyticsDiscord } from "_apiwrapper/types";
 
 
 export class FreeStuffBot extends Client {
@@ -100,6 +101,7 @@ export class FreeStuffBot extends Client {
 
         this.on('ready', () => {
           console.log(chalk`Bot ready! Logged in as {yellowBright ${this.user.tag}} {gray (${params.noSharding ? 'No Sharding' : `Shard ${(options.shards as number[]).join(', ')} / ${options.shardCount}`})}`);
+          if (this.devMode) console.log(this.guilds.cache.map(g => `${g.name} :: ${g.id}`));
 
           const updateActivity = (u) => u.setActivity(`@${this.user.username} help`.padEnd(54, '~').split('~~').join(' ​').replace('~', '') + Const.websiteLink, { type: 'WATCHING' });
           setInterval(updateActivity, 1000 * 60 * 15, this.user);

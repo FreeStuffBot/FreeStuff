@@ -132,7 +132,7 @@ export type ReplyFunction = (message: string, content: string, footer?: string, 
 
 export interface Theme {
 
-  build(content: GameInfo, data: GuildData, test: boolean): [string, MessageOptions];
+  build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions];
 
 }
 

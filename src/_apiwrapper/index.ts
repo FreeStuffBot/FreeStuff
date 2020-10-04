@@ -1,4 +1,4 @@
-import { Endpoint, FreeStuffApiSettings, GameAnalytics, GameInfo, PartnerEndpoint, RawApiResponse } from "./types"
+import { Endpoint, FreeStuffApiSettings, GameAnalytics, GameAnalyticsDiscord, GameAnalyticsTelegram, GameInfo, PartnerEndpoint, RawApiResponse } from "./types"
 import axios, { AxiosResponse } from 'axios'
 import { hostname } from "os"
 
@@ -213,6 +213,26 @@ export default class FreeStuffApi {
       res['events'].forEach(e => this.emitRawEvent(e))
 
     return res
+  }
+
+  //#endregion
+  //#region POST game analytics
+
+  /** @access PARTNER ONLY */
+  public async postGameAnalytics(game: number, service: 'discord', data: GameAnalyticsDiscord): Promise<RawApiResponse>
+  public async postGameAnalytics(game: number, service: 'telegram', data: GameAnalyticsTelegram): Promise<RawApiResponse>
+  public async postGameAnalytics(game: number, service: string, data: any): Promise<RawApiResponse>
+  public async postGameAnalytics(game: number, service: string, data: any): Promise<RawApiResponse> {
+    if (this.settings.type != 'partner')
+      throw 'FreeStuffApi Error. Tried using partner-only endpoint "postGameAnalytics" as non-partner.'
+
+    const body = {
+      service,
+      suid: this.settings.sid,
+      data
+    }
+
+    return this.makeRequest(PartnerEndpoint.GAME_ANALYTICS, body, game + '')
   }
 
   //#endregion

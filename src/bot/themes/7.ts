@@ -5,9 +5,9 @@ import { GameInfo } from "../../_apiwrapper/types";
 
 export default class ThemeSeven implements Theme {
 
-  public build(content: GameInfo, data: GuildData, test: boolean): [string, MessageOptions] {
+  public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     return [
-      (data.roleInstance ? data.roleInstance.toString() : '')
+      ((data.roleInstance && !settings.disableMention) ? data.roleInstance.toString() : '')
       + ' ' + content.url,
       {}
     ];

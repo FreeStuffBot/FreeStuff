@@ -7,7 +7,7 @@ import { GameFlag, GameInfo } from "../../_apiwrapper/types";
 
 export default class ThemeThree implements Theme {
 
-  public build(content: GameInfo, data: GuildData, test: boolean): [string, MessageOptions] {
+  public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     const priceString = data.currency == 'euro'
       ? Core.languageManager.get(data, 'currency_sign_euro_position') == 'after'
         ? `${content.org_price.euro} €`
@@ -33,7 +33,7 @@ export default class ThemeThree implements Theme {
     }
 
     return [
-      data.roleInstance ? data.roleInstance.toString() : '',
+      (data.roleInstance && !settings.disableMention) ? data.roleInstance.toString() : '',
       {
         embed: {
           author: {
@@ -42,7 +42,7 @@ export default class ThemeThree implements Theme {
           title: content.title,
           description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Const.storeDisplayNames[content.store]}${(content.flags & GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${(content.flags & GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n[${Const.announcementButton}](${content.url})`,
           footer: {
-            text: test
+            text: settings.test
               ? Core.text(data, '=announcement_footer_test')
               : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
           },

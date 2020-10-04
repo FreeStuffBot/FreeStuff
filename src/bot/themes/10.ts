@@ -7,7 +7,7 @@ import { GameInfo } from "../../_apiwrapper/types";
 
 export default class ThemeTen implements Theme {
 
-  public build(content: GameInfo, data: GuildData, test: boolean): [string, MessageOptions] {
+  public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     const lines = [
       '```yaml',
       `  Name: ${content.title}`,
@@ -22,7 +22,7 @@ export default class ThemeTen implements Theme {
       `[${Core.text(data, '=open_in_steam_client')}](${content.url})`, // TODO insert real url
     ]
     return [
-      (data.roleInstance ? data.roleInstance.toString() : ''),
+      ((data.roleInstance && !settings.disableMention) ? data.roleInstance.toString() : ''),
       {
         embed: {
           author: {
@@ -30,7 +30,7 @@ export default class ThemeTen implements Theme {
           },
           description: lines.join('\n'),
           footer: {
-            text: test
+            text: settings.test
               ? Core.text(data, '=announcement_footer_test')
               : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
           }

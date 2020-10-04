@@ -7,9 +7,9 @@ import { GameInfo } from "../../_apiwrapper/types";
 
 export default class ThemeSix implements Theme {
 
-  public build(content: GameInfo, data: GuildData, test: boolean): [string, MessageOptions] {
+  public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     return [
-      data.roleInstance ? data.roleInstance.toString() : '',
+      (data.roleInstance && !settings.disableMention) ? data.roleInstance.toString() : '',
       {
         embed: {
           author: {
@@ -18,7 +18,7 @@ export default class ThemeSix implements Theme {
           title: content.title,
           url: content.url,
           footer: {
-            text: test
+            text: settings.test
               ? Core.text(data, '=announcement_footer_test')
               : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
           },

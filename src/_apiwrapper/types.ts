@@ -20,7 +20,8 @@ export enum Endpoint {
 }
 
 export enum PartnerEndpoint {
-  STATUS = 'POST /status'
+  STATUS = 'POST /status',
+  GAME_ANALYTICS = 'POST /game/%s/analytics',
 }
 
 export interface RawApiResponse {
@@ -68,19 +69,23 @@ export type Store = 'steam' | 'epic' | 'humble' | 'gog' | 'origin' | 'uplay' | '
 export type AnnouncementType = 'free' | 'weekend' | 'discount' | 'ad' | 'unknown'
 
 export interface GameAnalytics {
-  discord: {
-    reach: number
-    clicks: number
+  discord: GameAnalyticsDiscord
+  telegram: GameAnalyticsTelegram
+}
+
+export interface GameAnalyticsDiscord {
+  reach: number
+  clicks: number
+}
+
+export interface GameAnalyticsTelegram {
+  reach: {
+    users: number
+    groups: number
+    supergroups: number
+    groupUsers: number
+    channels: number
+    channelUsers: number
   }
-  telegram: {
-    reach: {
-      users: number
-      groups: number
-      supergroups: number
-      groupUsers: number
-      channels: number
-      channelUsers: number
-    }
-    clicks: number
-  }
+  clicks: number
 }

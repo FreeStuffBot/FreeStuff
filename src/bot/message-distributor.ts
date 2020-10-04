@@ -78,23 +78,17 @@ export default class MessageDistributor {
       }
     }
     console.log(`Done announcing: ${content.map(g => g.title)} - ${new Date().toLocaleTimeString()}`);
-    const announcementsMade = await Promise.all(content.map(async c => parseInt(await Redis.getSharded('am_' + c.id), 10)));
-    const announcementsMadeTotal = announcementsMade.reduce((p, c) => (p + c), 0);
+    const announcementsMade = await Promise.all(content.map(async game => {
+      return { id: game.id, reach: parseInt(await Redis.getSharded('am_' + game.id), 10) }
+    }));
+    const announcementsMadeTotal = announcementsMade.map(e => e.reach).reduce((p, c) => (p + c), 0);
 
     content.forEach(c => Redis.setSharded('am_' + c.id, '0')); // AMount (of announcements done)
     await Redis.setSharded('lga', ''); // Last Guild Announced (guild id)
 
     (await DbStats.usage).announcements.updateToday(announcementsMadeTotal, true);
 
-    // TODO SEND announcementsMade over
-    // if (announcementId >= 0) {
-    //   Database
-    //     .collection('games')
-    //     .updateOne(
-    //       { _id: announcementId },
-    //       { '$inc': { 'analytics.reach': announcementsMade } }
-    //     );
-    // }
+    announcementsMade.forEach(game => Core.fsapi.postGameAnalytics(game.id, 'discord', { reach: game.reach }))
   }
 
   public test(guild: Guild, content: GameInfo): void {
@@ -140,23 +134,23 @@ export default class MessageDistributor {
       content.forEach(game => game.url = this.generateProxyUrl(game, data))
 
     // build message objects
-    let messageContents = content.map(game => this.buildMessage(game, data, test));
+    let messageContents = content.map((game, index) => this.buildMessage(game, data, test, !!index));
     messageContents = messageContents.filter(mes => !!mes);
     if (!messageContents.length) return [];
 
     // send the messages
-    let mes: Message;
+    let lastmes: Message;
     for (const mesCont of messageContents)
-      mes = await data.channelInstance.send(...mesCont) as Message;
+      lastmes = await data.channelInstance.send(...mesCont) as Message;
     if (data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
-      await mes.react('🆓');
+      await lastmes.react('🆓');
 
     return content.map(game => game.id);
   }
 
-  public buildMessage(content: GameInfo, data: GuildData, test: boolean): [ string, MessageOptions? ] {
+  public buildMessage(content: GameInfo, data: GuildData, test: boolean, disableMention: boolean): [ string, MessageOptions? ] {
     const theme = this.themes[data.theme] || this.themes[0];
-    return theme.build(content, data, test);
+    return theme.build(content, data, { test, disableMention });
   }
 
   /**
@@ -171,8 +165,12 @@ export default class MessageDistributor {
         const parts = gameinfo.split('/');
         const id = parts[0];
         const name = parts[1] ? (parts[1] + '/') : '';
-        const guildIdBase64 = Buffer.from(guild._id.toString()).toString('base64');
-        return `https://store.steampowered.com/app/${id}/${name}?curator_clanid=38741893&utm_source=discord-bot&utm_medium=theme-${guild.theme}&utm_content=${guildIdBase64}&utm_term=${guild.language}`;
+        const membercount = guild.channelInstance?.guild.approximateMemberCount || guild.channelInstance?.guild.memberCount;
+        const guildIdBase64 = membercount && membercount >= 100
+          ? Buffer.from(guild._id.toString()).toString('base64')
+          : '-';
+        // return `https://store.steampowered.com/app/${id}/${name}?curator_clanid=38741893&utm_source=discord-bot&utm_medium=theme-${guild.theme}&utm_content=${guildIdBase64}&utm_term=${guild.language}`;
+        return `https://store.steampowered.com/app/${id}/${name}?curator_clanid=38741893&utm_source=discord-bot&utm_medium=${guildIdBase64}`;
       } else {
         return url;
       }
