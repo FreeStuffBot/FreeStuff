@@ -42,7 +42,8 @@ export default class Localisation {
 
     return 0
       | Util.modifyBits(0, 1, 1, useEuro ? 0 : 1)
-      | Util.modifyBits(0, 8, 6, Core.languageManager.languageToId(defaultLang));
+      | Util.modifyBits(0, 8, 6, Core.languageManager.languageToId(defaultLang))
+      | Util.modifyBits(0, 14, 8, 0b11111111);
   }
 
   public getTranslationHint(guild: Guild): string {
