@@ -15,11 +15,13 @@ export default class Const {
   public static readonly themesWithEmbeds = [ 0, 1, 2, 3, 4, 5 ];
   public static readonly themesWithExtemotes = { 0: 1, 2: 3 };
   
-  public static readonly announcementButton = '<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>';
+  // TODO disabled because discord sucks :(
+  // public static readonly announcementButton = '<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>';
+  public static readonly announcementButton = '**GET**';
 
   public static readonly storeDisplayNames = {
     steam: 'Steam',
-    epic: 'Epic Games Store',
+    epic: 'Epic Games',
     humble: 'Humble Bundle',
     gog: 'GOG.com',
     origin: 'Origin',
@@ -29,7 +31,7 @@ export default class Const {
     discord: 'Discord',
     apple: 'Apple App Store',
     google: 'Google Play',
-    switch: 'Nintendo Switch Store',
+    switch: 'Nintendo Switch',
     ps: 'Play Station',
     xbox: 'Xbox',
     other: 'Other'

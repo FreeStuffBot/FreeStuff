@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import MongoAdapter from './mongo-adapter';
+import { config } from '../index';
 
 
 export type dbcollection = 'guilds' | 'stats-usage' | 'games' | 'stats-top-clients' | 'language';
@@ -23,7 +24,7 @@ export default class Database {
   }
 
   public static collection(collection: dbcollection): mongo.Collection | null {
-    return this.client ? this.client.db('freestuffbot').collection(collection) : null;
+    return this.client ? this.client.db(config.mongodb.dbname).collection(collection) : null;
   }
 
 }

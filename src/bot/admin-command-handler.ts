@@ -1,8 +1,7 @@
 import { FreeStuffBot, Core, config } from "../index";
 import { Message } from "discord.js";
 import Database from "../database/database";
-import { GameData, DatabaseGuildData, GameInfo } from "types";
-import * as AsciiTable from "ascii-table";
+import { GameData, DatabaseGuildData } from "types";
 import { hostname } from "os";
 import { Long } from "mongodb";
 
@@ -16,6 +15,8 @@ THIS CLASS CLEARLY NEEDS SOME CLEANUP
 const commandlist = [
   '`$FreeStuff help` - Shows this help page',
   '`$FreeStuff print` - Shows info about this guild',
+  '`$FreeStuff distribute` - ',
+  '`$FreeStuff settingbits` - ',
 ];
 
 export default class AdminCommandHandler {
@@ -87,10 +88,28 @@ export default class AdminCommandHandler {
                 const guild = await Database
                   .collection('guilds')
                   .findOne({ _id: Long.fromString(guildid) }) as DatabaseGuildData;
-                Core.messageDistributor.sendToGuild(guild, data.info, false, false);
+                Core.messageDistributor.sendToGuild(guild, [ data.info ], false, false);
               }
             })
             .catch(err => reply('error', err));
+          return true;
+
+        case 'settingbits':
+          Core.databaseManager.getRawGuildData(orgmes.guild).then(d => {
+            orgmes.channel.send([
+              '```',
+              '._______________._______.___._..',
+              d.settings.toString(2).padStart(32, '0'),
+              '          ┖──┬───┚┖─┬──┚╿╿╿╿┖┬─┚',
+              '             G      F   EDCB A  ',
+              '',
+              'A) Theme  B) Currency  C) Reaction',
+              'D) Trash Games  E) Alt Date Format',
+              'F) Language  G) Stores',
+              '```'
+            ].join('\n'))
+          }).catch(orgmes.reply);
+        return true;
     }
 
     return false;

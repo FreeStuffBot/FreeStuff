@@ -1,4 +1,4 @@
-import { Message, TextChannel } from "discord.js";
+import { Message } from "discord.js";
 import { ReplyFunction, GuildData, Command, SettingsSubcommand, CommandHandler } from "../../types";
 import { Core } from "../../index";
 import Const from "../const";
@@ -37,7 +37,7 @@ export default class SettingsCommand extends Command {
     this.commands.set('language lang local locale', new SetLanguageHandler());
     this.commands.set('until', new SetUntilHandler());
     this.commands.set('prefix', new SetPrefixHanler());
-    // this.commands.set('store shop platform', new SetStoreHandler());
+    this.commands.set('store stores shop platform', new SetStoreHandler());
   }
 
   public handle(mes: Message, args: string[], g: GuildData, repl: ReplyFunction): boolean {
@@ -57,7 +57,7 @@ export default class SettingsCommand extends Command {
         .map(c => c.getMetaInfo(g))
         .filter(c => !!c)
         .map(c => (('string' === typeof c[0]) ? [ c ] : c) as ([ string, string, any? ])[] )
-        .map(c => c.map(e => `• \`@FreeStuff set ${e[0]}\` ─ ${Core.text(g, e[1], e[2])}`));
+        .map(c => c.map(e => `• \`@${mes.guild.me.user.username} set ${e[0]}\` ─ ${Core.text(g, e[1], e[2])}`));
       const cmdlistFlat = [].concat.apply([], cmdlist);
 
       mes.channel.send({ embed: {

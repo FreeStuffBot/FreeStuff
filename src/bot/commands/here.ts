@@ -31,7 +31,7 @@ export default class HereCommand extends Command {
       User Owner?: ${guild.ownerID == mes.author.id}`;
     const permissionCheck = g?.channel
       ? (() => {
-          const perms = guild.me.permissionsIn(guild.channels.cache.get(g.channel.toString()));
+          const perms = guild.me.permissionsIn(guild.channels.resolve(g.channel.toString()));
           const out = [];
           out.push(perms.has('VIEW_CHANNEL') ? 'Can view channel' : 'CANNOT VIEW CHANNEL');
           out.push(perms.has('SEND_MESSAGES') ? 'Can send messages' : 'CANNOT SEND MESSAGES');

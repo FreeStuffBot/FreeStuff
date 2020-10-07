@@ -1,0 +1,70 @@
+
+# NEW LINES
+
++ cmd_change_prefix_1
++ cmd_change_prefix_2
++ cmd_advanced_desc
++ cmd_advanced_1
++ cmd_advanced_2
++ cmd_advanced_bottom_text
++ cmd_mydata_desc
++ cmd_mydata_on_cooldown_1
++ cmd_mydata_on_cooldown_2
++ cmd_mydata_confirm_1
++ cmd_mydata_confirm_2
++ cmd_mydata_incorrect_confirmation_1
++ cmd_mydata_incorrect_confirmation_2
++ cmd_mydata_success_1
++ cmd_mydata_display_error
++ cmd_reset_desc
++ cmd_reset_on_cooldown_1
++ cmd_reset_on_cooldown_2
++ cmd_reset_confirm_1
++ cmd_reset_confirm_2
++ cmd_reset_incorrect_confirmation_1
++ cmd_reset_incorrect_confirmation_2
++ cmd_reset_success_1
++ cmd_reset_success_2
++ cmd_settings_change_store
++ cmd_set_store_missing_args_1
++ cmd_set_store_missing_args_2
++ cmd_set_store_list_enabled
++ cmd_set_store_list_enabled_none
++ cmd_set_store_list_disabled
++ cmd_set_store_list_disabled_none
++ cmd_set_store_not_found_1
++ cmd_set_store_not_found_2
++ cmd_set_store_not_supported_1
++ cmd_set_store_not_supported_2
++ cmd_set_store_status_on_1
++ cmd_set_store_status_on_2
++ cmd_set_store_status_off_1
++ cmd_set_store_status_off_2
++ cmd_set_store_success_on_1
++ cmd_set_store_success_on_2
++ cmd_set_store_success_off_1
++ cmd_set_store_success_off_2
++ cmd_set_store_success_only_1
++ cmd_set_store_success_only_2
++ cmd_set_store_invalid_setting_1
++ cmd_set_store_invalid_setting_2
+
+
+++ cmd_free_no_freebies
+++ open_in_browser
+++ open_in_steam_client
+++ open_in_epic_games_client
+++ cmd_set_store_success_all_1
+++ cmd_set_store_success_all_2
+++ cmd_set_store_success_none_1
+++ cmd_set_store_success_none_2
+
+
+# CHANGES
+
+cmd_free_ends_soon - (WITHOUT POSSIBLY ALREADY HAS ENDED)
+cmd_set_store_missing_args_2 - (ADD @FreeStuff set store all)
+
+
+{pricestr} -> {price}
+new info screen. not part of tude anymore.

@@ -38,7 +38,7 @@ export default class CommandHandler {
       if (m.author.bot) return;
       if (!m.guild) return;
       if (!m.content.replace('!', '').startsWith(bot.user.toString())
-        && !m.content.toLowerCase().startsWith('@freestuff')) return;
+        && !m.content.toLowerCase().startsWith('@' + bot.user.username.toLowerCase())) return;
       if (!m.guild.me.permissionsIn(m.channel).has('SEND_MESSAGES')) return;
 
       const args = m.content.split(/ +/);

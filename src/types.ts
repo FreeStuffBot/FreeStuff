@@ -1,5 +1,6 @@
 import { TextChannel, Role, Message, MessageOptions } from "discord.js";
 import { Long } from "mongodb";
+import { GameAnalytics, GameInfo, Store } from "_apiwrapper/types";
 
 
 
@@ -19,60 +20,9 @@ export interface GameData {
   published: number; // UNIX Timestamp in seconds - markes the last time the approval status has changed
   responsible: string; // User id of the moderator, responsible for checking the info and publishing the announcement
   status: GameApprovalStatus; // Current status of the game
-  analytics: {
-    reach: number; // Number of servers it got announced in
-    clicks: number; // Clicks in total
-    guilds: {
-      [guildId: string]: number; // Clicks per guild
-    };
-  };
+  analytics: GameAnalytics; // Analytical data
   info: GameInfo; // Info about the game
-  outgoing?: number[]; // Array that gradually fills up with all the shards that have picked up the announcement. Last shard that would make the list full will remove the object from the entry
 
-}
-
-/** When the scraper found a game but has not fetched the details yet */
-export interface GameSource {
-
-  store: Store;
-  url: string;
-  id: string;
-
-}
-
-/** The data that can be found by the web scrapers */
-export interface ScrapeableGameInfo {
-
-  title: string; // Game's title
-  org_price: { // Price before the discount
-    euro: number;
-    dollar: number;
-  };
-  price: { // Price after the discount
-    euro: number;
-    dollar: number;
-  };
-  thumbnail: string; // Url to the thumbnail image
-  until: number; // How many days the offer is valid
-  steamSubids?: string; // For steam games, subids with a space between, for other stores just an empty string
-
-}
-
-/** An object with all the data needed to generate all types of announcements */
-export interface GameInfo extends ScrapeableGameInfo {
-
-  url: string; // Proxy url
-  org_url: string; // The direct link to the store page
-  store: Store; // Game's store
-  flags: GameFlag[]; // Flags
-  type: AnnouncementType; // Type of annoucement
-  steamSubids: string; // Now required
-
-}
-
-export enum GameFlag {
-  TRASH = 'TRASH', // Low quality game
-  THIRDPARTY = 'THIRDPARTY', // Third party key provider
 }
 
 /** The data that gets stored in the database */
@@ -105,22 +55,18 @@ export interface GuildData extends DatabaseGuildData {
 
 export type GuildSetting = 'channel' | 'roleMention' | 'theme' | 'currency' | 'react' | 'trash' | 'price' | 'altdate' | 'language' | 'stores';
 
-export type Store = 'steam' | 'epic' | 'humble' | 'gog' | 'origin' | 'uplay' | 'twitch' | 'itch' | 'discord' | 'apple' | 'google' | 'switch' | 'ps' | 'xbox' | 'other';
-
-export type GameApprovalStatus = 'pending' | 'declined' | 'accepted' | 'published' | 'scheduled';
-
-export type AnnouncementType = 'free' | 'weekend' | 'discount' | 'ad' | 'unknown';
+export type GameApprovalStatus = 'pending' | 'declined' | 'approved';
 
 
 export enum FilterableStore {
-  STEAM = 1 << 0,
-  EPIC = 1 << 1,
-  HUMBLE = 1 << 2,
-  GOG = 1 << 3,
-  ORIGIN = 1 << 4,
-  UPLAY = 1 << 5,
-  ITCH = 1 << 6,
-  OTHER = 1 << 7,
+  OTHER  = 1 << 0,
+  STEAM  = 1 << 1,
+  EPIC   = 1 << 2,
+  HUMBLE = 1 << 3,
+  GOG    = 1 << 4,
+  ORIGIN = 1 << 5,
+  UPLAY  = 1 << 6,
+  ITCH   = 1 << 7,
 }
 
 
@@ -186,7 +132,16 @@ export type ReplyFunction = (message: string, content: string, footer?: string, 
 
 export interface Theme {
 
-  build(content: GameInfo, data: GuildData, test: boolean): [string, MessageOptions];
+  build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions];
+
+}
+
+export interface StoreData {
+
+  name: string;
+  key: Store;
+  icon: string;
+  bit: number;
 
 }
 

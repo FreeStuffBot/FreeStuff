@@ -12,7 +12,9 @@ export default class SentryManager {
 
   public static report(exception: Sentry.Exception) {
     if (Core.devMode) {
+      console.log('=== SENTRY ERROR ===');
       console.trace(exception);
+      console.log('====================');
     } else {
       Sentry.captureException(exception);
     }

@@ -20,17 +20,15 @@ module.exports = {
       dsn: "URL"
     }
   },
-  sharder: {
-    auth: "TOKEN",
-    url: production
-      ? "https://dashboard.freestuffbot.xyz/api/shards"
-      : "http://localhost/api/shards"
+  apisettings: {
+    key: 'loremipsumyourapitokenherehaveagreatday',
+    type: 'basic',
+    baseUrl: production ? undefined : 'http://localhost/api/v1'
   },
   supportWebhook: {
     id: "123456789123456789",
     token: "abcdefghijklmnopqrstuvwxyz"
   },
-  lang: "en",
   admins: [
     "137258778092503042"
   ]

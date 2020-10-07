@@ -1,7 +1,4 @@
-import { FreeStuffBot, Core, config } from "../index";
-import { ShardStatusPayload } from "types";
-import fetch from "node-fetch";
-import { hostname } from "os";
+import { FreeStuffBot, Core } from "../index";
 
 
 export default class Sharder {
@@ -10,61 +7,39 @@ export default class Sharder {
 
   public constructor(bot: FreeStuffBot) {
     // if (Core.singleShard) return;
-    this.updateManager();
-    setInterval(() => {
+    Core.fsapi.on('operation', this.executeCommand);
+
+    this.updateManager('rebooting');
+
+    bot.on('ready', () => {
       this.updateManager();
-    }, 1000 * 20);
-  }
-
-  public async updateManager() {
-    const serverName = await hostname();
-    const payload: ShardStatusPayload = {
-      id: Core.options.shards[0],
-      totalShardCount: Core.options.shardCount,
-      guildCount: Core.guilds.cache.size,
-      lastHeartbeat: Date.now(),
-      server: serverName,
-      status: 'ok'
-    }
-    this.sendToManager(payload);
-  }
-
-  public sendToManager(payload: ShardStatusPayload) {
-    fetch(config.sharder.url, {
-      headers: {
-        'Content-Type': 'application/json',
-        'authorization': config.sharder.auth
-      },
-      method: 'POST',
-      body: JSON.stringify(payload)
-    })
-    .then(res => res.json())
-    .then(data => data.messages && this.evaluateManagerMessage(data.messages))
-    .catch(ex => {
-      if (this.errorCounter++ % 10 == 0)
-        console.warn(`Failed to report status to manager service. (${this.errorCounter - 1})`)
+      setInterval(() => {
+        this.updateManager();
+      }, 1000 * 20);  
     });
   }
 
-  public evaluateManagerMessage(input: string[]) {
-    for (const message of input) {
-      const command = message.split('=')[0];
-      const args = message.substr(command.length);
-      this.executeCommand(command, args);
+  public async updateManager(status?: 'ok' | 'partial' | 'offline' | 'rebooting' | 'fatal') {
+    const res = await Core.fsapi.postStatus('discord', status ?? 'ok', {
+      totalShardCount: Core.options.shardCount,
+      guildCount: Core.guilds.cache.size
+    });
+    if (res._status != 200 && this.errorCounter++ % 10 == 0) {
+      console.warn(`Failed to report status to manager service. (${this.errorCounter - 1})`)
     }
   }
 
-  public executeCommand(command: string, args?: string) {
+  public async executeCommand(command: string, args: string[]) {
     switch(command) {
       case 'shutdown':
-        console.log('[MANAGER] Shutdown.')
+        await Core.sharder.updateManager('offline');
+        console.log('[MANAGER] Shutdown.');
         process.exit(0);
 
       case 'reload_lang':
         Core.languageManager.load();
-        console.log('[MANAGER] Reload language cache.')
-        break;
-      
+        console.log('[MANAGER] Reload language cache.');
+        break;     
     }
   }
 

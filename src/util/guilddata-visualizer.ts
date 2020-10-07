@@ -1,4 +1,5 @@
 import { GuildData } from "../types";
+import { Core } from "../index";
 
 
 export default function guildDataToViewString(g: GuildData, maxLength?: number, errorMessage?: string) {
@@ -6,6 +7,7 @@ export default function guildDataToViewString(g: GuildData, maxLength?: number, 
   if (gd) {
     delete gd['channelInstance'];
     delete gd['roleInstance'];
+    gd.shard = gd.sharder % Core.options.shardCount;
   }
 
   let guilddata = `\`\`\`json\n${JSON.stringify(gd || { error: 'Guild Data Error' }, null, 2)}\`\`\``;
