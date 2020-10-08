@@ -142,7 +142,7 @@ export default class MessageDistributor {
     let lastmes: Message;
     for (const mesCont of messageContents)
       lastmes = await data.channelInstance.send(...mesCont) as Message;
-    if (data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
+    if (lastmes && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
       await lastmes.react('🆓');
 
     return content.map(game => game.id);

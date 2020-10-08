@@ -26,7 +26,7 @@ export default class DatabaseManager {
     bot.on('guildCreate', async guild => {
       if (await Database
         .collection('guilds')
-        .findOne({
+        ?.findOne({
           _id: Long.fromString(guild.id)
         })) return;
 
@@ -72,7 +72,7 @@ export default class DatabaseManager {
   public async getAssignedGuilds(): Promise<DatabaseGuildData[]> {
     return Database
       .collection('guilds')
-      .find(
+      ?.find(
         Core.singleShard
           ? { }
           : { sharder: { $mod: [Core.options.shardCount, Core.options.shards[0]] } }
@@ -99,7 +99,7 @@ export default class DatabaseManager {
     }
     await Database
       .collection('guilds')
-      .insertOne(data);
+      ?.insertOne(data);
   }
 
   /**
@@ -111,7 +111,7 @@ export default class DatabaseManager {
     if (!force && !Util.belongsToShard(guildid)) return;
     await Database
       .collection('guilds')
-      .deleteOne({ _id: guildid });
+      ?.deleteOne({ _id: guildid });
   }
 
   /**
@@ -121,7 +121,7 @@ export default class DatabaseManager {
   public async getRawGuildData(guild: Guild): Promise<DatabaseGuildData> {
     const obj = await Database
       .collection('guilds')
-      .findOne({ _id: Long.fromString(guild.id) })
+      ?.findOne({ _id: Long.fromString(guild.id) })
       .catch(console.error);
     if (!obj) return undefined;
     return obj;
@@ -244,7 +244,7 @@ export default class DatabaseManager {
     }
     Database
       .collection('guilds')
-      .updateOne({ _id: Long.fromString(guild.id) }, { '$set': out });
+      ?.updateOne({ _id: Long.fromString(guild.id) }, { '$set': out });
   }
 
   // 3__ 2__________________ 1__________________ 0__________________

@@ -51,7 +51,7 @@ export class DbStats {
     Promise.all(out).then(out => {
       Database
         .collection('stats-top-clients')
-        .findOneAndUpdate(
+        ?.findOneAndUpdate(
           { _id: Core.options.shards[0] || 0 },
           { $set: { value: out } },
           { upsert: true }
@@ -74,7 +74,7 @@ export class DbStatUsage {
   async load(): Promise<this> {
     const c = await Database
       .collection('stats-usage')
-      .find({})
+      ?.find({})
       .toArray();
     for (const temp of c)
       this.raw[temp._id] = temp.value;
@@ -130,7 +130,7 @@ export class DbStatGraph {
       }
       return await Database
         .collection(this._collectionname as dbcollection)
-        .updateOne(this._dbquery, obj);
+        ?.updateOne(this._dbquery, obj);
     } else {
       const parentExists = Object.keys(this._fullraw).length > 0;
       const obj = parentExists ? {} : this._dbquery;
@@ -141,12 +141,12 @@ export class DbStatGraph {
       if (parentExists) {
         return await Database
           .collection(this._collectionname as dbcollection)
-          .updateOne(this._dbquery, { '$set': obj });
+          ?.updateOne(this._dbquery, { '$set': obj });
       } else {
         this._fullraw.value = obj;
         return await Database
           .collection(this._collectionname as dbcollection)
-          .insertOne(obj);
+          ?.insertOne(obj);
       }
     }
   }

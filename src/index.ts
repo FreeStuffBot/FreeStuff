@@ -96,14 +96,14 @@ export class FreeStuffBot extends Client {
         // TODO find an actual fix for this instead of this garbage lol
         const manualConnectTimer = setTimeout(() => {
           // @ts-ignore
-          this.ws.connection.triggerReady();
+          this.ws?.connection?.triggerReady();
         }, 30000);
 
         this.on('ready', () => {
-          console.log(chalk`Bot ready! Logged in as {yellowBright ${this.user.tag}} {gray (${params.noSharding ? 'No Sharding' : `Shard ${(options.shards as number[]).join(', ')} / ${options.shardCount}`})}`);
+          console.log(chalk`Bot ready! Logged in as {yellowBright ${this.user?.tag}} {gray (${params.noSharding ? 'No Sharding' : `Shard ${(options.shards as number[]).join(', ')} / ${options.shardCount}`})}`);
           if (this.devMode) console.log(this.guilds.cache.map(g => `${g.name} :: ${g.id}`));
 
-          const updateActivity = (u) => u.setActivity(`@${this.user.username} help`.padEnd(54, '~').split('~~').join(' ​').replace('~', '') + Const.websiteLink, { type: 'WATCHING' });
+          const updateActivity = (u) => u?.setActivity(`@${u.username} help`.padEnd(54, '~').split('~~').join(' ​').replace('~', '') + Const.websiteLink, { type: 'WATCHING' });
           setInterval(updateActivity, 1000 * 60 * 15, this.user);
           updateActivity(this.user);
 
