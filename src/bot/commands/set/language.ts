@@ -18,7 +18,7 @@ export default class SetLanguageHandler implements CommandHandler, SettingsSubco
         Core.text(g, '=cmd_set_language_status_1'),
         Core.text(g, '=cmd_set_language_status_2')
           + (g.language.startsWith('en') ? '' : '\n\n' + Core.text(g, '=cmd_set_language_status_2_en', { language: Core.text(g, '=lang_name_en') }))
-          + '\n\n' + Core.languageManager.displayLangList().map(l => `${l.endsWith(Core.languageManager.get(g, 'lang_name_en') + ')') ? '☛' : '•'}‎ ${l}`).join('\n')
+          + '\n\n' + Core.languageManager.displayLangList(true).map(l => `${l.endsWith(Core.languageManager.get(g, 'lang_name_en') + ')') ? '☛' : ''}‎ ${l}`).join('\n')
       );
       return false;
     }
@@ -43,7 +43,7 @@ export default class SetLanguageHandler implements CommandHandler, SettingsSubco
         Core.text(g, '=cmd_set_language_notfound_1'),
         Core.text(g, '=cmd_set_language_notfound_2')
         + (g.language.startsWith('en') ? '' : '\n\n' + Core.text(g, '=cmd_set_language_notfound_2_en'))
-        + '\n\n' + Core.languageManager.displayLangList().map(l => `${l.endsWith(Core.languageManager.get(g, 'lang_name_en') + ')') ? '☛' : '•'}‎ ${l}`).join('\n')
+        + '\n\n' + Core.languageManager.displayLangList(true).map(l => `${l.endsWith(Core.languageManager.get(g, 'lang_name_en') + ')') ? '☛' : ''}‎ ${l}`).join('\n')
       );
       return false;
     }
