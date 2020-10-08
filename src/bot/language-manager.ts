@@ -11,6 +11,8 @@ export default class LanguageManager {
 
   public constructor(bot: FreeStuffBot) {
     this.load();
+
+    setInterval(() => this.load(), 1000 * 60 * 60 * 24);
   }
 
   public async load() {
@@ -21,7 +23,7 @@ export default class LanguageManager {
     const all = await Database
       .collection('language')
       .find({ _enabled: true })
-      .sort({ _index: 1 })
+      .sort({ _ranking: -1 })
       .toArray();
 
     for (const lang of all) {
@@ -79,10 +81,10 @@ export default class LanguageManager {
     return '';
   }
 
-  public displayLangList(): string[] {
+  public displayLangList(includeFlagEmojis: boolean): string[] {
     const out: string[] = [];
     for (const lang of this.list)
-      out.push(`**${this.getText(lang, 'lang_name')}** (${this.getText(lang, 'lang_name_en')})`);
+      out.push(`${includeFlagEmojis ? (this.getText(lang, 'lang_flag_emoji') + ' ') : ''}**${this.getText(lang, 'lang_name')}** (${this.getText(lang, 'lang_name_en')})`);
     return out;
   }
 
