@@ -194,16 +194,17 @@ export default class FreeStuffApi {
   //#region POST status
 
   /** @access PARTNER ONLY */
-  public async postStatus(service: string, status: 'ok' | 'partial' | 'offline' | 'rebooting' | 'fatal', data?: any, servername?: string, suid?: string): Promise<RawApiResponse> {
+  public async postStatus(service: string, status: 'ok' | 'partial' | 'offline' | 'rebooting' | 'fatal', data?: any, version?: string, servername?: string, suid?: string): Promise<RawApiResponse> {
     if (this.settings.type != 'partner')
       throw 'FreeStuffApi Error. Tried using partner-only endpoint "postStatus" as non-partner.'
 
     data = data || {}
     servername = servername || await hostname()
     suid = suid || this.settings.sid
+    version = version || this.settings.version || 'unknown'
 
     const body = {
-      data, suid, status, service,
+      data, suid, status, service, version,
       server: servername
     }
 

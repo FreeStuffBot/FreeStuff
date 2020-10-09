@@ -1,3 +1,4 @@
+import { getGitCommit } from "../util/git-parser";
 import { FreeStuffBot, Core } from "../index";
 
 
@@ -20,9 +21,13 @@ export default class Sharder {
   }
 
   public async updateManager(status?: 'ok' | 'partial' | 'offline' | 'rebooting' | 'fatal') {
+    const commit = await getGitCommit();
     const res = await Core.fsapi.postStatus('discord', status ?? 'ok', {
       totalShardCount: Core.options.shardCount,
-      guildCount: Core.guilds.cache.size
+      guildCount: Core.guilds.cache.size,
+      versionDetails: commit.subject,
+      versionAuthor: commit.author.name,
+      versionTime: commit.time,
     });
     if (res._status != 200 && this.errorCounter++ % 10 == 0) {
       console.warn(`Failed to report status to manager service. (${this.errorCounter - 1})`)

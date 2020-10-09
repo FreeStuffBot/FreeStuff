@@ -3,7 +3,7 @@ loadDotEnv();
 export const config = require('../config.js');
 
 
-import { Client, ClientOptions, Permissions } from "discord.js";
+import { Client, ClientOptions } from "discord.js";
 import MongoAdapter from "./database/mongo-adapter";
 import Database from "./database/database";
 import { Util } from "./util/util";
@@ -16,7 +16,7 @@ import Sharder from "./bot/sharder";
 import LanguageManager from "./bot/language-manager";
 import Localisation from "./bot/localisation";
 import { DbStats } from "./database/db-stats";
-import { logVersionDetails } from "./util/git-parser";
+import { getGitCommit, logVersionDetails } from "./util/git-parser";
 import * as chalk from "chalk";
 import * as DBL from "dblapi.js";
 import ParseArgs from "./util/parse-args";
@@ -25,7 +25,6 @@ import { GuildData } from "types";
 import Redis from "./database/redis";
 import Const from "./bot/const";
 import FreeStuffApi from "./_apiwrapper";
-import { GameAnalyticsDiscord } from "_apiwrapper/types";
 
 
 export class FreeStuffBot extends Client {
@@ -74,7 +73,7 @@ export class FreeStuffBot extends Client {
         await Database.init();
         await Redis.init();
 
-        const apisettings = { ...config.apisettings };
+        const apisettings = { ...config.apisettings, version: (await getGitCommit()).shortHash };
         apisettings.sid = this.singleShard ? '0' : this.options.shards[0];
         this.fsapi = new FreeStuffApi(apisettings);
     

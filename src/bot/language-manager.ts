@@ -8,6 +8,7 @@ export default class LanguageManager {
   private list = [];
   private idmap = {};
   private texts = {};
+  private fallbacklang = 'en-US';
 
   public constructor(bot: FreeStuffBot) {
     this.load();
@@ -45,8 +46,8 @@ export default class LanguageManager {
   public getRaw(language: string, key: string, fallback = true): string {
     if (!this.list.length) return key;
     if (!fallback) return this.getText(language, key);
-    if (!this.texts[language]) return this.getText(this.list[0], key);
-    return this.getText(language, key) || this.getText(this.list[0], key) || key;
+    if (!this.texts[language]) return this.getText(this.fallbacklang, key);
+    return this.getText(language, key) || this.getText(this.fallbacklang, key) || key;
   }
 
   private getText(language: string, key: string): string {
@@ -54,7 +55,7 @@ export default class LanguageManager {
   }
 
   public languageById(id: number | string): string {
-    return this.idmap[id + ''] || this.list[0];
+    return this.idmap[id + ''] || this.idmap[this.fallbacklang];
   }
 
   public languageToId(lang: string): number {

@@ -3,7 +3,8 @@ export type FreeStuffApiSettings = ({
   type?: 'basic',
 } | {
   type: 'partner',
-  sid: string
+  sid: string,
+  version?: string
 }) & {
   key: string,
   baseUrl?: string,
