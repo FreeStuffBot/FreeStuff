@@ -103,28 +103,17 @@ export default class MessageDistributor {
   }
 
   public async sendToGuild(g: DatabaseGuildData, content: GameInfo[], test: boolean, force: boolean): Promise<number[]> {
-    console.log('')
-    console.log('NEW')
-    console.log(`Config: ${JSON.stringify(content.map(c=>c.title))}, test: ${test}, force: ${force}`)
-    console.log(`Raw: ${JSON.stringify(g)}`)
     const data = await Core.databaseManager.parseGuildData(g);
-    
-    console.log(data ? `Parsed: [${data.storesList.join(', ')}], raw: ${data.storesRaw}, lang: ${data.language}, settings: ${data.settings}` : 'NO DATA')
     
     if (!data) return [];
 
     // forced will ignore filter settings
     if (!force) {
-      console.log(`co filter price: ${data.price} <= ${content[0].org_price[data.currency]} == ${data.price <= content[0].org_price[data.currency]}`)
-      console.log(`co filter trash: ${data.trashGames} || ${!(content[0].flags & GameFlag.TRASH)} == ${data.trashGames || !(content[0].flags & GameFlag.TRASH)}`)
-      console.log(`co filter stores: ${data.storesList}.includes(${content[0].store}) == ${data.storesList.includes(content[0].store)}`)
-
       content = content
-        .filter(game => data.price <= game.org_price[data.currency])
+        .filter(game => data.price <= game.org_price[data.currency == 'euro' ? 'euro' : 'dollar'])
         .filter(game => data.trashGames || !(game.flags & GameFlag.TRASH))
         .filter(game => data.storesList.includes(game.store));
         
-      console.log(`Content One: ${JSON.stringify(content.map(c=>c.title))}`)
       if (!content.length) return [];
     }
 
@@ -133,8 +122,6 @@ export default class MessageDistributor {
     if (!data.channelInstance.send) return [];
     if (!data.channelInstance.guild.available) return [];
 
-    console.log(`Channel valid.`)
-
     // check if permissions match
     const self = data.channelInstance.guild.me;
     const permissions = self.permissionsIn(data.channelInstance);
@@ -142,8 +129,6 @@ export default class MessageDistributor {
     if (!permissions.has('VIEW_CHANNEL')) return [];
     if (!permissions.has('EMBED_LINKS') && Const.themesWithEmbeds.includes(data.theme)) return [];
     if (!permissions.has('USE_EXTERNAL_EMOJIS') && Const.themesWithExtemotes[data.theme]) data.theme = Const.themesWithExtemotes[data.theme];
-
-    console.log(`Permissions valid.`)
 
     // set content url
     if (!test)
@@ -154,22 +139,18 @@ export default class MessageDistributor {
     messageContents = messageContents.filter(mes => !!mes);
     if (!messageContents.length) return [];
 
-    console.log(`Messages built successfully.`)
-    console.log(JSON.stringify(messageContents))
-
     // send the messages
-    // let lastmes: Message;
-    // for (const mesCont of messageContents)
-    //   lastmes = await data.channelInstance.send(...mesCont) as Message;
-    // if (lastmes && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
-    //   await lastmes.react('🆓');
-
-    console.log(`Sending out successfull.`)
+    let lastmes: Message;
+    for (const mesCont of messageContents)
+      lastmes = await data.channelInstance.send(...mesCont) as Message;
+    if (lastmes && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
+      await lastmes.react('🆓');
 
     return content.map(game => game.id);
   }
 
   public buildMessage(content: GameInfo, data: GuildData, test: boolean, disableMention: boolean): [ string, MessageOptions? ] {
+    console.log(`message built. gid: ${data._id}. settings: ${data.settings}. game: ${content.id}`);
     const theme = this.themes[data.theme] || this.themes[0];
     return theme.build(content, data, { test, disableMention });
   }
