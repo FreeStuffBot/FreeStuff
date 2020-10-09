@@ -115,11 +115,15 @@ export default class MessageDistributor {
 
     // forced will ignore filter settings
     if (!force) {
+      console.log(`co filter price: ${data.price} <= ${content[0].org_price[data.currency]} == ${data.price <= content[0].org_price[data.currency]}`)
+      console.log(`co filter trash: ${data.trashGames} || ${!(content[0].flags & GameFlag.TRASH)} == ${data.trashGames || !(content[0].flags & GameFlag.TRASH)}`)
+      console.log(`co filter stores: ${data.storesList}.includes(${content[0].store}) == ${data.storesList.includes(content[0].store)}`)
+
       content = content
-        .filter(game => data.price < game.org_price[data.currency])
+        .filter(game => data.price <= game.org_price[data.currency])
         .filter(game => data.trashGames || !(game.flags & GameFlag.TRASH))
         .filter(game => data.storesList.includes(game.store));
-
+        
       console.log(`Content One: ${JSON.stringify(content.map(c=>c.title))}`)
       if (!content.length) return [];
     }
