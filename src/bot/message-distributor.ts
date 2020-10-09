@@ -151,6 +151,7 @@ export default class MessageDistributor {
     if (!messageContents.length) return [];
 
     console.log(`Messages built successfully.`)
+    console.log(JSON.stringify(messageContents))
 
     // send the messages
     // let lastmes: Message;
