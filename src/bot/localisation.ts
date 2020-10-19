@@ -38,7 +38,7 @@ export default class Localisation {
   public getDefaultSettings(guild: Guild): number {
     const europe = this.isGuildInEurope(guild);
     const useEuro = europe;
-    const defaultLang = europe ? 'en-GB' : 'en-US';    
+    const defaultLang = europe ? 'en-GB' : 'en-US';
 
     return 0
       | Util.modifyBits(0, 1, 1, useEuro ? 0 : 1)

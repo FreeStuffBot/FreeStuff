@@ -70,7 +70,7 @@ export default class AnnouncementManager {
 
     this.currentlyAnnouncing = true;
 
-    const numberIds = gameids.split(' ').map(id => parseInt(id));
+    const numberIds = gameids.split(' ').map(id => parseInt(id, 10));
     const gameInfos = await Core.fsapi.getGameDetails(numberIds, 'info');
     await Core.messageDistributor.distribute(Object.values(gameInfos));
 

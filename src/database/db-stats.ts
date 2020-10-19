@@ -128,7 +128,7 @@ export class DbStatGraph {
         while (dayId-- > this.raw.length)
           obj['$set'][`value.${dayId}`] = 0;
       }
-      return await Database
+      return Database
         .collection(this._collectionname as dbcollection)
         ?.updateOne(this._dbquery, obj);
     } else {
@@ -139,12 +139,12 @@ export class DbStatGraph {
         obj.value.push(0);
       obj.value.push(value);
       if (parentExists) {
-        return await Database
+        return Database
           .collection(this._collectionname as dbcollection)
           ?.updateOne(this._dbquery, { '$set': obj });
       } else {
         this._fullraw.value = obj;
-        return await Database
+        return Database
           .collection(this._collectionname as dbcollection)
           ?.insertOne(obj);
       }

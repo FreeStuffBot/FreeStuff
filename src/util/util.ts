@@ -26,7 +26,7 @@ export class Util {
       },
       iterate: {
         value: function (run: (item: any, current: any) => any): any {
-          let out = undefined;
+          let out;
           this.forEach(e => out = run(e, out));
           return out;
         }

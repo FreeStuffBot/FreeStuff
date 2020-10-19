@@ -16,7 +16,7 @@ export default class Sharder {
       this.updateManager();
       setInterval(() => {
         this.updateManager();
-      }, 1000 * 20);  
+      }, 1000 * 20);
     });
   }
 
@@ -44,7 +44,7 @@ export default class Sharder {
       case 'reload_lang':
         Core.languageManager.load();
         console.log('[MANAGER] Reload language cache.');
-        break;     
+        break;
     }
   }
 
