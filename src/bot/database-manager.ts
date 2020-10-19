@@ -257,6 +257,6 @@ export default class DatabaseManager {
   //                     |               |           | show trash games [6< 1]
   //                     |               |           alternative date format [7< 1]
   //                     |               language [8< 6]
-  //                     stores [14< 8] (other itch uplay origin gog humble epic steam)
+  //                     stores [14< 8] (itch uplay origin gog humble epic steam other)
 
 }

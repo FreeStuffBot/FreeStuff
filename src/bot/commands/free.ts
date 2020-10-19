@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { ReplyFunction, Command, GameData, GuildData } from "../../types";
+import { ReplyFunction, Command, GuildData } from "../../types";
 import Const from "../const";
 import { Core } from "../../index";
 import { GameInfo } from "_apiwrapper/types";

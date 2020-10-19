@@ -57,7 +57,7 @@ export default class FreeStuffApi {
       url = url.replace('%s', arg)
 
     if (!['GET', 'POST', 'PUT', 'DELETE'].includes(method.toUpperCase()))
-      throw `FreeStuffApi Error. ${method} is not a valid http request method.`
+      throw new Error(`FreeStuffApi Error. ${method} is not a valid http request method.`)
 
     let conf = [ { headers: this.getHeaders() } ]
     if (['POST', 'PUT'].includes(method.toUpperCase()))
@@ -69,7 +69,7 @@ export default class FreeStuffApi {
     } catch (err) {
       raw = err.response
       if (raw?.status == 403)
-        throw 'FreeStuffApi Error. Invalid authorization key.'
+        throw new Error('FreeStuffApi Error. Invalid authorization key.')
     }
     
     if (raw?.status == 200) return { ...raw.data, _headers: raw.headers, _status: raw.status }
@@ -79,8 +79,8 @@ export default class FreeStuffApi {
 
   private rateLimitMeta(headers: any): { remaining: number, reset: number } {
     return {
-      remaining: parseInt(headers['X-RateLimit-Remaining']) ?? -1,
-      reset: Date.now() + (parseInt(headers['X-RateLimit-Reset']) * 1000 - parseInt(headers['X-Server-Time']))
+      remaining: parseInt(headers['X-RateLimit-Remaining'], 10) ?? -1,
+      reset: Date.now() + (parseInt(headers['X-RateLimit-Reset'], 10) * 1000 - parseInt(headers['X-Server-Time'], 10))
     }
   }
 
@@ -89,7 +89,7 @@ export default class FreeStuffApi {
   //#region PING
 
   public async ping(): Promise<RawApiResponse> {
-    return await this.makeRequest(Endpoint.PING)
+    return this.makeRequest(Endpoint.PING)
   }
 
   //#endregion
@@ -139,7 +139,7 @@ export default class FreeStuffApi {
 
     if (!games.length) return out
     if (lookup != 'info' && this.settings.type != 'partner')
-      throw `FreeStuffApi Error. Tried to request partner only information. Get game details, lookup: ${lookup}. Allowed lookups: [ 'info' ]`
+      throw new Error(`FreeStuffApi Error. Tried to request partner only information. Get game details, lookup: ${lookup}. Allowed lookups: [ 'info' ]`)
 
     if (useCache) {
       for (const game of games) {
@@ -173,7 +173,7 @@ export default class FreeStuffApi {
 
         if (object) {
           object.until = object.until ? new Date((<unknown> object.until as number) * 1000) : null
-          object.id = parseInt(id)
+          object.id = parseInt(id, 10)
         }
 
         out[id] = object
@@ -196,7 +196,7 @@ export default class FreeStuffApi {
   /** @access PARTNER ONLY */
   public async postStatus(service: string, status: 'ok' | 'partial' | 'offline' | 'rebooting' | 'fatal', data?: any, version?: string, servername?: string, suid?: string): Promise<RawApiResponse> {
     if (this.settings.type != 'partner')
-      throw 'FreeStuffApi Error. Tried using partner-only endpoint "postStatus" as non-partner.'
+      throw new Error('FreeStuffApi Error. Tried using partner-only endpoint "postStatus" as non-partner.')
 
     data = data || {}
     servername = servername || await hostname()
@@ -225,7 +225,7 @@ export default class FreeStuffApi {
   public async postGameAnalytics(game: number, service: string, data: any): Promise<RawApiResponse>
   public async postGameAnalytics(game: number, service: string, data: any): Promise<RawApiResponse> {
     if (this.settings.type != 'partner')
-      throw 'FreeStuffApi Error. Tried using partner-only endpoint "postGameAnalytics" as non-partner.'
+      throw new Error('FreeStuffApi Error. Tried using partner-only endpoint "postGameAnalytics" as non-partner.')
 
     const body = {
       service,
