@@ -7,7 +7,8 @@ export default class SetUntilHandler implements CommandHandler, SettingsSubcomma
 
   public getMetaInfo(g: GuildData): [ string, string, any? ] {
     return [
-      'until ' + (g ? (g.altDateFormat ? 'date' : 'weekday') : 'weekday'),
+      // 'until ' + (g ? (g.altDateFormat ? 'date' : 'weekday') : 'weekday'),
+      'until date/weekday',
       '=cmd_settings_change_until'
     ];
   }

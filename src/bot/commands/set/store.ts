@@ -12,7 +12,7 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
 
   public getMetaInfo(g: GuildData): [ string, string, any? ] {
     return [
-      'store <store> on|off|only',
+      'stores',
       '=cmd_settings_change_store'
     ];
   }

@@ -7,7 +7,8 @@ export default class SetReactHandler implements CommandHandler, SettingsSubcomma
 
   public getMetaInfo(g: GuildData): [ string, string, any? ] {
     return [
-      'reaction ' + (g ? (g.react ? 'on' : 'off') : 'off'),
+      // 'reaction ' + (g ? (g.react ? 'on' : 'off') : 'off'),
+      'reaction on/off',
       '=cmd_settings_change_reaction'
     ];
   }

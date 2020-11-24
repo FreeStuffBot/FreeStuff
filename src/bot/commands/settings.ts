@@ -23,21 +23,21 @@ export default class SettingsCommand extends Command {
     super({
       name: 'settings',
       desc: '=cmd_settings_desc',
-      trigger: [ 'set', 'settings', 'config', 'configure', 'change' ],
+      trigger: [ 'set', 'settings', 'setting', 'config', 'configure', 'change' ],
       serverManagerOnly: true
     });
     
     this.commands.set('channel', new SetChannelHandler());
+    this.commands.set('language lang local locale', new SetLanguageHandler());
     this.commands.set('mention role', new SetMentionHandler());
     this.commands.set('theme', new SetThemeHandler());
+    this.commands.set('store stores shop platform', new SetStoreHandler());
     this.commands.set('currency', new SetCurrencyHandler());
     this.commands.set('react reaction', new SetReactHandler());
     this.commands.set('trash bad garbage', new SetTrashHandler());
     this.commands.set('minimum minimumprice min price cost', new SetMinpriceHandler());
-    this.commands.set('language lang local locale', new SetLanguageHandler());
     this.commands.set('until', new SetUntilHandler());
     this.commands.set('prefix', new SetPrefixHanler());
-    this.commands.set('store stores shop platform', new SetStoreHandler());
   }
 
   public handle(mes: Message, args: string[], g: GuildData, repl: ReplyFunction): boolean {

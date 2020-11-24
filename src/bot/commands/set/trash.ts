@@ -7,7 +7,8 @@ export default class SetTrashHandler implements CommandHandler, SettingsSubcomma
 
   public getMetaInfo(g: GuildData): [ string, string, any? ] {
     return [
-      'trash ' + (g ? (g.trashGames ? 'on' : 'off') : 'off'),
+      // 'trash ' + (g ? (g.trashGames ? 'on' : 'off') : 'off'),
+      'trash on/off',
       '=cmd_settings_change_trash'
     ];
   }

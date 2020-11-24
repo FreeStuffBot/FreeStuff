@@ -7,7 +7,7 @@ export default class SetMinpriceHandler implements CommandHandler, SettingsSubco
 
   public getMetaInfo(g: GuildData): [ string, string, any? ] {
     return [
-      'minimum price ' + (g ? g.price : '3'),
+      'minimum price ' + (g ? ((g.currency == 'euro' ? '€' : '$') + g.price) : '$3'),
       '=cmd_settings_change_min_price'
     ];
   }

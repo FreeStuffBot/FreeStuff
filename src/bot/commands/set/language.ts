@@ -7,7 +7,8 @@ export default class SetLanguageHandler implements CommandHandler, SettingsSubco
 
   public getMetaInfo(g: GuildData): [ string, string, any? ] {
     return [
-      'language ' + Core.text(g, '=lang_name_en'),
+      // 'language ' + Core.text(g, '=lang_name_en'),
+      'language',
       '=cmd_settings_change_language'
     ];
   }

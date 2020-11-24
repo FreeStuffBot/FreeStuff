@@ -7,7 +7,8 @@ export default class SetCurrencyHandler implements CommandHandler, SettingsSubco
 
   public getMetaInfo(g: GuildData): [ string, string, any? ] {
     return [
-      'currency ' + (g ? (g.currency == 'euro' ? '€' : '$') : '€'),
+      // 'currency ' + (g ? (g.currency == 'euro' ? '€' : '$') : '€'),
+      'currency €/$',
       '=cmd_settings_change_currency'
     ];
   }

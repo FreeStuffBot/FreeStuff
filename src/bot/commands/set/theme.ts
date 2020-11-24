@@ -8,7 +8,8 @@ export default class SetThemeHandler implements CommandHandler, SettingsSubcomma
 
   public getMetaInfo(g: GuildData): [ string, string, any? ] {
     return [
-      'theme ' + (g ? (g.theme + 1) : 1),
+      // 'theme ' + (g ? (g.theme + 1) : 1),
+      'theme',
       '=cmd_settings_change_theme',
       { themeListLink: Const.themeListLink }
     ];
