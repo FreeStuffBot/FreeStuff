@@ -39,7 +39,7 @@ export default class ResetCommand extends Command {
     if (!args.length) {
       repl(
         Core.text(g, '=cmd_reset_confirm_1'),
-        Core.text(g, '=cmd_reset_confirm_2', { invite: Const.discordInvite })
+        Core.text(g, '=cmd_reset_confirm_2', { invite: Const.links.supportInvite })
       );
       return true;
     }

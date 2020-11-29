@@ -54,7 +54,7 @@ export default class CommandHandler {
       }).catch(err => {
         try {
           /** no translaton in case the above failes due to language manager issues */
-          m.reply(`An error occured! Please try again later. If this error persists, try removing the bot from your server and adding it back up. For additional support visit our support server: ${Const.discordInvite}`);
+          m.reply(`An error occured! Please try again later. If this error persists, try removing the bot from your server and adding it back up. For additional support visit our support server: ${Const.links.supportInvite}`);
         } catch(ex) { }
       });
     });
@@ -86,10 +86,10 @@ export default class CommandHandler {
         ? (Core.localisation.getTranslationHint(orgmes.guild) && orgmes.member.hasPermission('MANAGE_GUILD'))
           ? '\n\n' + Core.localisation.getTranslationHint(orgmes.guild)
           : ''
-        : '\n\n' + Core.text(g, '=cmd_freestuff_2_en', { website: Const.websiteLink });
+        : '\n\n' + Core.text(g, '=cmd_freestuff_2_en', { website: Const.links.website });
       reply(
         Core.text(g, '=cmd_freestuff_1', { username: orgmes.author.username }),
-        Core.text(g, '=cmd_freestuff_2', { website: Const.websiteLink }) + langNotif
+        Core.text(g, '=cmd_freestuff_2', { website: Const.links.website }) + langNotif
       );
       return true;
     }

@@ -40,7 +40,7 @@ export default class TestCommand extends Command {
       Core.databaseManager.addGuild(mes.guild);
       repl(
         Core.text(g, '=cmd_error_fixable_1'),
-        Core.text(g, '=cmd_error_fixable_2', { discordInvite: Const.discordInvite })
+        Core.text(g, '=cmd_error_fixable_2', { discordInvite: Const.links.supportInvite })
       );
       return;
     }
@@ -100,8 +100,8 @@ export default class TestCommand extends Command {
         },
         store: (Const.storeDisplayNames[flags.store + ''] ? flags.store as Store : '') || 'steam',
         thumbnail: this.placeholderThumbnails[Math.floor(Math.random() * this.placeholderThumbnails.length)],
-        org_url: Const.testGameLink,
-        url: Const.testGameLink,
+        org_url: Const.links.testgame,
+        url: Const.links.testgame,
         flags: 0,
         until: null,
         type: 'free',

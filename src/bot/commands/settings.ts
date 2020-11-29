@@ -45,7 +45,7 @@ export default class SettingsCommand extends Command {
       repl(
         Core.text(g, '=cmd_error_readd_1'),
         Core.text(g, '=cmd_error_readd_2', {
-          discordInvite: Const.discordInvite
+          discordInvite: Const.links.botInvite
         })
       );
       return true;

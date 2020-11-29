@@ -17,7 +17,11 @@ export default class VoteCommand extends Command {
   public handle(mes: Message, args: string[], g: GuildData, repl: ReplyFunction): boolean {
     repl(
       Core.text(g, '=cmd_vote_1'),
-      Core.text(g, '=cmd_vote_2', { topGGLink: Const.topGGLink }),
+      Core.text(g, '=cmd_vote_2', {
+        topGGLink: Const.links.topgg,
+        dblLink: Const.links.dbl,
+        dlabsLink: Const.links.dlabs
+      }),
     );
     return true;
   }

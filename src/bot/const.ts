@@ -2,15 +2,22 @@
 
 export default class Const {
 
-  public static readonly inviteLink = 'https://discordapp.com/oauth2/authorize?redirect_uri=https%3A%2F%2Ffreestuffbot.xyz%2Fcallback&client_id=672822334641537041&permissions=445504&scope=bot&response_type=code';
-  public static readonly discordInvite = 'https://discord.gg/WrnKKF8';
-  public static readonly websiteLink = 'https://freestuffbot.xyz/';
-  public static readonly websiteLinkClean = 'freestuffbot.xyz';
-  public static readonly themeListLink = 'https://freestuffbot.xyz/themes';
-  public static readonly testGameLink = 'https://freestuffbot.xyz/testgame';
-  public static readonly topGGLink = 'https://top.gg/bot/672822334641537041';
-  public static readonly privacyPolicyLink = 'https://freestuffbot.xyz/privacy';
-  public static readonly termsOfServiceLink = 'https://freestuffbot.xyz/terms';
+  public static readonly links = {
+    website: 'https://freestuffbot.xyz/',
+    websiteClean: 'freestuffbot.xyz',
+    botInvite: 'https://discordapp.com/oauth2/authorize?redirect_uri=https%3A%2F%2Ffreestuffbot.xyz%2Fcallback&client_id=672822334641537041&permissions=445504&scope=bot&response_type=code',
+    supportInvite: 'https://discord.gg/WrnKKF8',
+
+    topgg: 'https://top.gg/bot/672822334641537041',
+    dbl: 'https://discord.ly/freestuff',
+    dlabs: 'https://bots.discordlabs.org/bot/672822334641537041',
+
+    team: 'https://freestuffbot.xyz/team',
+    privacy: 'https://freestuffbot.xyz/privacy',
+    terms: 'https://freestuffbot.xyz/terms',
+    testgame: 'https://freestuffbot.xyz/testgame',
+    themes: 'https://freestuffbot.xyz/themes',
+  }
 
   public static readonly themesWithEmbeds = [ 0, 1, 2, 3, 4, 5 ];
   public static readonly themesWithExtemotes = { 0: 1, 2: 3 };

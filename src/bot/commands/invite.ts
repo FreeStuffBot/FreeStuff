@@ -17,7 +17,7 @@ export default class InviteCommand extends Command {
   public handle(mes: Message, args: string[], g: GuildData, repl: ReplyFunction): boolean {
     repl(
       Core.text(g, '=cmd_invite_1'),
-      Core.text(g, '=cmd_invite_2', { inviteLink: Const.inviteLink })
+      Core.text(g, '=cmd_invite_2', { inviteLink: Const.links.botInvite })
     );
     return true;
   }

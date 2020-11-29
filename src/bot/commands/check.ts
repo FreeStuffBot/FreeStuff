@@ -35,7 +35,7 @@ export default class CheckCommand extends Command {
       Core.databaseManager.addGuild(mes.guild);
       repl(
         Core.text(g, '=cmd_error_fixable_1'),
-        Core.text(g, '=cmd_error_fixable_2', { discordInvite: Const.discordInvite })
+        Core.text(g, '=cmd_error_fixable_2', { discordInvite: Const.links.supportInvite })
       );
       return;
     }

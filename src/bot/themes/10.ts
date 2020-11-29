@@ -32,7 +32,7 @@ export default class ThemeTen implements Theme {
           footer: {
             text: settings.test
               ? Core.text(data, '=announcement_footer_test')
-              : Core.text(data, '=announcement_footer', { website: Const.websiteLinkClean })
+              : Core.text(data, '=announcement_footer', { website: Const.links.websiteClean })
           }
         }
       }

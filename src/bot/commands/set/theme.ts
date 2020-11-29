@@ -11,7 +11,7 @@ export default class SetThemeHandler implements CommandHandler, SettingsSubcomma
       // 'theme ' + (g ? (g.theme + 1) : 1),
       'theme',
       '=cmd_settings_change_theme',
-      { themeListLink: Const.themeListLink }
+      { themeListLink: Const.links.themes }
     ];
   }
 
@@ -19,7 +19,7 @@ export default class SetThemeHandler implements CommandHandler, SettingsSubcomma
     if (args.length < 1) {
       reply(
         Core.text(g, '=cmd_set_theme_missing_args_1'),
-        Core.text(g, '=cmd_set_theme_missing_args_2', { themeListLink: Const.themeListLink })
+        Core.text(g, '=cmd_set_theme_missing_args_2', { themeListLink: Const.links.themes })
       );
       return false;
     }
@@ -34,7 +34,7 @@ export default class SetThemeHandler implements CommandHandler, SettingsSubcomma
         Core.text(g, '=cmd_set_theme_not_found_1'),
         Core.text(g, '=cmd_set_theme_not_found_2', {
           name: args[0],
-          themeListLink: Const.themeListLink
+          themeListLink: Const.links.themes
         })
       );
     }

@@ -21,11 +21,10 @@ export default class InfoCommand extends Command {
     repl(
       Core.text(g, '=cmd_info_1'),
       Core.text(g, '=cmd_info_2', {
-        teamWebsite: 'https://tude.ga/?utm_source=freestuffbot&utm_medium=about&utm_campaign=credits',
-        amazingPeople: 'https://freestuffbot.xyz/about#more',
-        website: Const.websiteLink,
-        inviteLink: Const.inviteLink,
-        discordInvite: Const.discordInvite
+        amazingPeople: Const.links.team,
+        website: Const.links.website,
+        inviteLink: Const.links.botInvite,
+        discordInvite: Const.links.supportInvite
       }) + translationCredits,
       'Copyright © 2020 Tude',
       0x00b0f4

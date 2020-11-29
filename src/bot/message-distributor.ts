@@ -70,7 +70,7 @@ export default class MessageDistributor {
         if (successIn.length) {
           for (const id of successIn)
             Redis.incSharded('am_' + id);
-          await new Promise(res => setTimeout(() => res(), 200 * successIn.length));
+          await new Promise(res => setTimeout(() => res(null), 200 * successIn.length));
         }
       } catch(ex) {
         console.error(ex);
