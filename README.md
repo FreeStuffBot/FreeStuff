@@ -75,7 +75,7 @@ $ yarn start
 If you need any help, feel free to ask in our [discord server](https://freestuffbot.xyz/discord). Unfortunately we cannot guarantee to be able to help you with any problem that might occur.
 
 
-#### License
+## License
 
 The FreeStuff Bot for Discord notifies you about free games right in your Discord server.
 Copyright (C) 2020 FreeStuff Contributors
