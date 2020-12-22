@@ -150,7 +150,6 @@ export default class MessageDistributor {
   }
 
   public buildMessage(content: GameInfo, data: GuildData, test: boolean, disableMention: boolean): [ string, MessageOptions? ] {
-    console.log(`message built. gid: ${data._id}. settings: ${data.settings}. game: ${content.id}`);
     const theme = this.themes[data.theme] || this.themes[0];
     return theme.build(content, data, { test, disableMention });
   }
