@@ -210,8 +210,8 @@ export default class FreeStuffApi {
 
     const res = await this.makeRequest(PartnerEndpoint.STATUS, body)
 
-    if (res['events'])
-      res['events'].forEach(e => this.emitRawEvent(e))
+    if (res?.data['events'])
+      res?.data['events'].forEach(e => this.emitRawEvent(e))
 
     return res
   }

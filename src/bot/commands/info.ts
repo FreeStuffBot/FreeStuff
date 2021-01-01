@@ -26,7 +26,7 @@ export default class InfoCommand extends Command {
         inviteLink: Const.links.botInvite,
         discordInvite: Const.links.supportInvite
       }) + translationCredits,
-      'Copyright © 2020 Tude',
+      'Copyright © 2020-2021 FreeStuff',
       0x00b0f4
     );
     return true;
