@@ -20,11 +20,14 @@ export default class LanguageManager {
     this.idmap = {};
     this.texts = {};
 
-    const all = await Database
+    let all = await Database
       .collection('language')
       ?.find({ _enabled: true })
-      .sort({ _ranking: -1 })
+      // .sort({ _ranking: -1 })
+      .sort({ _id: 1 })
       .toArray();
+
+    all = all.sort((a, b) => a._id.startsWith('en') ? -1 : b._id.startsWith('en') ? 1 : 0)
 
     for (const lang of all) {
       for (const key in lang) {
@@ -83,8 +86,10 @@ export default class LanguageManager {
 
   public displayLangList(includeFlagEmojis: boolean): string[] {
     const out: string[] = [];
-    for (const lang of this.list)
+    this.list.forEach((lang, i) => {
       out.push(`${includeFlagEmojis ? (this.getText(lang, 'lang_flag_emoji') + ' ') : ''}**${this.getText(lang, 'lang_name')}** (${this.getText(lang, 'lang_name_en')})`);
+      if (i == 1) out.push('')
+    })
     return out;
   }
 
