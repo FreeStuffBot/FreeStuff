@@ -3,7 +3,7 @@ import { ReplyFunction, Command, GuildData } from "../../types";
 import { Core, config } from "../../index";
 import Const from "../const";
 import ParseArgs from "../../util/parse-args";
-import { Store } from "_apiwrapper/types";
+import { Store } from "freestuff";
 
 
 export default class TestCommand extends Command {

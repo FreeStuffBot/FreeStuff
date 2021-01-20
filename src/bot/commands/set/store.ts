@@ -2,7 +2,7 @@ import { CommandHandler, GuildData, ReplyFunction, SettingsSubcommand, Filterabl
 import { Core } from "../../../index";
 import { Message } from "discord.js";
 import Const from "../../const";
-import { Store } from "_apiwrapper/types";
+import { Store } from "freestuff";
 
 
 export default class SetStoreHandler implements CommandHandler, SettingsSubcommand {

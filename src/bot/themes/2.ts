@@ -2,7 +2,7 @@ import { GuildData, Theme } from "../../types";
 import { MessageOptions } from "discord.js";
 import { Core } from "../../index";
 import Const from "../../bot/const";
-import { GameFlag, GameInfo } from "../../_apiwrapper/types";
+import { GameFlag, GameInfo } from "freestuff";
 
 
 export default class ThemeTwo implements Theme {

@@ -1,6 +1,6 @@
 import { TextChannel, Role, Message, MessageOptions } from "discord.js";
 import { Long } from "mongodb";
-import { GameAnalytics, GameInfo, Store } from "_apiwrapper/types";
+import { GameAnalytics, GameInfo, Store } from "freestuff";
 
 
 

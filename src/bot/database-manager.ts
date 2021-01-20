@@ -5,7 +5,7 @@ import { Long } from "mongodb";
 import { GuildSetting, GuildData, DatabaseGuildData, FilterableStore } from "../types";
 import { Util } from "../util/util";
 import { CronJob } from "cron";
-import { Store } from "_apiwrapper/types";
+import { Store } from "freestuff";
 
 
 export default class DatabaseManager {

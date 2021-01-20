@@ -17,7 +17,7 @@ import ThemeNine from "./themes/9";
 import ThemeTen from "./themes/10";
 import SentryManager from "../thirdparty/sentry/sentry";
 import Redis from "../database/redis";
-import { GameFlag, GameInfo } from "../_apiwrapper/types";
+import { GameFlag, GameInfo } from "freestuff";
 
 
 export default class MessageDistributor {

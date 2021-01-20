@@ -24,7 +24,7 @@ import SentryManager from "./thirdparty/sentry/sentry";
 import { GuildData } from "types";
 import Redis from "./database/redis";
 import Const from "./bot/const";
-import FreeStuffApi from "./_apiwrapper";
+import { FreeStuffApi } from "freestuff";
 
 
 export class FreeStuffBot extends Client {

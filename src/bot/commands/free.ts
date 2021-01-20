@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { ReplyFunction, Command, GuildData } from "../../types";
 import Const from "../const";
 import { Core } from "../../index";
-import { GameInfo } from "_apiwrapper/types";
+import { GameInfo } from "freestuff";
 
 
 export default class FreeCommand extends Command {
