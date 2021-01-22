@@ -1,0 +1,8 @@
+{
+  "extends": [
+    "maanex"
+  ],
+  "rules": {
+    "no-console": "error"
+  }
+}

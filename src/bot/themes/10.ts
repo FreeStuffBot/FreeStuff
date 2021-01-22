@@ -11,7 +11,7 @@ export default class ThemeTen implements Theme {
     const lines = [
       '```yaml',
       `  Name: ${content.title}`,
-      ` Store: ${Const.storeDisplayNames[content.store]}`,
+      ` Store: ${Core.languageManager.get(data, 'platform_' + content.store)}`,
       ` Price: $${content.org_price.dollar} | €${content.org_price.euro}`,
       ` Until: ${content.until?.toLocaleDateString(Core.languageManager.get(data, 'date_format')) ?? 'unknown'}`,
       `Subids: ${content.store_meta.steam_subids}`,

@@ -26,24 +26,6 @@ export default class Const {
   // public static readonly announcementButton = '<:b1:672825613467385857><:b2:672825613500809261><:b3:672825613580501031><:b4:672825613450477579>\n<:b5:672825613513654322><:b6:672825613513392138><:b7:672825613215727645><:b8:672825613157138435>';
   public static readonly announcementButton = '**GET**';
 
-  public static readonly storeDisplayNames = {
-    steam: 'Steam',
-    epic: 'Epic Games',
-    humble: 'Humble Bundle',
-    gog: 'GOG.com',
-    origin: 'Origin',
-    uplay: 'Uplay',
-    twitch: 'Twitch',
-    itch: 'itch.io',
-    discord: 'Discord',
-    apple: 'Apple App Store',
-    google: 'Google Play',
-    switch: 'Nintendo Switch',
-    ps: 'Play Station',
-    xbox: 'Xbox',
-    other: 'Other'
-  };
-
   public static readonly storeEmojis = {
     steam: '<:store_steam:700096501728411739>',
     epic: '<:store_epic:700094298984808468>',
