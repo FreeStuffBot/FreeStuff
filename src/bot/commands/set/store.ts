@@ -7,9 +7,6 @@ import { Store } from "freestuff";
 
 export default class SetStoreHandler implements CommandHandler, SettingsSubcommand {
 
-  private readonly storeList = Object.keys(Const.storeDisplayNames).map(this.getStoreInfo);
-  private readonly storeListAvailable = Object.keys(Const.storeDisplayNames).map(this.getStoreInfo).filter(s => s.bit !== undefined);
-
   public getMetaInfo(g: GuildData): [ string, string, any? ] {
     return [
       'stores',
@@ -17,25 +14,32 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
     ];
   }
 
-  public handle(mes: Message, args: string[], g: GuildData, reply: ReplyFunction): boolean {
+  public handle(mes: Message, args: string[], g: GuildData, reply: ReplyFunction): boolean {      
     if (args.length < 1) {
+      const storeListAvailable = Object.keys(Const.storeEmojis)
+        .map((e: Store) => this.getStoreInfo(e, g))
+        .filter(s => s.bit !== undefined);
       reply(
         Core.text(g, '=cmd_set_store_missing_args_1'),
-        Core.text(g, '=cmd_set_store_missing_args_2')
-        + '\n\n'
-        + Core.text(g, '=cmd_set_store_list_enabled')
-        + '\n'
-        + (this.storeListAvailable
-          .filter(s => this.isStoreOn(s, g))
-          .map(s => `${s.icon} ${s.name}`)
-          .join('\n') || Core.text(g, '=cmd_set_store_list_enabled_none'))
-        + '\n\n'
-        + Core.text(g, '=cmd_set_store_list_disabled')
-        + '\n'
-        + (this.storeListAvailable
-          .filter(s => !this.isStoreOn(s, g))
-          .map(s => `${s.icon} ${s.name}`)
-          .join('\n') || Core.text(g, '=cmd_set_store_list_disabled_none'))
+        [
+          Core.text(g, '=cmd_set_store_missing_args_2'),
+          '',
+          '',
+          Core.text(g, '=cmd_set_store_list_enabled'),
+          '',
+          (storeListAvailable
+            .filter(s => this.isStoreOn(s, g))
+            .map(s => `${s.icon} ${s.name}`)
+            .join('\n') || Core.text(g, '=cmd_set_store_list_enabled_none')),
+          '',
+          '',
+          Core.text(g, '=cmd_set_store_list_disabled'),
+          '',
+          (storeListAvailable
+            .filter(s => !this.isStoreOn(s, g))
+            .map(s => `${s.icon} ${s.name}`)
+            .join('\n') || Core.text(g, '=cmd_set_store_list_disabled_none'))
+        ].join('\n')
       );
       return false;
     }
@@ -67,7 +71,7 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
       return;
     }
 
-    const store = this.getStoreFromKeyword(storeName);
+    const store = this.getStoreFromKeyword(storeName, g);
 
     if (!store) {
       reply(
@@ -120,21 +124,24 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
     return true;
   }
 
-  private getStoreFromKeyword(search: string): StoreData {
-    for (const store of this.storeList) {
+  private getStoreFromKeyword(search: string, g: GuildData): StoreData {
+    const storeList = Object
+      .keys(Const.storeEmojis)
+      .map((e: Store) => this.getStoreInfo(e, g));
+    for (const store of storeList) {
       if (store.key == search.toLowerCase()) return store;
       if (store.name == search.toLowerCase()) return store;
     }
-    for (const store of this.storeList) {
+    for (const store of storeList) {
       if (store.key.includes(search.toLowerCase())) return store;
       if (store.name.includes(search.toLowerCase())) return store;
     }
     return null;
   }
 
-  private getStoreInfo(store: Store): StoreData {
+  private getStoreInfo(store: Store, g: GuildData): StoreData {
     return {
-      name: store == 'other' ? 'Other Stores' : Const.storeDisplayNames[store],
+      name: store == 'other' ? 'Other Stores' : Core.languageManager.get(g, store),
       key: store,
       icon: Const.storeEmojis[store],
       bit: <unknown> FilterableStore[store.toUpperCase()] as number

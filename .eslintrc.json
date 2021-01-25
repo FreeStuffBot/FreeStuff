@@ -1,8 +1,14 @@
 {
-  "extends": [
-    "maanex"
-  ],
-  "rules": {
-    "no-console": "error"
+  // "extends": [
+  //   "maanex"
+  // ],
+  // "rules": {
+  //   "no-console": "error"
+  // },
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
+  "env": {
+      "es6": true
   }
 }

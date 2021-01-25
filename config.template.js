@@ -5,7 +5,9 @@ const debug      = process.env.NODE_ENV === 'debug';
 
 module.exports = {
   bot: {
-    token: "TOKEN"
+    token: "TOKEN",
+    mode: "beta|regular",
+    clientid: "ID"
   },
   mongodb: {
     url: "URL"

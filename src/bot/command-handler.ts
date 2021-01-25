@@ -43,7 +43,7 @@ export default class CommandHandler {
 
       const args = m.content.split(/ +/);
       args.splice(0, 1);
-      Core.databaseManager.getGuildData(m.guild).then(g => {
+      Core.databaseManager.getGuildData(m.guild.id).then(g => {
         this.handleCommand(args.splice(0, 1)[0] || '', args, m, g).then(success => {
           if (!success
             && m.guild.me.permissionsIn(m.channel).has('ADD_REACTIONS')

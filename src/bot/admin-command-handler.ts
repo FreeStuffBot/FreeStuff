@@ -95,7 +95,7 @@ export default class AdminCommandHandler {
           return true;
 
         case 'settingbits':
-          Core.databaseManager.getRawGuildData(orgmes.guild).then(d => {
+          Core.databaseManager.getRawGuildData(orgmes.guild.id).then(d => {
             orgmes.channel.send([
               '```',
               '._______________._______.___._..',

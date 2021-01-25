@@ -1,6 +1,65 @@
-import { TextChannel, Role, Message, MessageOptions } from "discord.js";
+/* eslint-disable camelcase */
+import { TextChannel, Role, Message, MessageOptions, MessageEmbed } from "discord.js";
 import { Long } from "mongodb";
 import { GameAnalytics, GameInfo, Store } from "freestuff";
+
+
+export type Interaction = {
+  type: number,
+  token: string,
+  member: {
+    user: {
+      id: string,
+      username: string,
+      avatar: string,
+      discriminator: string,
+      public_flags: number
+    },
+    roles: string[],
+    premium_since: string | null,
+    permissions: string,
+    pending: boolean,
+    nick: string | null,
+    mute: boolean,
+    joined_at: string,
+    is_pending: boolean,
+    deaf: boolean,
+  },
+  id: string,
+  guild_id: string,
+  data: {
+    options: {
+      name: string,
+      value: string | number
+    }[],
+    option: { [name: string]: string | number }, // custom, parsed
+    name: string,
+    id: string
+  },
+  channel_id: string
+}
+
+export type InteractionResponseType = 'Pong' | 'Acknowledge' | 'ChannelMessage' | 'ChannelMessageWithSource' | 'AcknowledgeWithSource'
+
+export enum InteractionResponseFlags {
+  EPHEMERAL = 64
+}
+
+export type InteractionApplicationCommandCallbackData = {
+  tts?: boolean,
+  content: string,
+  flags?: InteractionResponseFlags
+  embeds?: Partial<MessageEmbed>[],
+  allowed_mentions?: any
+}
+
+export type InteractionReplyFunction = (type: InteractionResponseType, data?: InteractionApplicationCommandCallbackData | Partial<MessageEmbed>) => void
+
+export abstract class InteractionCommandHandler {
+
+  public abstract handle(command: Interaction, data: GuildData, reply: InteractionReplyFunction): boolean
+
+}
 
 
 

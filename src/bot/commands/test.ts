@@ -98,7 +98,7 @@ export default class TestCommand extends Command {
           euro: 0,
           dollar: 0
         },
-        store: (Const.storeDisplayNames[flags.store + ''] ? flags.store as Store : '') || 'steam',
+        store: (Core.languageManager.get(g, 'platform_' + flags.store) ? flags.store as Store : '') || 'steam',
         thumbnail: this.placeholderThumbnails[Math.floor(Math.random() * this.placeholderThumbnails.length)],
         org_url: Const.links.testgame,
         url: Const.links.testgame,

@@ -118,10 +118,10 @@ export default class DatabaseManager {
    * Get the raw / unparsed guilds data from the database
    * @param guild guild object
    */
-  public async getRawGuildData(guild: Guild): Promise<DatabaseGuildData> {
+  public async getRawGuildData(guild: string): Promise<DatabaseGuildData> {
     const obj = await Database
       .collection('guilds')
-      ?.findOne({ _id: Long.fromString(guild.id) })
+      ?.findOne({ _id: Long.fromString(guild) })
       .catch(console.error);
     if (!obj) return undefined;
     return obj;
@@ -131,7 +131,7 @@ export default class DatabaseManager {
    * Get the guilds data from the database
    * @param guild guild object
    */
-  public async getGuildData(guild: Guild): Promise<GuildData> {
+  public async getGuildData(guild: string): Promise<GuildData> {
     const obj = await this.getRawGuildData(guild);
     return obj ? this.parseGuildData(obj) : undefined;
   }

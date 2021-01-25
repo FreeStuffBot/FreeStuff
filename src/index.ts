@@ -25,6 +25,7 @@ import { GuildData } from "types";
 import Redis from "./database/redis";
 import Const from "./bot/const";
 import { FreeStuffApi } from "freestuff";
+import InteractionReceiver from "./bot/interactions-receiver";
 
 
 export class FreeStuffBot extends Client {
@@ -39,6 +40,7 @@ export class FreeStuffBot extends Client {
   public sharder: Sharder;
   public languageManager: LanguageManager;
   public localisation: Localisation;
+  public interactionsReceiver: InteractionReceiver;
   
   public dbl: any;
   public readonly devMode: boolean;
@@ -85,6 +87,7 @@ export class FreeStuffBot extends Client {
         this.sharder = new Sharder(this);
         this.languageManager = new LanguageManager(this);
         this.localisation = new Localisation(this);
+        this.interactionsReceiver = new InteractionReceiver(this);
 
         DbStats.startMonitoring(this);
 
