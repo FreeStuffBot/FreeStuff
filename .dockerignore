@@ -1,0 +1,7 @@
+/node_modules
+
+/files
+/build
+
+# config/settings.json
+# config.js

@@ -136,7 +136,14 @@ export class FreeStuffBot extends Client {
 
 }
 
-const params = ParseArgs.parse(process.argv);
+const params = {
+  noSharding: process.env.NO_SHARDING,
+  shardCount: process.env.SHARD_COUNT,
+  shardId: process.env.SHARD_ID
+}
+const args = ParseArgs.parse(process.argv)
+for (const name in args)
+  params[name] = args[name]
 
 const sharding = !params.noSharding;
 if (sharding && (!params.shardCount || !params.shardId)) {

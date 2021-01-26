@@ -2,14 +2,16 @@ FROM node:alpine
 
 RUN apk add git
 
-WORKDIR /opt/freestuff/bot
+WORKDIR /opt/greenlight/bot
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
+
+ENV NO_SHARDING=true
 
 COPY package*.json ./
 
 #RUN npm install --only=production
-RUN npm ci
+RUN npm install
 
 COPY . .
 
