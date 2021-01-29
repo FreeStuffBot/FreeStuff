@@ -5,7 +5,7 @@ export default class Const {
   public static readonly links = {
     website: 'https://freestuffbot.xyz/',
     websiteClean: 'freestuffbot.xyz',
-    botInvite: 'https://discordapp.com/oauth2/authorize?redirect_uri=https%3A%2F%2Ffreestuffbot.xyz%2Fcallback&client_id=672822334641537041&permissions=445504&scope=bot&response_type=code',
+    botInvite: 'https://discord.com/oauth2/authorize?redirect_uri=https%3A%2F%2Ffreestuffbot.xyz%2Fcallback&client_id=672822334641537041&permissions=445504&scope=bot%20applications.commands&response_type=code',
     supportInvite: 'https://discord.gg/WrnKKF8',
 
     topgg: 'https://top.gg/bot/672822334641537041/vote',
