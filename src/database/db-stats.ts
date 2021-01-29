@@ -40,13 +40,14 @@ export class DbStats {
   public static async updateTopClients() {
     const top = Core.guilds.cache.sort((a, b) => b.memberCount - a.memberCount).values();
     const top10 = Array.from(top).splice(0, 10);
-    const out = top10.map(async g => { return {
+    const out = top10.map(async g => ({
+      id: g.id,
       name: g.name,
       size: g.memberCount,
       icon: g.iconURL(),
       features: g.features,
       setup: !!((await Core.databaseManager.getGuildData(g.id))?.channelInstance)
-    }});
+    }));
     
     Promise.all(out).then(out => {
       Database
