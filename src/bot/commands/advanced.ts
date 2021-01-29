@@ -8,6 +8,7 @@ export default class AdvancedCommand extends Command {
 
   private readonly raw = [
     [ 'check', '=cmd_check_desc' ],
+    [ 'resend', '=cmd_resend_desc' ],
     [ 'mydata', '=cmd_mydata_desc' ],
     [ 'reset', '=cmd_reset_desc' ],
   ]

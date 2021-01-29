@@ -75,9 +75,11 @@ export class FreeStuffBot extends Client {
         await Database.init();
         await Redis.init();
 
-        const apisettings = { ...config.apisettings, version: (await getGitCommit()).shortHash };
-        apisettings.sid = this.singleShard ? '0' : this.options.shards[0];
-        this.fsapi = new FreeStuffApi(apisettings);
+        this.fsapi = new FreeStuffApi({
+          ...config.apisettings,
+          version: (await getGitCommit()).shortHash,
+          sid: this.singleShard ? '0' : this.options.shards[0]
+        });
     
         this.commandHandler = new CommandHandler(this);
         this.databaseManager = new DatabaseManager(this);

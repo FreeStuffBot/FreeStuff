@@ -14,6 +14,7 @@ import FreeCommand from "./commands/free";
 import ResetCommand from "./commands/reset";
 import MydataCommand from "./commands/mydata";
 import AdvancedCommand from "./commands/advanced";
+import ResendCommand from "./commands/resend";
 
 
 export default class CommandHandler {
@@ -33,6 +34,7 @@ export default class CommandHandler {
     this.commands.push(new ResetCommand());
     this.commands.push(new MydataCommand());
     this.commands.push(new AdvancedCommand());
+    this.commands.push(new ResendCommand());
 
     bot.on('message', m => {
       if (m.author.bot) return;

@@ -62,4 +62,8 @@ export default class FreeCommand extends Command {
     this.current = games;
   }
 
+  public static getCurrentFreebies(): GameInfo[] {
+    return this.current;
+  }
+
 }
