@@ -1,5 +1,8 @@
+import { Long } from "mongodb";
 import { getGitCommit } from "../util/git-parser";
 import { FreeStuffBot, Core } from "../index";
+import FreeCommand from "./commands/free";
+import { Util } from "../util/util";
 
 
 export default class Sharder {
@@ -44,6 +47,17 @@ export default class Sharder {
       case 'reload_lang':
         Core.languageManager.load();
         console.log('[MANAGER] Reload language cache.');
+        break;
+
+      case 'resend_to_guild':
+        console.log('[MANAGER] Resend received');
+        for (const guildid of args) {
+          if (!Util.belongsToShard(Long.fromString(guildid))) continue
+          const guildData = await Core.databaseManager.getGuildData(guildid)
+          const freebies = FreeCommand.getCurrentFreebies();
+          Core.messageDistributor.sendToGuild(guildData, freebies, false, false);
+          console.log(`Resent to ${guildid}`);
+        }
         break;
     }
   }
