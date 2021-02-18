@@ -18,7 +18,6 @@ import Localisation from "./bot/localisation";
 import { DbStats } from "./database/db-stats";
 import { getGitCommit, logVersionDetails } from "./util/git-parser";
 import * as chalk from "chalk";
-import * as DBL from "dblapi.js";
 import ParseArgs from "./util/parse-args";
 import SentryManager from "./thirdparty/sentry/sentry";
 import { GuildData } from "types";
@@ -92,10 +91,6 @@ export class FreeStuffBot extends Client {
         this.interactionsReceiver = new InteractionReceiver(this);
 
         DbStats.startMonitoring(this);
-
-        if (!this.devMode) {
-          this.dbl = new DBL(config.thirdparty.topgg.apitoken);
-        }
 
         // TODO find an actual fix for this instead of this garbage lol
         const manualConnectTimer = setTimeout(() => {

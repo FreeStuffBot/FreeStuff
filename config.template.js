@@ -15,9 +15,6 @@ module.exports = {
   redis: {
   },
   thirdparty: {
-    topgg: {
-      apitoken: "TOKEN"
-    },
     sentry: {
       dsn: "URL"
     }
