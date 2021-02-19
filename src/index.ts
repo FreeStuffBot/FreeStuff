@@ -41,7 +41,6 @@ export class FreeStuffBot extends Client {
   public localisation: Localisation;
   public interactionsReceiver: InteractionReceiver;
   
-  public dbl: any;
   public readonly devMode: boolean;
   public readonly singleShard: boolean;
 
@@ -108,12 +107,6 @@ export class FreeStuffBot extends Client {
 
           clearTimeout(manualConnectTimer);
           DbStats.usage.then(u => u.reconnects.updateToday(1, true));
-
-          if (!this.devMode) {
-            const updateStats = (c) => c.dbl.postStats(c.guilds.cache.size, c.options.shards[0], c.options.shardCount);
-            this.setInterval(updateStats, 1000 * 60 * 30, this);
-            updateStats(this);
-          }
         });
 
         this.login(config.bot.token);
