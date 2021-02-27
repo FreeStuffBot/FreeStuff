@@ -42,7 +42,7 @@ export default class ThemeOne implements Theme {
           title: content.title,
           description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Core.languageManager.get(data, 'platform_' + content.store)}${(content.flags & GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${(content.flags & GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n[${Const.announcementButton}](${content.url})`,
           image: {
-            url: content.thumbnail
+            url: content.thumbnail.full
           },
           footer: {
             text: settings.test

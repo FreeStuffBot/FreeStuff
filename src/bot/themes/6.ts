@@ -23,7 +23,7 @@ export default class ThemeSix implements Theme {
               : Core.text(data, '=announcement_footer', { website: Const.links.websiteClean })
           },
           image: {
-            url: content.thumbnail
+            url: content.thumbnail.full
           },
           color: 0x2f3136,
           thumbnail: {

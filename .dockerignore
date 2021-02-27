@@ -3,5 +3,14 @@
 /files
 /build
 
-# config/settings.json
-# config.js
+config/settings.json
+config.js
+
+
+# dockerignore only
+
+/.github
+/scripts
+/resources
+
+*.md
