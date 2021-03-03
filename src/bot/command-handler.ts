@@ -15,6 +15,7 @@ import ResetCommand from "./commands/reset";
 import MydataCommand from "./commands/mydata";
 import AdvancedCommand from "./commands/advanced";
 import ResendCommand from "./commands/resend";
+import BetaCommand from "./commands/beta";
 
 
 export default class CommandHandler {
@@ -35,6 +36,7 @@ export default class CommandHandler {
     this.commands.push(new MydataCommand());
     this.commands.push(new AdvancedCommand());
     this.commands.push(new ResendCommand());
+    this.commands.push(new BetaCommand());
 
     bot.on('message', m => {
       if (m.author.bot) return;

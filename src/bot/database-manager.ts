@@ -167,6 +167,7 @@ export default class DatabaseManager {
       language: Core.languageManager.languageById((dbObject.settings >> 8 & 0b111111)),
       storesRaw: (dbObject.settings >> 14 & 0b11111111),
       storesList: this.storesRawToList(dbObject.settings >> 14 & 0b11111111),
+      beta: (dbObject.settings & (1 << 30)) != 0,
     }
   }
 
@@ -241,22 +242,28 @@ export default class DatabaseManager {
         bits = (value as number) & 0b11111111;
         out['settings'] = Util.modifyBits(c, 14, 8, bits);
         break;
+      case 'beta':
+        bits = value ? 1 : 0;
+        out['settings'] = Util.modifyBits(c, 30, 1, bits);
+        break;
     }
     Database
       .collection('guilds')
       ?.updateOne({ _id: Long.fromString(guild.id) }, { '$set': out });
   }
 
+  // settings: (do not use bit 31, causes unwanted effects with negative number conversion)
   // 3__ 2__________________ 1__________________ 0__________________
   // 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
-  // settings:           _______________ ___________ _ _ _ _ _______
+  //   _                 _______________ ___________ _ _ _ _ _______
   // 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-  //                     |               |           | | | |  theme [0< 4]
-  //                     |               |           | | | currency (on = usd, off = eur) [4< 1]
-  //                     |               |           | | react with :free: emoji [5< 1]
-  //                     |               |           | show trash games [6< 1]
-  //                     |               |           alternative date format [7< 1]
-  //                     |               language [8< 6]
-  //                     stores [14< 8] (itch uplay origin gog humble epic steam other)
+  //   |                 |               |           | | | |  theme [0< 4]
+  //   |                 |               |           | | | currency (on = usd, off = eur) [4< 1]
+  //   |                 |               |           | | react with :free: emoji [5< 1]
+  //   |                 |               |           | show trash games [6< 1]
+  //   |                 |               |           alternative date format [7< 1]
+  //   |                 |               language [8< 6]
+  //   |                 stores [14< 8] (itch uplay origin gog humble epic steam other)
+  //   opted in to beta tests
 
 }

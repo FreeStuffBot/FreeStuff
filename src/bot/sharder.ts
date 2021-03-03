@@ -3,11 +3,13 @@ import { getGitCommit } from "../util/git-parser";
 import { FreeStuffBot, Core } from "../index";
 import FreeCommand from "./commands/free";
 import { Util } from "../util/util";
+import { GuildData } from "types";
 
 
 export default class Sharder {
 
   private errorCounter = 0;
+  private experiments = {};
 
   public constructor(bot: FreeStuffBot) {
     // if (Core.singleShard) return;
@@ -32,9 +34,18 @@ export default class Sharder {
       versionAuthor: commit.author.name,
       versionTime: commit.time,
     });
-    if (res._status != 200 && this.errorCounter++ % 10 == 0) {
-      console.warn(`Failed to report status to manager service. (${this.errorCounter - 1})`)
+    if (res._status != 200) {
+      if (this.errorCounter++ % 10 == 0)
+        console.warn(`Failed to report status to manager service. (${this.errorCounter - 1})`)
+      return
     }
+
+    const data = res.data as any
+    const newExperiments = {}
+    data.experiments
+      .filter(e => e.amount)
+      .forEach(e => newExperiments[e._id] = e)
+    this.experiments = newExperiments
   }
 
   public async executeCommand(command: string, args: string[]) {
@@ -60,6 +71,25 @@ export default class Sharder {
         }
         break;
     }
+  }
+
+  public runExperimentOnServer(experimentName: string, guildData: GuildData): boolean {
+    if (!(experimentName in this.experiments)) return false
+    
+    const experiment = this.experiments[experimentName]
+    const chance = Math.sin(typeof guildData.sharder === 'number'
+      ? guildData.sharder
+      : guildData.sharder.getLowBits()) / 2 + .5
+    if (chance > experiment.amount) return false
+    
+    if (!experiment.group) return true
+    switch (experiment.group) {
+      case 'all': return true
+      case 'beta': return guildData.beta
+      case 'europe': return Core.localisation.isGuildInEurope(guildData.channelInstance?.guild)
+      case 'usa': return Core.localisation.isGuildInAmerica(guildData.channelInstance?.guild)
+    }
+    return false
   }
 
 }

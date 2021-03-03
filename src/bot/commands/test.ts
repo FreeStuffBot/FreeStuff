@@ -8,9 +8,7 @@ import { Store } from "freestuff";
 
 export default class TestCommand extends Command {
 
-  private readonly placeholderThumbnails = [
-    'https://media.discordapp.net/attachments/672907465670787083/710466653380411462/thumbnail_placeholder.png'
-  ];
+  private readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/710466653380411462/thumbnail_placeholder.png'
 
   private testCooldown = [ ];
   private testCooldownHarsh = [ ];
@@ -99,7 +97,16 @@ export default class TestCommand extends Command {
           dollar: 0
         },
         store: (Core.languageManager.get(g, 'platform_' + flags.store) ? flags.store as Store : '') || 'steam',
-        thumbnail: this.placeholderThumbnails[Math.floor(Math.random() * this.placeholderThumbnails.length)],
+        thumbnail: {
+          blank: this.placeholderThumbnail,
+          full: this.placeholderThumbnail,
+          org: this.placeholderThumbnail,
+          tags: this.placeholderThumbnail
+        },
+        kind: 'game',
+        description: 'This is just an example',
+        tags: [],
+        rating: 1,
         org_url: Const.links.testgame,
         url: Const.links.testgame,
         flags: 0,

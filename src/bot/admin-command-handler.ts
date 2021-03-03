@@ -100,16 +100,22 @@ export default class AdminCommandHandler {
               '```',
               '._______________._______.___._..',
               d.settings.toString(2).padStart(32, '0'),
-              '          ┖──┬───┚┖─┬──┚╿╿╿╿┖┬─┚',
-              '             G      F   EDCB A  ',
+              ' ╿        ┖──┬───┚┖─┬──┚╿╿╿╿┖┬─┚',
+              ' H           G      F   EDCB A  ',
               '',
               'A) Theme  B) Currency  C) Reaction',
               'D) Trash Games  E) Alt Date Format',
-              'F) Language  G) Stores',
+              'F) Language  G) Stores H) Beta',
               '```'
             ].join('\n'))
           }).catch(orgmes.reply);
-        return true;
+          return true;
+
+        case 'checkexperiment':
+          Core.databaseManager.getGuildData(orgmes.guild.id).then(d => {
+            reply(args[0], Core.sharder.runExperimentOnServer(args[0], d) ? 'YES' : 'NO')
+          }).catch(orgmes.reply);
+          return true;
     }
 
     return false;

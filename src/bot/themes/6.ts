@@ -23,7 +23,9 @@ export default class ThemeSix implements Theme {
               : Core.text(data, '=announcement_footer', { website: Const.links.websiteClean })
           },
           image: {
-            url: content.thumbnail.full
+            url: Core.sharder.runExperimentOnServer('announcement_tags', data)
+              ? content.thumbnail.full
+              : content.thumbnail.org
           },
           color: 0x2f3136,
           thumbnail: {

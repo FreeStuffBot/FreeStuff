@@ -109,10 +109,11 @@ export interface GuildData extends DatabaseGuildData {
   language: string;
   storesRaw: number;
   storesList: Store[];
+  beta: boolean;
 
 }
 
-export type GuildSetting = 'channel' | 'roleMention' | 'theme' | 'currency' | 'react' | 'trash' | 'price' | 'altdate' | 'language' | 'stores';
+export type GuildSetting = 'channel' | 'roleMention' | 'theme' | 'currency' | 'react' | 'trash' | 'price' | 'altdate' | 'language' | 'stores' | 'beta';
 
 export type GameApprovalStatus = 'pending' | 'declined' | 'approved';
 

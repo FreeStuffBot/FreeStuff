@@ -11,6 +11,7 @@ export default class AdvancedCommand extends Command {
     [ 'resend', '=cmd_resend_desc' ],
     [ 'mydata', '=cmd_mydata_desc' ],
     [ 'reset', '=cmd_reset_desc' ],
+    [ 'beta', '=cmd_beta_desc' ],
   ]
 
   public constructor() {

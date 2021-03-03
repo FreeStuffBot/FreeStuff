@@ -20,6 +20,22 @@ export default class Localisation {
     'dubai'
   ];
 
+  private static readonly AMERICAN_REGIONS = [
+    'us-west',
+    'us-east',
+    'us-north',
+    'us-south',
+    'us-central',
+    'us',
+    'america',
+    'eastcoast',
+    'westcoast',
+    'north-america',
+    'na',
+    'south-america',
+    'sa'
+  ];
+
   private static readonly EXTRA_LANGUAGE_HINTS = {
     'brazil': 'pt-BR',
     'honkong': 'zh-CN',
@@ -30,8 +46,16 @@ export default class Localisation {
   }
 
   public isGuildInEurope(guild: Guild) {
+    if (!guild) return false
     const region = guild.region;
     const europe = Localisation.EUROPEAN_REGIONS.includes(region);
+    return europe;
+  }
+
+  public isGuildInAmerica(guild: Guild) {
+    if (!guild) return false
+    const region = guild.region;
+    const europe = Localisation.AMERICAN_REGIONS.includes(region);
     return europe;
   }
 
