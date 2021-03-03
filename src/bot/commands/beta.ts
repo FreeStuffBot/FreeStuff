@@ -22,7 +22,7 @@ export default class BetaCommand extends Command {
         Core.text(g, g.beta ? 'cmd_beta_info_enabled_1' : 'cmd_beta_info_disabled_1'),
         Core.text(g, g.beta ? 'cmd_beta_info_enabled_2' : 'cmd_beta_info_disabled_2')
       );
-      return false;
+      return true;
     }
     if (['on', 'true', '1', 'yes', 'enable'].includes(args[0].toLowerCase())) {
       if (!g.beta)
