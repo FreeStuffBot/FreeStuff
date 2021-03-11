@@ -31,7 +31,7 @@ export default class BetaCommand extends Command {
         Core.text(g, '=cmd_beta_opt_in_1'),
         Core.text(g, '=cmd_beta_opt_in_2')
       );
-    } else if (['off', 'false', '0', 'no', 'enable'].includes(args[0].toLowerCase())) {
+    } else if (['off', 'false', '0', 'no', 'disable'].includes(args[0].toLowerCase())) {
       if (g.beta)
         Core.databaseManager.changeSetting(mes.guild, g, 'beta', false);
       reply(

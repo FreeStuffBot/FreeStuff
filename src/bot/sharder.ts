@@ -41,9 +41,10 @@ export default class Sharder {
     }
 
     const data = res.data as any
+    if (!data) return
     const newExperiments = {}
     data.experiments
-      .filter(e => e.amount)
+      ?.filter(e => e.amount)
       .forEach(e => newExperiments[e._id] = e)
     this.experiments = newExperiments
   }
