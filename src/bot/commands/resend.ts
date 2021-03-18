@@ -92,7 +92,7 @@ export default class ResendCommand extends Command {
       if (g.channelInstance.id !== mes.channel.id) {
         repl(
           Core.text(g, '=cmd_resend_success_1'),
-          Core.text(g, '=cmd_resend_success_2', { channel: `<@${g.channelInstance.id}>` })
+          Core.text(g, '=cmd_resend_success_2', { channel: `<#${g.channelInstance.id}>` })
         );
       }
     } catch (ex) {
