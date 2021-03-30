@@ -204,16 +204,3 @@ export interface StoreData {
   bit: number;
 
 }
-
-
-/*
- * PROTOTYPE OVERRIDES
- */
-
-declare global {
-  interface Array<T> {
-    stack(): number;
-    count(counter: (item: T) => number): number;
-    iterate(run: (item: T, current: T | undefined) => any): any;
-  }
-}

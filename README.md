@@ -78,7 +78,7 @@ If you need any help, feel free to ask in our [discord server](https://freestuff
 ## License
 
 The FreeStuff Bot for Discord notifies you about free games right in your Discord server.
-Copyright (C) 2020 FreeStuff Contributors
+Copyright (C) 2020 - 2021 FreeStuff Contributors
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
