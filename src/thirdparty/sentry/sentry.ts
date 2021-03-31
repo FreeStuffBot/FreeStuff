@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/node';
+import { hostname } from 'os';
 import { Core, config } from '../../index';
 
 
@@ -7,7 +8,10 @@ export default class SentryManager {
   private constructor() { }
 
   public static init() {
-    Sentry.init({ dsn: config.thirdparty.sentry.dsn });
+    Sentry.init({
+      dsn: config.thirdparty.sentry.dsn,
+      serverName: hostname()
+    });
   }
 
   public static report(exception: Sentry.Exception) {
