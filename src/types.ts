@@ -64,7 +64,7 @@ export type InteractionReplyFunction = (type: InteractionResponseType, data?: (I
 
 export abstract class InteractionCommandHandler {
 
-  public abstract handle(command: Interaction, data: GuildData, reply: InteractionReplyFunction): boolean
+  public abstract handle(command: Interaction, data: GuildData, reply: InteractionReplyFunction): boolean | Promise<boolean>
 
 }
 

@@ -5,6 +5,9 @@ import { Core, FreeStuffBot } from '../index'
 import NewFreeCommand from './slashcommands/free'
 import NewVoteCommand from './slashcommands/vote'
 import NewHelpCommand from './slashcommands/help'
+import NewAboutCommand from './slashcommands/about'
+import NewInviteCommand from './slashcommands/invite'
+import NewTestCommand from './slashcommands/test'
 
 
 export default class InteractionReceiver {
@@ -22,9 +25,12 @@ export default class InteractionReceiver {
       }
     })
 
+    this.HANDLER.about = new NewAboutCommand()
     this.HANDLER.free = new NewFreeCommand()
-    this.HANDLER.vote = new NewVoteCommand()
     this.HANDLER.help = new NewHelpCommand()
+    this.HANDLER.invite = new NewInviteCommand()
+    this.HANDLER.test = new NewTestCommand()
+    this.HANDLER.vote = new NewVoteCommand()
     // this.HANDLER.admin = new AdminHandler()
   }
 
@@ -57,7 +63,8 @@ export default class InteractionReceiver {
     for (const key in object) {
       if (key === 'context') continue
       if (typeof object[key] === 'object') this.translateObject(object[key], guildData, context)
-      else object[key] = Core.text(guildData, object[key], context)
+      else if (key === 'string') object[key] = Core.text(guildData, object[key], context)
+      else continue
     }
   }
 
