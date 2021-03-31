@@ -1,8 +1,10 @@
 import Axios from 'axios'
-import { Interaction, InteractionApplicationCommandCallbackData, InteractionResponseType, InteractionCommandHandler, InteractionReplyFunction, InteractionResponseFlags } from '../types'
+import { Interaction, InteractionApplicationCommandCallbackData, InteractionResponseType, InteractionCommandHandler, InteractionReplyFunction, InteractionResponseFlags, GuildData } from '../types'
+import { MessageEmbed } from 'discord.js'
 import { Core, FreeStuffBot } from '../index'
 import NewFreeCommand from './slashcommands/free'
-import { MessageEmbed } from 'discord.js'
+import NewVoteCommand from './slashcommands/vote'
+import NewHelpCommand from './slashcommands/help'
 
 
 export default class InteractionReceiver {
@@ -21,15 +23,18 @@ export default class InteractionReceiver {
     })
 
     this.HANDLER.free = new NewFreeCommand()
+    this.HANDLER.vote = new NewVoteCommand()
+    this.HANDLER.help = new NewHelpCommand()
     // this.HANDLER.admin = new AdminHandler()
   }
 
   private runCommand(interaction: Interaction, handler: InteractionCommandHandler) {
-    const reply = this.getReplyFunction(interaction)
     Core.databaseManager.getGuildData(interaction.guild_id).then(data => {
+      const reply = this.getReplyFunction(interaction, data)
       handler.handle(interaction, data, reply)
     }).catch(err => {
       try {
+        const reply = this.getReplyFunction(interaction, null)
         reply('ChannelMessageWithSource', {
           content: 'We are very sorry but an error occured while processing your command. Please try again.',
           flags: InteractionResponseFlags.EPHEMERAL
@@ -39,15 +44,29 @@ export default class InteractionReceiver {
   }
 
   private onInteraction(i: Interaction) {
-    if (this.HANDLER[i.data.name])
+    if (this.HANDLER[i.data.name]) {
       this.runCommand(i, this.HANDLER[i.data.name])
-    else
+    } else {
       console.log(`Unhandled command "${i.data.name}"`)
+      const reply = this.getReplyFunction(i, null)
+      reply('DeferredChannelMessageWithSource', { })
+    }
   }
 
-  private getReplyFunction(i: Interaction): InteractionReplyFunction {
-    const types: InteractionResponseType[] = [ 'Pong', 'Acknowledge', 'ChannelMessage', 'ChannelMessageWithSource', 'AcknowledgeWithSource' ]
-    return (type: InteractionResponseType, data?: InteractionApplicationCommandCallbackData | Partial<MessageEmbed>) => {
+  private translateObject(object: any, guildData: GuildData, context: any) {
+    for (const key in object) {
+      if (key === 'context') continue
+      if (typeof object[key] === 'object') this.translateObject(object[key], guildData, context)
+      else object[key] = Core.text(guildData, object[key], context)
+    }
+  }
+
+  private getReplyFunction(i: Interaction, guildData: GuildData): InteractionReplyFunction {
+    const types: InteractionResponseType[] = [ 'Pong', 'deprecated-Acknowledge', 'deprecated-ChannelMessage', 'ChannelMessageWithSource', 'DeferredChannelMessageWithSource' ]
+    return (type: InteractionResponseType, data?: (InteractionApplicationCommandCallbackData | Partial<MessageEmbed>) & {context?: any}) => {
+      if (guildData)
+        this.translateObject(data, guildData, data.context)
+
       if (!('content' in data)) {
         data.color = data.color ?? 0x2f3136
         data = {

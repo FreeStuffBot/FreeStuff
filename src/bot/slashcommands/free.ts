@@ -30,13 +30,13 @@ export default class NewFreeCommand extends InteractionCommandHandler {
     if (freeToday.length) replyText += `\n\n${Core.text(data, '=cmd_free_ends_soon')}\n\n${freeToday.join('\n')}`;
     if (!freeLonger.length && !freeToday.length) replyText = Core.text(data, '=cmd_free_no_freebies');
 
-    reply('ChannelMessage', {
-      title: Core.text(data, '=cmd_free_title'),
+    reply('ChannelMessageWithSource', {
+      title: '=cmd_free_title',
       description: replyText,
       footer: {
-        iconURL: `https://cdn.discordapp.com/avatars/${command.member.user.id}/${command.member.user.avatar}.png?size=64`,
-        text: `${command.member.user.username}#${command.member.user.discriminator} used /free`
-      }
+        text: '=announcement_footer'
+      },
+      context: { website: Const.links.websiteClean }
     })
     return true;
   }

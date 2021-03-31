@@ -132,6 +132,7 @@ export default class DatabaseManager {
    * @param guild guild object
    */
   public async getGuildData(guild: string): Promise<GuildData> {
+    if (!guild) return undefined;
     const obj = await this.getRawGuildData(guild);
     return obj ? this.parseGuildData(obj) : undefined;
   }

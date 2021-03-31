@@ -7,7 +7,14 @@ import { GameAnalytics, GameInfo, Store } from "freestuff";
 export type Interaction = {
   type: number,
   token: string,
-  member: {
+  user?: {
+    id: string,
+    username: string,
+    avatar: string,
+    discriminator: string,
+    public_flags: number
+  },
+  member?: {
     user: {
       id: string,
       username: string,
@@ -26,7 +33,7 @@ export type Interaction = {
     deaf: boolean,
   },
   id: string,
-  guild_id: string,
+  guild_id?: string,
   data: {
     options: {
       name: string,
@@ -36,10 +43,10 @@ export type Interaction = {
     name: string,
     id: string
   },
-  channel_id: string
+  channel_id?: string
 }
 
-export type InteractionResponseType = 'Pong' | 'Acknowledge' | 'ChannelMessage' | 'ChannelMessageWithSource' | 'AcknowledgeWithSource'
+export type InteractionResponseType = 'Pong' | 'deprecated-Acknowledge' | 'deprecated-ChannelMessage' | 'ChannelMessageWithSource' | 'DeferredChannelMessageWithSource'
 
 export enum InteractionResponseFlags {
   EPHEMERAL = 64
@@ -53,7 +60,7 @@ export type InteractionApplicationCommandCallbackData = {
   allowed_mentions?: any
 }
 
-export type InteractionReplyFunction = (type: InteractionResponseType, data?: InteractionApplicationCommandCallbackData | Partial<MessageEmbed>) => void
+export type InteractionReplyFunction = (type: InteractionResponseType, data?: (InteractionApplicationCommandCallbackData | Partial<MessageEmbed>) & {context?: any}) => void
 
 export abstract class InteractionCommandHandler {
 

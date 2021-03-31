@@ -14,7 +14,7 @@ export class DbStats {
     new CronJob('0 0 0 * * *', () => {
       setTimeout(async () => {
         const guildCount = bot.guilds.cache.size;
-        const guildMemberCount = bot.guilds.cache.array().count(g => g.memberCount);
+        const guildMemberCount = bot.guilds.cache.array().reduce((count, g) => count + g.memberCount, 0);
 
         if (Core.singleShard) {
           console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.cache.size}; Members: ${guildMemberCount}`));
