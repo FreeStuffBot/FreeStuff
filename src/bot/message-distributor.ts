@@ -1,5 +1,5 @@
 import { FreeStuffBot, Core } from "../index";
-import { Message, Guild, MessageOptions } from "discord.js";
+import { Message, Guild, MessageOptions, Channel } from "discord.js";
 import Const from "./const";
 import Database from "../database/database";
 import { GuildData, DatabaseGuildData, Theme } from "../types";
@@ -140,11 +140,13 @@ export default class MessageDistributor {
     if (!messageContents.length) return [];
 
     // send the messages
-    let lastmes: Message;
+    let messages: Message[] = [];
     for (const mesCont of messageContents)
-      lastmes = await data.channelInstance.send(...mesCont) as Message;
-    if (lastmes && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
-      await lastmes.react('🆓');
+      messages.push(await data.channelInstance.send(...mesCont) as Message);
+    if (messages.length && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
+      await messages[messages.length - 1].react('🆓');
+    if (!test && (data.channelInstance as Channel).type === 'news')
+      messages.forEach(m => m.crosspost());
 
     return content.map(game => game.id);
   }

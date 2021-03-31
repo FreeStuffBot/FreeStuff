@@ -140,7 +140,7 @@ export default class CommandHandler {
     return back as boolean;
   }
 
-  private eastereggs(command: string): String {
+  private eastereggs(command: string): string {
     switch (command.toLowerCase()) {
       case 'egg': return ':egg:';
       case 'what is 1 + 1': return '3';
