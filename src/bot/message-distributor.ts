@@ -145,8 +145,8 @@ export default class MessageDistributor {
       messages.push(await data.channelInstance.send(...mesCont) as Message);
     if (messages.length && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
       await messages[messages.length - 1].react('🆓');
-    if (!test && (data.channelInstance as Channel).type === 'news')
-      messages.forEach(m => m.crosspost());
+    // if (!test && (data.channelInstance as Channel).type === 'news')
+    //   messages.forEach(m => m.crosspost());
 
     return content.map(game => game.id);
   }

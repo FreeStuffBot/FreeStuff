@@ -1,7 +1,8 @@
+import { Semaphore } from 'await-semaphore';
 import { FreeStuffBot, Core } from "../index";
 import FreeCommand from "./commands/free";
 import Redis from "../database/redis";
-import { Semaphore } from 'await-semaphore';
+import NewFreeCommand from "./slashcommands/free";
 
 
 export default class AnnouncementManager {
@@ -67,6 +68,7 @@ export default class AnnouncementManager {
     this.setPending(gameids);
 
     FreeCommand.updateCurrentFreebies();
+    NewFreeCommand.updateCurrentFreebies();
 
     this.currentlyAnnouncing = true;
 

@@ -10,6 +10,8 @@ export default class NewTestCommand extends InteractionCommandHandler {
   private testCooldown = [ ];
 
   public async handle(command: Interaction, data: GuildData, reply: InteractionReplyFunction): Promise<boolean> {
+    // TODO MAKE SURE TO CHECK FOR PERMISSIONS !!!!!!!
+
     const guildid = command.guild_id
     const guild = guildid ? await Core.guilds.fetch(guildid) : undefined
     if (!guild) {

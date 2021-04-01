@@ -35,6 +35,7 @@ export default class InteractionReceiver {
   }
 
   private runCommand(interaction: Interaction, handler: InteractionCommandHandler) {
+    // TODO interaction.guild_id can be undefined if ran in DMs, maybe have a DM guilddata template object or something? Just with default settings.
     Core.databaseManager.getGuildData(interaction.guild_id).then(data => {
       const reply = this.getReplyFunction(interaction, data)
       handler.handle(interaction, data, reply)
