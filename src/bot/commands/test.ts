@@ -104,9 +104,9 @@ export default class TestCommand extends Command {
           tags: this.placeholderThumbnail
         },
         kind: 'game',
-        description: 'This is just an example',
+        description: Core.text(g, '=cmd_test_announcement_description'),
         tags: [],
-        rating: 1,
+        rating: .8,
         org_url: Const.links.testgame,
         url: Const.links.testgame,
         flags: 0,

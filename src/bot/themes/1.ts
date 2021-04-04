@@ -40,7 +40,7 @@ export default class ThemeOne implements Theme {
             name: Core.text(data, '=announcement_header')
           },
           title: content.title,
-          description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Core.languageManager.get(data, 'platform_' + content.store)}${(content.flags & GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${(content.flags & GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n[${Core.text(data, '=announcement_button_text')}](${content.url})`,
+          description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Core.languageManager.get(data, 'platform_' + content.store)}${(content.flags & GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${(content.flags & GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n**[${Core.text(data, '=announcement_button_text')}](${content.url})**`,
           image: {
             url: Core.sharder.runExperimentOnServer('announcement_tags', data)
               ? content.thumbnail.full

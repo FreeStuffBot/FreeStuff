@@ -40,13 +40,23 @@ export default class ThemeThree implements Theme {
             name: Core.text(data, '=announcement_header')
           },
           title: content.title,
-          description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Core.languageManager.get(data, 'platform_' + content.store)}${(content.flags & GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${(content.flags & GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n[${Core.text(data, '=announcement_button_text')}](${content.url})`,
+          description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Core.languageManager.get(data, 'platform_' + content.store)}${(content.flags & GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${(content.flags & GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n> ${content.description}\n\n**[${Core.text(data, '=announcement_button_text')}](${content.url})**`,
+          image: {
+            url: Core.sharder.runExperimentOnServer('announcement_tags', data)
+              ? content.thumbnail.full
+              : content.thumbnail.org
+          },
           footer: {
             text: settings.test
               ? Core.text(data, '=announcement_footer_test')
               : Core.text(data, '=announcement_footer', { website: Const.links.websiteClean })
           },
-          color: 0x2f3136
+          color: 0x2f3136,
+          thumbnail: {
+            url: Const.storeIcons[content.store],
+            width: 128,
+            height: 128
+          }
         }
       }
     ];

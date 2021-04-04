@@ -147,6 +147,8 @@ export default class MessageDistributor {
       await messages[messages.length - 1].react('🆓');
     // if (!test && (data.channelInstance as Channel).type === 'news')
     //   messages.forEach(m => m.crosspost());
+    // TODO check if ratelimited
+    // TODO check if it has the "manage messages" permission. although not required to publish own messages, there needs to be a way to turn this off
 
     return content.map(game => game.id);
   }

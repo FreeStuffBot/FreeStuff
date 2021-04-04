@@ -103,9 +103,9 @@ export default class NewTestCommand extends InteractionCommandHandler {
           tags: this.placeholderThumbnail
         },
         kind: 'game',
-        description: 'This is just an example',
+        description: 'Satisfactory is a first-person open-world factory building game with a dash of exploration and combat. Play alone or with friends, explore an alien planet, create multi-story factories, and enter conveyor belt heaven!', //Core.text(data, '=cmd_test_announcement_description'),
         tags: [],
-        rating: 1,
+        rating: .8,
         org_url: Const.links.testgame,
         url: Const.links.testgame,
         flags: 0,
