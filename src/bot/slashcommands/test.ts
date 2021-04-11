@@ -5,7 +5,7 @@ import { GuildData, InteractionCommandHandler, Interaction, InteractionReplyFunc
 
 export default class NewTestCommand extends InteractionCommandHandler {
   
-  private readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/710466653380411462/thumbnail_placeholder.png'
+  private readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/830794212894572574/thumbnail_placeholder.png'
 
   private testCooldown = [ ];
 
@@ -105,7 +105,12 @@ export default class NewTestCommand extends InteractionCommandHandler {
         kind: 'game',
         description: 'Satisfactory is a first-person open-world factory building game with a dash of exploration and combat. Play alone or with friends, explore an alien planet, create multi-story factories, and enter conveyor belt heaven!', //Core.text(data, '=cmd_test_announcement_description'),
         tags: [],
-        rating: .8,
+        rating: .74,
+        urls: {
+          org: Const.links.testgame,
+          default: Const.links.testgame,
+          browser: Const.links.testgame
+        },
         org_url: Const.links.testgame,
         url: Const.links.testgame,
         flags: 0,

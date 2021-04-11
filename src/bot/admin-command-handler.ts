@@ -4,6 +4,8 @@ import Database from "../database/database";
 import { GameData, DatabaseGuildData } from "types";
 import { hostname } from "os";
 import { Long } from "mongodb";
+import FreeCommand from "./commands/free";
+import NewFreeCommand from "./slashcommands/free";
 
 /*
 
@@ -60,62 +62,68 @@ export default class AdminCommandHandler {
         reply('Help is on the way!', 'Available commands:\n' + commandlist.map(c => `• ${c}`).join('\n'));
         return true;
 
-        case 'print':
-          Database
-            .collection('guilds')
-            .findOne({ _id: Long.fromString(orgmes.guild.id) })
-            .then(async data => {
-              data['_'] = {
-                responsibleShard: Core.singleShard ? 'Single' : Core.options.shards[0],
-                runningOnServer: await hostname(),
-              }
-              orgmes.channel.send('```json\n' + JSON.stringify(data, null, 2) + '```');
-            })
-            .catch(console.error);
-          return true;
+      case 'refetch':
+        FreeCommand.updateCurrentFreebies()
+        NewFreeCommand.updateCurrentFreebies()
+        reply('ok', 'ok');
+        return true;
 
-        case 'distribute':
-          if (args.length < 3) {
-            reply('no', '$FreeStuff distribute <gameid> <serverid> [...serverid]');
-            return;
-          }
-          Database
-            .collection('games')
-            .findOne({ _id: parseInt(args[1], 10) })
-            .then(async (data: GameData) => {
-              args.splice(0, 2);
-              for (let guildid of args) {
-                const guild = await Database
-                  .collection('guilds')
-                  .findOne({ _id: Long.fromString(guildid) }) as DatabaseGuildData;
-                Core.messageDistributor.sendToGuild(guild, [ data.info ], false, false);
-              }
-            })
-            .catch(err => reply('error', err));
-          return true;
+      case 'print':
+        Database
+          .collection('guilds')
+          .findOne({ _id: Long.fromString(orgmes.guild.id) })
+          .then(async data => {
+            data['_'] = {
+              responsibleShard: Core.singleShard ? 'Single' : Core.options.shards[0],
+              runningOnServer: await hostname(),
+            }
+            orgmes.channel.send('```json\n' + JSON.stringify(data, null, 2) + '```');
+          })
+          .catch(console.error);
+        return true;
 
-        case 'settingbits':
-          Core.databaseManager.getRawGuildData(orgmes.guild.id).then(d => {
-            orgmes.channel.send([
-              '```',
-              '._______________._______.___._..',
-              d.settings.toString(2).padStart(32, '0'),
-              ' ╿        ┖──┬───┚┖─┬──┚╿╿╿╿┖┬─┚',
-              ' H           G      F   EDCB A  ',
-              '',
-              'A) Theme  B) Currency  C) Reaction',
-              'D) Trash Games  E) Alt Date Format',
-              'F) Language  G) Stores H) Beta',
-              '```'
-            ].join('\n'))
-          }).catch(orgmes.reply);
-          return true;
+      case 'distribute':
+        if (args.length < 3) {
+          reply('no', '$FreeStuff distribute <gameid> <serverid> [...serverid]');
+          return;
+        }
+        Database
+          .collection('games')
+          .findOne({ _id: parseInt(args[1], 10) })
+          .then(async (data: GameData) => {
+            args.splice(0, 2);
+            for (let guildid of args) {
+              const guild = await Database
+                .collection('guilds')
+                .findOne({ _id: Long.fromString(guildid) }) as DatabaseGuildData;
+              Core.messageDistributor.sendToGuild(guild, [ data.info ], false, false);
+            }
+          })
+          .catch(err => reply('error', err));
+        return true;
 
-        case 'checkexperiment':
-          Core.databaseManager.getGuildData(orgmes.guild.id).then(d => {
-            reply(args[0], Core.sharder.runExperimentOnServer(args[0], d) ? 'YES' : 'NO')
-          }).catch(orgmes.reply);
-          return true;
+      case 'settingbits':
+        Core.databaseManager.getRawGuildData(orgmes.guild.id).then(d => {
+          orgmes.channel.send([
+            '```',
+            '._______________._______.___._..',
+            d.settings.toString(2).padStart(32, '0'),
+            ' ╿        ┖──┬───┚┖─┬──┚╿╿╿╿┖┬─┚',
+            ' H           G      F   EDCB A  ',
+            '',
+            'A) Theme  B) Currency  C) Reaction',
+            'D) Trash Games  E) Alt Date Format',
+            'F) Language  G) Stores H) Beta',
+            '```'
+          ].join('\n'))
+        }).catch(orgmes.reply);
+        return true;
+
+      case 'checkexperiment':
+        Core.databaseManager.getGuildData(orgmes.guild.id).then(d => {
+          reply(args[0], Core.sharder.runExperimentOnServer(args[0], d) ? 'YES' : 'NO')
+        }).catch(orgmes.reply);
+        return true;
     }
 
     return false;

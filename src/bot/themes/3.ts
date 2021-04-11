@@ -32,15 +32,30 @@ export default class ThemeThree implements Theme {
       }
     }
 
+    const button = content.urls.client
+      ? content.store === 'steam'
+        ? `${Core.text(data, '=open_in_browser')}: **https://s.team/a/${content.urls.browser.split('/app/')[1].split('/')[0]}**\n${Core.text(data, '=open_in_steam_client')}: **${content.urls.client}**`
+        : `**[${Core.text(data, '=open_in_browser')}](${content.urls.browser})** • **[${Core.text(data, '=open_in_epic_games_client')}](${content.urls.client})**`
+      : `**[${Core.text(data, '=announcement_button_text')}](${content.urls.default})**`
+
+    const description = ''
+      + (content.description ? `> ${content.description}\n\n` : '')
+      + `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} ᲼ ᲼ `
+      + (content.rating ? `${Math.round(content.rating * 20)/2}/10 ★ ᲼ ᲼ ` : '')
+      + Core.languageManager.get(data, 'platform_' + content.store)
+      + ((content.flags & GameFlag.TRASH) ? ` ᲼ ᲼ ${Core.text(data, '=game_meta_flag_trash')}` : '')
+      + ((content.flags & GameFlag.THIRDPARTY) ? ` ᲼ ᲼ ${Core.text(data, '=game_meta_flag_thirdparty')}` : '')
+      + `\n\n${button}`
+
     return [
       (data.roleInstance && !settings.disableMention) ? data.roleInstance.toString() : '',
       {
         embed: {
-          author: {
-            name: Core.text(data, '=announcement_header')
-          },
-          title: content.title,
-          description: `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until} • ${Core.languageManager.get(data, 'platform_' + content.store)}${(content.flags & GameFlag.TRASH) ? ` • ${Core.text(data, '=game_meta_flag_trash')}` : ''}${(content.flags & GameFlag.THIRDPARTY) ? ` • ${Core.text(data, '=game_meta_flag_thirdparty')}` : ''}\n\n> ${content.description}\n\n**[${Core.text(data, '=announcement_button_text')}](${content.url})**`,
+          // author: {
+          //   name: Core.text(data, '=announcement_header')
+          // },
+          title: `${content.title} • ${Core.text(data, '=announcement_pricetag_free')}!`,
+          description,
           image: {
             url: Core.sharder.runExperimentOnServer('announcement_tags', data)
               ? content.thumbnail.full

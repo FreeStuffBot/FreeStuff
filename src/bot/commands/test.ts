@@ -8,7 +8,7 @@ import { Store } from "freestuff";
 
 export default class TestCommand extends Command {
 
-  private readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/710466653380411462/thumbnail_placeholder.png'
+  private readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/830794212894572574/thumbnail_placeholder.png'
 
   private testCooldown = [ ];
   private testCooldownHarsh = [ ];
@@ -107,6 +107,11 @@ export default class TestCommand extends Command {
         description: Core.text(g, '=cmd_test_announcement_description'),
         tags: [],
         rating: .8,
+        urls: {
+          org: Const.links.testgame,
+          default: Const.links.testgame,
+          browser: Const.links.testgame
+        },
         org_url: Const.links.testgame,
         url: Const.links.testgame,
         flags: 0,
