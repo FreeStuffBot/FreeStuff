@@ -62,6 +62,20 @@ export default class Const {
     other: ''
   };
 
+  public static readonly storeIconsExt = {
+    ...Const.storeIcons,
+    steam: 'https://media.discordapp.net/attachments/672907465670787083/833646821611798538/steam_ext.png',
+    epic: 'https://media.discordapp.net/attachments/672907465670787083/833646813172465734/epic_ext.png',
+    humble: 'https://media.discordapp.net/attachments/672907465670787083/833652544252674068/humble_ext.png',
+    gog: 'https://media.discordapp.net/attachments/672907465670787083/833652542113185823/gog_ext.png',
+    origin: 'https://media.discordapp.net/attachments/672907465670787083/833652533431500850/origin_ext.png',
+    uplay: 'https://media.discordapp.net/attachments/672907465670787083/833652539286093834/ubi_ext.png',
+    twitch: 'https://media.discordapp.net/attachments/672907465670787083/833652537063768104/twitch_ext.png',
+    itch: 'https://media.discordapp.net/attachments/672907465670787083/833652545867087872/itch_ext.png',
+    discord: 'https://media.discordapp.net/attachments/672907465670787083/833652540641247262/discord_ext.png',
+    switch: 'https://media.discordapp.net/attachments/672907465670787083/833652535356817418/switch_ext.png'
+  };
+
   public static readonly bigSpace = '<:nothing:716252611962994718>';
 
 }

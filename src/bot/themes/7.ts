@@ -8,7 +8,7 @@ export default class ThemeSeven implements Theme {
   public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     return [
       ((data.roleInstance && !settings.disableMention) ? data.roleInstance.toString() : '')
-      + ' ' + content.url,
+      + ' ' + content.urls.default,
       {}
     ];
   }

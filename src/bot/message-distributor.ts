@@ -130,10 +130,6 @@ export default class MessageDistributor {
     if (!permissions.has('EMBED_LINKS') && Const.themesWithEmbeds.includes(data.theme)) return [];
     if (!permissions.has('USE_EXTERNAL_EMOJIS') && Const.themesWithExtemotes[data.theme]) data.theme = Const.themesWithExtemotes[data.theme];
 
-    // set content url
-    if (!test)
-      content.forEach(game => game.url = this.generateProxyUrl(game, data))
-
     // build message objects
     let messageContents = content.map((game, index) => this.buildMessage(game, data, test, !!index));
     messageContents = messageContents.filter(mes => !!mes);
@@ -156,33 +152,6 @@ export default class MessageDistributor {
   public buildMessage(content: GameInfo, data: GuildData, test: boolean, disableMention: boolean): [ string, MessageOptions? ] {
     const theme = this.themes[data.theme] || this.themes[0];
     return theme.build(content, data, { test, disableMention });
-  }
-
-  /**
-   * The page proxy is currently not used
-   * @param content game data
-   */
-  public generateProxyUrl(content: GameInfo, guild: GuildData): string {
-    const url = content.org_url;
-    try {
-      if (content.store == 'steam') {
-        const gameinfo = url.split('/app/')[1];
-        const parts = gameinfo.split('/');
-        const id = parts[0];
-        const name = parts[1] ? (parts[1] + '/') : '';
-        const membercount = guild.channelInstance?.guild.approximateMemberCount || guild.channelInstance?.guild.memberCount;
-        const guildIdBase64 = membercount && membercount >= 100
-          ? Buffer.from(guild._id.toString()).toString('base64')
-          : '-';
-        // return `https://store.steampowered.com/app/${id}/${name}?curator_clanid=38741893&utm_source=discord-bot&utm_medium=theme-${guild.theme}&utm_content=${guildIdBase64}&utm_term=${guild.language}`;
-        return `https://store.steampowered.com/app/${id}/${name}?curator_clanid=38741893&utm_source=discord-bot&utm_medium=${guildIdBase64}`;
-      } else {
-        return url;
-      }
-    } catch(err) {
-      return url;
-    }
-    // return `https://game.freestuffbot.xyz/${content._id}/${content.info.title.split(/\s/).join('-').split(/[^A-Za-z0-9\-]/).join('')}`;
   }
 
 }
