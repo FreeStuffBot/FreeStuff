@@ -68,8 +68,8 @@ export default class DatabaseManager {
   /**
    * Returns an array of the guilddata from each of the guilds belonging to the current shard
    */
-  public async getAssignedGuilds(): Promise<DatabaseGuildData[]> {
-    return await Database
+  public getAssignedGuilds(): Promise<DatabaseGuildData[]> {
+    return Database
       .collection('guilds')
       ?.find(
         Core.singleShard
@@ -84,7 +84,7 @@ export default class DatabaseManager {
    * @param guild guild object
    * @param autoSettings whether the default settings should automatically be adjusted to the server (e.g: server region -> language)
    */
-  public async addGuild(guild: Guild, autoSettings = true) {
+  public addGuild(guild: Guild, autoSettings = true) {
     const settings = autoSettings
       ? Core.localisation.getDefaultSettings(guild)
       : 0
@@ -96,7 +96,7 @@ export default class DatabaseManager {
       price: 3,
       settings
     }
-    await Database
+    Database
       .collection('guilds')
       ?.insertOne(data)
   }
@@ -106,9 +106,9 @@ export default class DatabaseManager {
    * @param guildid guild id
    * @param force weather to force a removal or not. if not forced this method will not remove guilds that are managed by another shard
    */
-  public async removeGuild(guildid: Long, force = false) {
+  public removeGuild(guildid: Long, force = false) {
     if (!force && !Util.belongsToShard(guildid)) return
-    await Database
+    Database
       .collection('guilds')
       ?.deleteOne({ _id: guildid })
   }
