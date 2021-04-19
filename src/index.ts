@@ -160,7 +160,7 @@ export const Core = new FreeStuffBot(
     messageCacheLifetime: 2,
     messageCacheMaxSize: 2,
     shardCount: sharding ? shardCount : 1,
-    shards: [ (sharding ? shardId : 0) ] 
+    shards: [ (sharding ? shardId : 0) ]
   },
   params
 );

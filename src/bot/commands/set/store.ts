@@ -14,7 +14,7 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
     ];
   }
 
-  public handle(mes: Message, args: string[], g: GuildData, reply: ReplyFunction): boolean {      
+  public handle(mes: Message, args: string[], g: GuildData, reply: ReplyFunction): boolean {
     if (args.length < 1) {
       const storeListAvailable = Object.keys(Const.storeEmojis)
         .map((e: Store) => this.getStoreInfo(e, g))
