@@ -140,7 +140,7 @@ export default class CommandHandler {
     const back = handler.handle(orgmes, args, g, reply)
     if (back === true) return true
     if (back === false) return false
-    return await (back as Promise<boolean>)
+    return (back as Promise<boolean>)
   }
 
   private eastereggs(command: string): string {
