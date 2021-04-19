@@ -1,6 +1,6 @@
-import { getLastCommit } from "git-last-commit";
-import { execSync } from "child_process";
-import * as chalk from "chalk";
+import { execSync } from 'child_process'
+import { getLastCommit } from 'git-last-commit'
+import * as chalk from 'chalk'
 
 
 interface GitCommit {
@@ -22,18 +22,17 @@ interface GitCommit {
 export function getGitCommit(): Promise<GitCommit> {
   return new Promise((resolve, reject) => {
     getLastCommit((err: any, commit: GitCommit) => {
-      if (err) reject(err);
-      else {
-        commit.time = execSync('git log -1 --format=%cd --date=local').toString().trim();
-        resolve(commit);
+      if (err) { reject(err) } else {
+        commit.time = execSync('git log -1 --format=%cd --date=local').toString().trim()
+        resolve(commit)
       }
-    });
-  });
+    })
+  })
 }
 
 export async function logVersionDetails() {
-  const commit = await getGitCommit();
-  const commitDate = new Date(commit.time);
-  console.log(`Running commit ${chalk.blueBright(commit.shortHash)} ${chalk.gray(`(${commit.subject})`)}`);
-  console.log(`From ${chalk.blueBright(commitDate.toLocaleString())}`);
+  const commit = await getGitCommit()
+  const commitDate = new Date(commit.time)
+  console.log(`Running commit ${chalk.blueBright(commit.shortHash)} ${chalk.gray(`(${commit.subject})`)}`)
+  console.log(`From ${chalk.blueBright(commitDate.toLocaleString())}`)
 }

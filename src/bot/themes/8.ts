@@ -1,6 +1,6 @@
-import { GuildData, Theme } from "../../types";
-import { MessageOptions } from "discord.js";
-import { GameInfo } from "freestuff";
+import { MessageOptions } from 'discord.js'
+import { GameInfo } from 'freestuff'
+import { GuildData, Theme } from '../../types'
 
 
 export default class ThemeEight implements Theme {
@@ -10,7 +10,7 @@ export default class ThemeEight implements Theme {
       ((data.roleInstance && !settings.disableMention) ? data.roleInstance.toString() : '')
       + ` <${content.urls.default}>`,
       {}
-    ];
+    ]
   }
 
 }

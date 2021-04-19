@@ -1,11 +1,11 @@
-import { FreeStuffBot, Core } from "../index";
-import { Guild, TextChannel } from "discord.js";
-import Database from "../database/database";
-import { Long } from "mongodb";
-import { GuildSetting, GuildData, DatabaseGuildData, FilterableStore } from "../types";
-import { Util } from "../util/util";
-import { CronJob } from "cron";
-import { Store } from "freestuff";
+import { Guild, TextChannel } from 'discord.js'
+import { Long } from 'mongodb'
+import { CronJob } from 'cron'
+import { Store } from 'freestuff'
+import { FreeStuffBot, Core } from '../index'
+import Database from '../database/database'
+import { GuildSetting, GuildData, DatabaseGuildData, FilterableStore } from '../types'
+import { Util } from '../util/util'
 
 
 export default class DatabaseManager {
@@ -15,25 +15,25 @@ export default class DatabaseManager {
       // Check if any guild is not in the database yet
       // Might happen when someone adds the bot while it's offline
 
-      const dbGuilds = await this.getAssignedGuilds();
+      const dbGuilds = await this.getAssignedGuilds()
 
       for (const guild of bot.guilds.cache.values()) {
-        if (!dbGuilds.find(g => g._id.toString() == guild.id))
-          this.addGuild(guild);
+        if (!dbGuilds.find(g => g._id.toString() === guild.id))
+          this.addGuild(guild)
       }
-    });
+    })
 
-    bot.on('guildCreate', async guild => {
+    bot.on('guildCreate', async (guild) => {
       if (await Database
         .collection('guilds')
         ?.findOne({
           _id: Long.fromString(guild.id)
-        })) return;
+        })) return
 
-      this.addGuild(guild);
-    });
+      this.addGuild(guild)
+    })
 
-    this.startGarbageCollector(bot);
+    this.startGarbageCollector(bot)
   }
 
   /**
@@ -43,41 +43,40 @@ export default class DatabaseManager {
    */
   private startGarbageCollector(bot: FreeStuffBot): void {
     new CronJob('0 0 0 * * *', async () => {
-      const dbGuilds = await this.getAssignedGuilds();
-      const removalQueue: DatabaseGuildData[] = [];
+      const dbGuilds = await this.getAssignedGuilds()
+      const removalQueue: DatabaseGuildData[] = []
       for (const guild of dbGuilds) {
         bot.guilds.fetch(guild._id.toString())
           .then(() => {})
-          .catch(err => removalQueue.push(guild));
+          .catch(_err => removalQueue.push(guild))
       }
 
       setTimeout(async () => {
-        const dbGuilds = await this.getAssignedGuilds();
+        const dbGuilds = await this.getAssignedGuilds()
         for (const guild of dbGuilds) {
           bot.guilds.fetch(guild._id.toString())
             .then(() => {})
-            .catch(err => {
-              if (removalQueue.find(g => g._id.equals(guild._id))) {
-                this.removeGuild(guild._id);
-              }
-            });
+            .catch((_err) => {
+              if (removalQueue.find(g => g._id.equals(guild._id)))
+                this.removeGuild(guild._id)
+            })
         }
-      }, 1000 * 60 * 30);
-    }).start();
+      }, 1000 * 60 * 30)
+    }).start()
   }
 
   /**
    * Returns an array of the guilddata from each of the guilds belonging to the current shard
    */
   public async getAssignedGuilds(): Promise<DatabaseGuildData[]> {
-    return Database
+    return await Database
       .collection('guilds')
       ?.find(
         Core.singleShard
           ? { }
-          : { sharder: { $mod: [Core.options.shardCount, Core.options.shards[0]] } }
+          : { sharder: { $mod: [ Core.options.shardCount, Core.options.shards[0] ] } }
       )
-      .toArray();
+      .toArray()
   }
 
   /**
@@ -88,18 +87,18 @@ export default class DatabaseManager {
   public async addGuild(guild: Guild, autoSettings = true) {
     const settings = autoSettings
       ? Core.localisation.getDefaultSettings(guild)
-      : 0;
+      : 0
     const data: DatabaseGuildData = {
       _id: Long.fromString(guild.id),
       sharder: Long.fromString(guild.id).shiftRight(22),
       channel: null,
       role: null,
       price: 3,
-      settings: settings
+      settings
     }
     await Database
       .collection('guilds')
-      ?.insertOne(data);
+      ?.insertOne(data)
   }
 
   /**
@@ -108,10 +107,10 @@ export default class DatabaseManager {
    * @param force weather to force a removal or not. if not forced this method will not remove guilds that are managed by another shard
    */
   public async removeGuild(guildid: Long, force = false) {
-    if (!force && !Util.belongsToShard(guildid)) return;
+    if (!force && !Util.belongsToShard(guildid)) return
     await Database
       .collection('guilds')
-      ?.deleteOne({ _id: guildid });
+      ?.deleteOne({ _id: guildid })
   }
 
   /**
@@ -122,9 +121,9 @@ export default class DatabaseManager {
     const obj = await Database
       .collection('guilds')
       ?.findOne({ _id: Long.fromString(guild) })
-      .catch(console.error);
-    if (!obj) return undefined;
-    return obj;
+      .catch(console.error)
+    if (!obj) return undefined
+    return obj
   }
 
   /**
@@ -132,9 +131,9 @@ export default class DatabaseManager {
    * @param guild guild object
    */
   public async getGuildData(guild: string): Promise<GuildData> {
-    if (!guild) return undefined;
-    const obj = await this.getRawGuildData(guild);
-    return obj ? this.parseGuildData(obj) : undefined;
+    if (!guild) return undefined
+    const obj = await this.getRawGuildData(guild)
+    return obj ? this.parseGuildData(obj) : undefined
   }
 
   /**
@@ -142,13 +141,13 @@ export default class DatabaseManager {
    * @param dbObject raw input
    */
   public async parseGuildData(dbObject: DatabaseGuildData): Promise<GuildData> {
-    if (!dbObject) return undefined;
-    const responsible = Core.singleShard || Util.belongsToShard(dbObject._id);
-    let guildInstance: Guild;
+    if (!dbObject) return undefined
+    const responsible = Core.singleShard || Util.belongsToShard(dbObject._id)
+    let guildInstance: Guild
     try {
-      guildInstance = await Core.guilds.fetch(dbObject._id.toString());
-    } catch(err) {
-      return undefined;
+      guildInstance = await Core.guilds.fetch(dbObject._id.toString())
+    } catch (err) {
+      return undefined
     }
     return {
       ...dbObject,
@@ -156,42 +155,42 @@ export default class DatabaseManager {
         ? (guildInstance.channels.resolve((dbObject.channel as Long).toString()) as TextChannel)
         : undefined,
       roleInstance: dbObject.role && responsible && guildInstance
-        ? (dbObject.role.toString() == '1'
-          ? guildInstance.roles.everyone
-          : guildInstance.roles.resolve((dbObject.role as Long).toString()))
+        ? (dbObject.role.toString() === '1'
+            ? guildInstance.roles.everyone
+            : guildInstance.roles.resolve((dbObject.role as Long).toString()))
         : undefined,
-      currency: ((dbObject.settings & (1 << 4)) == 0 ? 'euro' : 'usd') as ('euro' | 'usd'),
-      react: (dbObject.settings & (1 << 5)) != 0,
-      trashGames: (dbObject.settings & (1 << 6)) != 0,
-      altDateFormat: (dbObject.settings & (1 << 7)) != 0,
+      currency: ((dbObject.settings & (1 << 4)) === 0 ? 'euro' : 'usd') as ('euro' | 'usd'),
+      react: (dbObject.settings & (1 << 5)) !== 0,
+      trashGames: (dbObject.settings & (1 << 6)) !== 0,
+      altDateFormat: (dbObject.settings & (1 << 7)) !== 0,
       theme: dbObject.settings & 0b1111,
       language: Core.languageManager.languageById((dbObject.settings >> 8 & 0b111111)),
       storesRaw: (dbObject.settings >> 14 & 0b11111111),
       storesList: this.storesRawToList(dbObject.settings >> 14 & 0b11111111),
-      beta: (dbObject.settings & (1 << 30)) != 0,
+      beta: (dbObject.settings & (1 << 30)) !== 0
     }
   }
 
   public storesRawToList(raw: number): Store[] {
-    const out = [] as Store[];
-    if ((raw & FilterableStore.STEAM) != 0) out.push('steam');
-    if ((raw & FilterableStore.EPIC) != 0) out.push('epic');
-    if ((raw & FilterableStore.HUMBLE) != 0) out.push('humble');
-    if ((raw & FilterableStore.GOG) != 0) out.push('gog');
-    if ((raw & FilterableStore.ORIGIN) != 0) out.push('origin');
-    if ((raw & FilterableStore.UPLAY) != 0) out.push('uplay');
-    if ((raw & FilterableStore.ITCH) != 0) out.push('itch');
-    if ((raw & FilterableStore.OTHER) != 0) {
-      out.push('apple');
-      out.push('discord');
-      out.push('google');
-      out.push('ps');
-      out.push('xbox');
-      out.push('switch');
-      out.push('twitch');
-      out.push('other');
+    const out = [] as Store[]
+    if ((raw & FilterableStore.STEAM) !== 0) out.push('steam')
+    if ((raw & FilterableStore.EPIC) !== 0) out.push('epic')
+    if ((raw & FilterableStore.HUMBLE) !== 0) out.push('humble')
+    if ((raw & FilterableStore.GOG) !== 0) out.push('gog')
+    if ((raw & FilterableStore.ORIGIN) !== 0) out.push('origin')
+    if ((raw & FilterableStore.UPLAY) !== 0) out.push('uplay')
+    if ((raw & FilterableStore.ITCH) !== 0) out.push('itch')
+    if ((raw & FilterableStore.OTHER) !== 0) {
+      out.push('apple')
+      out.push('discord')
+      out.push('google')
+      out.push('ps')
+      out.push('xbox')
+      out.push('switch')
+      out.push('twitch')
+      out.push('other')
     }
-    return out;
+    return out
   }
 
   /**
@@ -202,57 +201,57 @@ export default class DatabaseManager {
    * @param value it's new value
    */
   public changeSetting(guild: Guild, current: GuildData, setting: GuildSetting, value: string | number | boolean) {
-    const out = {};
-    let bits = 0;
-    const c = current.settings;
+    const out = {} as any
+    let bits = 0
+    const c = current.settings
 
     switch (setting) {
       case 'channel':
-        out['channel'] = Long.fromString(value as string);
-        break;
+        out.channel = Long.fromString(value as string)
+        break
       case 'roleMention':
-        out['role'] = value ? Long.fromString(value as string) : null;
-        break;
+        out.role = value ? Long.fromString(value as string) : null
+        break
       case 'price':
-        out['price'] = value as number;
-        break;
+        out.price = value as number
+        break
       case 'theme':
-        bits = (value as number) & 0b1111;
-        out['settings'] = Util.modifyBits(c, 0, 4, bits);
-        break;
+        bits = (value as number) & 0b1111
+        out.settings = Util.modifyBits(c, 0, 4, bits)
+        break
       case 'currency':
-        bits = value ? 1 : 0;
-        out['settings'] = Util.modifyBits(c, 4, 1, bits);
-        break;
+        bits = value ? 1 : 0
+        out.settings = Util.modifyBits(c, 4, 1, bits)
+        break
       case 'react':
-        bits = value ? 1 : 0;
-        out['settings'] = Util.modifyBits(c, 5, 1, bits);
-        break;
+        bits = value ? 1 : 0
+        out.settings = Util.modifyBits(c, 5, 1, bits)
+        break
       case 'trash':
-        bits = value ? 1 : 0;
-        out['settings'] = Util.modifyBits(c, 6, 1, bits);
-        break;
+        bits = value ? 1 : 0
+        out.settings = Util.modifyBits(c, 6, 1, bits)
+        break
       case 'altdate':
-        bits = value ? 1 : 0;
-        out['settings'] = Util.modifyBits(c, 7, 1, bits);
-        break;
+        bits = value ? 1 : 0
+        out.settings = Util.modifyBits(c, 7, 1, bits)
+        break
       case 'language':
-        bits = (value as number) & 0b111111;
-        out['settings'] = Util.modifyBits(c, 8, 6, bits);
-        break;
+        bits = (value as number) & 0b111111
+        out.settings = Util.modifyBits(c, 8, 6, bits)
+        break
       case 'stores':
-        bits = (value as number) & 0b11111111;
-        out['settings'] = Util.modifyBits(c, 14, 8, bits);
-        break;
+        bits = (value as number) & 0b11111111
+        out.settings = Util.modifyBits(c, 14, 8, bits)
+        break
       case 'beta':
-        bits = value ? 1 : 0;
-        out['settings'] = Util.modifyBits(c, 30, 1, bits);
-        break;
+        bits = value ? 1 : 0
+        out.settings = Util.modifyBits(c, 30, 1, bits)
+        break
     }
 
     Database
       .collection('guilds')
-      ?.updateOne({ _id: Long.fromString(guild.id) }, { '$set': out });
+      ?.updateOne({ _id: Long.fromString(guild.id) }, { $set: out })
   }
 
   // settings: (do not use bit 31, causes unwanted effects with negative number conversion)

@@ -9,7 +9,7 @@ const clientid = config.bot.clientid
 const commands = [
   {
     name: 'about',
-    description: `"What's this bot about?" you ask? Well run this command to get an answer to all of your questions!`
+    description: '"What\'s this bot about?" you ask? Well run this command to get an answer to all of your questions!'
   },
   {
     name: 'free',
@@ -25,18 +25,18 @@ const commands = [
   },
   {
     name: 'misc',
-    description: 'Miscellaneous, unimportant commands the bot has to offer.',
-// freestuff on the other hand would kinda imply that this command can do everything to do with freestuff which is not the case
+    description: 'Miscellaneous, unimportant commands the bot has to offer.'
+    // freestuff on the other hand would kinda imply that this command can do everything to do with freestuff which is not the case
     // TODO hosts mydata, resend, reset, beta, here
   },
   {
     name: 'set',
-    description: 'Change settings for the FreeStuff Bot.',
+    description: 'Change settings for the FreeStuff Bot.'
     // TODO all the settings as subcommands.
   },
   {
     name: 'test',
-    description: 'Send a test announcement to see if everything is working.',
+    description: 'Send a test announcement to see if everything is working.'
     // options: [
     //   {
     //     name: 'silent',

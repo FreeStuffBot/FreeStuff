@@ -1,8 +1,8 @@
-import { GuildData, Theme } from "../../types";
-import { MessageOptions } from "discord.js";
-import { Core } from "../../index";
-import Const from "../../bot/const";
-import { GameInfo } from "freestuff";
+import { MessageOptions } from 'discord.js'
+import { GameInfo } from 'freestuff'
+import { GuildData, Theme } from '../../types'
+import { Core } from '../../index'
+import Const from '../../bot/const'
 
 
 export default class ThemeFive implements Theme {
@@ -22,10 +22,10 @@ export default class ThemeFive implements Theme {
               ? Core.text(data, '=announcement_footer_test')
               : Core.text(data, '=announcement_footer', { website: Const.links.websiteClean })
           },
-          color: 0x2f3136
+          color: Const.embedDefaultColor
         }
       }
-    ];
+    ]
   }
 
 }

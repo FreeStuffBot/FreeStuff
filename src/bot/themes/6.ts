@@ -1,8 +1,8 @@
-import { GuildData, Theme } from "../../types";
-import { MessageOptions } from "discord.js";
-import { Core } from "../../index";
-import Const from "../../bot/const";
-import { GameInfo } from "freestuff";
+import { MessageOptions } from 'discord.js'
+import { GameInfo } from 'freestuff'
+import { GuildData, Theme } from '../../types'
+import { Core } from '../../index'
+import Const from '../../bot/const'
 
 
 export default class ThemeSix implements Theme {
@@ -27,7 +27,7 @@ export default class ThemeSix implements Theme {
               ? content.thumbnail.full
               : content.thumbnail.org
           },
-          color: 0x2f3136,
+          color: Const.embedDefaultColor,
           thumbnail: {
             url: Const.storeIcons[content.store] + '&size=32',
             width: 32,
@@ -35,7 +35,7 @@ export default class ThemeSix implements Theme {
           }
         }
       }
-    ];
+    ]
   }
 
 }

@@ -1,5 +1,5 @@
-const config = require('../config')
 const mongo = require('mongodb')
+const config = require('../config')
 
 mongo.connect(config.mongodb.url, { useNewUrlParser: true, useUnifiedTopology: true }, run)
 
@@ -14,7 +14,7 @@ async function run(_, client) {
       { _id: 'reconnects', value: [] }
     ])
   } catch (ex) { }
-  
+
   try {
     await db.collection('language').insertOne({
       _id: 'en-US',

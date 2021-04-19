@@ -1,18 +1,18 @@
-import { CommandHandler, GuildData, ReplyFunction, SettingsSubcommand } from "../../../types";
-import { Core } from "../../../index";
-import { Message } from "discord.js";
-import Const from "../../const";
+import { Message } from 'discord.js'
+import { CommandHandler, GuildData, ReplyFunction, SettingsSubcommand } from '../../../types'
+import { Core } from '../../../index'
+import Const from '../../const'
 
 
 export default class SetThemeHandler implements CommandHandler, SettingsSubcommand {
 
-  public getMetaInfo(g: GuildData): [ string, string, any? ] {
+  public getMetaInfo(_g: GuildData): [ string, string, any? ] {
     return [
       // 'theme ' + (g ? (g.theme + 1) : 1),
       'theme',
       '=cmd_settings_change_theme',
       { themeListLink: Const.links.themes }
-    ];
+    ]
   }
 
   public handle(mes: Message, args: string[], g: GuildData, reply: ReplyFunction): boolean {
@@ -20,15 +20,15 @@ export default class SetThemeHandler implements CommandHandler, SettingsSubcomma
       reply(
         Core.text(g, '=cmd_set_theme_missing_args_1'),
         Core.text(g, '=cmd_set_theme_missing_args_2', { themeListLink: Const.links.themes })
-      );
-      return false;
+      )
+      return false
     }
-    if (['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].includes(args[0])) {
-      Core.databaseManager.changeSetting(mes.guild, g, 'theme', parseInt(args[0], 10) - 1);
+    if ([ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10' ].includes(args[0])) {
+      Core.databaseManager.changeSetting(mes.guild, g, 'theme', parseInt(args[0], 10) - 1)
       reply(
         Core.text(g, '=cmd_set_theme_success_1'),
         Core.text(g, '=cmd_set_theme_success_2')
-      );
+      )
     } else {
       reply(
         Core.text(g, '=cmd_set_theme_not_found_1'),
@@ -36,10 +36,10 @@ export default class SetThemeHandler implements CommandHandler, SettingsSubcomma
           name: args[0],
           themeListLink: Const.links.themes
         })
-      );
+      )
     }
 
-    return true;
+    return true
   }
 
 }

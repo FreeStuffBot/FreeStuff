@@ -1,29 +1,31 @@
-const production = process.env.NODE_ENV === 'production';
-const dev        = process.env.NODE_ENV === 'dev';
-const debug      = process.env.NODE_ENV === 'debug';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+const production = process.env.NODE_ENV === 'production'
+const dev = process.env.NODE_ENV === 'dev'
+const debug = process.env.NODE_ENV === 'debug'
 
 
 module.exports = {
   bot: {
-    token: "TOKEN", // discord token
-    mode: "beta|regular", // either "beta" or "regular". the latter is default.
-    clientid: "ID" // discord client id
+    token: 'TOKEN', // discord token
+    mode: 'beta|regular', // either "beta" or "regular". the latter is default.
+    clientid: 'ID' // discord client id
   },
   mode: {
     name: 'single', // single = no sharding, shard = sharding, discovery = auto-sharding
     master: 'api', // only if discovery. dictates the master node to assign this worker node
     shardId: process.env.SHARD_ID || 0, // only if shard. this shard id
-    shardCount: process.env.SHARD_COUNT || 1, // only if shard. total shard count
+    shardCount: process.env.SHARD_COUNT || 1 // only if shard. total shard count
   },
   mongodb: {
-    url: "URL" // url (including auth) to your mongodb database
+    url: 'URL' // url (including auth) to your mongodb database
   },
   redis: {
     // redis settings. can be left empty. https://www.npmjs.com/package/redis#options-object-properties
   },
   thirdparty: {
     sentry: {
-      dsn: "URL" // sentry dsn. can be found in sentry dashboard
+      dsn: 'URL' // sentry dsn. can be found in sentry dashboard
     }
   },
   apisettings: {
@@ -32,10 +34,10 @@ module.exports = {
     baseUrl: production ? undefined : 'http://localhost/api/v1' // can be neglected
   },
   supportWebhook: {
-    id: "123456789123456789", // "@freestuff here" webhook.
-    token: "abcdefghijklmnopqrstuvwxyz" // see above
+    id: '123456789123456789', // "@freestuff here" webhook.
+    token: 'abcdefghijklmnopqrstuvwxyz' // see above
   },
   admins: [
-    "137258778092503042" // list of users allowed to use admin commands
+    '137258778092503042' // list of users allowed to use admin commands
   ]
 }

@@ -1,10 +1,10 @@
-import Const from "../const";
-import { config, Core } from "../../index";
-import { GuildData, InteractionCommandHandler, Interaction, InteractionReplyFunction, InteractionResponseFlags } from "../../types";
+import Const from '../const'
+import { config, Core } from '../../index'
+import { GuildData, InteractionCommandHandler, Interaction, InteractionReplyFunction, InteractionResponseFlags } from '../../types'
 
 
 export default class NewTestCommand extends InteractionCommandHandler {
-  
+
   private readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/830794212894572574/thumbnail_placeholder.png'
 
   private testCooldown = [ ];
@@ -29,60 +29,60 @@ export default class NewTestCommand extends InteractionCommandHandler {
         description: '=cmd_on_cooldown_2',
         context: { time: '10' }
       })
-      return true;
+      return true
     }
 
     if (!data) {
-      Core.databaseManager.addGuild(guild);
+      Core.databaseManager.addGuild(guild)
       reply('ChannelMessageWithSource', {
         title: '=cmd_error_fixable_1',
         description: '=cmd_error_fixable_2',
         context: { discordInvite: Const.links.supportInvite }
-      });
-      return;
+      })
+      return
     }
     if (!data.channelInstance) {
       reply('ChannelMessageWithSource', {
         title: '=cmd_test_nochannel_1',
         description: '=cmd_test_nochannel_2',
-        context: { channel: `#${guild.channels.cache.filter(c => c.type == 'text').random().name}` }
-      });
-      return true;
+        context: { channel: `#${guild.channels.cache.filter(c => c.type === 'text').random().name}` }
+      })
+      return true
     }
     if (!data.channelInstance.guild.me.permissionsIn(data.channelInstance).has('VIEW_CHANNEL')) {
       reply('ChannelMessageWithSource', {
         title: '=cmd_test_nosee_1',
         description: '=cmd_test_nosee_2',
         context: { channel: data.channelInstance.toString() }
-      });
-      return true;
+      })
+      return true
     }
     if (!data.channelInstance.guild.me.permissionsIn(data.channelInstance).has('SEND_MESSAGES')) {
       reply('ChannelMessageWithSource', {
         title: '=cmd_test_nosend_1',
         description: '=cmd_test_nosend_2',
         context: { channel: data.channelInstance.toString() }
-      });
-      return true;
+      })
+      return true
     }
     if (!data.channelInstance.guild.me.permissionsIn(data.channelInstance).has('EMBED_LINKS')
         && Const.themesWithEmbeds.includes(data.theme)) {
-        reply('ChannelMessageWithSource', {
-          title: '=cmd_test_noembeds_1',
-          description: '=cmd_test_noembeds_2',
-          context: { channel: data.channelInstance.toString() }
-        });
-      return true;
+      reply('ChannelMessageWithSource', {
+        title: '=cmd_test_noembeds_1',
+        description: '=cmd_test_noembeds_2',
+        context: { channel: data.channelInstance.toString() }
+      })
+      return true
     }
     if (!data.channelInstance.guild.me.permissionsIn(data.channelInstance).has('USE_EXTERNAL_EMOJIS')
         && Const.themesWithExtemotes[data.theme]) {
-        reply('ChannelMessageWithSource', {
-          title: '=cmd_test_extemotes_1',
-          description: '=cmd_test_extemotes_2'
-        });
-      return true;
+      reply('ChannelMessageWithSource', {
+        title: '=cmd_test_extemotes_1',
+        description: '=cmd_test_extemotes_2'
+      })
+      return true
     }
-    
+
     try {
       Core.messageDistributor.test(guild, {
         id: 0,
@@ -105,7 +105,7 @@ export default class NewTestCommand extends InteractionCommandHandler {
         kind: 'game',
         description: Core.text(data, '=cmd_test_announcement_description'),
         tags: [],
-        rating: .8,
+        rating: 0.8,
         urls: {
           org: Const.links.testgame,
           default: Const.links.testgame,
@@ -119,26 +119,26 @@ export default class NewTestCommand extends InteractionCommandHandler {
         store_meta: {
           steam_subids: '12345 98760'
         }
-      });
+      })
     } catch (ex) {
       reply('ChannelMessageWithSource', {
         title: '=cmd_error_fixable_1',
         description: '=cmd_error_fixable_2'
-      });
+      })
     }
 
     reply('ChannelMessageWithSource', {
       content: ':+1: ** **',
       flags: InteractionResponseFlags.EPHEMERAL
     })
-    
-    if (config.admins.includes(command.member.user.id)) return true;
 
-    this.testCooldown.push(guild.id);
+    if (config.admins.includes(command.member.user.id)) return true
+
+    this.testCooldown.push(guild.id)
     setTimeout(() => {
-      this.testCooldown.splice(this.testCooldown.indexOf(guild.id), 1);
-    }, 1000 * 10);
-    return true;
+      this.testCooldown.splice(this.testCooldown.indexOf(guild.id), 1)
+    }, 1000 * 10)
+    return true
   }
 
 }

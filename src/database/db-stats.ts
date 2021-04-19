@@ -1,45 +1,41 @@
-import Database, { dbcollection } from "./database";
-import { FreeStuffBot, Core } from "../index";
-import { CronJob } from "cron";
-import * as chalk from "chalk";
+import { CronJob } from 'cron'
+import * as chalk from 'chalk'
+import { FreeStuffBot, Core } from '../index'
+import Database, { dbcollection } from './database'
 
 
 export class DbStats {
 
-  private constructor() { }
-
-  //
-
   public static startMonitoring(bot: FreeStuffBot) {
     new CronJob('0 0 0 * * *', () => {
       setTimeout(async () => {
-        const guildCount = bot.guilds.cache.size;
-        const guildMemberCount = bot.guilds.cache.array().reduce((count, g) => count + g.memberCount, 0);
+        const guildCount = bot.guilds.cache.size
+        const guildMemberCount = bot.guilds.cache.array().reduce((count, g) => count + g.memberCount, 0)
 
         if (Core.singleShard) {
           console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.cache.size}; Members: ${guildMemberCount}`));
           (await this.usage).guilds.updateYesterday(guildCount, false);
-          (await this.usage).members.updateYesterday(guildMemberCount, false);
+          (await this.usage).members.updateYesterday(guildMemberCount, false)
         } else {
           console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.cache.size}; Members: ${guildMemberCount}; Shard ${Core.options.shards[0]}`));
           (await this.usage).guilds.updateYesterday(guildCount, true);
-          (await this.usage).members.updateYesterday(guildMemberCount, true);
+          (await this.usage).members.updateYesterday(guildMemberCount, true)
         }
 
-        this.updateTopClients();
-      }, 60000);
-    }).start();
+        this.updateTopClients()
+      }, 60000)
+    }).start()
 
-    Core.on('ready', this.updateTopClients);
+    Core.on('ready', this.updateTopClients)
   }
 
   public static get usage(): Promise<DbStatUsage> {
-    return new DbStatUsage().load();
+    return new DbStatUsage().load()
   }
 
   public static async updateTopClients() {
-    const top = Core.guilds.cache.sort((a, b) => b.memberCount - a.memberCount).values();
-    const top10 = Array.from(top).splice(0, 10);
+    const top = Core.guilds.cache.sort((a, b) => b.memberCount - a.memberCount).values()
+    const top10 = Array.from(top).splice(0, 10)
     const out = top10.map(async g => ({
       id: g.id,
       name: g.name,
@@ -47,17 +43,17 @@ export class DbStats {
       icon: g.iconURL(),
       features: g.features,
       setup: !!((await Core.databaseManager.getGuildData(g.id))?.channelInstance)
-    }));
-    
-    Promise.all(out).then(out => {
+    }))
+
+    await Promise.all(out).then((out) => {
       Database
         .collection('stats-top-clients')
         ?.findOneAndUpdate(
           { _id: Core.options.shards[0] || 0 },
           { $set: { value: out } },
           { upsert: true }
-        );
-    });
+        )
+    })
   }
 
 }
@@ -68,40 +64,37 @@ export class DbStatUsage {
 
   //
 
-  constructor() { }
-
-  //
-
   async load(): Promise<this> {
     const c = await Database
       .collection('stats-usage')
       ?.find({})
-      .toArray();
+      .toArray()
     for (const temp of c)
-      this.raw[temp._id] = temp.value;
-    return this;
+      this.raw[temp._id] = temp.value
+    return this
   }
 
   get guilds(): DbStatGraph {
-    return new DbStatGraph('stats-usage', { _id: 'guilds' }, this.raw['guilds'] || [], this.raw);
+    return new DbStatGraph('stats-usage', { _id: 'guilds' }, this.raw.guilds || [], this.raw)
   }
 
   get members(): DbStatGraph {
-    return new DbStatGraph('stats-usage', { _id: 'members' }, this.raw['members'] || [], this.raw);
+    return new DbStatGraph('stats-usage', { _id: 'members' }, this.raw.members || [], this.raw)
   }
 
   get announcements(): DbStatGraph {
-    return new DbStatGraph('stats-usage', { _id: 'announcements' }, this.raw['announcements'] || [], this.raw);
+    return new DbStatGraph('stats-usage', { _id: 'announcements' }, this.raw.announcements || [], this.raw)
   }
 
   get reconnects(): DbStatGraph {
-    return new DbStatGraph('stats-usage', { _id: 'reconnects' }, this.raw['reconnects'] || [], this.raw);
+    return new DbStatGraph('stats-usage', { _id: 'reconnects' }, this.raw.reconnects || [], this.raw)
   }
 
 }
 
 export class DbStatGraph {
 
+  // eslint-disable-next-line no-useless-constructor
   public constructor(
     private _collectionname: string,
     private _dbquery: any,
@@ -112,61 +105,61 @@ export class DbStatGraph {
   //
 
   public get today(): number {
-    if (!this.raw) return 0;
-    return this.raw[getDayId()] || 0;
+    if (!this.raw) return 0
+    return this.raw[getDayId()] || 0
   }
 
   public async update(dayId: number, value: number, delta: boolean): Promise<any> {
-    if (dayId < 0) return;
+    if (dayId < 0) return
     if (this.raw) {
-      let obj = {};
+      let obj = {} as any
       obj[`value.${dayId}`] = value
-      if (delta) obj = { '$inc': obj };
-      else obj = { '$set': obj };
+      if (delta) obj = { $inc: obj }
+      else obj = { $set: obj }
       if (dayId > this.raw.length) {
-        if (!obj['$set'])
-          obj['$set'] = {};
+        if (!obj.$set)
+          obj.$set = {}
         while (dayId-- > this.raw.length)
-          obj['$set'][`value.${dayId}`] = 0;
+          obj.$set[`value.${dayId}`] = 0
       }
-      return Database
+      return await Database
         .collection(this._collectionname as dbcollection)
-        ?.updateOne(this._dbquery, obj);
+        ?.updateOne(this._dbquery, obj)
     } else {
-      const parentExists = Object.keys(this._fullraw).length > 0;
-      const obj = parentExists ? {} : this._dbquery;
-      obj.value = [];
+      const parentExists = Object.keys(this._fullraw).length > 0
+      const obj = parentExists ? {} : this._dbquery
+      obj.value = []
       for (let i = 0; i < dayId; i++)
-        obj.value.push(0);
-      obj.value.push(value);
+        obj.value.push(0)
+      obj.value.push(value)
       if (parentExists) {
-        return Database
+        return await Database
           .collection(this._collectionname as dbcollection)
-          ?.updateOne(this._dbquery, { '$set': obj });
+          ?.updateOne(this._dbquery, { $set: obj })
       } else {
-        this._fullraw.value = obj;
-        return Database
+        this._fullraw.value = obj
+        return await Database
           .collection(this._collectionname as dbcollection)
-          ?.insertOne(obj);
+          ?.insertOne(obj)
       }
     }
   }
 
   public updateToday(value: number, delta: boolean = true) {
-    this.update(getDayId(), value, delta);
+    this.update(getDayId(), value, delta)
   }
 
   public updateYesterday(value: number, delta: boolean = true) {
-    this.update(getDayId() - 1, value, delta);
+    this.update(getDayId() - 1, value, delta)
   }
 
 }
 
 function getDayId(): number {
-  const now = new Date();
-  const start = new Date(2020, 0, 0);
-  const diff = now.getTime() - start.getTime();
-  const oneDay = 1000 * 60 * 60 * 24;
-  const day = Math.floor(diff / oneDay);
-  return day - 1; // index 0 on 1st january
+  const now = new Date()
+  const start = new Date(2020, 0, 0)
+  const diff = now.getTime() - start.getTime()
+  const oneDay = 1000 * 60 * 60 * 24
+  const day = Math.floor(diff / oneDay)
+  return day - 1 // index 0 on 1st january
 }

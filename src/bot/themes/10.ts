@@ -1,8 +1,8 @@
-import { GuildData, Theme } from "../../types";
-import { MessageOptions } from "discord.js";
-import { Core } from "../../index";
-import Const from "../const";
-import { GameInfo } from "freestuff";
+import { MessageOptions } from 'discord.js'
+import { GameInfo } from 'freestuff'
+import { GuildData, Theme } from '../../types'
+import { Core } from '../../index'
+import Const from '../const'
 
 
 export default class ThemeTen implements Theme {
@@ -10,16 +10,17 @@ export default class ThemeTen implements Theme {
   public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     const button = content.urls.client
       ? content.store === 'steam'
-        ? `${Core.text(data, '=open_in_browser')}: [https://s.team/a/${content.urls.browser.split('/app/')[1].split('/')[0]}](${content.urls.browser})\n${Core.text(data, '=open_in_steam_client')}: ${content.urls.client}`
-        : `[${Core.text(data, '=open_in_browser')}](${content.urls.browser}) • [${Core.text(data, '=open_in_epic_games_client')}](${content.urls.client})`
+          ? `${Core.text(data, '=open_in_browser')}: [https://s.team/a/${content.urls.browser.split('/app/')[1].split('/')[0]}](${content.urls.browser})\n${Core.text(data, '=open_in_steam_client')}: ${content.urls.client}`
+          : `[${Core.text(data, '=open_in_browser')}](${content.urls.browser}) • [${Core.text(data, '=open_in_epic_games_client')}](${content.urls.client})`
       : `[${Core.text(data, '=open_in_browser')}](${content.urls.default})`
 
     const steamcontent = content.store === 'steam'
       ? [
         `Subids: ${content.store_meta.steam_subids}`,
         '',
-        `!addlicense asf ${content.store_meta.steam_subids.split(' ').join(',')}`,
-      ] : []
+        `!addlicense asf ${content.store_meta.steam_subids.split(' ').join(',')}`
+        ]
+      : []
 
     const lines = [
       '```yaml',
@@ -48,7 +49,7 @@ export default class ThemeTen implements Theme {
           }
         }
       }
-    ];
+    ]
   }
 
 }

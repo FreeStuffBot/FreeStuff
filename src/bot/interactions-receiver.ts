@@ -1,6 +1,6 @@
 import Axios from 'axios'
-import { Interaction, InteractionApplicationCommandCallbackData, InteractionResponseType, InteractionCommandHandler, InteractionReplyFunction, InteractionResponseFlags, GuildData } from '../types'
 import { MessageEmbed } from 'discord.js'
+import { Interaction, InteractionApplicationCommandCallbackData, InteractionResponseType, InteractionCommandHandler, InteractionReplyFunction, InteractionResponseFlags, GuildData } from '../types'
 import { Core, FreeStuffBot } from '../index'
 import NewFreeCommand from './slashcommands/free'
 import NewVoteCommand from './slashcommands/vote'
@@ -36,18 +36,18 @@ export default class InteractionReceiver {
 
   private runCommand(interaction: Interaction, handler: InteractionCommandHandler) {
     // TODO interaction.guild_id can be undefined if ran in DMs, maybe have a DM guilddata template object or something? Just with default settings.
-    Core.databaseManager.getGuildData(interaction.guild_id).then(data => {
+    Core.databaseManager.getGuildData(interaction.guild_id).then((data) => {
       const reply = this.getReplyFunction(interaction, data)
       handler.handle(interaction, data, reply)
-    }).catch(err => {
+    }).catch((_err) => {
       try {
         const reply = this.getReplyFunction(interaction, null)
         reply('ChannelMessageWithSource', {
           content: 'We are very sorry but an error occured while processing your command. Please try again.',
           flags: InteractionResponseFlags.EPHEMERAL
         })
-      } catch(ex) { }
-    });
+      } catch (ex) { }
+    })
   }
 
   private onInteraction(i: Interaction) {
@@ -76,12 +76,12 @@ export default class InteractionReceiver {
         this.translateObject(data, guildData, data.context)
 
       if (!('content' in data)) {
-        data.color = data.color ?? 0x2f3136
+        data.color = data.color ?? 0x2F3136
         data = {
           content: '',
-          embeds: [{
+          embeds: [ {
             ...data
-          }]
+          } ]
         }
       }
       Axios.post(`https://discord.com/api/v8/interactions/${i.id}/${i.token}/callback`, { type: types.indexOf(type) + 1, data })

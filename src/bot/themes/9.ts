@@ -1,7 +1,7 @@
-import { GuildData, Theme } from "../../types";
-import { MessageOptions } from "discord.js";
-import { Core } from "../../index";
-import { GameInfo } from "freestuff";
+import { MessageOptions } from 'discord.js'
+import { GameInfo } from 'freestuff'
+import { GuildData, Theme } from '../../types'
+import { Core } from '../../index'
 
 
 export default class ThemeNine implements Theme {
@@ -12,7 +12,7 @@ export default class ThemeNine implements Theme {
       + ' '
       + Core.text(data, '=announcement_theme9', { name: content.title, url: content.urls.default }),
       {}
-    ];
+    ]
   }
 
 }
