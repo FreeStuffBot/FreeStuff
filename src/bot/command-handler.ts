@@ -64,6 +64,7 @@ export default class CommandHandler {
     })
   }
 
+  // eslint-disable-next-line require-await
   public async handleCommand(command: string, args: string[], orgmes: Message, g: GuildData): Promise<boolean> {
     const reply = (message: string, content: string, footer?: string, color?: number, image?: string) => {
       if (orgmes.guild.me.permissionsIn(orgmes.channel).has('EMBED_LINKS')) {
