@@ -205,6 +205,7 @@ export default class DatabaseManager {
     const out = {};
     let bits = 0;
     const c = current.settings;
+
     switch (setting) {
       case 'channel':
         out['channel'] = Long.fromString(value as string);
@@ -248,6 +249,7 @@ export default class DatabaseManager {
         out['settings'] = Util.modifyBits(c, 30, 1, bits);
         break;
     }
+
     Database
       .collection('guilds')
       ?.updateOne({ _id: Long.fromString(guild.id) }, { '$set': out });

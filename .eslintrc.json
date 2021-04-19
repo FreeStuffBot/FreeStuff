@@ -1,7 +1,7 @@
 {
-  // "extends": [
-  //   "maanex"
-  // ],
+  "extends": [
+    "maanex"
+  ],
   // "rules": {
   //   "no-console": "error"
   // },
