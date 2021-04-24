@@ -1,5 +1,6 @@
 import { GameInfo } from 'freestuff'
-import { GuildData, InteractionCommandHandler, Interaction, InteractionReplyFunction } from '../../types'
+import { Interaction, InteractionCommandHandler, InteractionReplyFunction } from '../../types/interactions'
+import { GuildData } from '../../types/datastructs'
 import Const from '../const'
 import { Core } from '../../index'
 

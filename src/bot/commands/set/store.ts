@@ -1,6 +1,8 @@
 import { Message } from 'discord.js'
 import { Store } from 'freestuff'
-import { CommandHandler, GuildData, ReplyFunction, SettingsSubcommand, FilterableStore, StoreData } from '../../../types'
+import { GuildData } from '../../../types/datastructs'
+import { ReplyFunction, CommandHandler, SettingsSubcommand } from '../../../types/commands'
+import { FilterableStore, StoreData } from '../../../types/context'
 import { Core } from '../../../index'
 import Const from '../../const'
 

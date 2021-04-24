@@ -6,7 +6,6 @@ export const config = require('../config.js')
 
 import { Client, ClientOptions } from 'discord.js'
 import * as chalk from 'chalk'
-import { GuildData } from 'types'
 import { FreeStuffApi } from 'freestuff'
 import MongoAdapter from './database/mongo-adapter'
 import Database from './database/database'
@@ -26,6 +25,7 @@ import SentryManager from './thirdparty/sentry/sentry'
 import Redis from './database/redis'
 import Const from './bot/const'
 import InteractionReceiver from './bot/interactions-receiver'
+import { GuildData } from 'types/datastructs'
 
 
 export class FreeStuffBot extends Client {

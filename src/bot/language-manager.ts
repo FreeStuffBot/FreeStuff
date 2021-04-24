@@ -1,4 +1,4 @@
-import { GuildData } from 'types'
+import { GuildData } from '../types/datastructs'
 import Database from '../database/database'
 
 

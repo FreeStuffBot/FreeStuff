@@ -1,5 +1,6 @@
 import Const from '../const'
-import { GuildData, InteractionCommandHandler, Interaction, InteractionReplyFunction } from '../../types'
+import { Interaction, InteractionCommandHandler, InteractionReplyFunction } from '../../types/interactions'
+import { GuildData } from '../../types/datastructs'
 
 
 export default class NewInviteCommand extends InteractionCommandHandler {

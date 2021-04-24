@@ -4,7 +4,8 @@ import { CronJob } from 'cron'
 import { Store } from 'freestuff'
 import { FreeStuffBot, Core } from '../index'
 import Database from '../database/database'
-import { GuildSetting, GuildData, DatabaseGuildData, FilterableStore } from '../types'
+import { DatabaseGuildData, GuildData } from '../types/datastructs'
+import { FilterableStore, GuildSetting } from '../types/context'
 import { Util } from '../util/util'
 
 

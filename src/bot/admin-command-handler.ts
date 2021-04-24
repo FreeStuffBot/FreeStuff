@@ -1,7 +1,7 @@
 import { hostname } from 'os'
 import { Message } from 'discord.js'
-import { GameData, DatabaseGuildData } from 'types'
 import { Long } from 'mongodb'
+import { GameData, DatabaseGuildData } from '../types/datastructs'
 import { FreeStuffBot, Core, config } from '../index'
 import Database from '../database/database'
 import FreeCommand from './commands/free'

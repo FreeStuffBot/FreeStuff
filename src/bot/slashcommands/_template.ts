@@ -1,4 +1,5 @@
-import { GuildData, InteractionCommandHandler, Interaction, InteractionReplyFunction } from '../../types'
+import { Interaction, InteractionCommandHandler, InteractionReplyFunction } from '../../types/interactions'
+import { GuildData } from '../../types/datastructs'
 
 
 export default class NEW_TEMPLATE_COMMAND extends InteractionCommandHandler {

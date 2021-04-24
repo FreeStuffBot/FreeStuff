@@ -1,5 +1,5 @@
 import { Long } from 'mongodb'
-import { GuildData } from 'types'
+import { GuildData } from '../types/datastructs'
 import { getGitCommit } from '../util/git-parser'
 import { FreeStuffBot, Core } from '../index'
 import { Util } from '../util/util'

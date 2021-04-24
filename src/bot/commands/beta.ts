@@ -1,5 +1,6 @@
 import { Message } from 'discord.js'
-import { ReplyFunction, Command, GuildData } from '../../types'
+import { GuildData } from '../../types/datastructs'
+import { Command, ReplyFunction } from '../../types/commands'
 import { Core } from '../../index'
 
 

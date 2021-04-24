@@ -1,6 +1,7 @@
 import { Message } from 'discord.js'
 import { GameInfo } from 'freestuff'
-import { ReplyFunction, Command, GuildData } from '../../types'
+import { GuildData } from '../../types/datastructs'
+import { Command, ReplyFunction } from '../../types/commands'
 import Const from '../const'
 import { Core } from '../../index'
 

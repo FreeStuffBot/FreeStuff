@@ -1,7 +1,8 @@
 import { Message } from 'discord.js'
-import { ReplyFunction, Command, GuildData } from '../../types'
 import Const from '../const'
 import { Core } from '../../index'
+import { GuildData } from '../../types/datastructs'
+import { Command, ReplyFunction } from '../../types/commands'
 
 
 export default class VoteCommand extends Command {

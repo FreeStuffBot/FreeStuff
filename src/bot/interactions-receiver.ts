@@ -1,6 +1,7 @@
 import Axios from 'axios'
 import { MessageEmbed } from 'discord.js'
-import { Interaction, InteractionApplicationCommandCallbackData, InteractionResponseType, InteractionCommandHandler, InteractionReplyFunction, InteractionResponseFlags, GuildData } from '../types'
+import { GuildData } from '../types/datastructs'
+import { Interaction, InteractionApplicationCommandCallbackData, InteractionResponseType, InteractionCommandHandler, InteractionReplyFunction, InteractionResponseFlags } from '../types/interactions'
 import { Core, FreeStuffBot } from '../index'
 import NewFreeCommand from './slashcommands/free'
 import NewVoteCommand from './slashcommands/vote'

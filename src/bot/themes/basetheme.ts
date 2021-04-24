@@ -1,8 +1,8 @@
 import { MessageOptions } from 'discord.js'
 import { GameFlag, GameInfo } from 'freestuff'
-import { GuildData } from '../../types'
 import { Core } from '../../index'
 import Const from '../../bot/const'
+import { GuildData } from '../../types/datastructs'
 
 
 export type themeSettings = {

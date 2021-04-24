@@ -1,5 +1,6 @@
 import { Message } from 'discord.js'
-import { ReplyFunction, GuildData, Command, SettingsSubcommand, CommandHandler } from '../../types'
+import { GuildData } from '../../types/datastructs'
+import { Command, CommandHandler, ReplyFunction, SettingsSubcommand } from '../../types/commands'
 import { Core } from '../../index'
 import Const from '../const'
 import SetChannelHandler from './set/channel'

@@ -1,6 +1,7 @@
 import { Message } from 'discord.js'
 import { Store } from 'freestuff'
-import { ReplyFunction, Command, GuildData } from '../../types'
+import { GuildData } from '../../types/datastructs'
+import { Command, ReplyFunction } from '../../types/commands'
 import { Core, config } from '../../index'
 import Const from '../const'
 import ParseArgs from '../../util/parse-args'

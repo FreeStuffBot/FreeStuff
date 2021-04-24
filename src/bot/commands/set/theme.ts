@@ -1,5 +1,6 @@
 import { Message } from 'discord.js'
-import { CommandHandler, GuildData, ReplyFunction, SettingsSubcommand } from '../../../types'
+import { GuildData } from '../../../types/datastructs'
+import { ReplyFunction, CommandHandler, SettingsSubcommand } from '../../../types/commands'
 import { Core } from '../../../index'
 import Const from '../../const'
 

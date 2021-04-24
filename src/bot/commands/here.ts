@@ -1,5 +1,6 @@
 import { Message, WebhookClient } from 'discord.js'
-import { ReplyFunction, Command, GuildData } from '../../types'
+import { GuildData } from '../../types/datastructs'
+import { Command, ReplyFunction } from '../../types/commands'
 import { Core, config } from '../../index'
 import guildDataToViewString from '../../util/guilddata-visualizer'
 

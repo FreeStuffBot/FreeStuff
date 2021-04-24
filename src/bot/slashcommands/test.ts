@@ -1,6 +1,7 @@
 import Const from '../const'
 import { config, Core } from '../../index'
-import { GuildData, InteractionCommandHandler, Interaction, InteractionReplyFunction, InteractionResponseFlags } from '../../types'
+import { Interaction, InteractionCommandHandler, InteractionReplyFunction, InteractionResponseFlags } from '../../types/interactions'
+import { GuildData } from '../../types/datastructs'
 
 
 export default class NewTestCommand extends InteractionCommandHandler {
