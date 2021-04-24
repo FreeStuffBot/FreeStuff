@@ -24,7 +24,7 @@ module.exports = {
     key: 'loremipsumyourapitokenherehaveagreatday' // freestuff api key
   },
 
-  // EVERYTHING BELOW IS OPTIONAL
+  // EVERYTHING BELOW IS OPTIONAL AND CAN BE REMOVED
 
   redis: {
     // redis settings. can be left empty. https://www.npmjs.com/package/redis#options-object-properties
