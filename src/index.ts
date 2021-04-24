@@ -1,7 +1,8 @@
 /* eslint-disable import/first, import/order */
 import { config as loadDotEnv } from 'dotenv'
+import { configjs } from './types/config'
 loadDotEnv()
-export const config = require('../config.js')
+export const config = require('../config.js') as configjs
 
 
 import { Client, ClientOptions } from 'discord.js'
@@ -25,7 +26,7 @@ import SentryManager from './thirdparty/sentry/sentry'
 import Redis from './database/redis'
 import Const from './bot/const'
 import InteractionReceiver from './bot/interactions-receiver'
-import { GuildData } from 'types/datastructs'
+import { GuildData } from './types/datastructs'
 
 
 export class FreeStuffBot extends Client {
@@ -75,7 +76,7 @@ export class FreeStuffBot extends Client {
         await Redis.init()
 
         this.fsapi = new FreeStuffApi({
-          ...config.apisettings,
+          ...config.apisettings as any,
           version: (await getGitCommit()).shortHash,
           sid: this.singleShard ? '0' : this.options.shards[0]
         })
