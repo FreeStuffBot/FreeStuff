@@ -52,17 +52,11 @@ export class FreeStuffBot extends Client {
     this.devMode = process.env.NODE_ENV === 'dev'
     this.singleShard = !!params.noSharding
 
-    if (this.devMode) {
+    if (this.devMode)
       console.log(chalk.bgRedBright.black(' RUNNING DEV MODE '))
-      console.log(chalk.yellowBright('Skipping Sentry initialization ...'))
-    } else {
-      console.log(chalk.yellowBright('Initializing Sentry ...'))
-      SentryManager.init()
-      console.log(chalk.green('Sentry initialized'))
-    }
 
+    SentryManager.init(this.devMode)
     logVersionDetails()
-
     Util.init()
 
     MongoAdapter.connect(config.mongodb.url)

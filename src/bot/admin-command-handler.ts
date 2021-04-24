@@ -29,7 +29,7 @@ export default class AdminCommandHandler {
       if (!m.guild) return
       if (!m.content.toLowerCase().startsWith(Core.devMode ? '$kabi' : '$freestuff')) return
       if (!m.guild.me.permissionsIn(m.channel).has('SEND_MESSAGES')) return
-      if (!config.admins.includes(m.author.id)) return
+      if (!config.admins?.includes(m.author.id)) return
 
       const args = m.content.split(' ')
       args.splice(0, 1)

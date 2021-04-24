@@ -133,7 +133,7 @@ export default class NewTestCommand extends InteractionCommandHandler {
       flags: InteractionResponseFlags.EPHEMERAL
     })
 
-    if (config.admins.includes(command.member.user.id)) return true
+    if (config.admins?.includes(command.member.user.id)) return true
 
     this.testCooldown.push(guild.id)
     setTimeout(() => {

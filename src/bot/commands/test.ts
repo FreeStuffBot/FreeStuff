@@ -133,7 +133,7 @@ export default class TestCommand extends Command {
       }
     }
 
-    if (config.admins.includes(mes.author.id)) return true
+    if (config.admins?.includes(mes.author.id)) return true
 
     this.testCooldown.push(mes.guild.id)
     setTimeout(() => {

@@ -8,18 +8,24 @@ const debug = process.env.NODE_ENV === 'debug'
 module.exports = {
   bot: {
     token: 'TOKEN', // discord token
-    mode: 'beta|regular', // either "beta" or "regular". the latter is default.
-    clientid: 'ID' // discord client id
+    mode: 'regular', // either "beta" or "regular". the latter is default.
+    clientid: '123456789' // discord client id
   },
   mode: {
-    name: 'single', // single = no sharding, shard = sharding, discovery = auto-sharding
-    master: 'api', // only if discovery. dictates the master node to assign this worker node
-    shardId: process.env.SHARD_ID || 0, // only if shard. this shard id
-    shardCount: process.env.SHARD_COUNT || 1 // only if shard. total shard count
+    name: 'single', // "single" = no sharding, "shard" = sharding, "discovery" = auto-sharding
+    master: 'api', // [only if name = "discovery"] dictates the master node to assign this worker node
+    shardId: process.env.SHARD_ID || 0, // [only if name = "shard"] this shard id
+    shardCount: process.env.SHARD_COUNT || 1 // [only if name = "shard"] total shard count
   },
   mongodb: {
     url: 'URL' // url (including auth) to your mongodb database
   },
+  apisettings: {
+    key: 'loremipsumyourapitokenherehaveagreatday' // freestuff api key
+  },
+
+  // EVERYTHING BELOW IS OPTIONAL
+
   redis: {
     // redis settings. can be left empty. https://www.npmjs.com/package/redis#options-object-properties
   },
@@ -27,11 +33,6 @@ module.exports = {
     sentry: {
       dsn: 'URL' // sentry dsn. can be found in sentry dashboard
     }
-  },
-  apisettings: {
-    key: 'loremipsumyourapitokenherehaveagreatday', // freestuff api key
-    type: 'basic', // freestuff api type. can be neglected
-    baseUrl: production ? undefined : 'http://localhost/api/v1' // can be neglected
   },
   supportWebhook: {
     id: '123456789123456789', // "@freestuff here" webhook.

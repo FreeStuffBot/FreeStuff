@@ -24,9 +24,9 @@ export type configjs = {
     url: string,
     dbname: string
   },
-  redis: any,
-  thirdparty: {
-    sentry: {
+  redis?: any,
+  thirdparty?: {
+    sentry?: {
       dsn: string
     }
   },
@@ -35,5 +35,5 @@ export type configjs = {
     id: string,
     token: string
   },
-  admins: string[]
+  admins?: string[]
 }

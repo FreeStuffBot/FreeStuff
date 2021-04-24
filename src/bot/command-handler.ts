@@ -122,7 +122,7 @@ export default class CommandHandler {
     }
 
     if (handler.info.serverManagerOnly) {
-      if (!orgmes.member.hasPermission('MANAGE_GUILD') && !config.admins.includes(orgmes.member.id)) {
+      if (!orgmes.member.hasPermission('MANAGE_GUILD') && !config.admins?.includes(orgmes.member.id)) {
         reply(
           Core.text(g, '=cmd_no_permission_1', { command: command.toLowerCase().substr(3) }),
           Core.text(g, '=cmd_no_permission_2'),

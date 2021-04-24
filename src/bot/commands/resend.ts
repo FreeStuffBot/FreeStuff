@@ -103,7 +103,7 @@ export default class ResendCommand extends Command {
       )
     }
 
-    if (config.admins.includes(mes.author.id)) return true
+    if (config.admins?.includes(mes.author.id)) return true
 
     this.testCooldown.push(mes.guild.id)
     setTimeout(() => {

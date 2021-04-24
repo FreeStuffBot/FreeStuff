@@ -46,6 +46,11 @@ export default class HereCommand extends Command {
 
     const guilddata = guildDataToViewString(g)
 
+    if (!config.supportWebhook?.id || !config.supportWebhook?.token) {
+      console.warn('Someone tried to use the /here command but your support webhook is not set up!')
+      return false
+    }
+
     const webhook = new WebhookClient(config.supportWebhook.id, config.supportWebhook.token)
     webhook.send('', {
       username: mes.author.tag,

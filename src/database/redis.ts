@@ -7,11 +7,19 @@ export type dbcollection = 'guilds' | 'stats-usage' | 'games';
 
 export default class Redis {
 
-  public static client: redis.RedisClient;
+  public static client: redis.RedisClient
+  public static localMode: boolean = false
+  private static localStorage: Map<string, any>
 
   //
 
   public static init() {
+    if (!config.redis) {
+      this.localMode = true
+      this.localStorage = new Map()
+      return
+    }
+
     Redis.client = redis.createClient(config.redis)
     Redis.client.on('error', (err) => {
       console.error(err)
@@ -20,6 +28,7 @@ export default class Redis {
   }
 
   public static get(key: string): Promise<any> {
+    if (this.localMode) return this.localStorage.get(key)
     if (!this.client) return null
     return new Promise(res => this.client.get(key, (_, data) => res(data)))
   }
@@ -29,7 +38,14 @@ export default class Redis {
   }
 
   public static set(key: string, value: string): Promise<string> {
-    return new Promise(res => this.client.set(key, value, (_, _data) => res(value)))
+    if (this.localMode) {
+      this.localStorage.set(key, value)
+      return Promise.resolve(value)
+    }
+
+    return new Promise((res) => {
+      this.client.set(key, value, (_, _data) => res(value))
+    })
   }
 
   public static setSharded(key: string, value: string): Promise<string> {
@@ -37,15 +53,22 @@ export default class Redis {
   }
 
   public static async inc(key: string, amount = 1): Promise<number> {
-    if (amount === 1) {
-      return new Promise(res => this.client.incr(key, (_, data) => res(data)))
-    } else {
-      const waitFor = []
-      while (amount-- > 0)
-        waitFor.push(new Promise(res => this.client.incr(key, (_, data) => res(data))))
-      const out = await Promise.all(waitFor)
-      return out.sort().reverse()[0]
+    if (this.localMode) {
+      this.localStorage.set(key, this.localStorage.get(key) + amount)
+      return Promise.resolve(this.localStorage.get(key))
     }
+
+    if (amount === 1) {
+      return new Promise((res) => {
+        this.client.incr(key, (_, data) => res(data))
+      })
+    }
+
+    const waitFor = []
+    while (amount-- > 0)
+      waitFor.push(new Promise(res => this.client.incr(key, (_, data) => res(data))))
+    const out = await Promise.all(waitFor)
+    return out.sort()[out.length - 1]
   }
 
   public static incSharded(key: string, amount = 1): Promise<number> {
