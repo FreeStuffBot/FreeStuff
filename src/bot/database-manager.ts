@@ -2,11 +2,13 @@ import { Guild, TextChannel } from 'discord.js'
 import { Long } from 'mongodb'
 import { CronJob } from 'cron'
 import { Store } from 'freestuff'
-import { FreeStuffBot, Core } from '../index'
+import { Core } from '../index'
+import FreeStuffBot from '../freestuffbot'
 import Database from '../database/database'
 import { DatabaseGuildData, GuildData } from '../types/datastructs'
 import { FilterableStore, GuildSetting } from '../types/context'
 import { Util } from '../util/util'
+import Logger from '../util/logger'
 
 
 export default class DatabaseManager {
@@ -73,7 +75,7 @@ export default class DatabaseManager {
     return Database
       .collection('guilds')
       ?.find(
-        Core.singleShard
+        Core.options.shardCount === 1
           ? { }
           : { sharder: { $mod: [ Core.options.shardCount, Core.options.shards[0] ] } }
       )
@@ -122,7 +124,7 @@ export default class DatabaseManager {
     const obj = await Database
       .collection('guilds')
       ?.findOne({ _id: Long.fromString(guild) })
-      .catch(console.error)
+      .catch(Logger.error)
     if (!obj) return undefined
     return obj
   }
@@ -143,7 +145,7 @@ export default class DatabaseManager {
    */
   public async parseGuildData(dbObject: DatabaseGuildData): Promise<GuildData> {
     if (!dbObject) return undefined
-    const responsible = Core.singleShard || Util.belongsToShard(dbObject._id)
+    const responsible = (Core.options.shardCount === 1) || Util.belongsToShard(dbObject._id)
     let guildInstance: Guild
     try {
       guildInstance = await Core.guilds.fetch(dbObject._id.toString())

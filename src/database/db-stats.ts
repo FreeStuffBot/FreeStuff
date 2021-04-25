@@ -1,6 +1,7 @@
 import { CronJob } from 'cron'
-import * as chalk from 'chalk'
-import { FreeStuffBot, Core } from '../index'
+import { Core } from '../index'
+import FreeStuffBot from '../freestuffbot'
+import Logger from '../util/logger'
 import Database, { dbcollection } from './database'
 
 
@@ -12,21 +13,15 @@ export class DbStats {
         const guildCount = bot.guilds.cache.size
         const guildMemberCount = bot.guilds.cache.array().reduce((count, g) => count + g.memberCount, 0)
 
-        if (Core.singleShard) {
-          console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.cache.size}; Members: ${guildMemberCount}`));
-          (await this.usage).guilds.updateYesterday(guildCount, false);
-          (await this.usage).members.updateYesterday(guildMemberCount, false)
-        } else {
-          console.log(chalk.gray(`Updated Stats. Guilds: ${bot.guilds.cache.size}; Members: ${guildMemberCount}; Shard ${Core.options.shards[0]}`));
-          (await this.usage).guilds.updateYesterday(guildCount, true);
-          (await this.usage).members.updateYesterday(guildMemberCount, true)
-        }
+        Logger.process(`Updated Stats. Guilds: ${bot.guilds.cache.size}; Members: ${guildMemberCount}; Shard ${bot.options.shards[0]}`);
+        (await this.usage).guilds.updateYesterday(guildCount, true);
+        (await this.usage).members.updateYesterday(guildMemberCount, true)
 
         this.updateTopClients()
       }, 60000)
     }).start()
 
-    Core.on('ready', this.updateTopClients)
+    bot.on('ready', this.updateTopClients)
   }
 
   public static get usage(): Promise<DbStatUsage> {

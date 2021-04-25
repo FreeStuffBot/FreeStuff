@@ -8,7 +8,7 @@ export class Util {
   }
 
   public static belongsToShard(id: Long) {
-    if (Core.singleShard) return true
+    if (Core.options.shardCount === 1) return true
     return id
       .shiftRight(22)
       .modulo(Long.fromNumber(Core.options.shardCount))

@@ -1,5 +1,6 @@
 import { Semaphore } from 'await-semaphore'
-import { FreeStuffBot, Core } from '../index'
+import { config, Core } from '../index'
+import FreeStuffBot from '../freestuffbot'
 import Redis from '../database/redis'
 import FreeCommand from './commands/free'
 import NewFreeCommand from './slashcommands/free'
@@ -11,7 +12,7 @@ export default class AnnouncementManager {
   private semaphore: Semaphore;
 
   public constructor(bot: FreeStuffBot) {
-    const checkInterval = bot.devMode ? 5 : 60
+    const checkInterval = config.bot.mode === 'regular' ? 60 : 5
     this.semaphore = new Semaphore(1)
 
     Core.fsapi.on('free_games', async (ids) => {

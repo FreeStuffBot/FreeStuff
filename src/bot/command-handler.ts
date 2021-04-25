@@ -1,5 +1,6 @@
 import { Message } from 'discord.js'
-import { FreeStuffBot, config, Core } from '../index'
+import { Core, config } from '../index'
+import FreeStuffBot from '../freestuffbot'
 import { GuildData } from '../types/datastructs'
 import { Command } from '../types/commands'
 import Const from './const'

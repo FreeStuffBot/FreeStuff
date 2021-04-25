@@ -2,7 +2,9 @@ import Axios from 'axios'
 import { MessageEmbed } from 'discord.js'
 import { GuildData } from '../types/datastructs'
 import { Interaction, InteractionApplicationCommandCallbackData, InteractionResponseType, InteractionCommandHandler, InteractionReplyFunction, InteractionResponseFlags } from '../types/interactions'
-import { Core, FreeStuffBot } from '../index'
+import { Core } from '../index'
+import FreeStuffBot from '../freestuffbot'
+import Logger from '../util/logger'
 import NewFreeCommand from './slashcommands/free'
 import NewVoteCommand from './slashcommands/vote'
 import NewHelpCommand from './slashcommands/help'
@@ -55,7 +57,7 @@ export default class InteractionReceiver {
     if (this.HANDLER[i.data.name]) {
       this.runCommand(i, this.HANDLER[i.data.name])
     } else {
-      console.log(`Unhandled command "${i.data.name}"`)
+      Logger.warn(`Unhandled command "${i.data.name}"`)
       const reply = this.getReplyFunction(i, null)
       reply('DeferredChannelMessageWithSource', { })
     }

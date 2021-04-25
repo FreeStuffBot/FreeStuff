@@ -1,5 +1,6 @@
 import { GuildData } from '../types/datastructs'
 import { Core } from '../index'
+import Logger from './logger'
 
 
 export default function guildDataToViewString(g: GuildData, maxLength?: number, errorMessage?: string) {
@@ -14,7 +15,7 @@ export default function guildDataToViewString(g: GuildData, maxLength?: number, 
   if (guilddata.length > (maxLength | 1024)) guilddata = `\`\`\`json\n${JSON.stringify(gd || { error: 'Guild Data Error' }, null, 1)}\`\`\``
   if (guilddata.length > (maxLength | 1024)) guilddata = `\`\`\`json\n${JSON.stringify(gd || { error: 'Guild Data Error' })}\`\`\``
   if (guilddata.length > (maxLength | 1024)) {
-    console.log(JSON.stringify(gd, null, 2))
+    Logger.log(JSON.stringify(gd, null, 2))
     guilddata = errorMessage || 'Guild data too long. Check logs.'
   }
 

@@ -3,6 +3,7 @@ import { GuildData } from '../../types/datastructs'
 import { Command, CommandHandler, ReplyFunction, SettingsSubcommand } from '../../types/commands'
 import { Core } from '../../index'
 import Const from '../const'
+import Logger from '../../util/logger'
 import SetChannelHandler from './set/channel'
 import SetLanguageHandler from './set/language'
 import SetMentionHandler from './set/mention'
@@ -70,7 +71,7 @@ export default class SettingsCommand extends Command {
           }
         })
         return true
-      } catch (ex) { console.error(ex) }
+      } catch (ex) { Logger.error(ex) }
     }
 
     for (const key of this.commands.keys()) {

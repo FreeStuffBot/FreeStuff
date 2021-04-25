@@ -2,6 +2,7 @@ import { Message, WebhookClient } from 'discord.js'
 import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core, config } from '../../index'
+import Logger from '../../util/logger'
 import guildDataToViewString from '../../util/guilddata-visualizer'
 
 
@@ -47,7 +48,7 @@ export default class HereCommand extends Command {
     const guilddata = guildDataToViewString(g)
 
     if (!config.supportWebhook?.id || !config.supportWebhook?.token) {
-      console.warn('Someone tried to use the /here command but your support webhook is not set up!')
+      Logger.warn('Someone tried to use the /here command but your support webhook is not set up!')
       return false
     }
 

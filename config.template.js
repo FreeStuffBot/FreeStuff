@@ -8,7 +8,7 @@ const debug = process.env.NODE_ENV === 'debug'
 module.exports = {
   bot: {
     token: 'TOKEN', // discord token
-    mode: 'regular', // either "beta" or "regular". the latter is default.
+    mode: 'regular', // either "dev", "beta" or "regular". the latter is default.
     clientid: '123456789' // discord client id
   },
   mode: {

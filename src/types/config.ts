@@ -16,7 +16,7 @@ type botMode = {
 export type configjs = {
   bot: {
     token: string,
-    mode: 'beta' | 'regular',
+    mode: 'dev' | 'beta' | 'regular',
     clientid: string
   },
   mode: botMode,

@@ -8,6 +8,7 @@ import SentryManager from '../thirdparty/sentry/sentry'
 import Redis from '../database/redis'
 import { Theme } from '../types/context'
 import { DatabaseGuildData, GuildData } from '../types/datastructs'
+import Logger from '../util/logger'
 import Const from './const'
 import ThemeOne from './themes/1'
 import ThemeTwo from './themes/2'
@@ -44,7 +45,7 @@ export default class MessageDistributor {
     const lga = await Redis.getSharded('lga')
     const startAt = lga ? parseInt(lga, 10) : 0
 
-    const query = Core.singleShard
+    const query = Core.options.shardCount === 1
       ? {
           sharder: { $gt: startAt },
           channel: { $ne: null }
@@ -61,7 +62,7 @@ export default class MessageDistributor {
       .toArray()
     if (!guilds) return
 
-    console.log(`Starting to announce ${content.length} games on ${guilds.length} guilds: ${content.map(g => g.title)} - ${new Date().toLocaleTimeString()}`)
+    Logger.info(`Starting to announce ${content.length} games on ${guilds.length} guilds: ${content.map(g => g.title)} - ${new Date().toLocaleTimeString()}`)
     await Redis.setSharded('am', '0')
     for (const g of guilds) {
       if (!g) continue
@@ -74,11 +75,12 @@ export default class MessageDistributor {
           await new Promise(res => setTimeout(() => res(null), 200 * successIn.length))
         }
       } catch (ex) {
-        console.error(ex)
+        Logger.error(ex)
         SentryManager.report(ex)
       }
     }
-    console.log(`Done announcing: ${content.map(g => g.title)} - ${new Date().toLocaleTimeString()}`)
+
+    Logger.info(`Done announcing: ${content.map(g => g.title)} - ${new Date().toLocaleTimeString()}`)
     const announcementsMade = await Promise.all(content.map(async (game) => {
       return { id: game.id, reach: parseInt(await Redis.getSharded('am_' + game.id), 10) }
     }))
@@ -100,7 +102,7 @@ export default class MessageDistributor {
         if (!g) return
         this.sendToGuild(g, [ content ], true, true)
       })
-      .catch(console.error)
+      .catch(Logger.error)
   }
 
   public async sendToGuild(g: DatabaseGuildData, content: GameInfo[], test: boolean, force: boolean): Promise<number[]> {

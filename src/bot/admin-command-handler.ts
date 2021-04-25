@@ -2,7 +2,9 @@ import { hostname } from 'os'
 import { Message } from 'discord.js'
 import { Long } from 'mongodb'
 import { GameData, DatabaseGuildData } from '../types/datastructs'
-import { FreeStuffBot, Core, config } from '../index'
+import { Core, config } from '../index'
+import FreeStuffBot from '../freestuffbot'
+import Logger from '../util/logger'
 import Database from '../database/database'
 import FreeCommand from './commands/free'
 import NewFreeCommand from './slashcommands/free'
@@ -27,7 +29,7 @@ export default class AdminCommandHandler {
     bot.on('message', (m) => {
       if (m.author.bot) return
       if (!m.guild) return
-      if (!m.content.toLowerCase().startsWith(Core.devMode ? '$kabi' : '$freestuff')) return
+      if (!m.content.toLowerCase().startsWith(config.bot.mode === 'regular' ? '$freestuff' : '$betastuff')) return
       if (!m.guild.me.permissionsIn(m.channel).has('SEND_MESSAGES')) return
       if (!config.admins?.includes(m.author.id)) return
 
@@ -76,12 +78,12 @@ export default class AdminCommandHandler {
           .findOne({ _id: Long.fromString(orgmes.guild.id) })
           .then(async (data) => {
             data._ = {
-              responsibleShard: Core.singleShard ? 'Single' : Core.options.shards[0],
+              responsibleShard: Core.options.shards[0],
               runningOnServer: await hostname()
             }
             orgmes.channel.send('```json\n' + JSON.stringify(data, null, 2) + '```')
           })
-          .catch(console.error)
+          .catch(Logger.error)
         return true
 
       case 'distribute':

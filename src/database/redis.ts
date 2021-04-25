@@ -1,6 +1,7 @@
 import * as redis from 'redis'
 import SentryManager from '../thirdparty/sentry/sentry'
 import { Core, config } from '../index'
+import Logger from '../util/logger'
 
 
 export type dbcollection = 'guilds' | 'stats-usage' | 'games';
@@ -22,7 +23,7 @@ export default class Redis {
 
     Redis.client = redis.createClient(config.redis)
     Redis.client.on('error', (err) => {
-      console.error(err)
+      Logger.error(err)
       SentryManager.report(err)
     })
   }

@@ -1,8 +1,10 @@
 import { Long } from 'mongodb'
 import { GuildData } from '../types/datastructs'
 import { getGitCommit } from '../util/git-parser'
-import { FreeStuffBot, Core } from '../index'
+import { Core } from '../index'
+import FreeStuffBot from '../freestuffbot'
 import { Util } from '../util/util'
+import Logger from '../util/logger'
 import FreeCommand from './commands/free'
 
 
@@ -36,7 +38,7 @@ export default class Sharder {
     })
     if (res._status !== 200) {
       if (this.errorCounter++ % 10 === 0)
-        console.warn(`Failed to report status to manager service. (${this.errorCounter - 1})`)
+        Logger.warn(`Failed to report status to manager service. (${this.errorCounter - 1})`)
       return
     }
 
@@ -53,22 +55,22 @@ export default class Sharder {
     switch (command) {
       case 'shutdown':
         await Core.sharder.updateManager('offline')
-        console.log('[MANAGER] Shutdown.')
+        Logger.manager('Shutdown.')
         process.exit(0)
 
       case 'reload_lang':
         Core.languageManager.load()
-        console.log('[MANAGER] Reload language cache.')
+        Logger.manager('Reload language cache.')
         break
 
       case 'resend_to_guild':
-        console.log('[MANAGER] Resend received')
+        Logger.manager('Resend received')
         for (const guildid of args) {
           if (!Util.belongsToShard(Long.fromString(guildid))) continue
           const guildData = await Core.databaseManager.getGuildData(guildid)
           const freebies = FreeCommand.getCurrentFreebies()
           Core.messageDistributor.sendToGuild(guildData, freebies, false, false)
-          console.log(`Resent to ${guildid}`)
+          Logger.manager(`Resent to ${guildid}`)
         }
         break
     }

@@ -1,37 +1,38 @@
 import { hostname } from 'os'
-import * as chalk from 'chalk'
 import * as Sentry from '@sentry/node'
-import { Core, config } from '../../index'
+import { config } from '../../index'
+import Logger from '../../util/logger'
 
 
 export default class SentryManager {
 
-  public static init(devMode: boolean) {
-    if (devMode) {
-      console.log(chalk.yellowBright('Skipping Sentry initialization. Reason: no config found'))
+  public static init() {
+    if (config.bot.mode !== 'regular') {
+      Logger.process('Skipping Sentry initialization. Reason: config.bot.mode != "regular"')
       return
     }
 
     if (!config.thirdparty?.sentry?.dsn) {
-      console.log(chalk.yellowBright('Skipping Sentry initialization. Reason: devMode = true'))
+      Logger.process('Skipping Sentry initialization. Reason: no config found')
       return
     }
 
-    console.log(chalk.yellowBright('Initializing Sentry ...'))
+    Logger.process('Initializing Sentry ...')
 
     Sentry.init({
       dsn: config.thirdparty.sentry.dsn,
       serverName: hostname()
     })
 
-    console.log(chalk.green('Sentry initialized'))
+    Logger.process('Sentry initialized')
   }
 
   public static report(exception: Sentry.Exception) {
-    if (Core.devMode) {
-      console.log('=== SENTRY ERROR ===')
+    if (config.bot.mode !== 'regular') {
+      Logger.error('=== SENTRY ERROR ===')
+      // eslint-disable-next-line no-console
       console.trace(exception)
-      console.log('====================')
+      Logger.error('====================')
     } else {
       Sentry.captureException(exception)
     }

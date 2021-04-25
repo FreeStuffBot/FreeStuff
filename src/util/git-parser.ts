@@ -1,9 +1,10 @@
 import { execSync } from 'child_process'
 import { getLastCommit } from 'git-last-commit'
 import * as chalk from 'chalk'
+import Logger from './logger'
 
 
-interface GitCommit {
+export interface GitCommit {
   shortHash: string;
   hash: string;
   subject: string;
@@ -30,9 +31,10 @@ export function getGitCommit(): Promise<GitCommit> {
   })
 }
 
-export async function logVersionDetails() {
+export async function logVersionDetails(): Promise<GitCommit> {
   const commit = await getGitCommit()
   const commitDate = new Date(commit.time)
-  console.log(`Running commit ${chalk.blueBright(commit.shortHash)} ${chalk.gray(`(${commit.subject})`)}`)
-  console.log(`From ${chalk.blueBright(commitDate.toLocaleString())}`)
+  Logger.info(`Running commit ${chalk.blueBright(commit.shortHash)} ${chalk.gray(`(${commit.subject})`)}`)
+  Logger.info(`From ${chalk.blueBright(commitDate.toLocaleString())}`)
+  return commit
 }
