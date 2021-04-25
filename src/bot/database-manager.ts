@@ -133,34 +133,36 @@ export default class DatabaseManager {
    * Get the guilds data from the database
    * @param guild guild object
    */
-  public async getGuildData(guild: string): Promise<GuildData> {
+  public async getGuildData(guild: string, fetchInstances = true): Promise<GuildData> {
     if (!guild) return undefined
     const obj = await this.getRawGuildData(guild)
-    return obj ? this.parseGuildData(obj) : undefined
+    if (!obj) return undefined
+    return this.parseGuildData(obj, fetchInstances)
   }
 
   /**
    * Parse a DatabaseGuildData object to a GuildData object
    * @param dbObject raw input
    */
-  public async parseGuildData(dbObject: DatabaseGuildData): Promise<GuildData> {
+  public async parseGuildData(dbObject: DatabaseGuildData, fetchInstances = true): Promise<GuildData> {
     if (!dbObject) return undefined
     const responsible = (Core.options.shardCount === 1) || Util.belongsToShard(dbObject._id)
     let guildInstance: Guild
     try {
-      guildInstance = await Core.guilds.fetch(dbObject._id.toString())
+      if (fetchInstances)
+        guildInstance = await Core.guilds.fetch(dbObject._id.toString())
     } catch (err) {
       return undefined
     }
     return {
       ...dbObject,
-      channelInstance: dbObject.channel && responsible && guildInstance
+      channelInstance: fetchInstances && dbObject.channel && responsible && guildInstance
         ? (guildInstance.channels.resolve((dbObject.channel as Long).toString()) as TextChannel)
         : undefined,
-      roleInstance: dbObject.role && responsible && guildInstance
-        ? (dbObject.role.toString() === '1'
+      roleInstance: fetchInstances && dbObject.role && responsible && guildInstance
+        ? dbObject.role.toString() === '1'
             ? guildInstance.roles.everyone
-            : guildInstance.roles.resolve((dbObject.role as Long).toString()))
+            : guildInstance.roles.resolve((dbObject.role as Long).toString())
         : undefined,
       currency: ((dbObject.settings & (1 << 4)) === 0 ? 'euro' : 'usd') as ('euro' | 'usd'),
       react: (dbObject.settings & (1 << 5)) !== 0,
