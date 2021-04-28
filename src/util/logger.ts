@@ -6,37 +6,37 @@ export default class Logger {
 
   public static log(...text: string[]) {
     const out = text.join(chalk.gray(', '))
-    console.log(chalk`{gray [{cyan LOG}]} {white ${out}}`)
+    console.log(chalk`{gray {cyan >}} {white ${out}}`)
   }
 
   public static warn(...text: string[]) {
     const out = text.join(chalk.gray(', '))
-    console.warn(chalk`{gray [{yellow WARN}]} {yellowBright ${out}}`)
+    console.warn(chalk`{gray {yellow !}} {yellowBright ${out}}`)
   }
 
   public static error(...text: string[]) {
     const out = text.join(chalk.gray(', '))
-    console.error(chalk`{gray [{red ERROR}]} {redBright ${out}}`)
+    console.error(chalk`{gray {red X}} {redBright ${out}}`)
   }
 
   public static debug(...text: string[]) {
     const out = text.join(chalk.gray(', '))
-    console.log(chalk`{gray [{white DEBUG}]} {white ${out}}`)
+    console.log(chalk`{gray {white •}} {white ${out}}`)
   }
 
   public static info(...text: string[]) {
     const out = text.join(chalk.gray(', '))
-    console.info(chalk`{gray [{blue INFO}]} {white ${out}}`)
+    console.info(chalk`{gray {blue i}} {white ${out}}`)
   }
 
   public static process(...text: string[]) {
     const out = text.join(chalk.gray(', '))
-    console.info(chalk`{gray [{green BOT}]} {white ${out}}`)
+    console.info(chalk`{gray {green √}} {white ${out}}`)
   }
 
   public static manager(...text: string[]) {
     const out = text.join(chalk.gray(', '))
-    console.info(chalk`{gray [{green MANAGER}]} {white ${out}}`)
+    console.info(chalk`{gray {green M}} {white ${out}}`)
   }
 
 }

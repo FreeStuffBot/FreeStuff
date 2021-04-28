@@ -14,6 +14,7 @@ import Database from './database/database'
 import Redis from './database/redis'
 import Logger from './util/logger'
 import { Util } from './util/util'
+import Manager from './controller/manager'
 
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -36,9 +37,19 @@ async function run() {
     await Database.init()
     await Redis.init()
 
-    mountBot(undefined, undefined, commit)
+    const command = await Manager.ready()
 
+    switch (command.id) {
+      case 'shutdown':
+        Logger.info('Shutting down.')
+        process.exit(0)
+
+      case 'startup':
+        mountBot(command.shardId, command.shardCount, commit)
+
+    }
   } catch (err) {
+    Logger.error('Error in main:')
     Logger.error(err)
   }
 }

@@ -154,6 +154,7 @@ export default class DatabaseManager {
     } catch (err) {
       return undefined
     }
+
     return {
       ...dbObject,
       channelInstance: fetchInstances && dbObject.channel && responsible && guildInstance

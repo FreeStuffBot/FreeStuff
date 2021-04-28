@@ -9,7 +9,11 @@ type botMode = {
   shardCount: number
 } | {
   name: 'discovery',
-  master: 'api'
+  master: {
+    host: string,
+    path: string,
+    auth?: string
+  }
 }
 
 

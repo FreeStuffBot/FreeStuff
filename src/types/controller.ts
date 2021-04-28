@@ -17,3 +17,12 @@ export interface Shard {
 export interface ShardStatusPayload extends Shard {
   totalShardCount: number;
 }
+
+
+export type ManagerCommand = {
+  id: 'startup',
+  shardCount?: number,
+  shardId?: number
+} | {
+  id: 'shutdown'
+}
