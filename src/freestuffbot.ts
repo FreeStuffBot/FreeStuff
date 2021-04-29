@@ -15,6 +15,7 @@ import Const from './bot/const'
 import InteractionReceiver from './bot/interactions-receiver'
 import { GuildData } from './types/datastructs'
 import Logger from './util/logger'
+import Manager from './controller/manager'
 import { config } from './index'
 
 
@@ -36,6 +37,7 @@ export default class FreeStuffBot extends Client {
 
   public start(gitCommit: GitCommit) {
     if (this.readyAt) return // bot is already started
+    Manager.status('startup')
 
     this.fsapi = new FreeStuffApi({
       ...config.apisettings as any,
@@ -63,6 +65,7 @@ export default class FreeStuffBot extends Client {
 
     this.on('ready', () => {
       clearTimeout(manualConnectTimer)
+      Manager.status('operational')
 
       const shard = `Shard ${(this.options.shards as number[]).join(', ')} / ${this.options.shardCount}`
       Logger.process(chalk`Bot ready! Logged in as {yellowBright ${this.user?.tag}} {gray (${shard})}`)
@@ -72,6 +75,12 @@ export default class FreeStuffBot extends Client {
       DbStats.usage.then(u => u.reconnects.updateToday(1, true))
     })
 
+    this.on('shardDisconnect', () => { Manager.status('disconnected') })
+    this.on('shardReconnecting', () => { Manager.status('reconnecting') })
+    this.on('shardResume', () => { Manager.status('operational') })
+    this.on('shardReady', () => { Manager.status('operational') })
+
+    Manager.status('identifying')
     this.login(config.bot.token)
   }
 

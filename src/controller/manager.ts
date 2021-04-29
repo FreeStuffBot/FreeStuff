@@ -1,7 +1,8 @@
-import { Manager as SocketManager, Socket } from 'socket.io-client'
+import { hostname } from 'os'
+import { io, Socket } from 'socket.io-client'
 import { config } from '../index'
 import Logger from '../util/logger'
-import { ManagerCommand } from '../types/controller'
+import { ManagerCommand, ShardStatus, ShardTask } from '../types/controller'
 import { getGitCommit } from '../util/git-parser'
 
 
@@ -14,8 +15,10 @@ export default class Manager {
   private static readonly DEFAULT_SOCKET_PATH = '/api/internal/socket'
 
   private static started = false
-  private static socketManager: SocketManager = null
   private static socket: Socket = null
+  private static assignmentPromise: (any) => any = null
+  private static assignedShardId = -1
+  private static assignedShardCount = -1
 
   public static ready(): Promise<ManagerCommand> {
     if (this.started) throw new Error('Already started')
@@ -39,10 +42,19 @@ export default class Manager {
 
     if (config.mode.name === 'discovery') {
       this.openSocket()
-      return new Promise((_res) => {})
+      return new Promise((res) => {
+        this.assignmentPromise = (data: any) => res(data)
+      })
     }
 
+    Logger.error('Invalid mode name, shutting down')
     return Promise.resolve({ id: 'shutdown' })
+  }
+
+  public static status(status: ShardStatus) {
+    Logger.info(`Service status: ${status}`)
+    if (!this.socket) return
+    this.socket.emit('status', status)
   }
 
   private static async openSocket() {
@@ -51,22 +63,21 @@ export default class Manager {
     const socketHost = config.mode.master.host || this.DEFAULT_SOCKET_HOST
     const socketPath = config.mode.master.path || this.DEFAULT_SOCKET_PATH
     const gitCommit = await getGitCommit()
-    this.socketManager = new SocketManager(socketHost, {
+
+    this.socket = io(socketHost, {
       reconnectionDelayMax: 10000,
       query: {
+        type: 'shard',
         client: 'discord',
         mode: config.bot.mode,
-        version: gitCommit.shortHash
+        version: gitCommit.hash,
+        server: hostname()
       },
-      autoConnect: false,
       path: socketPath,
       jsonp: false,
-      transports: [ 'websocket' ]
-    })
-
-    this.socket = this.socketManager.socket(socketPath, {
+      transports: [ 'websocket' ],
       auth: {
-        token: config.mode.master.auth || config.apisettings.key
+        key: config.mode.master.auth || config.apisettings.key
       }
     })
 
@@ -77,9 +88,48 @@ export default class Manager {
   }
 
   private static prepareSocket() {
-    this.socket.on('open', () => {
+    this.socket.on('connect', () => {
       Logger.process('Manager socket connected')
     })
+
+    this.socket.on('disconnect', () => {
+      Logger.process('Manager socket disconnected')
+    })
+
+    this.socket.on('task', (task: ShardTask) => {
+      this.newTask(task)
+    })
+  }
+
+  private static newTask(task: ShardTask) {
+    Logger.process(`Manager assigned task: ${Object.values(task).join(', ')}`)
+
+    if (task.id === 'ready') {
+      Logger.process('Cannot undo connection, restarting')
+      process.exit(0)
+    }
+
+    if (task.id === 'assigned') {
+      if (!this.assignmentPromise) {
+        if (this.assignedShardId !== task.shardId) {
+          Logger.process('Reassignment to different shard id, restarting')
+          process.exit(0)
+        }
+        if (this.assignedShardCount !== task.shardCount) {
+          Logger.process('Reassignment to different shard count, restarting')
+          process.exit(0)
+        }
+      } else {
+        this.assignedShardCount = task.shardCount
+        this.assignedShardId = task.shardId
+        this.assignmentPromise({
+          id: 'startup',
+          shardCount: task.shardCount,
+          shardId: task.shardId
+        })
+        this.assignmentPromise = null
+      }
+    }
   }
 
 }

@@ -70,7 +70,7 @@ function mountBot(shardId: number, shardCount: number, commit: GitCommit) {
     messageCacheLifetime: 0,
     messageCacheMaxSize: 0,
     shardCount,
-    shards: shardId ? [ shardId ] : undefined
+    shards: (shardId !== undefined) ? [ shardId ] : undefined
   })
   Core.start(commit)
 }

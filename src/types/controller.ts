@@ -26,3 +26,14 @@ export type ManagerCommand = {
 } | {
   id: 'shutdown'
 }
+
+
+export type ShardTask = {
+  id: 'ready'
+} | {
+  id: 'assigned'
+  shardId: number,
+  shardCount: number
+}
+
+export type ShardStatus = 'idle' | 'reconnecting' | 'startup' | 'disconnected' | 'identifying' | 'operational'

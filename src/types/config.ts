@@ -10,8 +10,8 @@ type botMode = {
 } | {
   name: 'discovery',
   master: {
-    host: string,
-    path: string,
+    host?: string,
+    path?: string,
     auth?: string
   }
 }

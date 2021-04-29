@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/** DETAILED CONFIG TYPINGS CAN BE FOUND IN src/types/config.ts! */
 
 const production = process.env.NODE_ENV === 'production'
 const dev = process.env.NODE_ENV === 'dev'
@@ -13,7 +14,7 @@ module.exports = {
   },
   mode: {
     name: 'single', // "single" = no sharding, "shard" = sharding, "discovery" = auto-sharding
-    master: 'api', // [only if name = "discovery"] dictates the master node to assign this worker node
+    master: { }, // [only if name = "discovery"] dictates the master node to assign this worker node. see type file for more info
     shardId: process.env.SHARD_ID || 0, // [only if name = "shard"] this shard id
     shardCount: process.env.SHARD_COUNT || 1 // [only if name = "shard"] total shard count
   },
