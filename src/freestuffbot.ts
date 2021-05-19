@@ -11,7 +11,7 @@ import Localisation from './bot/localisation'
 import { DbStats } from './database/db-stats'
 import { GitCommit } from './util/git-parser'
 import Const from './bot/const'
-import InteractionReceiver from './bot/interactions-receiver'
+import InteractionHandler from './bot/interactions-handler'
 import { GuildData } from './types/datastructs'
 import Logger from './util/logger'
 import Manager from './controller/manager'
@@ -29,7 +29,7 @@ export default class FreeStuffBot extends Client {
   public announcementManager: AnnouncementManager;
   public languageManager: LanguageManager;
   public localisation: Localisation;
-  public interactionsReceiver: InteractionReceiver;
+  public interactionsHandler: InteractionHandler;
 
   //
 
@@ -50,7 +50,7 @@ export default class FreeStuffBot extends Client {
     this.announcementManager = new AnnouncementManager(this)
     this.languageManager = new LanguageManager()
     this.localisation = new Localisation()
-    this.interactionsReceiver = new InteractionReceiver(this)
+    this.interactionsHandler = new InteractionHandler(this)
 
     DbStats.startMonitoring(this)
 

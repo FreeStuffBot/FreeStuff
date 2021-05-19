@@ -13,7 +13,7 @@ import NewInviteCommand from './slashcommands/invite'
 import NewTestCommand from './slashcommands/test'
 
 
-export default class InteractionReceiver {
+export default class InteractionHandler {
 
   private readonly HANDLER: { [token: string]: InteractionCommandHandler } = {}
 
@@ -67,8 +67,7 @@ export default class InteractionReceiver {
     for (const key in object) {
       if (key === 'context') continue
       if (typeof object[key] === 'object') this.translateObject(object[key], guildData, context)
-      else if (key === 'string') object[key] = Core.text(guildData, object[key], context)
-      else continue
+      else if (typeof key === 'string') object[key] = Core.text(guildData, object[key], context)
     }
   }
 

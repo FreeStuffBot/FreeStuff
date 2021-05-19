@@ -25,6 +25,7 @@ export default class Manager {
   private static assignedShardCount = -1
   private static currentStatus: ShardStatus = 'idle'
 
+
   public static ready(): Promise<ShardAction> {
     if (this.started) throw new Error('Already started')
     this.started = true
