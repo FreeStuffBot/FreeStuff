@@ -8,12 +8,12 @@ import { GuildData } from './datastructs'
 
 
 export interface CommandInfo {
-  name: string;
-  desc: string;
-  trigger: string[];
-  adminOnly?: boolean;
-  serverManagerOnly?: boolean;
-  hideOnHelp?: boolean;
+  name: string
+  desc: string
+  trigger: string[]
+  adminOnly?: boolean
+  serverManagerOnly?: boolean
+  hideOnHelp?: boolean
 }
 
 

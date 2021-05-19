@@ -3,6 +3,7 @@ import { GameFlag, GameInfo } from 'freestuff'
 import { Core } from '../../index'
 import Const from '../../bot/const'
 import { GuildData } from '../../types/datastructs'
+import Experiments from '../../controller/experiments'
 
 
 export type themeSettings = {
@@ -98,7 +99,7 @@ export default class BaseTheme {
     if (!settings.themeImages) return undefined
 
     return {
-      url: !Core.sharder.runExperimentOnServer('announcement_tags', data)
+      url: !Experiments.runExperimentOnServer('announcement_tags', data)
         ? content.thumbnail.org
         : settings.themeExtraInfo
           ? content.thumbnail.full

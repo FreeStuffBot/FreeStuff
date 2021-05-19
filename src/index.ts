@@ -4,6 +4,25 @@ import { configjs } from './types/config'
 loadDotEnv()
 export const config = require('../config.js') as configjs
 
+function invalidConfig(reason: string) {
+  // eslint-disable-next-line no-console
+  console.error(`Could not start bot for reason config invalid: ${reason}`)
+  process.exit(-1)
+}
+
+if (!config.mongodb?.url) invalidConfig('missing mongodb url')
+if (!config.mongodb?.dbname) invalidConfig('missing mongodb dbname')
+if (!config.mode?.name) invalidConfig('missing mode')
+if (!config.bot?.token) invalidConfig('missing bot token')
+if (!config.bot?.clientid) invalidConfig('missing bot client id')
+if (!config.bot?.mode) invalidConfig('missing bot mode')
+if (!config.apisettings?.key) invalidConfig('missing freestuff api key')
+
+
+/*
+ *
+ */
+
 
 import * as chalk from 'chalk'
 import FreeStuffBot from './freestuffbot'
@@ -22,7 +41,6 @@ export let Core: FreeStuffBot
 
 async function run() {
   try {
-
     if (config.bot.mode === 'dev')
       Logger.info(chalk.bgRedBright.black(' RUNNING DEV MODE '))
 
@@ -37,15 +55,15 @@ async function run() {
     await Database.init()
     await Redis.init()
 
-    const command = await Manager.ready()
+    const action = await Manager.ready()
 
-    switch (command.id) {
+    switch (action.id) {
       case 'shutdown':
         Logger.info('Shutting down.')
         process.exit(0)
 
       case 'startup':
-        mountBot(command.shardId, command.shardCount, commit)
+        mountBot(action.shardId, action.shardCount, commit)
 
     }
   } catch (err) {
@@ -74,4 +92,3 @@ function mountBot(shardId: number, shardCount: number, commit: GitCommit) {
   })
   Core.start(commit)
 }
-

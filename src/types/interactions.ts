@@ -9,42 +9,42 @@ import { GuildData } from './datastructs'
 
 
 export type Interaction = {
-  type: number,
-  token: string,
+  type: number
+  token: string
   user?: {
-    id: string,
-    username: string,
-    avatar: string,
-    discriminator: string,
+    id: string
+    username: string
+    avatar: string
+    discriminator: string
     public_flags: number
   },
   member?: {
     user: {
-      id: string,
-      username: string,
-      avatar: string,
-      discriminator: string,
+      id: string
+      username: string
+      avatar: string
+      discriminator: string
       public_flags: number
     },
-    roles: string[],
-    premium_since: string | null,
-    permissions: string,
-    pending: boolean,
-    nick: string | null,
-    mute: boolean,
-    joined_at: string,
-    is_pending: boolean,
-    deaf: boolean,
+    roles: string[]
+    premium_since: string | null
+    permissions: string
+    pending: boolean
+    nick: string | null
+    mute: boolean
+    joined_at: string
+    is_pending: boolean
+    deaf: boolean
   },
-  id: string,
-  guild_id?: string,
+  id: string
+  guild_id?: string
   data: {
     options: {
-      name: string,
+      name: string
       value: string | number
     }[],
-    option: { [name: string]: string | number }, // custom, parsed
-    name: string,
+    option: { [name: string]: string | number } // custom, parsed
+    name: string
     id: string
   },
   channel_id?: string
@@ -66,7 +66,7 @@ export type InteractionApplicationCommandCallbackData = {
   tts?: boolean,
   content: string,
   flags?: InteractionResponseFlags
-  embeds?: Partial<MessageEmbed>[],
+  embeds?: Partial<MessageEmbed>[]
   allowed_mentions?: any
 }
 

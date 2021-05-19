@@ -6,7 +6,6 @@ import DatabaseManager from './bot/database-manager'
 import MessageDistributor from './bot/message-distributor'
 import AdminCommandHandler from './bot/admin-command-handler'
 import AnnouncementManager from './bot/announcement-manager'
-import Sharder from './bot/sharder'
 import LanguageManager from './bot/language-manager'
 import Localisation from './bot/localisation'
 import { DbStats } from './database/db-stats'
@@ -28,7 +27,6 @@ export default class FreeStuffBot extends Client {
   public messageDistributor: MessageDistributor;
   public adminCommandHandler: AdminCommandHandler;
   public announcementManager: AnnouncementManager;
-  public sharder: Sharder;
   public languageManager: LanguageManager;
   public localisation: Localisation;
   public interactionsReceiver: InteractionReceiver;
@@ -50,7 +48,6 @@ export default class FreeStuffBot extends Client {
     this.messageDistributor = new MessageDistributor()
     this.adminCommandHandler = new AdminCommandHandler(this)
     this.announcementManager = new AnnouncementManager(this)
-    this.sharder = new Sharder(this)
     this.languageManager = new LanguageManager()
     this.localisation = new Localisation()
     this.interactionsReceiver = new InteractionReceiver(this)

@@ -4,14 +4,14 @@ import { FreeStuffApiSettings } from 'freestuff'
 type botMode = {
   name: 'single'
 } | {
-  name: 'shard',
-  shardId: number,
+  name: 'shard'
+  shardId: number
   shardCount: number
 } | {
-  name: 'discovery',
+  name: 'discovery'
   master: {
-    host?: string,
-    path?: string,
+    host?: string
+    path?: string
     auth?: string
   }
 }
@@ -19,13 +19,13 @@ type botMode = {
 
 export type configjs = {
   bot: {
-    token: string,
-    mode: 'dev' | 'beta' | 'regular',
+    token: string
+    mode: 'dev' | 'beta' | 'regular'
     clientid: string
   },
-  mode: botMode,
+  mode: botMode
   mongodb: {
-    url: string,
+    url: string
     dbname: string
   },
   redis?: any,
@@ -34,9 +34,9 @@ export type configjs = {
       dsn: string
     }
   },
-  apisettings: FreeStuffApiSettings,
+  apisettings: FreeStuffApiSettings
   supportWebhook?: {
-    id: string,
+    id: string
     token: string
   },
   admins?: string[]

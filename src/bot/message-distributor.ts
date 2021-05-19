@@ -39,7 +39,11 @@ export default class MessageDistributor {
 
   //
 
-  public async distribute(content: GameInfo[]) {
+  /**
+   * Sends out the games to all guilds this shard is responsible for
+   * @param content game(s) to announce
+   */
+  public async distribute(content: GameInfo[]): Promise<void> {
     content = content.filter(g => g.type === 'free') // TODO
 
     const lga = await Redis.getSharded('lga')
@@ -72,7 +76,7 @@ export default class MessageDistributor {
         if (successIn.length) {
           for (const id of successIn)
             Redis.incSharded('am_' + id)
-          await new Promise(res => setTimeout(() => res(null), 1 * successIn.length))
+          await new Promise(res => setTimeout(() => res(null), 1000 * successIn.length))
         }
       } catch (ex) {
         Logger.error(ex)
@@ -94,6 +98,11 @@ export default class MessageDistributor {
     announcementsMade.forEach(game => Core.fsapi.postGameAnalytics(game.id, 'discord', { reach: game.reach }))
   }
 
+  /**
+   * Run a test announcement on guild with content
+   * @param guild guild to run the test on
+   * @param content content of the test message
+   */
   public test(guild: Guild, content: GameInfo): void {
     Database
       .collection('guilds')
@@ -105,6 +114,14 @@ export default class MessageDistributor {
       .catch(Logger.error)
   }
 
+  /**
+   * Sends announcement message(s) to a guild
+   * @param g Guild to announce to
+   * @param content Games to announce
+   * @param test Whether this was a test message (/test command)
+   * @param force Whether or not to ignore guild filter settings
+   * @returns Array of guild ids that were actually announced (and not filtered out by guild settings)
+   */
   public async sendToGuild(g: DatabaseGuildData, content: GameInfo[], test: boolean, force: boolean): Promise<number[]> {
     const data = await Core.databaseManager.parseGuildData(g)
 
@@ -113,7 +130,7 @@ export default class MessageDistributor {
     // forced will ignore filter settings
     if (!force) {
       content = content
-        .filter(game => data.price <= game.org_price[data.currency === 'euro' ? 'euro' : 'dollar'])
+        .filter(game => data.price <= game.org_price[data.currency === 'euro' ? 'euro' : 'dollar']) // ! dollar != usd !
         .filter(game => data.trashGames || !(game.flags & GameFlag.TRASH))
         .filter(game => data.storesList.includes(game.store))
 
@@ -152,6 +169,10 @@ export default class MessageDistributor {
     return content.map(game => game.id)
   }
 
+  /**
+   * Finds the used theme and lets that theme build the message
+   * @returns Tupel with message.content and message.options?
+   */
   public buildMessage(content: GameInfo, data: GuildData, test: boolean, disableMention: boolean): [ string, MessageOptions? ] {
     const theme = this.themes[data.theme] || this.themes[0]
     return theme.build(content, data, { test, disableMention })

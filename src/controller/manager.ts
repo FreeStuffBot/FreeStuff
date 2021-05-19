@@ -1,9 +1,13 @@
 import { hostname } from 'os'
 import { io, Socket } from 'socket.io-client'
-import { config } from '../index'
+import { Long } from 'mongodb'
+import { config, Core } from '../index'
 import Logger from '../util/logger'
-import { ManagerCommand, ShardStatus, ShardTask } from '../types/controller'
+import { Experiment, ManagerCommand, ShardAction, ShardStatus, ShardTask } from '../types/controller'
 import { getGitCommit } from '../util/git-parser'
+import { Util } from '../util/util'
+import NewFreeCommand from '../bot/slashcommands/free'
+import Experiments from './experiments'
 
 
 /**
@@ -19,8 +23,9 @@ export default class Manager {
   private static assignmentPromise: (any) => any = null
   private static assignedShardId = -1
   private static assignedShardCount = -1
+  private static currentStatus: ShardStatus = 'idle'
 
-  public static ready(): Promise<ManagerCommand> {
+  public static ready(): Promise<ShardAction> {
     if (this.started) throw new Error('Already started')
     this.started = true
 
@@ -53,6 +58,7 @@ export default class Manager {
 
   public static status(status: ShardStatus) {
     Logger.info(`Service status: ${status}`)
+    this.currentStatus = status
     if (!this.socket) return
     this.socket.emit('status', status)
   }
@@ -90,6 +96,7 @@ export default class Manager {
   private static prepareSocket() {
     this.socket.on('connect', () => {
       Logger.process('Manager socket connected')
+      this.socket.emit('status', this.currentStatus)
     })
 
     this.socket.on('disconnect', () => {
@@ -98,6 +105,18 @@ export default class Manager {
 
     this.socket.on('task', (task: ShardTask) => {
       this.newTask(task)
+    })
+
+    this.socket.on('command', (cmd: ManagerCommand) => {
+      this.runCommand(cmd)
+    })
+
+    this.socket.on('experiments', (experiments: Experiment[]) => {
+      Experiments.updateExperiments(experiments)
+    })
+
+    this.socket.on('apievent', (event: any) => {
+      Core?.fsapi.emitRawEvent(event, e => Logger.warn(`Unhandled FreeStuff Api Event ${e.event}`))
     })
   }
 
@@ -129,6 +148,34 @@ export default class Manager {
         })
         this.assignmentPromise = null
       }
+    }
+  }
+
+  private static async runCommand(cmd: ManagerCommand) {
+    switch (cmd.id) {
+      case 'shutdown':
+        Logger.manager('Shutdown.')
+        process.exit(0)
+
+      case 'reload_lang':
+        Logger.manager('Reload language cache.')
+        Core.languageManager.load()
+        break
+
+      case 'resend_to_guild':
+        Logger.manager('Resend received')
+        for (const guildid of cmd.guilds) {
+          if (!Util.belongsToShard(Long.fromString(guildid))) continue
+          const guildData = await Core.databaseManager.getGuildData(guildid)
+          const freebies = NewFreeCommand.getCurrentFreebies()
+          Core.messageDistributor.sendToGuild(guildData, freebies, false, false)
+          Logger.manager(`Resent to ${guildid}`)
+        }
+        break
+
+      default:
+        Logger.manager(`Unhandled command received: ${JSON.stringify(cmd)}`)
+        break
     }
   }
 

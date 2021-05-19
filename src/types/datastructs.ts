@@ -8,7 +8,7 @@ import { Role, TextChannel } from 'discord.js'
  */
 
 
-export type GameApprovalStatus = 'pending' | 'declined' | 'approved';
+export type GameApprovalStatus = 'pending' | 'declined' | 'approved'
 
 
 /**
@@ -19,44 +19,44 @@ export type GameApprovalStatus = 'pending' | 'declined' | 'approved';
  */
 export interface GameData {
   /** a unique number to identify the game - used by the proxy */
-  _id: number;
+  _id: number
   /** internal uuid - used for checking if a game was already announced */
-  uuid: string;
+  uuid: string
   /** UNIX Timestamp in seconds - markes the last time the approval status has changed */
-  published: number;
+  published: number
   /** User id of the moderator, responsible for checking the info and publishing the announcement */
-  responsible: string;
+  responsible: string
   /** Current status of the game */
-  status: GameApprovalStatus;
+  status: GameApprovalStatus
   /** Analytical data */
-  analytics: GameAnalytics;
+  analytics: GameAnalytics
   /** Info about the game */
-  info: GameInfo;
+  info: GameInfo
 }
 
 
 /** The data that gets stored in the database */
 export interface DatabaseGuildData {
-  _id: Long;
-  sharder: Long;
-  channel: Long | null;
-  role: Long | null;
-  settings: number;
-  price: number;
+  _id: Long
+  sharder: Long
+  channel: Long | null
+  role: Long | null
+  settings: number
+  price: number
 }
 
 
 /** After the data is parsed to allow easier access */
 export interface GuildData extends DatabaseGuildData {
-  channelInstance: TextChannel;
-  roleInstance: Role;
-  theme: number;
-  currency: 'euro' | 'usd';
-  react: boolean;
-  trashGames: boolean;
-  altDateFormat: boolean;
-  language: string;
-  storesRaw: number;
-  storesList: Store[];
-  beta: boolean;
+  channelInstance: TextChannel
+  roleInstance: Role
+  theme: number
+  currency: 'euro' | 'usd'
+  react: boolean
+  trashGames: boolean
+  altDateFormat: boolean
+  language: string
+  storesRaw: number
+  storesList: Store[]
+  beta: boolean
 }

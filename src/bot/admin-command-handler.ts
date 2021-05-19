@@ -6,6 +6,7 @@ import { Core, config } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import Logger from '../util/logger'
 import Database from '../database/database'
+import Experiments from '../controller/experiments'
 import FreeCommand from './commands/free'
 import NewFreeCommand from './slashcommands/free'
 
@@ -20,7 +21,8 @@ const commandlist = [
   '`$FreeStuff help` - Shows this help page',
   '`$FreeStuff print` - Shows info about this guild',
   '`$FreeStuff distribute` - ',
-  '`$FreeStuff settingbits` - '
+  '`$FreeStuff settingbits` - ',
+  '`$FreeStuff experiments [name]` - Prints all experiments or checks if current server participates in a certain experiment'
 ]
 
 export default class AdminCommandHandler {
@@ -123,14 +125,18 @@ export default class AdminCommandHandler {
         }).catch(orgmes.reply)
         return true
 
-      case 'checkexperiment':
-        Core.databaseManager.getGuildData(orgmes.guild.id).then((d) => {
-          reply(args[0], Core.sharder.runExperimentOnServer(args[0], d) ? 'YES' : 'NO')
-        }).catch(orgmes.reply)
+      case 'experiments':
+        if (args.length) {
+          Core.databaseManager.getGuildData(orgmes.guild.id).then((d) => {
+            reply(args[0], Experiments.runExperimentOnServer(args[0], d) ? 'YES' : 'NO')
+          }).catch(orgmes.reply)
+        } else {
+          reply('Experiments:', `\`\`\`json\n${JSON.stringify(Experiments.getRawData(), null, 2)}\`\`\``)
+        }
         return true
     }
 
     return false
   }
 
-};
+}

@@ -61,4 +61,8 @@ export default class NewFreeCommand extends InteractionCommandHandler {
     this.current = games
   }
 
+  public static getCurrentFreebies(): GameInfo[] {
+    return this.current
+  }
+
 }

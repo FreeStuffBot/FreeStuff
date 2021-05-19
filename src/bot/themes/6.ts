@@ -4,6 +4,7 @@ import { GuildData } from '../../types/datastructs'
 import { Theme } from '../../types/context'
 import { Core } from '../../index'
 import Const from '../../bot/const'
+import Experiments from '../../controller/experiments'
 
 
 export default class ThemeSix implements Theme {
@@ -24,7 +25,7 @@ export default class ThemeSix implements Theme {
               : Core.text(data, '=announcement_footer', { website: Const.links.websiteClean })
           },
           image: {
-            url: Core.sharder.runExperimentOnServer('announcement_tags', data)
+            url: Experiments.runExperimentOnServer('announcement_tags', data)
               ? content.thumbnail.full
               : content.thumbnail.org
           },
