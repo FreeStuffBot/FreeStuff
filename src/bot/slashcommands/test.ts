@@ -112,8 +112,6 @@ export default class NewTestCommand extends InteractionCommandHandler {
           default: Const.links.testgame,
           browser: Const.links.testgame
         },
-        org_url: Const.links.testgame,
-        url: Const.links.testgame,
         flags: 0,
         until: null,
         type: 'free',

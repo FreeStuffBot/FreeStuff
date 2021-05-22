@@ -31,7 +31,7 @@ export default class FreeCommand extends Command {
     const freeToday: string[] = []
     for (const game of FreeCommand.current) {
       // g happens to be undefined here at times, investigate
-      const str = `${Const.storeEmojis[game.store] || ':gray_question:'} **[${game.title}](${game.org_url})**\n${Const.bigSpace} ~~${g?.currency === 'euro' ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • ${Core.text(g, '=cmd_free_until')} ${game.until?.toLocaleDateString(Core.languageManager.get(g, 'date_format')) ?? 'unknown'}\n`
+      const str = `${Const.storeEmojis[game.store] || ':gray_question:'} **[${game.title}](${game.urls.default})**\n${Const.bigSpace} ~~${g?.currency === 'euro' ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • ${Core.text(g, '=cmd_free_until')} ${game.until?.toLocaleDateString(Core.languageManager.get(g, 'date_format')) ?? 'unknown'}\n`
       if ('_today' in game) freeToday.push(str)
       else freeLonger.push(str)
     }

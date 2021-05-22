@@ -113,8 +113,6 @@ export default class TestCommand extends Command {
           default: Const.links.testgame,
           browser: Const.links.testgame
         },
-        org_url: Const.links.testgame,
-        url: Const.links.testgame,
         flags: 0,
         until: null,
         type: 'free',
