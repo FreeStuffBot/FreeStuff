@@ -23,7 +23,13 @@ module.exports = {
     dbname: 'freestuff' // name of the database used by the bot
   },
   apisettings: {
-    key: 'loremipsumyourapitokenherehaveagreatday' // freestuff api key
+    key: 'loremipsumyourapitokenherehaveagreatday', // freestuff api key
+    webhookSecret: 'mysecretsecret', // optional. webhook secret, can be removed if not using the webhook (or you don't want to use a secret (which you totally should))
+    server: { // optional. if you want to start a server so you can receive webhook events
+      enable: true, // enable the server
+      port: 6622, // pick a port you like
+      endpoint: '/webhook' // optional. remove this or change it to your own likings
+    }
   },
 
   // EVERYTHING BELOW IS OPTIONAL AND CAN BE REMOVED

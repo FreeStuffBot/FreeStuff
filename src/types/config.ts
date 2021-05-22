@@ -17,6 +17,13 @@ type botMode = {
 }
 
 
+export type FreeStuffApiServerConfig = {
+  enable: boolean
+  port: number
+  endpoint?: string
+}
+
+
 export type configjs = {
   bot: {
     token: string
@@ -34,7 +41,9 @@ export type configjs = {
       dsn: string
     }
   },
-  apisettings: FreeStuffApiSettings
+  apisettings: FreeStuffApiSettings & {
+    server?: FreeStuffApiServerConfig
+  }
   supportWebhook?: {
     id: string
     token: string

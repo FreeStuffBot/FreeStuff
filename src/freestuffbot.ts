@@ -15,6 +15,7 @@ import InteractionHandler from './bot/interactions-handler'
 import { GuildData } from './types/datastructs'
 import Logger from './util/logger'
 import Manager from './controller/manager'
+import WebhookServer from './controller/webhookserver'
 import { config } from './index'
 
 
@@ -42,6 +43,9 @@ export default class FreeStuffBot extends Client {
       version: gitCommit.shortHash,
       sid: this.options.shards[0]
     })
+
+    if (config.apisettings.server?.enable)
+      WebhookServer.start(config.apisettings.server)
 
     this.commandHandler = new CommandHandler(this)
     this.databaseManager = new DatabaseManager(this)
