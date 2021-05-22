@@ -30,6 +30,8 @@ Make sure to `npm i` after cloning.
 
 In the root directory, rename the file `config.template.js` to `config.js`. Open the file and edit it accordingly.
 
+Lastly go to /scripts and run the initdb.js file using nodejs: `node ./initdb.js`. Make sure to configure your MongoDB connection in config.js before running this script.
+
 #### Running
 
 For development use
