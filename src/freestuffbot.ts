@@ -74,6 +74,11 @@ export default class FreeStuffBot extends Client {
 
       this.startBotActvity()
       DbStats.usage.then(u => u.reconnects.updateToday(1, true))
+
+      this.fsapi.ping().then((res) => {
+        if (res._status !== 200)
+          Logger.warn(`API Ping failed with code ${res._status}: ${res.error}, ${res.message}`)
+      })
     })
 
     this.on('shardDisconnect', () => { Manager.status('disconnected') })
