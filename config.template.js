@@ -19,7 +19,8 @@ module.exports = {
     shardCount: process.env.SHARD_COUNT || 1 // [only if name = "shard"] total shard count
   },
   mongodb: {
-    url: 'URL' // url (including auth) to your mongodb database
+    url: 'URL', // url (including auth) to your mongodb database
+    dbname: 'freestuff' // name of the database used by the bot
   },
   apisettings: {
     key: 'loremipsumyourapitokenherehaveagreatday' // freestuff api key

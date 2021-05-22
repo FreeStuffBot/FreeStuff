@@ -18,6 +18,11 @@ export default class HereCommand extends Command {
   }
 
   public handle(mes: Message, _args: string[], g: GuildData, repl: ReplyFunction): boolean {
+    if (!config.supportWebhook?.id || !config.supportWebhook?.token) {
+      Logger.warn('Someone tried to use the /here command but your support webhook is not set up!')
+      return false
+    }
+
     const guild = mes.guild
     const userPermissions = []
     if (mes.member.hasPermission('ADMINISTRATOR')) userPermissions.push('Admin')
@@ -46,11 +51,6 @@ export default class HereCommand extends Command {
       : 'No channel set!'
 
     const guilddata = guildDataToViewString(g)
-
-    if (!config.supportWebhook?.id || !config.supportWebhook?.token) {
-      Logger.warn('Someone tried to use the /here command but your support webhook is not set up!')
-      return false
-    }
 
     const webhook = new WebhookClient(config.supportWebhook.id, config.supportWebhook.token)
     webhook.send('', {
