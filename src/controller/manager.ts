@@ -8,6 +8,7 @@ import { getGitCommit } from '../util/git-parser'
 import { Util } from '../util/util'
 import NewFreeCommand from '../bot/slashcommands/free'
 import Experiments from './experiments'
+import RemoteConfig from './remote-config'
 
 
 /**
@@ -118,6 +119,10 @@ export default class Manager {
 
     this.socket.on('apievent', (event: any) => {
       Core?.fsapi.emitRawEvent(event, e => Logger.warn(`Unhandled FreeStuff Api Event ${e.event}`))
+    })
+
+    this.socket.on('config.global', (data: any) => {
+      RemoteConfig.update(data)
     })
   }
 

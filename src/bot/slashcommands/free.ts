@@ -41,6 +41,8 @@ export default class NewFreeCommand extends InteractionCommandHandler {
     return true
   }
 
+  //
+
   private static readonly TWELVE_HOURS = 1000 * 60 * 60 * 12;
   private static current: GameInfo[] = [];
 

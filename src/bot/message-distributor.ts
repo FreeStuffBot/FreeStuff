@@ -8,6 +8,7 @@ import SentryManager from '../thirdparty/sentry/sentry'
 import Redis from '../database/redis'
 import { Theme } from '../types/context'
 import { DatabaseGuildData, GuildData } from '../types/datastructs'
+import RemoteConfig from '../controller/remote-config'
 import Logger from '../util/logger'
 import Const from './const'
 import ThemeOne from './themes/1'
@@ -76,7 +77,7 @@ export default class MessageDistributor {
         if (successIn.length) {
           for (const id of successIn)
             Redis.incSharded('am_' + id)
-          await new Promise(res => setTimeout(() => res(null), 1000 * successIn.length))
+          await new Promise(res => setTimeout(() => res(null), RemoteConfig.announcementMessageDelay * successIn.length))
         }
       } catch (ex) {
         Logger.error(ex)
