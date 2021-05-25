@@ -1,7 +1,7 @@
 import { CronJob } from 'cron'
 import { Core } from '../index'
 import FreeStuffBot from '../freestuffbot'
-import Logger from '../util/logger'
+import Logger from '../lib/logger'
 import Database, { dbcollection } from './database'
 
 

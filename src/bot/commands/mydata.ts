@@ -2,7 +2,7 @@ import { Message } from 'discord.js'
 import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core } from '../../index'
-import guildDataToViewString from '../../util/guilddata-visualizer'
+import guildDataToViewString from '../../lib/guilddata-visualizer'
 import Const from '../const'
 
 

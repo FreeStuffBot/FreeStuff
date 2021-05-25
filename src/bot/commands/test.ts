@@ -4,7 +4,7 @@ import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core, config } from '../../index'
 import Const from '../const'
-import ParseArgs from '../../util/parse-args'
+import ParseArgs from '../../lib/parse-args'
 
 
 export default class TestCommand extends Command {

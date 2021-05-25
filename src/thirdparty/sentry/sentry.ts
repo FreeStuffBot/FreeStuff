@@ -1,7 +1,7 @@
 import { hostname } from 'os'
 import * as Sentry from '@sentry/node'
 import { config } from '../../index'
-import Logger from '../../util/logger'
+import Logger from '../../lib/logger'
 
 
 export default class SentryManager {

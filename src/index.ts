@@ -27,12 +27,12 @@ if (!config.apisettings?.key) invalidConfig('missing freestuff api key')
 import * as chalk from 'chalk'
 import FreeStuffBot from './freestuffbot'
 import SentryManager from './thirdparty/sentry/sentry'
-import { GitCommit, logVersionDetails } from './util/git-parser'
+import { GitCommit, logVersionDetails } from './lib/git-parser'
 import MongoAdapter from './database/mongo-adapter'
 import Database from './database/database'
 import Redis from './database/redis'
-import Logger from './util/logger'
-import { Util } from './util/util'
+import Logger from './lib/logger'
+import { Util } from './lib/util'
 import Manager from './controller/manager'
 
 

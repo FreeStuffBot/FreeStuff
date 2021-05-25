@@ -1,6 +1,6 @@
 import { Guild } from 'discord.js'
 import { Core } from '../index'
-import { Util } from '../util/util'
+import { Util } from '../lib/util'
 
 
 export default class Localisation {

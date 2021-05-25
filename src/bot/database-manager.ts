@@ -7,8 +7,8 @@ import FreeStuffBot from '../freestuffbot'
 import Database from '../database/database'
 import { DatabaseGuildData, GuildData } from '../types/datastructs'
 import { FilterableStore, GuildSetting } from '../types/context'
-import { Util } from '../util/util'
-import Logger from '../util/logger'
+import { Util } from '../lib/util'
+import Logger from '../lib/logger'
 
 
 export default class DatabaseManager {

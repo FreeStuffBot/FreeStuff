@@ -1,7 +1,7 @@
 import * as redis from 'redis'
 import SentryManager from '../thirdparty/sentry/sentry'
 import { Core, config } from '../index'
-import Logger from '../util/logger'
+import Logger from '../lib/logger'
 
 
 export type dbcollection = 'guilds' | 'stats-usage' | 'games';

@@ -2,8 +2,8 @@ import { Message, WebhookClient } from 'discord.js'
 import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core, config } from '../../index'
-import Logger from '../../util/logger'
-import guildDataToViewString from '../../util/guilddata-visualizer'
+import Logger from '../../lib/logger'
+import guildDataToViewString from '../../lib/guilddata-visualizer'
 
 
 export default class HereCommand extends Command {

@@ -1,7 +1,7 @@
 import * as express from 'express'
 import { FreeStuffApiServerConfig } from '../types/config'
 import { Core } from '../index'
-import Logger from '../util/logger'
+import Logger from '../lib/logger'
 
 
 export default class WebhookServer {

@@ -1,4 +1,4 @@
-import Logger from '../util/logger'
+import Logger from '../lib/logger'
 import { Core } from '../index'
 import { Experiment } from '../types/controller'
 import { GuildData } from '../types/datastructs'

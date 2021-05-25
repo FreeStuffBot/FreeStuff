@@ -1,4 +1,4 @@
-import Logger from '../util/logger'
+import Logger from '../lib/logger'
 
 
 export default class RemoteConfig {
