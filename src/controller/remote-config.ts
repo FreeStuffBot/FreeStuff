@@ -21,4 +21,8 @@ export default class RemoteConfig {
     return this.get().announcement_message_delay || 2000
   }
 
+  public static get excessiveLogging(): number {
+    return this.get().excessive_logging ?? false
+  }
+
 }
