@@ -11,37 +11,37 @@ export default class Logger {
 
   public static log(...text: string[]) {
     const out = text.join(chalk.gray(', '))
-    console.log(this.getTimestamp() + chalk`{cyan >} {white ${out}}`)
+    console.log(Logger.getTimestamp() + chalk`{cyan >} {white ${out}}`)
   }
 
   public static warn(...text: string[]) {
     const out = text.join(chalk.gray(', '))
-    console.warn(this.getTimestamp() + chalk`{yellow !} {yellowBright ${out}}`)
+    console.warn(Logger.getTimestamp() + chalk`{yellow !} {yellowBright ${out}}`)
   }
 
   public static error(...text: string[]) {
     const out = text.join(chalk.gray(', '))
-    console.error(this.getTimestamp() + chalk`{red X} {redBright ${out}}`)
+    console.error(Logger.getTimestamp() + chalk`{red X} {redBright ${out}}`)
   }
 
   public static debug(...text: string[]) {
     const out = text.join(chalk.gray(', '))
-    console.log(this.getTimestamp() + chalk`{white •} {white ${out}}`)
+    console.log(Logger.getTimestamp() + chalk`{white •} {white ${out}}`)
   }
 
   public static info(...text: string[]) {
     const out = text.join(chalk.gray(', '))
-    console.info(this.getTimestamp() + chalk`{blue i} {white ${out}}`)
+    console.info(Logger.getTimestamp() + chalk`{blue i} {white ${out}}`)
   }
 
   public static process(...text: string[]) {
     const out = text.join(chalk.gray(', '))
-    console.info(this.getTimestamp() + chalk`{green √} {white ${out}}`)
+    console.info(Logger.getTimestamp() + chalk`{green √} {white ${out}}`)
   }
 
   public static manager(...text: string[]) {
     const out = text.join(chalk.gray(', '))
-    console.info(this.getTimestamp() + chalk`{green M} {white ${out}}`)
+    console.info(Logger.getTimestamp() + chalk`{green M} {white ${out}}`)
   }
 
 }
