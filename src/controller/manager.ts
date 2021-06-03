@@ -25,7 +25,10 @@ export default class Manager {
   private static assignedShardId = -1
   private static assignedShardCount = -1
   private static currentStatus: ShardStatus = 'idle'
+  private static selfUUID = Manager.generateSelfUUID()
+  private static disconnectedForTooLong: any = null
 
+  private static readonly IDLE_TIMEOUT = 60 * 1000
 
   public static ready(): Promise<ShardAction> {
     if (this.started) throw new Error('Already started')
@@ -79,7 +82,8 @@ export default class Manager {
         client: 'discord',
         mode: config.bot.mode,
         version: gitCommit.hash,
-        server: hostname()
+        server: hostname(),
+        id: this.selfUUID
       },
       path: socketPath,
       jsonp: false,
@@ -99,10 +103,20 @@ export default class Manager {
     this.socket.on('connect', () => {
       Logger.process('Manager socket connected')
       this.socket.emit('status', this.currentStatus)
+
+      if (this.disconnectedForTooLong) {
+        clearTimeout(this.disconnectedForTooLong)
+        this.disconnectedForTooLong = null
+      }
     })
 
     this.socket.on('disconnect', () => {
       Logger.process('Manager socket disconnected')
+
+      this.disconnectedForTooLong = setTimeout(() => {
+        Logger.warn('Socket connection timed out. Restarting.')
+        this.runCommand({ id: 'shutdown' })
+      }, this.IDLE_TIMEOUT)
     })
 
     this.socket.on('task', (task: ShardTask) => {
@@ -183,6 +197,13 @@ export default class Manager {
         Logger.manager(`Unhandled command received: ${JSON.stringify(cmd)}`)
         break
     }
+  }
+
+  private static generateSelfUUID(): string {
+    const host = hostname()
+    const timestamp = Date.now().toString(32)
+    const random = Util.generateWord('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 6)
+    return `${host}.${timestamp}.${random}`
   }
 
 }

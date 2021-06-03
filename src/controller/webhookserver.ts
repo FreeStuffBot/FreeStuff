@@ -21,11 +21,11 @@ export default class WebhookServer {
     app.use(config.endpoint, Core.fsapi.webhook())
 
     Core.fsapi.on('webhook_test', () => {
-      Logger.process('Webhook test received!')
+      Logger.info('Webhook test received!')
     })
 
     app.listen(config.port, undefined, () => {
-      Logger.info(`Server launched. Configure your webhook url to point at https://[host]:${config.port}${config.endpoint}`)
+      Logger.process(`Server launched. Configure your webhook url to point at https://[host]:${config.port}${config.endpoint}`)
     })
   }
 
