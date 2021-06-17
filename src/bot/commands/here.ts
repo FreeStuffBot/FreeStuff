@@ -3,6 +3,7 @@ import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core, config } from '../../index'
 import Logger from '../../lib/logger'
+import RemoteConfig from '../../controller/remote-config'
 import guildDataToViewString from '../../lib/guilddata-visualizer'
 
 
@@ -18,7 +19,9 @@ export default class HereCommand extends Command {
   }
 
   public handle(mes: Message, _args: string[], g: GuildData, repl: ReplyFunction): boolean {
-    if (!config.supportWebhook?.id || !config.supportWebhook?.token) {
+    const webhookId = RemoteConfig.get().support_webhook_id || config.supportWebhook?.id
+    const webhookToken = RemoteConfig.get().support_webhook_token || config.supportWebhook?.token
+    if (!webhookId || !webhookToken) {
       Logger.warn('Someone tried to use the /here command but your support webhook is not set up!')
       return false
     }
@@ -52,7 +55,7 @@ export default class HereCommand extends Command {
 
     const guilddata = guildDataToViewString(g)
 
-    const webhook = new WebhookClient(config.supportWebhook.id, config.supportWebhook.token)
+    const webhook = new WebhookClient(webhookId, webhookToken)
     webhook.send('', {
       username: mes.author.tag,
       avatarURL: mes.author.avatarURL(),

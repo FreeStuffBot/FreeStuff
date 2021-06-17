@@ -77,6 +77,7 @@ export default class Manager {
 
     this.socket = io(socketHost, {
       reconnectionDelayMax: 10000,
+      reconnectionDelay: 1000,
       query: {
         type: 'shard',
         client: 'discord',
@@ -117,6 +118,10 @@ export default class Manager {
         Logger.warn('Socket connection timed out. Restarting.')
         this.runCommand({ id: 'shutdown' })
       }, this.IDLE_TIMEOUT)
+    })
+
+    this.socket.on('reconnect', () => {
+      this.socket.emit('status', this.currentStatus)
     })
 
     this.socket.on('task', (task: ShardTask) => {

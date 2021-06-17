@@ -19,8 +19,7 @@ export default class ThemeTen implements Theme {
       ? [
         `Subids: ${content.store_meta.steam_subids}`,
         '',
-        `addlicense asf ${content.store_meta.steam_subids.split(' ').map(id => `s/${id}`).join(', ')}`,
-        `addlicense asf a/${content.urls.org.split('/app/')[1]?.split('/')[0] ?? ''}`
+        `addlicense asf ${content.store_meta.steam_subids.split(' ').map(id => `s/${id}`).join(', ')}`
         ]
       : []
 
