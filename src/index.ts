@@ -51,8 +51,8 @@ async function run() {
 
   Logger.process('Connected to Mongo')
 
-  await Database.init()
-  await Redis.init()
+  Database.init()
+  Redis.init()
 
   const action = await Manager.ready()
 
