@@ -6,6 +6,8 @@
 config/settings.json
 config.js
 
+yarn.lock
+
 
 # dockerignore only
 
