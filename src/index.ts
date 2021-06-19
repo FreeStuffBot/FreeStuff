@@ -40,38 +40,37 @@ import Manager from './controller/manager'
 export let Core: FreeStuffBot
 
 async function run() {
-  try {
-    if (config.bot.mode === 'dev')
-      Logger.info(chalk.bgRedBright.black(' RUNNING DEV MODE '))
+  if (config.bot.mode === 'dev')
+    Logger.info(chalk.bgRedBright.black(' RUNNING DEV MODE '))
 
-    SentryManager.init()
-    const commit = await logVersionDetails()
-    Util.init()
+  SentryManager.init()
+  const commit = await logVersionDetails()
+  Util.init()
 
-    await MongoAdapter.connect(config.mongodb.url)
+  await MongoAdapter.connect(config.mongodb.url)
 
-    Logger.process('Connected to Mongo')
+  Logger.process('Connected to Mongo')
 
-    await Database.init()
-    await Redis.init()
+  await Database.init()
+  await Redis.init()
 
-    const action = await Manager.ready()
+  const action = await Manager.ready()
 
-    switch (action.id) {
-      case 'shutdown':
-        Logger.info('Shutting down.')
-        process.exit(0)
+  switch (action.id) {
+    case 'shutdown':
+      Logger.info('Shutting down.')
+      process.exit(0)
 
-      case 'startup':
-        mountBot(action.shardId, action.shardCount, commit)
+    case 'startup':
+      mountBot(action.shardId, action.shardCount, commit)
 
-    }
-  } catch (err) {
-    Logger.error('Error in main:')
-    Logger.error(err)
   }
 }
-run()
+
+run().catch((err) => {
+  Logger.error('Error in main:')
+  Logger.error(err)
+})
 
 //
 
