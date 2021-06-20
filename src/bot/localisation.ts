@@ -38,7 +38,7 @@ export default class Localisation {
 
   private static readonly EXTRA_LANGUAGE_HINTS = {
     brazil: 'pt-BR',
-    honkong: 'zh-CN',
+    hongkong: 'zh-CN',
     japan: 'zh-CN'
   }
 
