@@ -89,7 +89,7 @@ export default class ResendCommand extends Command {
     }
 
     try {
-      Core.messageDistributor.sendToGuild(g, freebies, false, true)
+      Core.messageDistributor.sendToGuild(g, freebies, false, false)
       if (g.channelInstance.id !== mes.channel.id) {
         repl(
           Core.text(g, '=cmd_resend_success_1'),
