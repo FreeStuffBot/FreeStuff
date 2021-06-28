@@ -80,7 +80,7 @@ export default class BaseTheme {
       return `**[${Core.text(data, '=announcement_button_text')}](${content.urls.default})**`
 
     if (content.store === 'steam')
-      return `${Core.text(data, '=open_in_browser')}: **[https://s.team/a/${content.urls.browser.split('/app/')[1].split('/')[0]}](${content.urls.browser})**\n${Core.text(data, '=open_in_steam_client')}: **${content.urls.client}**`
+      return `${Core.text(data, '=open_in_browser')}: **[https://s.team/a/${content.urls.org.split('/app/')[1].split('/')[0]}](${content.urls.browser})**\n${Core.text(data, '=open_in_steam_client')}: **${content.urls.client}**`
 
     return `**[${Core.text(data, '=open_in_browser')}](${content.urls.browser})** • **[${Core.text(data, '=open_in_epic_games_client')}](${content.urls.client})**`
   }
