@@ -1,5 +1,6 @@
 import { MessageOptions } from 'discord.js'
 import { GameInfo } from 'freestuff'
+import Experiments from '../../controller/experiments'
 import { GuildData } from '../../types/datastructs'
 import { Theme } from '../../types/context'
 import { Core } from '../../index'
@@ -9,11 +10,12 @@ import Const from '../const'
 export default class ThemeTen implements Theme {
 
   public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
+    const useProxyUrl = !Experiments.runExperimentOnServer('use_proxy_url', data)
     const button = content.urls.client
       ? content.store === 'steam'
-          ? `${Core.text(data, '=open_in_browser')}: [https://s.team/a/${content.urls.org.split('/app/')[1].split('/')[0]}](${content.urls.browser})\n${Core.text(data, '=open_in_steam_client')}: ${content.urls.client}`
-          : `[${Core.text(data, '=open_in_browser')}](${content.urls.browser}) • [${Core.text(data, '=open_in_epic_games_client')}](${content.urls.client})`
-      : `[${Core.text(data, '=open_in_browser')}](${content.urls.default})`
+          ? `${Core.text(data, '=open_in_browser')}: [https://s.team/a/${content.urls.org.split('/app/')[1].split('/')[0]}](${useProxyUrl ? content.urls.browser : content.urls.org})\n${Core.text(data, '=open_in_steam_client')}: ${content.urls.client}`
+          : `[${Core.text(data, '=open_in_browser')}](${useProxyUrl ? content.urls.browser : content.urls.org}) • [${Core.text(data, '=open_in_epic_games_client')}](${content.urls.client})`
+      : `[${Core.text(data, '=open_in_browser')}](${useProxyUrl ? content.urls.default : content.urls.org})`
 
     const steamcontent = content.store === 'steam'
       ? [

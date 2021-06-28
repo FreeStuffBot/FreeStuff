@@ -76,13 +76,15 @@ export default class BaseTheme {
   }
 
   static generateButton(content: GameInfo, data: GuildData): string {
+    const useProxyUrl = !Experiments.runExperimentOnServer('use_proxy_url', data)
+
     if (!content.urls.client)
-      return `**[${Core.text(data, '=announcement_button_text')}](${content.urls.default})**`
+      return `**[${Core.text(data, '=announcement_button_text')}](${useProxyUrl ? content.urls.default : content.urls.org})**`
 
     if (content.store === 'steam')
-      return `${Core.text(data, '=open_in_browser')}: **[https://s.team/a/${content.urls.org.split('/app/')[1].split('/')[0]}](${content.urls.browser})**\n${Core.text(data, '=open_in_steam_client')}: **${content.urls.client}**`
+      return `${Core.text(data, '=open_in_browser')}: **[https://s.team/a/${content.urls.org.split('/app/')[1].split('/')[0]}](${useProxyUrl ? content.urls.browser : content.urls.org})**\n${Core.text(data, '=open_in_steam_client')}: **${content.urls.client}**`
 
-    return `**[${Core.text(data, '=open_in_browser')}](${content.urls.browser})** • **[${Core.text(data, '=open_in_epic_games_client')}](${content.urls.client})**`
+    return `**[${Core.text(data, '=open_in_browser')}](${useProxyUrl ? content.urls.browser : content.urls.org})** • **[${Core.text(data, '=open_in_epic_games_client')}](${content.urls.client})**`
   }
 
   static generatePriceString(content: GameInfo, data: GuildData): string {
