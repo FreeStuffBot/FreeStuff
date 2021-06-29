@@ -3,6 +3,7 @@ import { Interaction, InteractionCommandHandler, InteractionReplyFunction } from
 import { GuildData } from '../../types/datastructs'
 import Const from '../const'
 import { Core } from '../../index'
+import Experiments from '../../controller/experiments'
 
 
 export default class NewFreeCommand extends InteractionCommandHandler {
@@ -17,11 +18,13 @@ export default class NewFreeCommand extends InteractionCommandHandler {
   }
 
   public handle(_command: Interaction, data: GuildData, reply: InteractionReplyFunction): boolean {
+    const useProxyUrl = Experiments.runExperimentOnServer('use_proxy_url', data)
+
     const freeLonger: string[] = []
     const freeToday: string[] = []
     for (const game of NewFreeCommand.current) {
       // g happens to be undefined here at times, investigate
-      const str = `${Const.storeEmojis[game.store] || ':gray_question:'} **[${game.title}](${game.urls.default})**\n${Const.bigSpace} ~~${data?.currency === 'euro' ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • ${Core.text(data, '=cmd_free_until')} ${game.until?.toLocaleDateString(Core.languageManager.get(data, 'date_format')) ?? 'unknown'}\n`
+      const str = `${Const.storeEmojis[game.store] || ':gray_question:'} **[${game.title}](${useProxyUrl ? game.urls.default : game.urls.org})**\n${Const.bigSpace} ~~${data?.currency === 'euro' ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • ${Core.text(data, '=cmd_free_until')} ${game.until?.toLocaleDateString(Core.languageManager.get(data, 'date_format')) ?? 'unknown'}\n`
       if ('_today' in game) freeToday.push(str)
       else freeLonger.push(str)
     }

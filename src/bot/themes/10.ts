@@ -10,7 +10,7 @@ import Const from '../const'
 export default class ThemeTen implements Theme {
 
   public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
-    const useProxyUrl = !Experiments.runExperimentOnServer('use_proxy_url', data)
+    const useProxyUrl = Experiments.runExperimentOnServer('use_proxy_url', data)
     const button = content.urls.client
       ? content.store === 'steam'
           ? `${Core.text(data, '=open_in_browser')}: [https://s.team/a/${content.urls.org.split('/app/')[1].split('/')[0]}](${useProxyUrl ? content.urls.browser : content.urls.org})\n${Core.text(data, '=open_in_steam_client')}: ${content.urls.client}`

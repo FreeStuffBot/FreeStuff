@@ -18,7 +18,9 @@ export default class ThemeSix implements Theme {
             name: Core.text(data, '=announcement_header')
           },
           title: content.title,
-          url: content.urls.default,
+          url: Experiments.runExperimentOnServer('use_proxy_url', data)
+            ? content.urls.default
+            : content.urls.org,
           footer: {
             text: settings.test
               ? Core.text(data, '=announcement_footer_test')

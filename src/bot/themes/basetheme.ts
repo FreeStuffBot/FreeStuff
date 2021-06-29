@@ -76,7 +76,7 @@ export default class BaseTheme {
   }
 
   static generateButton(content: GameInfo, data: GuildData): string {
-    const useProxyUrl = !Experiments.runExperimentOnServer('use_proxy_url', data)
+    const useProxyUrl = Experiments.runExperimentOnServer('use_proxy_url', data)
 
     if (!content.urls.client)
       return `**[${Core.text(data, '=announcement_button_text')}](${useProxyUrl ? content.urls.default : content.urls.org})**`
