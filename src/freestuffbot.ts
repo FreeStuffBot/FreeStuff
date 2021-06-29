@@ -16,7 +16,6 @@ import { GuildData } from './types/datastructs'
 import Logger from './lib/logger'
 import Manager from './controller/manager'
 import WebhookServer from './controller/webhookserver'
-import RemoteConfig from './controller/remote-config'
 import { config } from './index'
 
 
@@ -101,8 +100,7 @@ export default class FreeStuffBot extends Client {
         { type: 'WATCHING' }
       )
 
-      if (RemoteConfig.excessiveLogging)
-        Logger.log('Updating bot activity')
+      Logger.excessive('Updating bot activity')
     }
     setInterval(updateActivity, 1000 * 60 * 15, this.user)
     updateActivity(this.user)

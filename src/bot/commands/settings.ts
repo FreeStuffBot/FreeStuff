@@ -12,7 +12,6 @@ import SetReactHandler from './set/react'
 import SetStoreHandler from './set/store'
 import SetThemeHandler from './set/theme'
 import SetTrashHandler from './set/trash'
-import SetUntilHandler from './set/until'
 import SetCurrencyHandler from './set/currency'
 import SetPrefixHanler from './set/prefix'
 
@@ -38,7 +37,6 @@ export default class SettingsCommand extends Command {
     this.commands.set('react reaction', new SetReactHandler())
     this.commands.set('trash bad garbage', new SetTrashHandler())
     this.commands.set('minimum minimumprice min price cost', new SetMinpriceHandler())
-    this.commands.set('until', new SetUntilHandler())
     this.commands.set('prefix', new SetPrefixHanler())
   }
 

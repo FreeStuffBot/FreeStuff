@@ -3,7 +3,7 @@ import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core, config } from '../../index'
 import Const from '../const'
-import FreeCommand from './free'
+import NewFreeCommand from '../slashcommands/free'
 
 
 export default class ResendCommand extends Command {
@@ -33,7 +33,7 @@ export default class ResendCommand extends Command {
       return true
     }
 
-    const freebies = FreeCommand.getCurrentFreebies()
+    const freebies = NewFreeCommand.getCurrentFreebies()
     if (!freebies?.length) {
       repl(
         Core.text(g, '=cmd_resend_nothing_free_1'),

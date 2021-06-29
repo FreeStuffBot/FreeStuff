@@ -161,7 +161,7 @@ export default class CommandHandler {
       case 'easteregg': return ':eyes:'
       case 'what is the meaning of life': return '42'
       case 'meaning of life': return '42'
-      case 'maanex': return '<:yeehawmaanex:720381548955697313>'
+      case 'maanex': return '<:yeehawmaanex:852836598110617651>'
 
       default: return ''
     }

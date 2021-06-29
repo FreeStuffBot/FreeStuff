@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import * as chalk from 'chalk'
+import RemoteConfig from '../controller/remote-config'
 
 
 /**
@@ -89,6 +90,17 @@ export default class Logger {
   public static manager(...text: string[]) {
     const out = text.join(chalk.gray(', '))
     console.info(Logger.getTimestamp() + chalk`{green M} {white ${out}}`)
+  }
+
+  /**
+   * Logs a debug message ONLY IF excessive logging is enabled, does nothing otherwise
+   * Gets prefixed with a magenta `#` and a timestamp.
+   * @param text The message to log.
+   */
+  public static excessive(...text: string[]) {
+    if (!RemoteConfig.excessiveLogging) return
+    const out = text.join(chalk.gray(', '))
+    console.info(Logger.getTimestamp() + chalk`{magenta #} {white ${out}}`)
   }
 
 }

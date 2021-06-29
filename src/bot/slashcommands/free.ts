@@ -24,7 +24,7 @@ export default class NewFreeCommand extends InteractionCommandHandler {
     const freeToday: string[] = []
     for (const game of NewFreeCommand.current) {
       // g happens to be undefined here at times, investigate
-      const str = `${Const.storeEmojis[game.store] || ':gray_question:'} **[${game.title}](${useProxyUrl ? game.urls.default : game.urls.org})**\n${Const.bigSpace} ~~${data?.currency === 'euro' ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • ${Core.text(data, '=cmd_free_until')} ${game.until?.toLocaleDateString(Core.languageManager.get(data, 'date_format')) ?? 'unknown'}\n`
+      const str = `${Const.storeEmojis[game.store] || ':gray_question:'} **[${game.title}](${useProxyUrl ? game.urls.default : game.urls.org})**\n${Const.bigSpace} ~~${data?.currency === 'euro' ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • ${Core.text(data, '=cmd_free_until')} ${game.until ? `<t:${game.until.getTime() / 1000}:${('_today' in game) ? 't' : 'd'}>` : 'unknown'}\n`
       if ('_today' in game) freeToday.push(str)
       else freeLonger.push(str)
     }

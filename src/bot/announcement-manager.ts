@@ -2,7 +2,6 @@ import { Semaphore } from 'await-semaphore'
 import { config, Core } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import Redis from '../database/redis'
-import FreeCommand from './commands/free'
 import NewFreeCommand from './slashcommands/free'
 
 
@@ -68,7 +67,6 @@ export default class AnnouncementManager {
   private async announce(gameids: string) {
     this.setPending(gameids)
 
-    FreeCommand.updateCurrentFreebies()
     NewFreeCommand.updateCurrentFreebies()
 
     this.currentlyAnnouncing = true
