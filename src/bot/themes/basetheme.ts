@@ -54,24 +54,8 @@ export default class BaseTheme {
   static generateUntil(content: GameInfo, data: GuildData): string {
     if (!content.until) return ''
 
-    if (data.altDateFormat) {
-      const day = content.until.toLocaleDateString(
-        Core.languageManager.get(data, 'date_format'),
-        { weekday: 'long' }
-      )
-      const days = Math.round(Math.abs(
-        (content.until.getTime() - new Date().getTime())
-        / (1000 * 60 * 60 * 24)
-      ))
-
-      if (days < 7) return Core.text(data, '=announcement_free_until_day', { day })
-      if (days === 7) return Core.text(data, '=announcement_free_for_a_week', { day })
-      if (days < 14) return Core.text(data, '=announcement_free_until_day_next_week', { day })
-      return Core.text(data, '=announcement_free_for_a_long_time')
-    }
-
     return Core.text(data, '=announcement_free_until_date', {
-      date: content.until.toLocaleDateString(Core.languageManager.get(data, 'date_format'))
+      date: `<t:${content.until.getTime() / 1000}:d>`
     })
   }
 

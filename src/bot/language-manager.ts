@@ -47,16 +47,16 @@ export default class LanguageManager {
   public getRaw(language: string, key: string, fallback = true): string {
     if (!this.list.length) return key
     if (!fallback) return this.getText(language, key)
-    if (!this.texts[language]) return this.getText(this.idmap['0'], key)
-    return this.getText(language, key) || this.getText(this.idmap['0'], key) || key
+    if (!language || !this.texts[language]) return this.getText(this.idmap[0], key)
+    return this.getText(language, key) || this.getText(this.idmap[0], key) || key
   }
 
   private getText(language: string, key: string): string {
-    return this.texts[language] && this.texts[language][key]
+    return this.texts[language]?.[key]
   }
 
   public languageById(id: number | string): string {
-    return this.idmap[id + ''] || this.idmap['0']
+    return this.idmap[id + ''] || this.idmap[0]
   }
 
   public languageToId(lang: string): number {

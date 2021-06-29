@@ -36,7 +36,7 @@ export default class FreeCommand extends Command {
     let replyText = freeLonger.join('\n')
     if (freeToday.length) replyText += `\n\n${Core.text(g, '=cmd_free_ends_soon')}\n\n${freeToday.join('\n')}`
     if (!freeLonger.length && !freeToday.length) replyText = Core.text(g, '=cmd_free_no_freebies')
-    replyText += '\n\n' + Core.text(g, '{emoji} Slash commands are here! Use **{command}** from now on!', { emoji: ':new:', command: '/free' })
+    replyText += '\n\n:free: ' + Core.text(g, '=slash_command_introduction_label_long', { command: '/free' })
     repl(Core.text(g, '=cmd_free_title'), replyText)
     return true
   }

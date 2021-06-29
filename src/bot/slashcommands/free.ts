@@ -4,6 +4,7 @@ import { GuildData } from '../../types/datastructs'
 import Const from '../const'
 import { Core } from '../../index'
 import Experiments from '../../controller/experiments'
+import Logger from '../../lib/logger'
 
 
 export default class NewFreeCommand extends InteractionCommandHandler {
@@ -50,6 +51,7 @@ export default class NewFreeCommand extends InteractionCommandHandler {
   private static current: GameInfo[] = [];
 
   public static async updateCurrentFreebies() {
+    Logger.excessive('Updating current freebie list')
     const ids = await Core.fsapi.getGameList('free')
     const data = await Core.fsapi.getGameDetails(ids, 'info')
     let games = Object.values(data)

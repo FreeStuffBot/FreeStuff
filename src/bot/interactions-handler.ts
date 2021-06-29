@@ -37,12 +37,16 @@ export default class InteractionHandler {
     // this.HANDLER.admin = new AdminHandler()
   }
 
-  private runCommand(interaction: Interaction, handler: InteractionCommandHandler) {
+  private async runCommand(interaction: Interaction, handler: InteractionCommandHandler) {
     // TODO interaction.guild_id can be undefined if ran in DMs, maybe have a DM guilddata template object or something? Just with default settings.
-    Core.databaseManager.getGuildData(interaction.guild_id).then((data) => {
+    try {
+      const data = interaction.guild_id
+        ? await Core.databaseManager.getGuildData(interaction.guild_id)
+        : undefined
+
       const reply = this.getReplyFunction(interaction, data)
       handler.handle(interaction, data, reply)
-    }).catch((_err) => {
+    } catch (ex) {
       try {
         const reply = this.getReplyFunction(interaction, null)
         reply('ChannelMessageWithSource', {
@@ -50,7 +54,7 @@ export default class InteractionHandler {
           flags: InteractionResponseFlags.EPHEMERAL
         })
       } catch (ex) { }
-    })
+    }
   }
 
   private onInteraction(i: Interaction) {
@@ -71,11 +75,10 @@ export default class InteractionHandler {
     }
   }
 
-  private getReplyFunction(i: Interaction, guildData: GuildData): InteractionReplyFunction {
+  private getReplyFunction(i: Interaction, guildData?: GuildData): InteractionReplyFunction {
     const types: InteractionResponseType[] = [ 'Pong', 'deprecated-Acknowledge', 'deprecated-ChannelMessage', 'ChannelMessageWithSource', 'DeferredChannelMessageWithSource' ]
     return (type: InteractionResponseType, data?: (InteractionApplicationCommandCallbackData | Partial<MessageEmbed>) & {context?: any}) => {
-      if (guildData)
-        this.translateObject(data, guildData, data.context)
+      this.translateObject(data, guildData, data.context)
 
       if (!('content' in data)) {
         data.color = data.color ?? 0x2F3136

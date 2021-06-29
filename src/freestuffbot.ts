@@ -110,7 +110,7 @@ export default class FreeStuffBot extends Client {
 
   public text(d: GuildData, text: string, replace?: { [varname: string]: string }): string {
     let out = (text.startsWith('=')
-      ? this.languageManager.getRaw(d.language, text.substr(1), true)
+      ? this.languageManager.getRaw(d?.language, text.substr(1), true)
       : text)
     if (replace) {
       for (const key in replace)

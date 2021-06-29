@@ -54,7 +54,6 @@ export interface GuildData extends DatabaseGuildData {
   currency: 'euro' | 'usd'
   react: boolean
   trashGames: boolean
-  altDateFormat: boolean
   language: string
   storesRaw: number
   storesList: Store[]

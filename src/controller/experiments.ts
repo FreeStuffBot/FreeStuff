@@ -22,6 +22,7 @@ export default class Experiments {
 
   public static runExperimentOnServer(experimentName: string, guildData: GuildData): boolean {
     if (!Core) return false
+    if (!guildData) return false
     if (!(experimentName in this.experiments)) return false
 
     const experiment = this.experiments[experimentName]

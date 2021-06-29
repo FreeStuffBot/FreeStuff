@@ -71,15 +71,15 @@ export default class MessageDistributor {
     await Redis.setSharded('am', '0')
     for (const g of guilds) {
       if (!g) {
-        if (RemoteConfig.excessiveLogging) Logger.log('Skipping one guild for being falsy')
+        Logger.excessive('Skipping one guild for being falsy')
         continue
       }
 
       try {
         Redis.setSharded('lga', g.sharder + '')
-        if (RemoteConfig.excessiveLogging) Logger.log(`Sending to ${g._id}`)
+        Logger.excessive(`Sending to ${g._id}`)
         const successIn = await this.sendToGuild(g, content, false, false)
-        if (RemoteConfig.excessiveLogging) Logger.log(`Success in ${g._id}: ${successIn}`)
+        Logger.excessive(`Success in ${g._id}: ${successIn}`)
         if (successIn.length) {
           for (const id of successIn)
             Redis.incSharded('am_' + id)
@@ -133,7 +133,7 @@ export default class MessageDistributor {
     const data = await Core.databaseManager.parseGuildData(g)
 
     if (!data) {
-      if (RemoteConfig.excessiveLogging) Logger.log(`Guild ${g._id} return: no data`)
+      Logger.excessive(`Guild ${g._id} return: no data`)
       return []
     }
 
@@ -145,22 +145,22 @@ export default class MessageDistributor {
         .filter(game => data.storesList.includes(game.store))
 
       if (!content.length) {
-        if (RemoteConfig.excessiveLogging) Logger.log(`Guild ${g._id} return: no content left`)
+        Logger.excessive(`Guild ${g._id} return: no content left`)
         return []
       }
     }
 
     // check if channel is valid
     if (!data.channelInstance) {
-      if (RemoteConfig.excessiveLogging) Logger.log(`Guild ${g._id} return: invalid channel`)
+      Logger.excessive(`Guild ${g._id} return: invalid channel`)
       return []
     }
     if (!data.channelInstance.send) {
-      if (RemoteConfig.excessiveLogging) Logger.log(`Guild ${g._id} return: no send func`)
+      Logger.excessive(`Guild ${g._id} return: no send func`)
       return []
     }
     if (!data.channelInstance.guild.available) {
-      if (RemoteConfig.excessiveLogging) Logger.log(`Guild ${g._id} return: guild unavailable`)
+      Logger.excessive(`Guild ${g._id} return: guild unavailable`)
       return []
     }
 
@@ -168,19 +168,19 @@ export default class MessageDistributor {
     const self = data.channelInstance.guild.me
     const permissions = self.permissionsIn(data.channelInstance)
     if (!permissions.has('SEND_MESSAGES')) {
-      if (RemoteConfig.excessiveLogging) Logger.log(`Guild ${g._id} return: no SEND_MESSAGES`)
+      Logger.excessive(`Guild ${g._id} return: no SEND_MESSAGES`)
       return []
     }
     if (!permissions.has('VIEW_CHANNEL')) {
-      if (RemoteConfig.excessiveLogging) Logger.log(`Guild ${g._id} return: no VIEW_CHANNEL`)
+      Logger.excessive(`Guild ${g._id} return: no VIEW_CHANNEL`)
       return []
     }
     if (!permissions.has('EMBED_LINKS') && Const.themesWithEmbeds.includes(data.theme)) {
-      if (RemoteConfig.excessiveLogging) Logger.log(`Guild ${g._id} return: no EMBED_LINKS`)
+      Logger.excessive(`Guild ${g._id} return: no EMBED_LINKS`)
       return []
     }
     if (!permissions.has('USE_EXTERNAL_EMOJIS') && Const.themesWithExtemotes[data.theme]) {
-      if (RemoteConfig.excessiveLogging) Logger.log(`Guild ${g._id} return: no USE_EXTERNAL_EMOJIS`)
+      Logger.excessive(`Guild ${g._id} return: no USE_EXTERNAL_EMOJIS`)
       data.theme = Const.themesWithExtemotes[data.theme]
     }
 
@@ -188,7 +188,7 @@ export default class MessageDistributor {
     let messageContents = content.map((game, index) => this.buildMessage(game, data, test, !!index))
     messageContents = messageContents.filter(mes => !!mes)
     if (!messageContents.length) {
-      if (RemoteConfig.excessiveLogging) Logger.log(`Guild ${g._id} return: no message contents length`)
+      Logger.excessive(`Guild ${g._id} return: no message contents length`)
       return []
     }
 
@@ -203,7 +203,7 @@ export default class MessageDistributor {
     // TODO check if ratelimited
     // TODO check if it has the "manage messages" permission. although not required to publish own messages, there needs to be a way to turn this off
 
-    if (RemoteConfig.excessiveLogging) Logger.log(`Guild ${g._id} noret: success`)
+    Logger.excessive(`Guild ${g._id} noret: success`)
     return content.map(game => game.id)
   }
 

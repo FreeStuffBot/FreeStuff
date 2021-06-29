@@ -168,7 +168,6 @@ export default class DatabaseManager {
       currency: ((dbObject.settings & (1 << 4)) === 0 ? 'euro' : 'usd') as ('euro' | 'usd'),
       react: (dbObject.settings & (1 << 5)) !== 0,
       trashGames: (dbObject.settings & (1 << 6)) !== 0,
-      altDateFormat: (dbObject.settings & (1 << 7)) !== 0,
       theme: dbObject.settings & 0b1111,
       language: Core.languageManager.languageById((dbObject.settings >> 8 & 0b111111)),
       storesRaw: (dbObject.settings >> 14 & 0b11111111),
@@ -237,10 +236,6 @@ export default class DatabaseManager {
         bits = value ? 1 : 0
         out.settings = Util.modifyBits(c, 6, 1, bits)
         break
-      case 'altdate':
-        bits = value ? 1 : 0
-        out.settings = Util.modifyBits(c, 7, 1, bits)
-        break
       case 'language':
         bits = (value as number) & 0b111111
         out.settings = Util.modifyBits(c, 8, 6, bits)
@@ -269,7 +264,7 @@ export default class DatabaseManager {
   //   |                 |               |           | | | currency (on = usd, off = eur) [4< 1]
   //   |                 |               |           | | react with :free: emoji [5< 1]
   //   |                 |               |           | show trash games [6< 1]
-  //   |                 |               |           alternative date format [7< 1]
+  //   |                 |               |           alternative date format [7< 1] (DEPRECATED, bit can be used but needs to be reset first)
   //   |                 |               language [8< 6]
   //   |                 stores [14< 8] (itch uplay origin gog humble epic steam other)
   //   opted in to beta tests

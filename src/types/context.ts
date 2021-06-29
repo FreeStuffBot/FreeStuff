@@ -10,7 +10,7 @@ import { GuildData } from './datastructs'
 
 export type GuildSetting = 'channel'
   | 'roleMention' | 'theme'| 'currency'
-  | 'react' | 'trash' | 'price' | 'altdate'
+  | 'react' | 'trash' | 'price'
   | 'language' | 'stores' | 'beta'
 
 
