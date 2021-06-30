@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  bot:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: "production"
+      BOT_TOKEN: "ABC123"
+      BOT_ID: "1241241231231233123"
+      MONGO_URL: "mongodb://127.0.0.1:27017/admin"
+      FREESTUFF_KEY: "blabla"
+      SENTRY_DSN: "blablablabla"
+

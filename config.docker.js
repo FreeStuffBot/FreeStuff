@@ -17,7 +17,8 @@ module.exports = {
     dbname: 'freestuffbot'
   },
   apisettings: {
-    key: process.env.FREESTUFF_KEY
+    key: process.env.FREESTUFF_KEY,
+    type: 'partner'
   },
   redis__disabled: {},
   thirdparty: {

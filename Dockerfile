@@ -4,16 +4,14 @@ RUN apk add git
 
 WORKDIR /opt/greenlight/bot
 
-ENV NODE_ENV=production
-
-ENV NO_SHARDING=true
-
 COPY package*.json ./
 
 #RUN npm install --only=production
 RUN npm install
 
 COPY . .
+# use docker config
+COPY config.docker.js config.js
 
 RUN npm run build
 
