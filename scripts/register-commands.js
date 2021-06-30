@@ -13,7 +13,7 @@ const commands = [
   },
   {
     name: 'free',
-    description: 'View games that are currently 100% off!'
+    description: 'Get a list of games that are currently 100% off!'
   },
   {
     name: 'help',
@@ -76,4 +76,4 @@ async function run(remove = true, add = true, whitelist) {
     }
   }
 }
-run(false, true, [ 'set' ])
+run(false, true, [ 'free' ])
