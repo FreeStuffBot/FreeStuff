@@ -10,7 +10,11 @@ module.exports = {
   },
   mode: {
     name: 'discovery',
-    master: {}
+    master: {
+      host: process.env.NODE_ENV === 'production'
+        ? undefined
+        : 'ws://host.docker.internal'
+    }
   },
   mongodb: {
     url: process.env.MONGO_URL,
@@ -18,9 +22,11 @@ module.exports = {
   },
   apisettings: {
     key: process.env.FREESTUFF_KEY,
-    type: 'partner'
+    type: 'partner',
+    baseUrl: process.env.NODE_ENV === 'production'
+      ? undefined
+      : 'http://host.docker.internal/api/v1'
   },
-  redis__disabled: {},
   thirdparty: {
     sentry: {
       dsn: process.env.SENTRY_DSN

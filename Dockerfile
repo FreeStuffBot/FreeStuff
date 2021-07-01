@@ -10,7 +10,6 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-# use docker config
 COPY config.docker.js config.js
 
 RUN npm run build
