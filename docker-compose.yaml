@@ -1,15 +1,18 @@
-version: "3.9"
+version: "3.3"
 
 services:
   bot:
-    build: .
-    ports:
-      - "5000:5000"
+    image: maanex/freestuffbot
     environment:
-      NODE_ENV: "production"
-      BOT_TOKEN: "ABC123"
-      BOT_ID: "1241241231231233123"
-      MONGO_URL: "mongodb://127.0.0.1:27017/admin"
-      FREESTUFF_KEY: "blabla"
-      SENTRY_DSN: "blablablabla"
+      NODE_ENV: "dev"
+      BOT_TOKEN: ""
+      BOT_ID: "756183898156957850"
+      MONGO_URL: "mongodb://host.docker.internal:27017/admin"
+      FREESTUFF_KEY: "verysecret"
+      SENTRY_DSN: ""
+    # restart_policy:
+    #   condition: any
+    #   delay: 5s
+    #   max_attempts: 3
+    #   window: 30s
 
