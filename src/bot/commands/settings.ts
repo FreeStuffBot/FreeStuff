@@ -68,8 +68,8 @@ export default class NewSettingsCommand extends InteractionCommandHandler {
       edit({
         components: []
       })
-    }).on('settings_back', (_, edit) => {
-      edit(baseState)
+    // }).on('settings_back', (_, edit) => {
+    //   edit(baseState)
     }).on('settings_channel_pick', (event, edit) => {
       if (event.component_type === 3)
         edit({ title: event.values.join(', ') })

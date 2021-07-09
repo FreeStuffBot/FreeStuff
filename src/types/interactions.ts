@@ -7,6 +7,15 @@ import { GuildData } from './datastructs'
  * Discord API interactions
  */
 
+export type InteractionReplyActionEvent = {
+  custom_id: string
+} & ({
+  component_type: 2
+} | {
+  component_type: 3
+  values: string[]
+})
+
 export type InteractionUser = {
   id: string
   username: string
@@ -87,10 +96,7 @@ export type InteractionTypeCommand = {
 export type InteractionTypeComponent = {
   type: 3
   message: InteractionMessage
-  data: {
-    custom_id: string
-    component_type: number
-  }
+  data: InteractionReplyActionEvent
 }
 
 export type InteractionBase = {
@@ -189,14 +195,7 @@ export type InteractionApplicationCommandCallbackData = {
 
 export type InteractionEditFunction = (data?: InteractionApplicationCommandCallbackData) => void
 
-export type InteractionReplyActionEvent = {
-  custom_id: string
-} & ({
-  component_type: 2
-} | {
-  component_type: 3
-  values: string[]
-})
+export type InteractionComponentHandler = (event: InteractionReplyActionEvent, edit: InteractionEditFunction) => any
 
 export type InteractionReplyContext = {
   id: string
@@ -206,12 +205,12 @@ export type InteractionReplyContext = {
   timeoutRunFunc: (...any: any) => any
   timeoutRunner: NodeJS.Timeout
   resetTimeoutOnInteraction: boolean
-  handlers: { [customId: number]: (event: InteractionReplyActionEvent, edit: InteractionEditFunction) => any }
+  handlers: { [customId: number]: InteractionComponentHandler }
 }
 
 export type InteractionReplyStateLevelThree = {
   _context: InteractionReplyContext,
-  on(customId: string, handler: (event: InteractionReplyActionEvent, edit: InteractionEditFunction) => any): InteractionReplyStateLevelThree
+  on(customId: string, handler: InteractionComponentHandler): InteractionReplyStateLevelThree
 }
 
 export type InteractionReplyStateLevelTwo = {

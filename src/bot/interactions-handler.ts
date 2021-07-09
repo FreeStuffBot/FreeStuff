@@ -1,6 +1,8 @@
+import * as fs from 'fs'
+import * as path from 'path'
 import Axios from 'axios'
 import { GuildData } from '../types/datastructs'
-import { InteractionApplicationCommandCallbackData, InteractionResponseType, InteractionCommandHandler, InteractionReplyFunction, InteractionResponseFlags, GenericInteraction, CommandInteraction, InteractionType, InteractionReplyContext, InteractionReplyStateLevelTwo, InteractionEditFunction, InteractionReplyStateLevelThree } from '../types/interactions'
+import { InteractionApplicationCommandCallbackData, InteractionResponseType, InteractionCommandHandler, InteractionReplyFunction, InteractionResponseFlags, GenericInteraction, CommandInteraction, InteractionType, InteractionReplyContext, InteractionReplyStateLevelTwo, InteractionEditFunction, InteractionReplyStateLevelThree, InteractionComponentHandler } from '../types/interactions'
 import { config, Core } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import Logger from '../lib/logger'
@@ -19,6 +21,8 @@ export default class InteractionHandler {
 
   /* TODO @metrics */
   private activeInteractionReplyContexts: InteractionReplyContext[] = []
+
+  private globalInteractionComponentHandlers: { [id: string]: InteractionComponentHandler } = {}
 
   //
 
@@ -41,7 +45,24 @@ export default class InteractionHandler {
     this.COMMAND_HANDLER.vote = new NewVoteCommand()
     this.COMMAND_HANDLER.settings = new NewSettingsCommand()
     // this.HANDLER.admin = new AdminHandler()
+
+    this.loadButtonHandlers(path.join(__dirname, 'components'), '')
   }
+
+  private loadButtonHandlers(dir: string, prefix: string) {
+    for (const file of fs.readdirSync(dir)) {
+      const fullPath = path.join(dir, file)
+      const fullName = prefix + '_' + file.split('.')[0]
+      if (file.includes('.')) {
+        if (!file.endsWith('.js')) continue
+        this.globalInteractionComponentHandlers[fullName.substr(1)] = require(fullPath).default
+      } else {
+        this.loadButtonHandlers(fullPath, fullName)
+      }
+    }
+  }
+
+  //
 
   private async runCommand(interaction: CommandInteraction, handler: InteractionCommandHandler) {
     try {
@@ -74,20 +95,22 @@ export default class InteractionHandler {
         Axios.post(`https://discord.com/api/v8/interactions/${i.id}/${i.token}/callback`, { type: 5 /* DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE */ })
       }
     } else if (i.type === InteractionType.COMPONENT) {
-      const context = this.activeInteractionReplyContexts.find(c => c.id === i.message.interaction?.id)
-      if (!context) return
-      if (context.handlers[i.data.custom_id]) {
-        const editFunction: InteractionEditFunction = (data: InteractionApplicationCommandCallbackData) => {
-          this.normaliseData(data, context.guildData)
-          if (!data) (data as any) = {}
-          Axios.post(`https://discord.com/api/v8/interactions/${i.id}/${i.token}/callback`, { type: 7 /* UPDATE_MESSAGE */, data })
-        }
-        context.handlers[i.data.custom_id](i.data, editFunction)
+      const editFunction: InteractionEditFunction = (data: InteractionApplicationCommandCallbackData) => {
+        this.normaliseData(data, context.guildData)
+        if (!data) (data as any) = {}
+        Axios.post(`https://discord.com/api/v8/interactions/${i.id}/${i.token}/callback`, { type: 7 /* UPDATE_MESSAGE */, data })
+      }
 
-        if (context.resetTimeoutOnInteraction) {
-          clearTimeout(context.timeoutRunner)
-          setTimeout(context.timeoutRunFunc, context.timeout)
-        }
+      const context: InteractionReplyContext | undefined = this.activeInteractionReplyContexts.find(c => c.id === i.message.interaction?.id)
+      if (context?.resetTimeoutOnInteraction) {
+        clearTimeout(context.timeoutRunner)
+        setTimeout(context.timeoutRunFunc, context.timeout)
+      }
+
+      if (context?.handlers[i.data.custom_id]) {
+        context.handlers[i.data.custom_id](i.data, editFunction)
+      } else if (this.globalInteractionComponentHandlers[i.data.custom_id]) {
+        this.globalInteractionComponentHandlers[i.data.custom_id](i.data, editFunction)
       } else {
         Logger.warn(`Unhandled component with custom_id "${i.data.custom_id}"`)
         Axios.post(`https://discord.com/api/v8/interactions/${i.id}/${i.token}/callback`, { type: 6 /* DEFERRED_UPDATE_MESSAGE */ })
@@ -95,6 +118,9 @@ export default class InteractionHandler {
     }
   }
 
+  /**
+   * Recursively traverses the given object until maxDepth, translating every string value found
+   */
   private translateObject(object: any, guildData: GuildData | undefined, context: any, maxDepth: number) {
     if (maxDepth <= 0) return
     for (const key in object) {
@@ -104,6 +130,9 @@ export default class InteractionHandler {
     }
   }
 
+  /**
+   * Transforms the shorthand way of writing into proper discord api compatible objects
+   */
   private normaliseData(data?: InteractionApplicationCommandCallbackData, guild?: GuildData) {
     if (!data) return
     // explicitly not using this. in this function due to unwanted side-effects in lambda functions
@@ -127,6 +156,9 @@ export default class InteractionHandler {
     }
   }
 
+  /**
+   * Gets your default reply(...) function
+   */
   private getReplyFunction(i: GenericInteraction, guild?: GuildData): InteractionReplyFunction {
     const types: InteractionResponseType[] = [ 'Pong', 'deprecated-Acknowledge', 'deprecated-ChannelMessage', 'ChannelMessageWithSource', 'DeferredChannelMessageWithSource', 'DeferredUpdateMessage', 'UpdateMessage' ]
     return (type: InteractionResponseType, data?: InteractionApplicationCommandCallbackData) => {
@@ -150,6 +182,9 @@ export default class InteractionHandler {
     }
   }
 
+  /**
+   * Gets the object to .withTimeout(...) on
+   */
   private getLevelTwoReplyState(context: InteractionReplyContext): InteractionReplyStateLevelTwo {
     const getLevelThreeReplyState = this.getLevelThreeReplyState
     const normaliseData = this.normaliseData
@@ -179,6 +214,9 @@ export default class InteractionHandler {
     }
   }
 
+  /**
+   * Gets the object to .on(...) on
+   */
   private getLevelThreeReplyState(context: InteractionReplyContext): InteractionReplyStateLevelThree {
     const state: InteractionReplyStateLevelThree = {
       _context: context,
