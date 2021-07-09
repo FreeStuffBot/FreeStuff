@@ -5,7 +5,7 @@ services:
     image: maanex/freestuffbot
     environment:
       NODE_ENV: "dev"
-      BOT_TOKEN: "NzU2MTgzODk4MTU2OTU3ODUw.X2OJIg.vB34tsRbt2b2EvFCQBOkUJe_5D0"
+      BOT_TOKEN: "token"
       BOT_ID: "756183898156957850"
       MONGO_URL: "mongodb://host.docker.internal:27017/admin"
       FREESTUFF_KEY: "verysecret"
