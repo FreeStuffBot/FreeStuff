@@ -1,10 +1,11 @@
 import { GameInfo } from 'freestuff'
-import { Interaction, InteractionCommandHandler, InteractionReplyFunction } from '../../types/interactions'
+import { CommandInteraction, InteractionCommandHandler, InteractionReplyFunction } from '../../types/interactions'
 import { GuildData } from '../../types/datastructs'
 import Const from '../const'
 import { Core } from '../../index'
 import Experiments from '../../controller/experiments'
 import Logger from '../../lib/logger'
+import Emojis from '../../lib/emojis'
 
 
 export default class NewFreeCommand extends InteractionCommandHandler {
@@ -18,14 +19,14 @@ export default class NewFreeCommand extends InteractionCommandHandler {
     NewFreeCommand.updateCurrentFreebies()
   }
 
-  public handle(_command: Interaction, data: GuildData, reply: InteractionReplyFunction): boolean {
+  public handle(_command: CommandInteraction, data: GuildData, reply: InteractionReplyFunction): boolean {
     const useProxyUrl = Experiments.runExperimentOnServer('use_proxy_url', data)
 
     const freeLonger: string[] = []
     const freeToday: string[] = []
     for (const game of NewFreeCommand.current) {
       // g happens to be undefined here at times, investigate
-      const str = `${Const.storeEmojis[game.store] || ':gray_question:'} **[${game.title}](${useProxyUrl ? game.urls.default : game.urls.org})**\n${Const.bigSpace} ~~${data?.currency === 'euro' ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • ${Core.text(data, '=cmd_free_until')} ${game.until ? `<t:${game.until.getTime() / 1000}:${('_today' in game) ? 't' : 'd'}>` : 'unknown'}\n`
+      const str = `${Const.storeEmojis[game.store] || ':gray_question:'} **[${game.title}](${useProxyUrl ? game.urls.default : game.urls.org})**\n${Emojis.bigSpace.string} ~~${data?.currency === 'euro' ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • ${Core.text(data, '=cmd_free_until')} ${game.until ? `<t:${game.until.getTime() / 1000}:${('_today' in game) ? 't' : 'd'}>` : 'unknown'}\n`
       if ('_today' in game) freeToday.push(str)
       else freeLonger.push(str)
     }
@@ -37,10 +38,8 @@ export default class NewFreeCommand extends InteractionCommandHandler {
     reply('ChannelMessageWithSource', {
       title: '=cmd_free_title',
       description: replyText,
-      footer: {
-        text: '=announcement_footer'
-      },
-      context: { website: Const.links.websiteClean }
+      footer: '=announcement_footer',
+      _context: { website: Const.links.websiteClean }
     })
     return true
   }

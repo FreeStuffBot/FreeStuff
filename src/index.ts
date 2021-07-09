@@ -75,6 +75,13 @@ run().catch((err) => {
 //
 
 function mountBot(shardId: number, shardCount: number, commit: GitCommit) {
+  // if (Core) {
+  //   // unmount old bot
+  //   Core.removeAllListeners()
+  //   Core.destroy()
+  //   return
+  // }
+
   Core = new FreeStuffBot({
     ws: {
       intents: [

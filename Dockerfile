@@ -2,7 +2,8 @@ FROM node:alpine
 
 RUN apk add git
 
-WORKDIR /opt/greenlight/bot
+RUN mkdir -p /usr/freestuffbot
+WORKDIR /usr/freestuffbot
 
 COPY package*.json ./
 

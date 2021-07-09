@@ -1,12 +1,12 @@
 import Const from '../const'
 import { Core } from '../../index'
-import { Interaction, InteractionCommandHandler, InteractionReplyFunction } from '../../types/interactions'
+import { CommandInteraction, InteractionCommandHandler, InteractionReplyFunction } from '../../types/interactions'
 import { GuildData } from '../../types/datastructs'
 
 
 export default class NewAboutCommand extends InteractionCommandHandler {
 
-  public handle(_command: Interaction, data: GuildData, reply: InteractionReplyFunction): boolean {
+  public handle(_command: CommandInteraction, data: GuildData, reply: InteractionReplyFunction): boolean {
     const translationCredits = data.language.startsWith('en')
       ? ''
       : `\n\n${Core.text(data, '=translation_by')}\n${Core.languageManager.getRaw(data.language, 'translators').split(', ').map(n => `• ${n}`).join('\n')}`
@@ -19,9 +19,7 @@ export default class NewAboutCommand extends InteractionCommandHandler {
         inviteLink: Const.links.botInvite,
         discordInvite: Const.links.supportInvite
       }) + translationCredits,
-      footer: {
-        text: 'Copyright © 2020-2021 FreeStuff'
-      }
+      footer: 'Copyright © 2020-2021 FreeStuff'
     })
     return true
   }

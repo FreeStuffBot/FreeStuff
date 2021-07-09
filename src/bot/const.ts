@@ -74,6 +74,4 @@ export default class Const {
     switch: 'https://media.discordapp.net/attachments/672907465670787083/833652535356817418/switch_ext.png'
   };
 
-  public static readonly bigSpace = '<:nothing:716252611962994718>';
-
 }

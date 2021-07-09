@@ -42,7 +42,7 @@
     "request": "^2.88.2",
     "socket.io-client": "^4.0.1",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.7"
+    "typescript": "^4.3.5"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^6.0.0",

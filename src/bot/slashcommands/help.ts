@@ -1,11 +1,11 @@
 import { Core } from '../../index'
-import { Interaction, InteractionCommandHandler, InteractionReplyFunction } from '../../types/interactions'
+import { CommandInteraction, InteractionCommandHandler, InteractionReplyFunction } from '../../types/interactions'
 import { GuildData } from '../../types/datastructs'
 
 
 export default class NewHelpCommand extends InteractionCommandHandler {
 
-  public handle(_command: Interaction, data: GuildData, reply: InteractionReplyFunction): boolean {
+  public handle(_command: CommandInteraction, data: GuildData, reply: InteractionReplyFunction): boolean {
     const cmdlist = Core.commandHandler.commands
       .filter(c => !c.info.hideOnHelp)
       .map(c => `• \`/${c.info.name}\` ─ ${Core.text(data, c.info.desc)}`)

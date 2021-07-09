@@ -1,6 +1,6 @@
 import Const from '../const'
 import { config, Core } from '../../index'
-import { Interaction, InteractionCommandHandler, InteractionReplyFunction, InteractionResponseFlags } from '../../types/interactions'
+import { CommandInteraction, InteractionCommandHandler, InteractionReplyFunction, InteractionResponseFlags } from '../../types/interactions'
 import { GuildData } from '../../types/datastructs'
 
 
@@ -10,7 +10,7 @@ export default class NewTestCommand extends InteractionCommandHandler {
 
   private testCooldown = [ ];
 
-  public async handle(command: Interaction, data: GuildData, reply: InteractionReplyFunction): Promise<boolean> {
+  public async handle(command: CommandInteraction, data: GuildData, reply: InteractionReplyFunction): Promise<boolean> {
     // TODO MAKE SURE TO CHECK FOR PERMISSIONS !!!!!!!
 
     const guildid = command.guild_id
@@ -28,7 +28,7 @@ export default class NewTestCommand extends InteractionCommandHandler {
         flags: InteractionResponseFlags.EPHEMERAL,
         title: '=cmd_on_cooldown_1',
         description: '=cmd_on_cooldown_2',
-        context: { time: '10' }
+        _context: { time: '10' }
       })
       return true
     }
@@ -38,7 +38,7 @@ export default class NewTestCommand extends InteractionCommandHandler {
       reply('ChannelMessageWithSource', {
         title: '=cmd_error_fixable_1',
         description: '=cmd_error_fixable_2',
-        context: { discordInvite: Const.links.supportInvite }
+        _context: { discordInvite: Const.links.supportInvite }
       })
       return
     }
@@ -46,7 +46,7 @@ export default class NewTestCommand extends InteractionCommandHandler {
       reply('ChannelMessageWithSource', {
         title: '=cmd_test_nochannel_1',
         description: '=cmd_test_nochannel_2',
-        context: { channel: `#${guild.channels.cache.filter(c => c.type === 'text').random().name}` }
+        _context: { channel: `#${guild.channels.cache.filter(c => c.type === 'text').random().name}` }
       })
       return true
     }
@@ -54,7 +54,7 @@ export default class NewTestCommand extends InteractionCommandHandler {
       reply('ChannelMessageWithSource', {
         title: '=cmd_test_nosee_1',
         description: '=cmd_test_nosee_2',
-        context: { channel: data.channelInstance.toString() }
+        _context: { channel: data.channelInstance.toString() }
       })
       return true
     }
@@ -62,7 +62,7 @@ export default class NewTestCommand extends InteractionCommandHandler {
       reply('ChannelMessageWithSource', {
         title: '=cmd_test_nosend_1',
         description: '=cmd_test_nosend_2',
-        context: { channel: data.channelInstance.toString() }
+        _context: { channel: data.channelInstance.toString() }
       })
       return true
     }
@@ -71,7 +71,7 @@ export default class NewTestCommand extends InteractionCommandHandler {
       reply('ChannelMessageWithSource', {
         title: '=cmd_test_noembeds_1',
         description: '=cmd_test_noembeds_2',
-        context: { channel: data.channelInstance.toString() }
+        _context: { channel: data.channelInstance.toString() }
       })
       return true
     }

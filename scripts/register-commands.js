@@ -30,9 +30,8 @@ const commands = [
     // TODO hosts mydata, resend, reset, beta, here
   },
   {
-    name: 'set',
+    name: 'settings',
     description: 'Change settings for the FreeStuff Bot.'
-    // TODO all the settings as subcommands.
   },
   {
     name: 'test',
@@ -76,4 +75,4 @@ async function run(remove = true, add = true, whitelist) {
     }
   }
 }
-run(false, true, [ 'free' ])
+run(false, true, [ 'settings' ])

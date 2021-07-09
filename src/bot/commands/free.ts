@@ -5,6 +5,7 @@ import Const from '../const'
 import { Core } from '../../index'
 import Experiments from '../../controller/experiments'
 import NewFreeCommand from '../slashcommands/free'
+import Emojis from '../../lib/emojis'
 
 
 export default class FreeCommand extends Command {
@@ -28,7 +29,7 @@ export default class FreeCommand extends Command {
     const freeToday: string[] = []
     for (const game of NewFreeCommand.getCurrentFreebies()) {
       // g happens to be undefined here at times, investigate
-      const str = `${Const.storeEmojis[game.store] || ':gray_question:'} **[${game.title}](${useProxyUrl ? game.urls.default : game.urls.org})**\n${Const.bigSpace} ~~${g?.currency === 'euro' ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • ${Core.text(g, '=cmd_free_until')} ${game.until ? `<t:${game.until.getTime() / 1000}:${('_today' in game) ? 't' : 'd'}>` : 'unknown'}\n`
+      const str = `${Const.storeEmojis[game.store] || ':gray_question:'} **[${game.title}](${useProxyUrl ? game.urls.default : game.urls.org})**\n${Emojis.bigSpace.string} ~~${g?.currency === 'euro' ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • ${Core.text(g, '=cmd_free_until')} ${game.until ? `<t:${game.until.getTime() / 1000}:${('_today' in game) ? 't' : 'd'}>` : 'unknown'}\n`
       if ('_today' in game) freeToday.push(str)
       else freeLonger.push(str)
     }

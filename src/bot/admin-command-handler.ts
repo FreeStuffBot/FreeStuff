@@ -1,7 +1,6 @@
 import { hostname } from 'os'
 import { Message } from 'discord.js'
 import { Long } from 'mongodb'
-import { GameData, DatabaseGuildData } from '../types/datastructs'
 import { Core, config } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import Logger from '../lib/logger'
@@ -13,14 +12,16 @@ import NewFreeCommand from './slashcommands/free'
 
 THIS CLASS CLEARLY NEEDS SOME CLEANUP
 
+but then again, it's probably gonna go deprecated soon as we roll out slash commands further
+
 */
 
 
 const commandlist = [
   '`$FreeStuff help` - Shows this help page',
   '`$FreeStuff print` - Shows info about this guild',
-  '`$FreeStuff distribute` - ',
   '`$FreeStuff settingbits` - ',
+  '`$FreeStuff refetch` - ',
   '`$FreeStuff experiments [name]` - Prints all experiments or checks if current server participates in a certain experiment'
 ]
 
@@ -41,7 +42,6 @@ export default class AdminCommandHandler {
         && m.guild.me.permissionsIn(m.channel).has('ADD_REACTIONS')
         && m.guild.me.permissionsIn(m.channel).has('READ_MESSAGE_HISTORY'))
         m.react('🤔')
-
     })
   }
 
@@ -84,26 +84,6 @@ export default class AdminCommandHandler {
             orgmes.channel.send('```json\n' + JSON.stringify(data, null, 2) + '```')
           })
           .catch(Logger.error)
-        return true
-
-      case 'distribute':
-        if (args.length < 3) {
-          reply('no', '$FreeStuff distribute <gameid> <serverid> [...serverid]')
-          return
-        }
-        Database
-          .collection('games')
-          .findOne({ _id: parseInt(args[1], 10) })
-          .then(async (data: GameData) => {
-            args.splice(0, 2)
-            for (const guildid of args) {
-              const guild = await Database
-                .collection('guilds')
-                .findOne({ _id: Long.fromString(guildid) }) as DatabaseGuildData
-              Core.messageDistributor.sendToGuild(guild, [ data.info ], false, false)
-            }
-          })
-          .catch(err => reply('error', err))
         return true
 
       case 'settingbits':
