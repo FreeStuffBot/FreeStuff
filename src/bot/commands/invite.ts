@@ -1,25 +1,16 @@
-import { Message } from 'discord.js'
-import { GuildData } from '../../types/datastructs'
-import { Command, ReplyFunction } from '../../types/commands'
 import Const from '../const'
-import { Core } from '../../index'
+import { CommandInteraction, InteractionCommandHandler, InteractionReplyFunction } from '../../types/interactions'
+import { GuildData } from '../../types/datastructs'
 
 
-export default class InviteCommand extends Command {
+export default class NewInviteCommand extends InteractionCommandHandler {
 
-  public constructor() {
-    super({
-      name: 'invite',
-      desc: '=cmd_invite_desc',
-      trigger: [ 'get', 'link', 'invite', 'add', 'join' ]
+  public handle(_command: CommandInteraction, _data: GuildData, reply: InteractionReplyFunction): boolean {
+    reply('ChannelMessageWithSource', {
+      title: '=cmd_invite_1',
+      description: '=cmd_invite_2',
+      _context: { inviteLink: Const.links.botInvite }
     })
-  }
-
-  public handle(_mes: Message, _args: string[], g: GuildData, repl: ReplyFunction): boolean {
-    repl(
-      Core.text(g, '=cmd_invite_1'),
-      Core.text(g, '=cmd_invite_2', { inviteLink: Const.links.botInvite })
-    )
     return true
   }
 

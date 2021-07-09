@@ -36,6 +36,6 @@ export default class Emojis {
   public static readonly bigSpace = new Emojis('716252611962994718', 'nothing')
   public static readonly mention = new Emojis('863103982603075634', 'mention')
   public static readonly channel = new Emojis('863103982120992769', 'channel')
-  public static readonly speak = new Emojis('863103982527578192', 'iconspeak')
+  public static readonly overflow = new Emojis('863142285465485372', 'overflow')
 
 }

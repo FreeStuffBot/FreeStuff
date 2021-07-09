@@ -1,45 +1,38 @@
 import { Message } from 'discord.js'
+import { Store } from 'freestuff'
 import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core, config } from '../../index'
 import Const from '../const'
-import NewFreeCommand from '../slashcommands/free'
+import ParseArgs from '../../lib/parse-args'
 
 
-export default class ResendCommand extends Command {
+export default class TestCommand extends Command {
+
+  private readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/830794212894572574/thumbnail_placeholder.png'
 
   private testCooldown = [ ];
   private testCooldownHarsh = [ ];
 
   public constructor() {
     super({
-      name: 'resend',
-      desc: '=cmd_resend_desc',
-      trigger: [ 'resend' ],
-      hideOnHelp: true,
+      name: 'test',
+      desc: '=cmd_test_desc',
+      trigger: [ 'test' ],
       serverManagerOnly: true
     })
   }
 
-  public handle(mes: Message, _args: string[], g: GuildData, repl: ReplyFunction): boolean {
+  public handle(mes: Message, args: string[], g: GuildData, repl: ReplyFunction): boolean {
     if (this.testCooldownHarsh.includes(mes.guild.id))
       return true
     if (this.testCooldown.includes(mes.guild.id)) {
       repl(
         Core.text(g, '=cmd_on_cooldown_1'),
-        Core.text(g, '=cmd_on_cooldown_2', { time: '30' })
+        Core.text(g, '=cmd_on_cooldown_2', { time: '10' })
       )
       this.testCooldownHarsh.push(mes.guild.id)
       return true
-    }
-
-    const freebies = NewFreeCommand.getCurrentFreebies()
-    if (!freebies?.length) {
-      repl(
-        Core.text(g, '=cmd_resend_nothing_free_1'),
-        Core.text(g, '=cmd_resend_nothing_free_2', { discordInvite: Const.links.supportInvite })
-      )
-      return
     }
 
     if (!g) {
@@ -88,19 +81,54 @@ export default class ResendCommand extends Command {
       return true
     }
 
+    const flags = ParseArgs.parse(args)
+
     try {
-      Core.messageDistributor.sendToGuild(g, freebies, false, false)
-      if (g.channelInstance.id !== mes.channel.id) {
+      let price = parseFloat(flags.price + '')
+      if (!price) price = 19.99
+      Core.messageDistributor.test(mes.guild, {
+        id: 0,
+        title: Core.text(g, '=cmd_test_announcement_header'),
+        org_price: {
+          euro: price,
+          dollar: price
+        },
+        price: {
+          euro: 0,
+          dollar: 0
+        },
+        store: (Core.languageManager.get(g, 'platform_' + flags.store) ? flags.store as Store : '') || 'steam',
+        thumbnail: {
+          blank: this.placeholderThumbnail,
+          full: this.placeholderThumbnail,
+          org: this.placeholderThumbnail,
+          tags: this.placeholderThumbnail
+        },
+        kind: 'game',
+        description: Core.text(g, '=cmd_test_announcement_description'),
+        tags: [],
+        rating: 0.8,
+        urls: {
+          org: Const.links.testgame,
+          default: Const.links.testgame,
+          browser: Const.links.testgame
+        },
+        flags: 0,
+        until: null,
+        type: 'free',
+        store_meta: {
+          steam_subids: '12345 98760'
+        }
+      })
+    } catch (ex) {
+      if (Object.keys(flags)) {
+        repl('Yikes', 'Some of the flags you set caused errors. Try removing them.')
+      } else {
         repl(
-          Core.text(g, '=cmd_resend_success_1'),
-          Core.text(g, '=cmd_resend_success_2', { channel: `<#${g.channelInstance.id}>` })
+          Core.text(g, '=cmd_error_fixable_1'),
+          Core.text(g, '=cmd_error_fixable_2')
         )
       }
-    } catch (ex) {
-      repl(
-        Core.text(g, '=cmd_error_fixable_1'),
-        Core.text(g, '=cmd_error_fixable_2')
-      )
     }
 
     if (config.admins?.includes(mes.author.id)) return true

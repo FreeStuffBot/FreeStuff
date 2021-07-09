@@ -1,103 +1,102 @@
-import { Message } from 'discord.js'
-import { Store } from 'freestuff'
-import { GuildData } from '../../types/datastructs'
-import { Command, ReplyFunction } from '../../types/commands'
-import { Core, config } from '../../index'
 import Const from '../const'
-import ParseArgs from '../../lib/parse-args'
+import { config, Core } from '../../index'
+import { CommandInteraction, InteractionCommandHandler, InteractionReplyFunction, InteractionResponseFlags } from '../../types/interactions'
+import { GuildData } from '../../types/datastructs'
 
 
-export default class TestCommand extends Command {
+export default class NewTestCommand extends InteractionCommandHandler {
 
   private readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/830794212894572574/thumbnail_placeholder.png'
 
   private testCooldown = [ ];
-  private testCooldownHarsh = [ ];
 
-  public constructor() {
-    super({
-      name: 'test',
-      desc: '=cmd_test_desc',
-      trigger: [ 'test' ],
-      serverManagerOnly: true
-    })
-  }
+  public async handle(command: CommandInteraction, data: GuildData, reply: InteractionReplyFunction): Promise<boolean> {
+    // TODO MAKE SURE TO CHECK FOR PERMISSIONS !!!!!!!
 
-  public handle(mes: Message, args: string[], g: GuildData, repl: ReplyFunction): boolean {
-    if (this.testCooldownHarsh.includes(mes.guild.id))
-      return true
-    if (this.testCooldown.includes(mes.guild.id)) {
-      repl(
-        Core.text(g, '=cmd_on_cooldown_1'),
-        Core.text(g, '=cmd_on_cooldown_2', { time: '10' })
-      )
-      this.testCooldownHarsh.push(mes.guild.id)
+    const guildid = command.guild_id
+    const guild = guildid ? await Core.guilds.fetch(guildid) : undefined
+    if (!guild) {
+      reply('ChannelMessageWithSource', {
+        title: '=cmd_not_available_in_dms_1',
+        description: '=cmd_not_available_in_dms_2'
+      })
       return true
     }
 
-    if (!g) {
-      Core.databaseManager.addGuild(mes.guild)
-      repl(
-        Core.text(g, '=cmd_error_fixable_1'),
-        Core.text(g, '=cmd_error_fixable_2', { discordInvite: Const.links.supportInvite })
-      )
+    if (this.testCooldown.includes(guildid)) {
+      reply('ChannelMessageWithSource', {
+        flags: InteractionResponseFlags.EPHEMERAL,
+        title: '=cmd_on_cooldown_1',
+        description: '=cmd_on_cooldown_2',
+        _context: { time: '10' }
+      })
+      return true
+    }
+
+    if (!data) {
+      Core.databaseManager.addGuild(guild)
+      reply('ChannelMessageWithSource', {
+        title: '=cmd_error_fixable_1',
+        description: '=cmd_error_fixable_2',
+        _context: { discordInvite: Const.links.supportInvite }
+      })
       return
     }
-    if (!g.channelInstance) {
-      repl(
-        Core.text(g, '=cmd_test_nochannel_1'),
-        Core.text(g, '=cmd_test_nochannel_2', { channel: `#${mes.guild.channels.cache.filter(c => c.type === 'text').random().name}` })
-      )
+    if (!data.channelInstance) {
+      reply('ChannelMessageWithSource', {
+        title: '=cmd_test_nochannel_1',
+        description: '=cmd_test_nochannel_2',
+        _context: { channel: `#${guild.channels.cache.filter(c => c.type === 'text').random().name}` }
+      })
       return true
     }
-    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('VIEW_CHANNEL')) {
-      repl(
-        Core.text(g, '=cmd_test_nosee_1'),
-        Core.text(g, '=cmd_test_nosee_2', { channel: g.channelInstance.toString() })
-      )
+    if (!data.channelInstance.guild.me.permissionsIn(data.channelInstance).has('VIEW_CHANNEL')) {
+      reply('ChannelMessageWithSource', {
+        title: '=cmd_test_nosee_1',
+        description: '=cmd_test_nosee_2',
+        _context: { channel: data.channelInstance.toString() }
+      })
       return true
     }
-    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('SEND_MESSAGES')) {
-      repl(
-        Core.text(g, '=cmd_test_nosend_1'),
-        Core.text(g, '=cmd_test_nosend_2', { channel: g.channelInstance.toString() })
-      )
+    if (!data.channelInstance.guild.me.permissionsIn(data.channelInstance).has('SEND_MESSAGES')) {
+      reply('ChannelMessageWithSource', {
+        title: '=cmd_test_nosend_1',
+        description: '=cmd_test_nosend_2',
+        _context: { channel: data.channelInstance.toString() }
+      })
       return true
     }
-    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('EMBED_LINKS')
-        && Const.themesWithEmbeds.includes(g.theme)) {
-      repl(
-        Core.text(g, '=cmd_test_noembeds_1'),
-        Core.text(g, '=cmd_test_noembeds_2', { channel: g.channelInstance.toString() })
-      )
+    if (!data.channelInstance.guild.me.permissionsIn(data.channelInstance).has('EMBED_LINKS')
+        && Const.themesWithEmbeds.includes(data.theme)) {
+      reply('ChannelMessageWithSource', {
+        title: '=cmd_test_noembeds_1',
+        description: '=cmd_test_noembeds_2',
+        _context: { channel: data.channelInstance.toString() }
+      })
       return true
     }
-    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('USE_EXTERNAL_EMOJIS')
-        && Const.themesWithExtemotes[g.theme]) {
-      repl(
-        Core.text(g, '=cmd_test_extemotes_1'),
-        Core.text(g, '=cmd_test_extemotes_2')
-      )
+    if (!data.channelInstance.guild.me.permissionsIn(data.channelInstance).has('USE_EXTERNAL_EMOJIS')
+        && Const.themesWithExtemotes[data.theme]) {
+      reply('ChannelMessageWithSource', {
+        title: '=cmd_test_extemotes_1',
+        description: '=cmd_test_extemotes_2'
+      })
       return true
     }
-
-    const flags = ParseArgs.parse(args)
 
     try {
-      let price = parseFloat(flags.price + '')
-      if (!price) price = 19.99
-      Core.messageDistributor.test(mes.guild, {
+      Core.messageDistributor.test(guild, {
         id: 0,
-        title: Core.text(g, '=cmd_test_announcement_header'),
+        title: Core.text(data, '=cmd_test_announcement_header'),
         org_price: {
-          euro: price,
-          dollar: price
+          euro: 19.99,
+          dollar: 19.99
         },
         price: {
           euro: 0,
           dollar: 0
         },
-        store: (Core.languageManager.get(g, 'platform_' + flags.store) ? flags.store as Store : '') || 'steam',
+        store: 'steam',
         thumbnail: {
           blank: this.placeholderThumbnail,
           full: this.placeholderThumbnail,
@@ -105,7 +104,7 @@ export default class TestCommand extends Command {
           tags: this.placeholderThumbnail
         },
         kind: 'game',
-        description: Core.text(g, '=cmd_test_announcement_description'),
+        description: Core.text(data, '=cmd_test_announcement_description'),
         tags: [],
         rating: 0.8,
         urls: {
@@ -121,22 +120,22 @@ export default class TestCommand extends Command {
         }
       })
     } catch (ex) {
-      if (Object.keys(flags)) {
-        repl('Yikes', 'Some of the flags you set caused errors. Try removing them.')
-      } else {
-        repl(
-          Core.text(g, '=cmd_error_fixable_1'),
-          Core.text(g, '=cmd_error_fixable_2')
-        )
-      }
+      reply('ChannelMessageWithSource', {
+        title: '=cmd_error_fixable_1',
+        description: '=cmd_error_fixable_2'
+      })
     }
 
-    if (config.admins?.includes(mes.author.id)) return true
+    reply('ChannelMessageWithSource', {
+      content: ':+1: ** **',
+      flags: InteractionResponseFlags.EPHEMERAL
+    })
 
-    this.testCooldown.push(mes.guild.id)
+    if (config.admins?.includes(command.member.user.id)) return true
+
+    this.testCooldown.push(guild.id)
     setTimeout(() => {
-      this.testCooldown.splice(this.testCooldown.indexOf(mes.guild.id), 1)
-      this.testCooldownHarsh.splice(this.testCooldownHarsh.indexOf(mes.guild.id), 1)
+      this.testCooldown.splice(this.testCooldown.indexOf(guild.id), 1)
     }, 1000 * 10)
     return true
   }

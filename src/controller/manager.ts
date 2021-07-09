@@ -6,7 +6,7 @@ import Logger from '../lib/logger'
 import { Experiment, ManagerCommand, ShardAction, ShardStatus, ShardTask } from '../types/controller'
 import { getGitCommit } from '../lib/git-parser'
 import { Util } from '../lib/util'
-import NewFreeCommand from '../bot/slashcommands/free'
+import NewFreeCommand from '../bot/commands/free'
 import Experiments from './experiments'
 import RemoteConfig from './remote-config'
 

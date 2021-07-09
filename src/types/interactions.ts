@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { Message, MessageEmbed } from 'discord.js'
+import { MessageEmbed } from 'discord.js'
 import { GuildData } from './datastructs'
 
 
@@ -7,13 +7,40 @@ import { GuildData } from './datastructs'
  * Discord API interactions
  */
 
-
 export type InteractionUser = {
   id: string
   username: string
   avatar: string
   discriminator: string
   public_flags: number
+  bot: boolean
+}
+
+export type InteractionMessage = {
+  webhook_id?: string,
+  type: number,
+  tts: boolean,
+  timestamp: string,
+  pinned: boolean,
+  mentions: any[], // TODO
+  mention_roles: any[], // TODO
+  mention_everyone: boolean,
+  interaction?: {
+    user: InteractionUser,
+    type: number,
+    name: string,
+    id: string
+  },
+  id: string,
+  flags: number,
+  embeds: any[], // TODO
+  edited_timestamp: string | null,
+  content: string,
+  components: any, // TODO
+  channel_id: string,
+  author: InteractionUser,
+  attachments: any[], // TODO
+  application_id: string
 }
 
 export type InteractionMember = {
@@ -59,7 +86,7 @@ export type InteractionTypeCommand = {
 
 export type InteractionTypeComponent = {
   type: 3
-  message: Message
+  message: InteractionMessage
   data: {
     custom_id: string
     component_type: number
@@ -86,6 +113,8 @@ export type InteractionResponseType = 'Pong'
   | 'deprecated-ChannelMessage'
   | 'ChannelMessageWithSource'
   | 'DeferredChannelMessageWithSource'
+  | 'DeferredUpdateMessage'
+  | 'UpdateMessage'
 
 export enum InteractionResponseFlags {
   EPHEMERAL = 64
@@ -156,9 +185,43 @@ export type InteractionApplicationCommandCallbackData = {
   _context?: InteractionApplicationCommandCallbackDataContext
 }
 
+//
 
-export type InteractionReplyFunction = (type: InteractionResponseType, data?: InteractionApplicationCommandCallbackData & {context?: any}) => void
+export type InteractionEditFunction = (data?: InteractionApplicationCommandCallbackData) => void
 
+export type InteractionReplyActionEvent = {
+  custom_id: string
+} & ({
+  component_type: 2
+} | {
+  component_type: 3
+  values: string[]
+})
+
+export type InteractionReplyContext = {
+  id: string
+  interaction: GenericInteraction
+  guildData: GuildData
+  timeout: number
+  timeoutRunFunc: (...any: any) => any
+  timeoutRunner: NodeJS.Timeout
+  resetTimeoutOnInteraction: boolean
+  handlers: { [customId: number]: (event: InteractionReplyActionEvent, edit: InteractionEditFunction) => any }
+}
+
+export type InteractionReplyStateLevelThree = {
+  _context: InteractionReplyContext,
+  on(customId: string, handler: (event: InteractionReplyActionEvent, edit: InteractionEditFunction) => any): InteractionReplyStateLevelThree
+}
+
+export type InteractionReplyStateLevelTwo = {
+  _context: InteractionReplyContext,
+  withTimeout(millis: number, resetOnInteraction: boolean, janitor: (edit: InteractionEditFunction) => any): InteractionReplyStateLevelThree
+}
+
+export type InteractionReplyFunction = (type: InteractionResponseType, data?: InteractionApplicationCommandCallbackData) => InteractionReplyStateLevelTwo
+
+//
 
 export abstract class InteractionCommandHandler {
 

@@ -6,7 +6,7 @@ import FreeStuffBot from '../freestuffbot'
 import Logger from '../lib/logger'
 import Database from '../database/database'
 import Experiments from '../controller/experiments'
-import NewFreeCommand from './slashcommands/free'
+import NewFreeCommand from './commands/free'
 
 /*
 

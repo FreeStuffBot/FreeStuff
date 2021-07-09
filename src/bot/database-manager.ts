@@ -162,8 +162,8 @@ export default class DatabaseManager {
         : undefined,
       roleInstance: fetchInstances && dbObject.role && responsible && guildInstance
         ? dbObject.role.toString() === '1'
-            ? guildInstance.roles.everyone
-            : guildInstance.roles.resolve((dbObject.role as Long).toString())
+          ? guildInstance.roles.everyone
+          : guildInstance.roles.resolve((dbObject.role as Long).toString())
         : undefined,
       currency: ((dbObject.settings & (1 << 4)) === 0 ? 'euro' : 'usd') as ('euro' | 'usd'),
       react: (dbObject.settings & (1 << 5)) !== 0,

@@ -1,29 +1,19 @@
-import { Message } from 'discord.js'
-import { GuildData } from '../../types/datastructs'
-import { Command, ReplyFunction } from '../../types/commands'
 import { Core } from '../../index'
+import { CommandInteraction, InteractionCommandHandler, InteractionReplyFunction } from '../../types/interactions'
+import { GuildData } from '../../types/datastructs'
 
 
-export default class HelpCommand extends Command {
+export default class NewHelpCommand extends InteractionCommandHandler {
 
-  public constructor() {
-    super({
-      name: 'help',
-      desc: '=cmd_help_desc',
-      trigger: [ 'help', '?' ],
-      hideOnHelp: true
-    })
-  }
-
-  public handle(mes: Message, _args: string[], g: GuildData, repl: ReplyFunction): boolean {
+  public handle(_command: CommandInteraction, data: GuildData, reply: InteractionReplyFunction): boolean {
     const cmdlist = Core.commandHandler.commands
       .filter(c => !c.info.hideOnHelp)
-      .map(c => `• \`@${mes.guild.me.user.username} ${c.info.name}\` ─ ${Core.text(g, c.info.desc)}`)
+      .map(c => `• \`/${c.info.name}\` ─ ${Core.text(data, c.info.desc)}`)
 
-    repl(
-      Core.text(g, '=cmd_help_1'),
-      Core.text(g, '=cmd_help_2') + '\n\n' + cmdlist.join('\n\n')
-    )
+    reply('ChannelMessageWithSource', {
+      title: '=cmd_help_1',
+      description: Core.text(data, '=cmd_help_2') + '\n\n' + cmdlist.join('\n\n')
+    })
     return true
   }
 
