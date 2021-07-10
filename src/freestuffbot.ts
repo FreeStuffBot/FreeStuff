@@ -3,7 +3,6 @@ import * as chalk from 'chalk'
 import LanguageManager from './bot/language-manager'
 import LegacyCommandHandler from './bot/legacy-command-handler'
 import DatabaseManager from './bot/database-manager'
-import MessageDistributor from './bot/message-distributor'
 import AdminCommandHandler from './bot/admin-command-handler'
 import AnnouncementManager from './bot/announcement-manager'
 import { DbStats } from './database/db-stats'
@@ -19,7 +18,6 @@ export default class FreeStuffBot extends Client {
 
   public commandHandler: LegacyCommandHandler;
   public databaseManager: DatabaseManager;
-  public messageDistributor: MessageDistributor;
   public adminCommandHandler: AdminCommandHandler;
   public announcementManager: AnnouncementManager;
 
@@ -31,7 +29,6 @@ export default class FreeStuffBot extends Client {
 
     this.commandHandler = new LegacyCommandHandler(this)
     this.databaseManager = new DatabaseManager(this)
-    this.messageDistributor = new MessageDistributor()
     this.adminCommandHandler = new AdminCommandHandler(this)
     this.announcementManager = new AnnouncementManager(this)
 

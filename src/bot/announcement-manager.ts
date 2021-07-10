@@ -1,7 +1,8 @@
 import { Semaphore } from 'await-semaphore'
-import { config, Core, FSAPI } from '../index'
+import { config, FSAPI } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import Redis from '../database/redis'
+import MessageDistributor from './message-distributor'
 // import NewFreeCommand from './commands/free'
 
 
@@ -73,7 +74,7 @@ export default class AnnouncementManager {
 
     const numberIds = gameids.split(' ').map(id => parseInt(id, 10))
     const gameInfos = await FSAPI.getGameDetails(numberIds, 'info')
-    await Core.messageDistributor.distribute(Object.values(gameInfos))
+    await MessageDistributor.distribute(Object.values(gameInfos))
 
     Redis.setSharded('pending', '')
     this.currentlyAnnouncing = false

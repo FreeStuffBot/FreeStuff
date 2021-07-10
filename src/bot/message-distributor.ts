@@ -25,7 +25,7 @@ import ThemeTen from './themes/10'
 
 export default class MessageDistributor {
 
-  private readonly themes: Theme[] = [
+  private static readonly themes: Theme[] = [
     new ThemeOne(),
     new ThemeTwo(),
     new ThemeThree(),
@@ -41,10 +41,10 @@ export default class MessageDistributor {
   //
 
   /**
-   * Sends out the games to all guilds this shard is responsible for
+   * Sends out the games to all guilds MessageDistributor shard is responsible for
    * @param content game(s) to announce
    */
-  public async distribute(content: GameInfo[]): Promise<void> {
+  public static async distribute(content: GameInfo[]): Promise<void> {
     content = content.filter(g => g.type === 'free') // TODO
 
     const lga = await Redis.getSharded('lga')
@@ -78,7 +78,7 @@ export default class MessageDistributor {
       try {
         Redis.setSharded('lga', g.sharder + '')
         Logger.excessive(`Sending to ${g._id}`)
-        const successIn = await this.sendToGuild(g, content, false, false)
+        const successIn = await MessageDistributor.sendToGuild(g, content, false, false)
         Logger.excessive(`Success in ${g._id}: ${successIn}`)
         if (successIn.length) {
           for (const id of successIn)
@@ -110,13 +110,13 @@ export default class MessageDistributor {
    * @param guild guild to run the test on
    * @param content content of the test message
    */
-  public test(guild: Guild, content: GameInfo): void {
+  public static test(guild: Guild, content: GameInfo): void {
     Database
       .collection('guilds')
       .findOne({ _id: Long.fromString(guild.id) })
       .then((g: DatabaseGuildData) => {
         if (!g) return
-        this.sendToGuild(g, [ content ], true, true)
+        MessageDistributor.sendToGuild(g, [ content ], true, true)
       })
       .catch(Logger.error)
   }
@@ -125,11 +125,11 @@ export default class MessageDistributor {
    * Sends announcement message(s) to a guild
    * @param g Guild to announce to
    * @param content Games to announce
-   * @param test Whether this was a test message (/test command)
+   * @param test Whether MessageDistributor was a test message (/test command)
    * @param force Whether or not to ignore guild filter settings
    * @returns Array of guild ids that were actually announced (and not filtered out by guild settings)
    */
-  public async sendToGuild(g: DatabaseGuildData, content: GameInfo[], test: boolean, force: boolean): Promise<number[]> {
+  public static async sendToGuild(g: DatabaseGuildData, content: GameInfo[], test: boolean, force: boolean): Promise<number[]> {
     const data = await Core.databaseManager.parseGuildData(g)
 
     if (!data) {
@@ -185,7 +185,7 @@ export default class MessageDistributor {
     }
 
     // build message objects
-    let messageContents = content.map((game, index) => this.buildMessage(game, data, test, !!index))
+    let messageContents = content.map((game, index) => MessageDistributor.buildMessage(game, data, test, !!index))
     messageContents = messageContents.filter(mes => !!mes)
     if (!messageContents.length) {
       Logger.excessive(`Guild ${g._id} return: no message contents length`)
@@ -201,7 +201,7 @@ export default class MessageDistributor {
     // if (!test && (data.channelInstance as Channel).type === 'news')
     //   messages.forEach(m => m.crosspost());
     // TODO check if ratelimited
-    // TODO check if it has the "manage messages" permission. although not required to publish own messages, there needs to be a way to turn this off
+    // TODO check if it has the "manage messages" permission. although not required to publish own messages, there needs to be a way to turn MessageDistributor off
 
     Logger.excessive(`Guild ${g._id} noret: success`)
     return content.map(game => game.id)
@@ -211,8 +211,8 @@ export default class MessageDistributor {
    * Finds the used theme and lets that theme build the message
    * @returns Tupel with message.content and message.options?
    */
-  public buildMessage(content: GameInfo, data: GuildData, test: boolean, disableMention: boolean): [ string, MessageOptions? ] {
-    const theme = this.themes[data.theme] || this.themes[0]
+  public static buildMessage(content: GameInfo, data: GuildData, test: boolean, disableMention: boolean): [ string, MessageOptions? ] {
+    const theme = MessageDistributor.themes[data.theme] || MessageDistributor.themes[0]
     return theme.build(content, data, { test, disableMention })
   }
 

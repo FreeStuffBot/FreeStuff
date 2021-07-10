@@ -7,6 +7,7 @@ import { Experiment, ManagerCommand, ShardAction, ShardStatus, ShardTask } from 
 import { getGitCommit } from '../lib/git-parser'
 import { Util } from '../lib/util'
 // import NewFreeCommand from '../bot/commands/free'
+import MessageDistributor from '../bot/message-distributor'
 import Experiments from './experiments'
 import RemoteConfig from './remote-config'
 
@@ -193,7 +194,7 @@ export default class Manager {
           if (!Util.belongsToShard(Long.fromString(guildid))) continue
           const guildData = await Core.databaseManager.getGuildData(guildid)
           const freebies = [] // TODO NewFreeCommand.getCurrentFreebies()
-          Core.messageDistributor.sendToGuild(guildData, freebies, false, false)
+          MessageDistributor.sendToGuild(guildData, freebies, false, false)
           Logger.manager(`Resent to ${guildid}`)
         }
         break

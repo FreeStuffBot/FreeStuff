@@ -3,6 +3,7 @@ import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core, config } from '../../index'
 import Const from '../const'
+import MessageDistributor from '../../bot/message-distributor'
 // import NewFreeCommand from '../commands/free'
 
 
@@ -39,7 +40,7 @@ export default class ResendCommand extends Command {
         Core.text(g, '=cmd_resend_nothing_free_1'),
         Core.text(g, '=cmd_resend_nothing_free_2', { discordInvite: Const.links.supportInvite })
       )
-      return
+      return true
     }
 
     if (!g) {
@@ -48,7 +49,7 @@ export default class ResendCommand extends Command {
         Core.text(g, '=cmd_error_fixable_1'),
         Core.text(g, '=cmd_error_fixable_2', { discordInvite: Const.links.supportInvite })
       )
-      return
+      return true
     }
     if (!g.channelInstance) {
       repl(
@@ -89,7 +90,7 @@ export default class ResendCommand extends Command {
     }
 
     try {
-      Core.messageDistributor.sendToGuild(g, freebies, false, false)
+      MessageDistributor.sendToGuild(g, freebies, false, false)
       if (g.channelInstance.id !== mes.channel.id) {
         repl(
           Core.text(g, '=cmd_resend_success_1'),

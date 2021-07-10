@@ -6,6 +6,7 @@ import { Core, config } from '../../index'
 import Const from '../const'
 import ParseArgs from '../../lib/parse-args'
 import LanguageManager from '../../bot/language-manager'
+import MessageDistributor from '../../bot/message-distributor'
 
 
 export default class TestCommand extends Command {
@@ -42,7 +43,7 @@ export default class TestCommand extends Command {
         Core.text(g, '=cmd_error_fixable_1'),
         Core.text(g, '=cmd_error_fixable_2', { discordInvite: Const.links.supportInvite })
       )
-      return
+      return true
     }
     if (!g.channelInstance) {
       repl(
@@ -87,7 +88,7 @@ export default class TestCommand extends Command {
     try {
       let price = parseFloat(flags.price + '')
       if (!price) price = 19.99
-      Core.messageDistributor.test(mes.guild, {
+      MessageDistributor.test(mes.guild, {
         id: 0,
         title: Core.text(g, '=cmd_test_announcement_header'),
         org_price: {
