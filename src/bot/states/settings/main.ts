@@ -49,7 +49,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
-        custom_id: 'settings_advanced',
+        custom_id: 'settings_more',
         label: 'More'
       }
     ]

@@ -53,7 +53,7 @@ export default class LanguageManager {
   }
 
   private static getText(language: string, key: string): string {
-    return LanguageManager.texts[language]?.[key]
+    return LanguageManager.texts[language]?.[key] || key
   }
 
   public static languageById(id: number | string): string {
@@ -99,7 +99,7 @@ export default class LanguageManager {
   public static translateObject(object: any, guildData: GuildData | undefined, context: any, maxDepth: number) {
     if (maxDepth <= 0) return
     for (const key in object) {
-      if (key === 'context') continue
+      if (key === '_context') continue
       if (typeof object[key] === 'object') LanguageManager.translateObject(object[key], guildData, context, maxDepth--)
       else if (typeof object[key] === 'string') object[key] = Core.text(guildData, object[key], context)
     }

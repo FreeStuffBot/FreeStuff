@@ -37,6 +37,13 @@ Correct naming: settings_destroy_world
 
 States also follow this principle to not inherit the path into the name, only the destination as shown above.
 
+Components that just change state (like "open another page") or have state changing behaviour must be named like states. Example: config_page2, config_name
+Components that have side effects (like changing settings or alike) must be named with a verb. Example: config_name_change, friends_request_send
+For those verbs preferably pick:
+* _change for Select/Dropdowns
+* _toggle for Toggle Buttons
+* _enable/_disable for Single Use Buttons
+
 ### Examples
 
 Component and State names correct and incorrect examples:

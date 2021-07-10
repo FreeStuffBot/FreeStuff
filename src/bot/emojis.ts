@@ -38,6 +38,7 @@ export default class Emojis {
   public static readonly mention = new Emojis('863103982603075634', 'mention')
   public static readonly channel = new Emojis('863103982120992769', 'channel')
   public static readonly overflow = new Emojis('863142285465485372', 'overflow')
+  public static readonly caretLeft = new Emojis('863506003751337996', 'caret_left')
 
   public static readonly store: { [store in Store]: Emojis } = {
     steam: new Emojis('820258442303242320', 'steam'),

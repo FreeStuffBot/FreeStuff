@@ -15,18 +15,10 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     components: [
       {
         type: ComponentType.SELECT,
-        custom_id: 'settings_channel_change',
-        options: i.guildData.channelInstance.guild.channels.cache
-          .array()
-          .filter(c => (c.type === 'text' || c.type === 'news'))
-          .filter(c => c.permissionsFor(Core.user).has('VIEW_CHANNEL'))
-          .slice(0, 25)
-          .map(c => ({
-            label: `#${c.name}`.substr(0, 25),
-            value: c.id,
-            default: i.guildData.channel?.toString() === c.id,
-            description: (c as TextChannel).topic?.substr(0, 50) || ''
-          })),
+        custom_id: 'settings_language_change',
+        options: [],
+        // TODO all languages POGGGG (but somehow find a solution for showing more than 25)
+        // maybe a "Show more..." option at the bottom or something idk
         placeholder: 'Pick a channel to send games to'
       },
       {

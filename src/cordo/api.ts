@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Logger from '../lib/logger'
 import { config } from '../index'
 import { GuildData } from '../types/datastructs'
 import Cordo from './cordo'
@@ -14,7 +15,16 @@ export default class CordoAPI {
 
     if (!i._answered) {
       i._answered = true
-      axios.post(`https://discord.com/api/v8/interactions/${i.id}/${i.token}/callback`, { type, data })
+      axios
+        .post(`https://discord.com/api/v8/interactions/${i.id}/${i.token}/callback`, { type, data }, { validateStatus: null })
+        .then((res) => {
+          if (res.status >= 300) {
+            Logger.warn('Interaction callback failed with error:')
+            Logger.warn(JSON.stringify(res.data, null, 2))
+            Logger.warn('Request payload:')
+            Logger.warn(JSON.stringify({ type, data }, null, 2))
+          }
+        })
       return
     }
 
@@ -69,6 +79,9 @@ export default class CordoAPI {
             if (newlineFlag) rows.push([])
             newlineFlag = false
 
+            if (comp.label?.length > 25)
+              comp.label = comp.label.substr(0, 25)
+
             rows[rows.length - 1].push(comp)
 
             if (rows[rows.length - 1].length >= 5)
@@ -76,6 +89,9 @@ export default class CordoAPI {
             break
           }
           case ComponentType.SELECT: {
+            if (comp.options?.length > 25)
+              comp.options.length = 25
+
             rows.push([ comp ])
             newlineFlag = true
           }
