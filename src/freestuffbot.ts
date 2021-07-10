@@ -12,6 +12,7 @@ import Const from './bot/const'
 import { GuildData } from './types/datastructs'
 import Logger from './lib/logger'
 import Manager from './controller/manager'
+import Cordo from './cordo/cordo'
 import { config } from './index'
 
 
@@ -40,35 +41,44 @@ export default class FreeStuffBot extends Client {
     DbStats.startMonitoring(this)
 
     // TODO find an actual fix for this instead of this garbage lol
-    const manualConnectTimer = setTimeout(() => {
-      // @ts-ignore
-      this.ws?.connection?.triggerReady()
-    }, 30000)
+    const manualConnectTimer = setTimeout(() => (this.ws as any)?.connection?.triggerReady(), 30000)
+    this.on('ready', () => clearTimeout(manualConnectTimer))
 
-    this.on('ready', () => {
-      clearTimeout(manualConnectTimer)
-      Manager.status('operational')
+    this.registerEventHandlers()
 
-      const shard = `Shard ${(this.options.shards as number[]).join(', ')} / ${this.options.shardCount}`
-      Logger.process(chalk`Bot ready! Logged in as {yellowBright ${this.user?.tag}} {gray (${shard})}`)
-      if (config.bot.mode !== 'regular') Logger.process([ 'Guilds:', ...this.guilds.cache.map(g => `  ${g.name} :: ${g.id}`) ].join('\n'))
+    Manager.status('identifying')
+    this.login(config.bot.token)
+  }
 
-      this.startBotActvity()
-      DbStats.usage.then(u => u.reconnects.updateToday(1, true))
-
-      this.fsapi.ping().then((res) => {
-        if (res._status !== 200)
-          Logger.warn(`API Ping failed with code ${res._status}: ${res.error}, ${res.message}`)
-      })
-    })
-
+  private registerEventHandlers() {
+    // keep { } here or else this. behaves differently
+    this.on('ready', () => { this.onReady() })
     this.on('shardDisconnect', () => { Manager.status('disconnected') })
     this.on('shardReconnecting', () => { Manager.status('reconnecting') })
     this.on('shardResume', () => { Manager.status('operational') })
     this.on('shardReady', () => { Manager.status('operational') })
 
-    Manager.status('identifying')
-    this.login(config.bot.token)
+    // interactions
+    this.on('raw', (ev: any) => {
+      if (ev.t === 'INTERACTION_CREATE')
+        Cordo.emitInteraction(ev.d)
+    })
+  }
+
+  private onReady() {
+    Manager.status('operational')
+
+    const shard = `Shard ${(this.options.shards as number[]).join(', ')} / ${this.options.shardCount}`
+    Logger.process(chalk`Bot ready! Logged in as {yellowBright ${this.user?.tag}} {gray (${shard})}`)
+    if (config.bot.mode !== 'regular') Logger.process([ 'Guilds:', ...this.guilds.cache.map(g => `  ${g.name} :: ${g.id}`) ].join('\n'))
+
+    this.startBotActvity()
+    DbStats.usage.then(u => u.reconnects.updateToday(1, true))
+
+    this.fsapi.ping().then((res) => {
+      if (res._status !== 200)
+        Logger.warn(`API Ping failed with code ${res._status}: ${res.error}, ${res.message}`)
+    })
   }
 
   private startBotActvity() {

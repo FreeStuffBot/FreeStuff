@@ -1,6 +1,6 @@
 import axios from 'axios'
-import LanguageManager from '../bot/language-manager'
 import { GuildData } from '../types/datastructs'
+import Cordo from './cordo'
 import { InteractionApplicationCommandCallbackData } from './types/custom'
 import { GenericInteraction } from './types/ibase'
 
@@ -17,7 +17,7 @@ export default class API {
   private static normaliseData(data?: InteractionApplicationCommandCallbackData, guild?: GuildData) {
     if (!data) return
     // explicitly not using this. in this function due to unwanted side-effects in lambda functions
-    LanguageManager.translateObject(data, guild, data._context, 10)
+    Cordo.middlewares.interactionCallback.forEach(f => f(data, guild))
 
     // explicit lose typecheck (== instead of ===) to catch both null and undefined
     if (data.content == null)

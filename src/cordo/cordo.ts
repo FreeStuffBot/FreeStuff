@@ -2,9 +2,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 import Logger from 'lib/logger'
 import { Core } from '../index'
-import { InteractionApplicationCommandCallbackData, InteractionCommandHandler, InteractionComponentHandler, InteractionReplyContext } from './types/custom'
-import { CommandInteraction, ComponentInteraction, GenericInteraction, ReplyableCommandInteraction, ReplyableComponentInteraction } from './types/ibase'
+import { InteractionCommandHandler, InteractionComponentHandler, InteractionReplyContext } from './types/custom'
 import { InteractionCallbackType, InteractionResponseFlags, InteractionType } from './types/iconst'
+import { InteractionCallbackMiddleware } from './types/middleware'
 import API from './api'
 
 export default class Cordo {
@@ -14,6 +14,10 @@ export default class Cordo {
 
   /* TODO @metrics */
   private static activeInteractionReplyContexts: InteractionReplyContext[] = []
+
+  public static middlewares = {
+    interactionCallback: [] as InteractionCallbackMiddleware[]
+  }
 
   //
 
@@ -29,7 +33,8 @@ export default class Cordo {
     Cordo.componentHandlers[id] = handler
   }
 
-  public static findCommandHandlers(dir: string, prefix?: string) {
+  public static findCommandHandlers(dir: string | string[], prefix?: string) {
+    if (typeof dir !== 'string') dir = path.join(...dir)
     for (const file of fs.readdirSync(dir)) {
       const fullPath = path.join(dir, file)
       const fullName = (prefix ? prefix + '_' : '') + file.split('.')[0]
@@ -43,7 +48,8 @@ export default class Cordo {
     }
   }
 
-  public static findComponentHandlers(dir: string, prefix?: string) {
+  public static findComponentHandlers(dir: string | string[], prefix?: string) {
+    if (typeof dir !== 'string') dir = path.join(...dir)
     for (const file of fs.readdirSync(dir)) {
       const fullPath = path.join(dir, file)
       const fullName = (prefix ? prefix + '_' : '') + file.split('.')[0]
@@ -59,17 +65,26 @@ export default class Cordo {
 
   //
 
-  public static emitInteraction(interaction: GenericInteraction) {
-    if (interaction.type === InteractionType.COMMAND)
-      this.onCommand(interaction)
-    else if (interaction.type === InteractionType.COMPONENT)
-      this.onComponent(interaction)
+  public static registerMiddlewareForInteractionCallback(fun: InteractionCallbackMiddleware) {
+    Cordo.middlewares.interactionCallback.push(fun)
+  }
+
+  //
+
+  public static emitInteraction(i: GenericInteraction) {
+    // for (const option of i.options || [])
+    //   i.option[option.name] = option.value
+
+    if (i.type === InteractionType.COMMAND)
+      Cordo.onCommand(i)
+    else if (i.type === InteractionType.COMPONENT)
+      Cordo.onComponent(i)
     else
-      Logger.warn(`Unknown interaction type ${(interaction as any).type}`)
+      Logger.warn(`Unknown interaction type ${(i as any).type}`)
   }
 
   private static async onCommand(i: CommandInteraction) {
-    if (!this.commandHandlers[i.data.name]) {
+    if (!Cordo.commandHandlers[i.data.name]) {
       Logger.warn(`Unhandled command "${i.data.name}"`)
       API.interactionCallback(i, InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE)
       return
@@ -80,7 +95,7 @@ export default class Cordo {
         ? await Core.databaseManager.getGuildData(i.guild_id)
         : undefined
 
-      this.commandHandlers[i.data.name](Cordo.buildReplyableCommandInteraction(i), data)
+        Cordo.commandHandlers[i.data.name](Cordo.buildReplyableCommandInteraction(i), data)
     } catch (ex) {
       Logger.warn(ex)
       try {
@@ -103,8 +118,8 @@ export default class Cordo {
 
     if (context?.handlers[i.data.custom_id]) {
       context.handlers[i.data.custom_id](Cordo.buildReplyableComponentInteraction(i), null /* TODO */)
-    } else if (this.componentHandlers[i.data.custom_id]) {
-      this.componentHandlers[i.data.custom_id](Cordo.buildReplyableComponentInteraction(i), null /* TODO */)
+    } else if (Cordo.componentHandlers[i.data.custom_id]) {
+      Cordo.componentHandlers[i.data.custom_id](Cordo.buildReplyableComponentInteraction(i), null /* TODO */)
     } else {
       Logger.warn(`Unhandled component with custom_id "${i.data.custom_id}"`)
       API.interactionCallback(i, InteractionCallbackType.DEFERRED_UPDATE_MESSAGE)

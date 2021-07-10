@@ -37,6 +37,7 @@ import { Util } from './lib/util'
 import Manager from './controller/manager'
 import LanguageManager from './bot/language-manager'
 import WebhookServer from './controller/webhookserver'
+import Cordo from 'cordo/cordo'
 
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -81,6 +82,9 @@ run().catch((err) => {
 
 function initComponents(commit: GitCommit) {
   LanguageManager.init()
+
+  Cordo.findCommandHandlers([ __dirname, 'commands' ])
+  Cordo.findComponentHandlers([ __dirname, 'components' ])
 
   this.FSAPI = new FreeStuffApi({
     ...config.apisettings as any,
