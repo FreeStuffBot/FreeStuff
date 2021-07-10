@@ -5,7 +5,7 @@ import { ReplyFunction, CommandHandler, SettingsSubcommand } from '../../../type
 import { FilterableStore, StoreData } from '../../../types/context'
 import { Core } from '../../../index'
 import LanguageManager from '../../../bot/language-manager'
-import Emojis from '../../../lib/emojis'
+import Emojis from '../../emojis'
 
 
 export default class SetStoreHandler implements CommandHandler, SettingsSubcommand {

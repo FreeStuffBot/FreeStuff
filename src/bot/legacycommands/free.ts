@@ -4,7 +4,7 @@ import { Command, ReplyFunction } from '../../types/commands'
 import { Core } from '../../index'
 import Experiments from '../../controller/experiments'
 // import NewFreeCommand from '../commands/free'
-import Emojis from '../../lib/emojis'
+import Emojis from '../emojis'
 
 
 export default class FreeCommand extends Command {

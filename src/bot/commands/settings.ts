@@ -1,7 +1,7 @@
 import { TextChannel } from 'discord.js'
 import { GuildData } from '../../types/datastructs'
 import { Core } from '../../index'
-import Emojis from '../../lib/emojis'
+import Emojis from '../emojis'
 import { ReplyableCommandInteraction, ReplyableComponentInteraction } from '../../cordo/types/ibase'
 import { InteractionApplicationCommandCallbackData } from '../../cordo/types/custom'
 import { ButtonStyle, ComponentType } from '../../cordo/types/iconst'
