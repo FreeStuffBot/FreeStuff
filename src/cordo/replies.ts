@@ -1,9 +1,9 @@
-import { GuildData } from '../types/datastructs'
 import Logger from '../lib/logger'
 import { InteractionApplicationCommandCallbackData, InteractionComponentHandler, InteractionReplyContext, InteractionReplyStateLevelThree, InteractionReplyStateLevelTwo } from './types/custom'
 import { InteractionCallbackType, InteractionResponseFlags } from './types/iconst'
 import { CommandInteraction, ComponentInteraction, GenericInteraction, InteractionJanitor, ReplyableCommandInteraction, ReplyableComponentInteraction } from './types/ibase'
 import CordoAPI from './api'
+import Cordo from './cordo'
 
 
 export default class CordoReplies {
@@ -19,11 +19,10 @@ export default class CordoReplies {
 
   //
 
-  private static newInteractionReplyContext(i: GenericInteraction, g: GuildData): InteractionReplyContext {
+  private static newInteractionReplyContext(i: GenericInteraction): InteractionReplyContext {
     return {
       id: i.id,
       interaction: i,
-      guildData: g,
       timeout: -1,
       timeoutRunFunc: null,
       timeoutRunner: null,
@@ -37,12 +36,23 @@ export default class CordoReplies {
       ...i,
       reply(data: InteractionApplicationCommandCallbackData) {
         CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data)
-        const context = CordoReplies.newInteractionReplyContext(i, null /* TODO */)
+        const context = CordoReplies.newInteractionReplyContext(i)
         CordoReplies.activeInteractionReplyContexts.push(context)
         return CordoReplies.getLevelTwoReplyState(context)
       },
       replyPrivately(data: InteractionApplicationCommandCallbackData) {
         CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, { ...data, flags: InteractionResponseFlags.EPHEMERAL })
+      },
+      state(state?: string, ...args: any) {
+        if (!state) state = i.data.id
+
+        if (!Cordo._data.uiStates[state]) {
+          Logger.warn(`Component ${i.data.custom_id} tried to apply state non-existant ${state}`)
+          return
+        }
+
+        const data = Cordo._data.uiStates[state](i, args)
+        CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data)
       }
     }
   }
@@ -55,7 +65,7 @@ export default class CordoReplies {
       },
       reply(data: InteractionApplicationCommandCallbackData) {
         CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data)
-        const context = CordoReplies.newInteractionReplyContext(i, null /* TODO */)
+        const context = CordoReplies.newInteractionReplyContext(i)
         CordoReplies.activeInteractionReplyContexts.push(context)
         return CordoReplies.getLevelTwoReplyState(context)
       },
@@ -72,6 +82,17 @@ export default class CordoReplies {
       // },
       removeComponents() {
         CordoAPI.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, { components: [] })
+      },
+      state(state?: string, ...args: any) {
+        if (!state) state = i.data.custom_id
+
+        if (!Cordo._data.uiStates[state]) {
+          Logger.warn(`Component ${i.data.custom_id} tried to apply state non-existant ${state}`)
+          return
+        }
+
+        const data = Cordo._data.uiStates[state](i, args)
+        CordoAPI.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, data)
       }
     }
   }
@@ -85,6 +106,17 @@ export default class CordoReplies {
       },
       removeComponents() {
         CordoAPI.interactionCallback(context.interaction, InteractionCallbackType.UPDATE_MESSAGE, { components: [] })
+      },
+      state(state?: string, ...args: any) {
+        if (!state) state = context.interaction.id
+
+        if (!Cordo._data.uiStates[state]) {
+          Logger.warn(`Janitor tried to apply state non-existant ${state}`)
+          return
+        }
+
+        const data = Cordo._data.uiStates[state](context.interaction, args)
+        CordoAPI.interactionCallback(context.interaction, InteractionCallbackType.UPDATE_MESSAGE, data)
       }
     }
   }

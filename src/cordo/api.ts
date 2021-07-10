@@ -37,7 +37,7 @@ export default class CordoAPI {
   private static normaliseData(data?: InteractionApplicationCommandCallbackData, guild?: GuildData) {
     if (!data) return
     // explicitly not using this. in this function due to unwanted side-effects in lambda functions
-    Cordo.middlewares.interactionCallback.forEach(f => f(data, guild))
+    Cordo._data.middlewares.interactionCallback.forEach(f => f(data, guild))
 
     if (!data.content)
       data.content = ''

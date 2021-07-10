@@ -1,7 +1,9 @@
 /* eslint-disable camelcase */
 // INTERACTION BASE TYPES
 
+import { GuildData } from 'types/datastructs'
 import { InteractionApplicationCommandCallbackData, InteractionReplyStateLevelTwo } from './custom'
+import { ComponentType, InteractionType } from './iconst'
 
 
 export type InteractionUser = {
@@ -78,7 +80,7 @@ export type InteractionLocationDM = {
 //
 
 export type InteractionTypeCommand = {
-  type: 2
+  type: InteractionType.COMMAND
   message?: undefined
   data: {
     id?: string
@@ -93,12 +95,12 @@ export type InteractionTypeCommand = {
 }
 
 export type InteractionTypeComponent = {
-  type: 3
+  type: InteractionType.COMPONENT
   message: InteractionMessage
   data: {
-    id?: string
-    name?: string
-    custom_id?: string
+    commponent_type: ComponentType.BUTTON | ComponentType.SELECT
+    custom_id: string
+    values?: string[]
   }
 }
 
@@ -109,6 +111,7 @@ export type InteractionBase = {
   token: string
   version: number
   application_id?: string
+  guildData?: GuildData
   _answered: boolean
 }
 
@@ -121,6 +124,7 @@ export type ComponentInteraction = InteractionBase & (InteractionLocationGuild |
 export type ReplyableCommandInteraction = CommandInteraction & {
   reply(data: InteractionApplicationCommandCallbackData): InteractionReplyStateLevelTwo
   replyPrivately(data: InteractionApplicationCommandCallbackData): void
+  state(state?: string, ...args: any): void
 }
 
 export type ReplyableComponentInteraction = ComponentInteraction & {
@@ -130,10 +134,12 @@ export type ReplyableComponentInteraction = ComponentInteraction & {
   edit(data: InteractionApplicationCommandCallbackData): void
   // disableComponents(): void
   removeComponents(): void
+  state(state?: string, ...args: any): void
 }
 
 export type InteractionJanitor = {
   edit(data: InteractionApplicationCommandCallbackData): void
   // disableComponents(): void
   removeComponents(): void
+  state(state?: string, ...args: any): void
 }

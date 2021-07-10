@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 
 import { MessageEmbed } from 'discord.js'
-import { GuildData } from 'types/datastructs'
 import { GenericInteraction, InteractionJanitor, ReplyableCommandInteraction, ReplyableComponentInteraction } from './ibase'
 import { MessageComponent } from './icomponent'
 import { InteractionResponseFlags } from './iconst'
@@ -36,19 +35,16 @@ export type InteractionApplicationCommandCallbackData = {
 // Handler
 
 export type InteractionCommandHandler
-  = ((i: ReplyableCommandInteraction, data: GuildData) => HandlerSuccess)
-  | ((i: ReplyableCommandInteraction) => HandlerSuccess)
+  = ((i: ReplyableCommandInteraction) => HandlerSuccess)
 
 export type InteractionComponentHandler
-  = ((i: ReplyableComponentInteraction, data: GuildData) => HandlerSuccess)
-  | ((i: ReplyableComponentInteraction) => HandlerSuccess)
+  = ((i: ReplyableComponentInteraction) => HandlerSuccess)
 
 // Reply flow
 
 export type InteractionReplyContext = {
   id: string
   interaction: GenericInteraction
-  guildData: GuildData
   timeout: number
   timeoutRunFunc: (...any: any) => any
   timeoutRunner: NodeJS.Timeout
@@ -65,4 +61,8 @@ export type InteractionReplyStateLevelTwo = {
   _context: InteractionReplyContext,
   withTimeout(millis: number, resetOnInteraction: boolean, janitor: (edit: InteractionJanitor) => any): InteractionReplyStateLevelThree
 }
+
+// States
+
+export type InteractionUIState = (i: GenericInteraction, ...args: any) => InteractionApplicationCommandCallbackData
 
