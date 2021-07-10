@@ -4,12 +4,13 @@ import { GuildData } from '../types/datastructs'
 import Cordo from './cordo'
 import { InteractionApplicationCommandCallbackData } from './types/custom'
 import { GenericInteraction } from './types/ibase'
-import { InteractionCallbackType } from './types/iconst'
+import { MessageComponent } from './types/icomponent'
+import { ComponentType, InteractionCallbackType } from './types/iconst'
 
-export default class API {
+export default class CordoAPI {
 
   public static interactionCallback(i: GenericInteraction, type: number, data?: InteractionApplicationCommandCallbackData, guild?: GuildData) {
-    API.normaliseData(data, guild)
+    CordoAPI.normaliseData(data, guild)
 
     if (!i._answered) {
       i._answered = true
@@ -38,8 +39,7 @@ export default class API {
     // explicitly not using this. in this function due to unwanted side-effects in lambda functions
     Cordo.middlewares.interactionCallback.forEach(f => f(data, guild))
 
-    // explicit lose typecheck (== instead of ===) to catch both null and undefined
-    if (data.content == null)
+    if (!data.content)
       data.content = ''
 
     if (data.description || data.title) {
@@ -51,8 +51,37 @@ export default class API {
         thumbnail: data.image ? { url: data.image } : undefined,
         color: data.color || 0x2F3136
       })
-      data.description = undefined
-      data.title = undefined
+      delete data.description
+      delete data.title
+    }
+
+    if (data.components && data.components.length && (data.components[0].type as any) !== ComponentType.ROW) {
+      const rows: MessageComponent[][] = []
+      let newlineFlag = true
+      for (const comp of data.components) {
+        switch (comp.type) {
+          case ComponentType.LINE_BREAK: {
+            if (rows[rows.length - 1].length)
+              newlineFlag = true
+            break
+          }
+          case ComponentType.BUTTON: {
+            if (newlineFlag) rows.push([])
+            newlineFlag = false
+
+            rows[rows.length - 1].push(comp)
+
+            if (rows[rows.length - 1].length >= 5)
+              newlineFlag = true
+            break
+          }
+          case ComponentType.SELECT: {
+            rows.push([ comp ])
+            newlineFlag = true
+          }
+        }
+      }
+      data.components = rows.map(c => ({ type: ComponentType.ROW, components: c })) as any
     }
   }
 

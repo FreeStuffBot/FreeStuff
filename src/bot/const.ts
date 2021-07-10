@@ -1,5 +1,4 @@
 
-
 export default class Const {
 
   public static readonly links = {
@@ -24,24 +23,6 @@ export default class Const {
 
   public static readonly embedDefaultColor = 0x2F3136
 
-  public static readonly storeEmojis = {
-    steam: '<:steam:820258442303242320>',
-    epic: '<:epic:820258440512798731>',
-    humble: '<:humble:820258441217966120>',
-    gog: '<:gog:820258440488026113>',
-    origin: '<:origin:820258441725476914>',
-    uplay: '<:ubi:820258441704505354>',
-    twitch: '<:twitch:820258440882028544>',
-    itch: '<:itch:820258441557442600>',
-    discord: '<:discord:820258441503309824>',
-    apple: '<:store_apple:700097690653949952>',
-    google: '<:store_google:700097689194594305>',
-    switch: '<:switch:820258441225699338>',
-    ps: ':grey_question:',
-    xbox: ':grey_question:',
-    other: ':grey_question:'
-  };
-
   public static readonly storeIcons = {
     steam: 'https://media.discordapp.net/attachments/672907465670787083/820258285566820402/steam.png',
     epic: 'https://cdn.discordapp.com/attachments/672907465670787083/820258283293638676/epic.png',
@@ -58,7 +39,7 @@ export default class Const {
     ps: '',
     xbox: '',
     other: ''
-  };
+  }
 
   public static readonly storeIconsExt = {
     ...Const.storeIcons,
@@ -72,6 +53,6 @@ export default class Const {
     itch: 'https://media.discordapp.net/attachments/672907465670787083/833652545867087872/itch_ext.png',
     discord: 'https://media.discordapp.net/attachments/672907465670787083/833652540641247262/discord_ext.png',
     switch: 'https://media.discordapp.net/attachments/672907465670787083/833652535356817418/switch_ext.png'
-  };
+  }
 
 }

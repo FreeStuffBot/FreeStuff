@@ -3,7 +3,7 @@ import Logger from '../lib/logger'
 import { InteractionApplicationCommandCallbackData, InteractionComponentHandler, InteractionReplyContext, InteractionReplyStateLevelThree, InteractionReplyStateLevelTwo } from './types/custom'
 import { InteractionCallbackType, InteractionResponseFlags } from './types/iconst'
 import { CommandInteraction, ComponentInteraction, GenericInteraction, InteractionJanitor, ReplyableCommandInteraction, ReplyableComponentInteraction } from './types/ibase'
-import API from './api'
+import CordoAPI from './api'
 
 
 export default class CordoReplies {
@@ -36,13 +36,13 @@ export default class CordoReplies {
     return {
       ...i,
       reply(data: InteractionApplicationCommandCallbackData) {
-        API.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data)
+        CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data)
         const context = CordoReplies.newInteractionReplyContext(i, null /* TODO */)
         CordoReplies.activeInteractionReplyContexts.push(context)
         return CordoReplies.getLevelTwoReplyState(context)
       },
       replyPrivately(data: InteractionApplicationCommandCallbackData) {
-        API.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, { ...data, flags: InteractionResponseFlags.EPHEMERAL })
+        CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, { ...data, flags: InteractionResponseFlags.EPHEMERAL })
       }
     }
   }
@@ -51,19 +51,19 @@ export default class CordoReplies {
     return {
       ...i,
       ack() {
-        API.interactionCallback(i, InteractionCallbackType.DEFERRED_UPDATE_MESSAGE)
+        CordoAPI.interactionCallback(i, InteractionCallbackType.DEFERRED_UPDATE_MESSAGE)
       },
       reply(data: InteractionApplicationCommandCallbackData) {
-        API.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data)
+        CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data)
         const context = CordoReplies.newInteractionReplyContext(i, null /* TODO */)
         CordoReplies.activeInteractionReplyContexts.push(context)
         return CordoReplies.getLevelTwoReplyState(context)
       },
       replyPrivately(data: InteractionApplicationCommandCallbackData) {
-        API.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, { ...data, flags: InteractionResponseFlags.EPHEMERAL })
+        CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, { ...data, flags: InteractionResponseFlags.EPHEMERAL })
       },
       edit(data: InteractionApplicationCommandCallbackData) {
-        API.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, data)
+        CordoAPI.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, data)
       },
       // disableComponents() { TODO
       //   API.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, {
@@ -71,7 +71,7 @@ export default class CordoReplies {
       //   })
       // },
       removeComponents() {
-        API.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, { components: [] })
+        CordoAPI.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, { components: [] })
       }
     }
   }
@@ -81,10 +81,10 @@ export default class CordoReplies {
   private static getJanitor(context: InteractionReplyContext): InteractionJanitor {
     return {
       edit(data: InteractionApplicationCommandCallbackData) {
-        API.interactionCallback(context.interaction, InteractionCallbackType.UPDATE_MESSAGE, data)
+        CordoAPI.interactionCallback(context.interaction, InteractionCallbackType.UPDATE_MESSAGE, data)
       },
       removeComponents() {
-        API.interactionCallback(context.interaction, InteractionCallbackType.UPDATE_MESSAGE, { components: [] })
+        CordoAPI.interactionCallback(context.interaction, InteractionCallbackType.UPDATE_MESSAGE, { components: [] })
       }
     }
   }

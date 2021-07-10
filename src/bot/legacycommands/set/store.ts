@@ -4,8 +4,8 @@ import { GuildData } from '../../../types/datastructs'
 import { ReplyFunction, CommandHandler, SettingsSubcommand } from '../../../types/commands'
 import { FilterableStore, StoreData } from '../../../types/context'
 import { Core } from '../../../index'
-import Const from '../../const'
 import LanguageManager from '../../../bot/language-manager'
+import Emojis from '../../../lib/emojis'
 
 
 export default class SetStoreHandler implements CommandHandler, SettingsSubcommand {
@@ -19,7 +19,7 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
 
   public handle(mes: Message, args: string[], g: GuildData, reply: ReplyFunction): boolean {
     if (args.length < 1) {
-      const storeListAvailable = Object.keys(Const.storeEmojis)
+      const storeListAvailable = Object.keys(Emojis.store)
         .map((e: Store) => this.getStoreInfo(e, g))
         .filter(s => s.bit !== undefined)
       reply(
@@ -129,7 +129,7 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
 
   private getStoreFromKeyword(search: string, g: GuildData): StoreData {
     const storeList = Object
-      .keys(Const.storeEmojis)
+      .keys(Emojis.store)
       .map((e: Store) => this.getStoreInfo(e, g))
     for (const store of storeList) {
       if (store.key === search.toLowerCase()) return store
@@ -146,7 +146,7 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
     return {
       name: store === 'other' ? 'Other Stores' : LanguageManager.get(g, 'platform_' + store),
       key: store,
-      icon: Const.storeEmojis[store],
+      icon: Emojis.store[store].string,
       bit: <unknown> FilterableStore[store.toUpperCase()] as number
     }
   }

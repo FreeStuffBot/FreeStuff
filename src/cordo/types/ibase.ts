@@ -61,19 +61,6 @@ export type InteractionEmoji = {
 
 //
 
-export type ApplicationCommandInteractionData = {
-  id: string
-  name: string
-  custom_id: string
-} & ({
-  component_type: 2
-} | {
-  component_type: 3
-  values: string[]
-})
-
-//
-
 export type InteractionLocationGuild = {
   member: InteractionMember
   user?: undefined
@@ -96,6 +83,7 @@ export type InteractionTypeCommand = {
   data: {
     id?: string
     name?: string
+    custom_id?: string
     options?: {
       name: string
       value: string | number
@@ -107,7 +95,11 @@ export type InteractionTypeCommand = {
 export type InteractionTypeComponent = {
   type: 3
   message: InteractionMessage
-  data: ApplicationCommandInteractionData
+  data: {
+    id?: string
+    name?: string
+    custom_id?: string
+  }
 }
 
 //

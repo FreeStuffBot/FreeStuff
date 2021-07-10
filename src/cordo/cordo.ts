@@ -6,7 +6,7 @@ import { InteractionCommandHandler, InteractionComponentHandler } from './types/
 import { InteractionCallbackType, InteractionResponseFlags, InteractionType } from './types/iconst'
 import { InteractionCallbackMiddleware } from './types/middleware'
 import { CommandInteraction, ComponentInteraction, GenericInteraction } from './types/ibase'
-import API from './api'
+import CordoAPI from './api'
 import CordoReplies from './replies'
 
 export default class Cordo {
@@ -86,7 +86,7 @@ export default class Cordo {
   private static async onCommand(i: CommandInteraction) {
     if (!Cordo.commandHandlers[i.data.name]) {
       Logger.warn(`Unhandled command "${i.data.name}"`)
-      API.interactionCallback(i, InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE)
+      CordoAPI.interactionCallback(i, InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE)
       return
     }
 
@@ -99,7 +99,7 @@ export default class Cordo {
     } catch (ex) {
       Logger.warn(ex)
       try {
-        API.interactionCallback(i, InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE, {
+        CordoAPI.interactionCallback(i, InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE, {
           content: 'We are very sorry but an error occured while processing your command. Please try again.',
           flags: InteractionResponseFlags.EPHEMERAL
         })
@@ -122,7 +122,7 @@ export default class Cordo {
       Cordo.componentHandlers[i.data.custom_id](CordoReplies.buildReplyableComponentInteraction(i), null /* TODO */)
     } else {
       Logger.warn(`Unhandled component with custom_id "${i.data.custom_id}"`)
-      API.interactionCallback(i, InteractionCallbackType.DEFERRED_UPDATE_MESSAGE)
+      CordoAPI.interactionCallback(i, InteractionCallbackType.DEFERRED_UPDATE_MESSAGE)
     }
   }
 

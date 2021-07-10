@@ -1,20 +1,21 @@
 /* eslint-disable camelcase */
 
 import { InteractionEmoji } from './ibase'
+import { ButtonStyle, ComponentType } from './iconst'
 
 
 // Button
 
 export type MessageComponentButton = {
-  type: 2
+  type: ComponentType.BUTTON
   label?: string
   emoji?: Partial<InteractionEmoji>
   disabled?: boolean
 } & ({
-  style: 1 | 2 | 3 | 4
+  style: ButtonStyle.PRIMARY | ButtonStyle.SECONDARY | ButtonStyle.SUCCESS | ButtonStyle.DANGER
   custom_id: string
 } | {
-  style: 5
+  style: ButtonStyle.LINK
   url: string
 })
 
@@ -29,7 +30,7 @@ export type MessageComponentSelectOption = {
 }
 
 export type MessageComponentSelectMenu = {
-  type: 3
+  type: ComponentType.SELECT
   custom_id: string
   options: MessageComponentSelectOption[]
   placeholder?: string
@@ -38,13 +39,19 @@ export type MessageComponentSelectMenu = {
   disabled?: boolean
 }
 
+// Custom
+
+export type LineBreak = {
+  type: ComponentType.LINE_BREAK
+}
+
 // Generic
 
-export type MessageComponent = MessageComponentButton | MessageComponentSelectMenu
+export type MessageComponent = MessageComponentButton | MessageComponentSelectMenu | LineBreak
 
 // Action Row
 
 export type ActionRow = {
-  type: 1
+  type: ComponentType.ROW
   components: MessageComponent[]
 }

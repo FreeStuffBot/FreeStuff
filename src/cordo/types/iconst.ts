@@ -18,6 +18,7 @@ export enum InteractionType {
 }
 
 export enum ComponentType {
+  LINE_BREAK = -5,
   ROW = 1,
   BUTTON = 2,
   SELECT = 3
