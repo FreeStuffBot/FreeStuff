@@ -1,7 +1,7 @@
 import { hostname } from 'os'
 import { io, Socket } from 'socket.io-client'
 import { Long } from 'mongodb'
-import { config, Core } from '../index'
+import { config, Core, FSAPI } from '../index'
 import Logger from '../lib/logger'
 import { Experiment, ManagerCommand, ShardAction, ShardStatus, ShardTask } from '../types/controller'
 import { getGitCommit } from '../lib/git-parser'
@@ -137,7 +137,7 @@ export default class Manager {
     })
 
     this.socket.on('apievent', (event: any) => {
-      Core?.fsapi.emitRawEvent(event, e => Logger.warn(`Unhandled FreeStuff Api Event ${e.event}`))
+      FSAPI?.emitRawEvent(event, e => Logger.warn(`Unhandled FreeStuff Api Event ${e.event}`))
     })
 
     this.socket.on('config.global', (data: any) => {

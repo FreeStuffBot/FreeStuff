@@ -37,7 +37,8 @@ import { Util } from './lib/util'
 import Manager from './controller/manager'
 import LanguageManager from './bot/language-manager'
 import WebhookServer from './controller/webhookserver'
-import Cordo from 'cordo/cordo'
+import Cordo from './cordo/cordo'
+import { ShardAction } from './types/controller'
 
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -68,7 +69,7 @@ async function run() {
       process.exit(0)
 
     case 'startup':
-      initComponents(commit)
+      initComponents(commit, action)
       mountBot(action.shardId, action.shardCount)
   }
 }
@@ -80,17 +81,16 @@ run().catch((err) => {
 
 //
 
-function initComponents(commit: GitCommit) {
+function initComponents(commit: GitCommit, action: ShardAction) {
   LanguageManager.init()
-
-  Cordo.findCommandHandlers([ __dirname, 'commands' ])
-  Cordo.findComponentHandlers([ __dirname, 'components' ])
+  Cordo.findCommandHandlers([ __dirname, 'bot', 'commands' ])
+  Cordo.findComponentHandlers([ __dirname, 'bot', 'components' ])
   Cordo.registerMiddlewareForInteractionCallback((data, guild) => LanguageManager.translateObject(data, guild, data._context, 10))
 
-  this.FSAPI = new FreeStuffApi({
+  FSAPI = new FreeStuffApi({
     ...config.apisettings as any,
     version: commit.shortHash,
-    sid: this.options.shards[0]
+    sid: action.id === 'startup' ? action.shardId : 'err'
   })
 
   if (config.apisettings.server?.enable)

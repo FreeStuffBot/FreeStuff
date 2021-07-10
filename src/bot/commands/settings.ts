@@ -56,91 +56,91 @@ export default function (i: ReplyableCommandInteraction, data: GuildData): boole
 
   i
     .reply(baseState)
-    .withTimeout(30e3, true, (i) => {
-      i.edit({
-        components: []
-      })
-      // }).on('settings_back', (_, edit) => {
-      //   edit(baseState)
-    })
-    .on('settings_channel_pick', (_i) => {
-      // if (event.component_type === 3)
-      //   i.edit({ title: i.data.values.join(', ') })
-    })
-    .on('settings_channel', (i) => {
-      i.edit({
-        title: 'display',
-        components: [
-          {
-            type: ComponentType.ROW,
-            components: [
-              {
-                type: ComponentType.SELECT,
-                custom_id: 'settings_channel_pick',
-                options: data.channelInstance.guild.channels.cache
-                  .array()
-                  .filter(c => (c.type === 'text' || c.type === 'news'))
-                  .filter(c => c.permissionsFor(Core.user).has('VIEW_CHANNEL'))
-                  .slice(0, 25)
-                  .map(c => ({
-                    label: `#${c.name}`.substr(0, 25),
-                    value: c.id,
-                    default: data.channel?.toString() === c.id,
-                    description: (c as TextChannel).topic?.substr(0, 50) || ''
-                  })),
-                placeholder: 'Pick a channel to send games to'
-              }
-            ]
-          },
-          {
-            type: ComponentType.ROW,
-            components: [
-              {
-                type: ComponentType.BUTTON,
-                style: ButtonStyle.SECONDARY,
-                custom_id: 'settings_back',
-                label: 'Back'
-              }
-            ]
-          }
-        ]
-      })
-    })
-    .on('settings_display', (i) => {
-      i.edit({
-        title: 'display',
-        components: [
-          {
-            type: ComponentType.ROW,
-            components: [
-              {
-                type: ComponentType.BUTTON,
-                style: ButtonStyle.SECONDARY,
-                custom_id: 'settings_back',
-                label: 'Back'
-              }
-            ]
-          }
-        ]
-      })
-    })
-    .on('settings_advanced', (i) => {
-      i.edit({
-        title: 'advanced',
-        components: [
-          {
-            type: ComponentType.ROW,
-            components: [
-              {
-                type: ComponentType.BUTTON,
-                style: ButtonStyle.SECONDARY,
-                custom_id: 'settings_back',
-                label: 'Back'
-              }
-            ]
-          }
-        ]
-      })
-    })
+    // .withTimeout(30e3, true, (i) => {
+    //   i.edit({
+    //     components: []
+    //   })
+    //   // }).on('settings_back', (_, edit) => {
+    //   //   edit(baseState)
+    // })
+    // .on('settings_channel_pick', (_i) => {
+    //   // if (event.component_type === 3)
+    //   //   i.edit({ title: i.data.values.join(', ') })
+    // })
+    // .on('settings_channel', (i) => {
+    //   i.edit({
+    //     title: 'display',
+    //     components: [
+    //       {
+    //         type: ComponentType.ROW,
+    //         components: [
+    //           {
+    //             type: ComponentType.SELECT,
+    //             custom_id: 'settings_channel_pick',
+    //             options: data.channelInstance.guild.channels.cache
+    //               .array()
+    //               .filter(c => (c.type === 'text' || c.type === 'news'))
+    //               .filter(c => c.permissionsFor(Core.user).has('VIEW_CHANNEL'))
+    //               .slice(0, 25)
+    //               .map(c => ({
+    //                 label: `#${c.name}`.substr(0, 25),
+    //                 value: c.id,
+    //                 default: data.channel?.toString() === c.id,
+    //                 description: (c as TextChannel).topic?.substr(0, 50) || ''
+    //               })),
+    //             placeholder: 'Pick a channel to send games to'
+    //           }
+    //         ]
+    //       },
+    //       {
+    //         type: ComponentType.ROW,
+    //         components: [
+    //           {
+    //             type: ComponentType.BUTTON,
+    //             style: ButtonStyle.SECONDARY,
+    //             custom_id: 'settings_back',
+    //             label: 'Back'
+    //           }
+    //         ]
+    //       }
+    //     ]
+    //   })
+    // })
+    // .on('settings_display', (i) => {
+    //   i.edit({
+    //     title: 'display',
+    //     components: [
+    //       {
+    //         type: ComponentType.ROW,
+    //         components: [
+    //           {
+    //             type: ComponentType.BUTTON,
+    //             style: ButtonStyle.SECONDARY,
+    //             custom_id: 'settings_back',
+    //             label: 'Back'
+    //           }
+    //         ]
+    //       }
+    //     ]
+    //   })
+    // })
+    // .on('settings_advanced', (i) => {
+    //   i.edit({
+    //     title: 'advanced',
+    //     components: [
+    //       {
+    //         type: ComponentType.ROW,
+    //         components: [
+    //           {
+    //             type: ComponentType.BUTTON,
+    //             style: ButtonStyle.SECONDARY,
+    //             custom_id: 'settings_back',
+    //             label: 'Back'
+    //           }
+    //         ]
+    //       }
+    //     ]
+    //   })
+    // })
   return true
 }

@@ -1,6 +1,6 @@
 import * as express from 'express'
 import { FreeStuffApiServerConfig } from '../types/config'
-import { Core } from '../index'
+import { FSAPI } from '../index'
 import Logger from '../lib/logger'
 
 
@@ -18,9 +18,9 @@ export default class WebhookServer {
     const app = express()
     app.set('trust proxy', 1)
     app.use(config.endpoint, express.json())
-    app.use(config.endpoint, Core.fsapi.webhook())
+    app.use(config.endpoint, FSAPI.webhook())
 
-    Core.fsapi.on('webhook_test', () => {
+    FSAPI.on('webhook_test', () => {
       Logger.info('Webhook test received!')
     })
 

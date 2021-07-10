@@ -1,6 +1,5 @@
 import { Client } from 'discord.js'
 import * as chalk from 'chalk'
-import { FreeStuffApi } from 'freestuff'
 import LanguageManager from './bot/language-manager'
 import LegacyCommandHandler from './bot/legacy-command-handler'
 import DatabaseManager from './bot/database-manager'
@@ -13,12 +12,10 @@ import { GuildData } from './types/datastructs'
 import Logger from './lib/logger'
 import Manager from './controller/manager'
 import Cordo from './cordo/cordo'
-import { config } from './index'
+import { config, FSAPI } from './index'
 
 
 export default class FreeStuffBot extends Client {
-
-  public fsapi: FreeStuffApi;
 
   public commandHandler: LegacyCommandHandler;
   public databaseManager: DatabaseManager;
@@ -75,7 +72,7 @@ export default class FreeStuffBot extends Client {
     this.startBotActvity()
     DbStats.usage.then(u => u.reconnects.updateToday(1, true))
 
-    this.fsapi.ping().then((res) => {
+    FSAPI.ping().then((res) => {
       if (res._status !== 200)
         Logger.warn(`API Ping failed with code ${res._status}: ${res.error}, ${res.message}`)
     })

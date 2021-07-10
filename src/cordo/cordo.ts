@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import Logger from 'lib/logger'
+import Logger from '../lib/logger'
 import { Core } from '../index'
 import { InteractionCommandHandler, InteractionComponentHandler } from './types/custom'
 import { InteractionCallbackType, InteractionResponseFlags, InteractionType } from './types/iconst'

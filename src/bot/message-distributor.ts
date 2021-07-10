@@ -1,7 +1,7 @@
 import { Message, Guild, MessageOptions } from 'discord.js'
 import { Long } from 'mongodb'
 import { GameFlag, GameInfo } from 'freestuff'
-import { Core } from '../index'
+import { Core, FSAPI } from '../index'
 import Database from '../database/database'
 import { DbStats } from '../database/db-stats'
 import SentryManager from '../thirdparty/sentry/sentry'
@@ -102,7 +102,7 @@ export default class MessageDistributor {
 
     (await DbStats.usage).announcements.updateToday(announcementsMadeTotal, true)
 
-    announcementsMade.forEach(game => Core.fsapi.postGameAnalytics(game.id, 'discord', { reach: game.reach }))
+    announcementsMade.forEach(game => FSAPI.postGameAnalytics(game.id, 'discord', { reach: game.reach }))
   }
 
   /**

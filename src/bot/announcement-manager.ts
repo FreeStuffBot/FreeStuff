@@ -1,5 +1,5 @@
 import { Semaphore } from 'await-semaphore'
-import { config, Core } from '../index'
+import { config, Core, FSAPI } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import Redis from '../database/redis'
 // import NewFreeCommand from './commands/free'
@@ -14,7 +14,7 @@ export default class AnnouncementManager {
     const checkInterval = config.bot.mode === 'regular' ? 60 : 5
     this.semaphore = new Semaphore(1)
 
-    Core.fsapi.on('free_games', async (ids) => {
+    FSAPI.on('free_games', async (ids) => {
       const release = await this.semaphore.acquire()
       let pending = await Redis.getSharded('pending')
 
@@ -72,7 +72,7 @@ export default class AnnouncementManager {
     this.currentlyAnnouncing = true
 
     const numberIds = gameids.split(' ').map(id => parseInt(id, 10))
-    const gameInfos = await Core.fsapi.getGameDetails(numberIds, 'info')
+    const gameInfos = await FSAPI.getGameDetails(numberIds, 'info')
     await Core.messageDistributor.distribute(Object.values(gameInfos))
 
     Redis.setSharded('pending', '')

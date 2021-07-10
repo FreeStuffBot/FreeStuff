@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { config } from 'index'
+import { config } from '../index'
 import { GuildData } from '../types/datastructs'
 import Cordo from './cordo'
 import { InteractionApplicationCommandCallbackData } from './types/custom'
