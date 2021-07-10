@@ -1,14 +1,33 @@
 import axios from 'axios'
+import { config } from 'index'
 import { GuildData } from '../types/datastructs'
 import Cordo from './cordo'
 import { InteractionApplicationCommandCallbackData } from './types/custom'
 import { GenericInteraction } from './types/ibase'
+import { InteractionCallbackType } from './types/iconst'
 
 export default class API {
 
   public static interactionCallback(i: GenericInteraction, type: number, data?: InteractionApplicationCommandCallbackData, guild?: GuildData) {
     API.normaliseData(data, guild)
-    axios.post(`https://discord.com/api/v8/interactions/${i.id}/${i.token}/callback`, { type, data })
+
+    if (!i._answered) {
+      i._answered = true
+      axios.post(`https://discord.com/api/v8/interactions/${i.id}/${i.token}/callback`, { type, data })
+      return
+    }
+
+    switch (type) {
+      case InteractionCallbackType.PONG: break
+      case InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE: break
+      case InteractionCallbackType.DEFERRED_UPDATE_MESSAGE: break
+      case InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE:
+        axios.post(`https://discord.com/api/v8/webhooks/${config.bot.clientid}/${i.token}`, data)
+        break
+      case InteractionCallbackType.UPDATE_MESSAGE:
+        axios.patch(`https://discord.com/api/v8/webhooks/${config.bot.clientid}/${i.token}/messages/@original`, data)
+        break
+    }
   }
 
   /**

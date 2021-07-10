@@ -2,18 +2,17 @@ import * as fs from 'fs'
 import * as path from 'path'
 import Logger from 'lib/logger'
 import { Core } from '../index'
-import { InteractionCommandHandler, InteractionComponentHandler, InteractionReplyContext } from './types/custom'
+import { InteractionCommandHandler, InteractionComponentHandler } from './types/custom'
 import { InteractionCallbackType, InteractionResponseFlags, InteractionType } from './types/iconst'
 import { InteractionCallbackMiddleware } from './types/middleware'
+import { CommandInteraction, ComponentInteraction, GenericInteraction } from './types/ibase'
 import API from './api'
+import CordoReplies from './replies'
 
 export default class Cordo {
 
   private static commandHandlers: { [command: string]: InteractionCommandHandler } = {}
   private static componentHandlers: { [command: string]: InteractionComponentHandler } = {}
-
-  /* TODO @metrics */
-  private static activeInteractionReplyContexts: InteractionReplyContext[] = []
 
   public static middlewares = {
     interactionCallback: [] as InteractionCallbackMiddleware[]
@@ -74,6 +73,7 @@ export default class Cordo {
   public static emitInteraction(i: GenericInteraction) {
     // for (const option of i.options || [])
     //   i.option[option.name] = option.value
+    i._answered = false
 
     if (i.type === InteractionType.COMMAND)
       Cordo.onCommand(i)
@@ -95,7 +95,7 @@ export default class Cordo {
         ? await Core.databaseManager.getGuildData(i.guild_id)
         : undefined
 
-        Cordo.commandHandlers[i.data.name](Cordo.buildReplyableCommandInteraction(i), data)
+      Cordo.commandHandlers[i.data.name](CordoReplies.buildReplyableCommandInteraction(i), data)
     } catch (ex) {
       Logger.warn(ex)
       try {
@@ -110,59 +110,19 @@ export default class Cordo {
   }
 
   private static onComponent(i: ComponentInteraction) {
-    const context: InteractionReplyContext | undefined = Cordo.activeInteractionReplyContexts.find(c => c.id === i.message.interaction?.id)
+    const context = CordoReplies.findActiveInteractionReplyContext(i.message.interaction?.id)
     if (context?.resetTimeoutOnInteraction) {
       clearTimeout(context.timeoutRunner)
       setTimeout(context.timeoutRunFunc, context.timeout)
     }
 
     if (context?.handlers[i.data.custom_id]) {
-      context.handlers[i.data.custom_id](Cordo.buildReplyableComponentInteraction(i), null /* TODO */)
+      context.handlers[i.data.custom_id](CordoReplies.buildReplyableComponentInteraction(i), null /* TODO */)
     } else if (Cordo.componentHandlers[i.data.custom_id]) {
-      Cordo.componentHandlers[i.data.custom_id](Cordo.buildReplyableComponentInteraction(i), null /* TODO */)
+      Cordo.componentHandlers[i.data.custom_id](CordoReplies.buildReplyableComponentInteraction(i), null /* TODO */)
     } else {
       Logger.warn(`Unhandled component with custom_id "${i.data.custom_id}"`)
       API.interactionCallback(i, InteractionCallbackType.DEFERRED_UPDATE_MESSAGE)
-    }
-  }
-
-  //
-
-  private static buildReplyableCommandInteraction(i: CommandInteraction): ReplyableCommandInteraction {
-    return {
-      ...i,
-      reply(data: InteractionApplicationCommandCallbackData) {
-        API.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data)
-      },
-      replyPrivately(data: InteractionApplicationCommandCallbackData) {
-        API.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, { ...data, flags: InteractionResponseFlags.EPHEMERAL })
-      }
-    }
-  }
-
-  private static buildReplyableComponentInteraction(i: ComponentInteraction): ReplyableComponentInteraction {
-    return {
-      ...i,
-      ack() {
-        API.interactionCallback(i, InteractionCallbackType.DEFERRED_UPDATE_MESSAGE)
-      },
-      reply(data: InteractionApplicationCommandCallbackData) {
-        API.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data)
-      },
-      replyPrivately(data: InteractionApplicationCommandCallbackData) {
-        API.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, { ...data, flags: InteractionResponseFlags.EPHEMERAL })
-      },
-      edit(data: InteractionApplicationCommandCallbackData) {
-        API.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, data)
-      },
-      // disableComponents() { TODO
-      //   API.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, {
-      //     components: i.message.components
-      //   })
-      // },
-      removeComponents() {
-        API.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, { components: [] })
-      }
     }
   }
 

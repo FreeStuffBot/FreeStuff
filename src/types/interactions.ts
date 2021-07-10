@@ -1,6 +1,4 @@
 /* eslint-disable camelcase */
-import { MessageEmbed } from 'discord.js'
-import { GuildData } from './datastructs'
 
 
 /*
@@ -127,8 +125,6 @@ import { GuildData } from './datastructs'
 // }
 
 
-
-
 // export type MessageComponentButton = {
 //   type: 2
 //   label?: string
@@ -218,11 +214,11 @@ import { GuildData } from './datastructs'
 
 //
 
-export abstract class InteractionCommandHandler {
+// export abstract class InteractionCommandHandler {
 
-  public abstract handle(command: CommandInteraction, data: GuildData, reply: InteractionReplyFunction): boolean | Promise<boolean>
+//   public abstract handle(command: CommandInteraction, data: GuildData, reply: InteractionReplyFunction): boolean | Promise<boolean>
 
-}
+// }
 
 
 //

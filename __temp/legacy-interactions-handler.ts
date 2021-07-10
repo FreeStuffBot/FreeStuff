@@ -12,7 +12,6 @@ import NewHelpCommand from './commands/help'
 import NewAboutCommand from './commands/about'
 import NewInviteCommand from './commands/invite'
 import NewTestCommand from './commands/test'
-import NewSettingsCommand from './commands/settings'
 
 
 export default class InteractionHandler {
@@ -43,7 +42,6 @@ export default class InteractionHandler {
     this.COMMAND_HANDLER.invite = new NewInviteCommand()
     this.COMMAND_HANDLER.test = new NewTestCommand()
     this.COMMAND_HANDLER.vote = new NewVoteCommand()
-    this.COMMAND_HANDLER.settings = new NewSettingsCommand()
     // this.HANDLER.admin = new AdminHandler()
 
     this.loadButtonHandlers(path.join(__dirname, 'components'), '')

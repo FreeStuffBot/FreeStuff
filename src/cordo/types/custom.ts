@@ -2,7 +2,7 @@
 
 import { MessageEmbed } from 'discord.js'
 import { GuildData } from 'types/datastructs'
-import { GenericInteraction, ReplyableCommandInteraction, ReplyableComponentInteraction } from './ibase'
+import { GenericInteraction, InteractionJanitor, ReplyableCommandInteraction, ReplyableComponentInteraction } from './ibase'
 import { MessageComponent } from './icomponent'
 import { InteractionResponseFlags } from './iconst'
 
@@ -13,7 +13,7 @@ export type LocalisationContext = {
   [key: string]: string
 }
 
-export type HandlerSuccess = boolean | Promise<boolean>
+export type HandlerSuccess = boolean | Promise<boolean> | any
 
 // Interesting
 
@@ -36,12 +36,12 @@ export type InteractionApplicationCommandCallbackData = {
 // Handler
 
 export type InteractionCommandHandler
-  = (i: ReplyableCommandInteraction, data: GuildData)
-  => HandlerSuccess
+  = ((i: ReplyableCommandInteraction, data: GuildData) => HandlerSuccess)
+  | ((i: ReplyableCommandInteraction) => HandlerSuccess)
 
 export type InteractionComponentHandler
-  = (i: ReplyableComponentInteraction, data: GuildData)
-  => HandlerSuccess
+  = ((i: ReplyableComponentInteraction, data: GuildData) => HandlerSuccess)
+  | ((i: ReplyableComponentInteraction) => HandlerSuccess)
 
 // Reply flow
 
@@ -63,6 +63,6 @@ export type InteractionReplyStateLevelThree = {
 
 export type InteractionReplyStateLevelTwo = {
   _context: InteractionReplyContext,
-  withTimeout(millis: number, resetOnInteraction: boolean, janitor: (edit: ReplyableComponentInteraction) => any): InteractionReplyStateLevelThree
+  withTimeout(millis: number, resetOnInteraction: boolean, janitor: (edit: InteractionJanitor) => any): InteractionReplyStateLevelThree
 }
 

@@ -9,6 +9,8 @@ import { DatabaseGuildData, GuildData } from '../types/datastructs'
 import { FilterableStore, GuildSetting } from '../types/context'
 import { Util } from '../lib/util'
 import Logger from '../lib/logger'
+import Localisation from './localisation'
+import LanguageManager from './language-manager'
 
 
 export default class DatabaseManager {
@@ -89,7 +91,7 @@ export default class DatabaseManager {
    */
   public addGuild(guild: Guild, autoSettings = true) {
     const settings = autoSettings
-      ? Core.localisation.getDefaultSettings(guild)
+      ? Localisation.getDefaultSettings(guild)
       : 0
     const data: DatabaseGuildData = {
       _id: Long.fromString(guild.id),

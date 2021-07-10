@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 // INTERACTION BASE TYPES
 
-import { InteractionApplicationCommandCallbackData } from './custom'
+import { InteractionApplicationCommandCallbackData, InteractionReplyStateLevelTwo } from './custom'
 
 
 export type InteractionUser = {
@@ -117,6 +117,7 @@ export type InteractionBase = {
   token: string
   version: number
   application_id?: string
+  _answered: boolean
 }
 
 //
@@ -126,15 +127,21 @@ export type CommandInteraction = InteractionBase & (InteractionLocationGuild | I
 export type ComponentInteraction = InteractionBase & (InteractionLocationGuild | InteractionLocationDM) & InteractionTypeComponent
 
 export type ReplyableCommandInteraction = CommandInteraction & {
-  reply(data: InteractionApplicationCommandCallbackData): any
-  replyPrivately(data: InteractionApplicationCommandCallbackData): any
+  reply(data: InteractionApplicationCommandCallbackData): InteractionReplyStateLevelTwo
+  replyPrivately(data: InteractionApplicationCommandCallbackData): void
 }
 
 export type ReplyableComponentInteraction = ComponentInteraction & {
-  ack(): any
-  reply(data: InteractionApplicationCommandCallbackData): any
-  replyPrivately(data: InteractionApplicationCommandCallbackData): any
-  edit(data: InteractionApplicationCommandCallbackData): any
-  // disableComponents(): any
-  removeComponents(): any
+  ack(): void
+  reply(data: InteractionApplicationCommandCallbackData): InteractionReplyStateLevelTwo
+  replyPrivately(data: InteractionApplicationCommandCallbackData): void
+  edit(data: InteractionApplicationCommandCallbackData): void
+  // disableComponents(): void
+  removeComponents(): void
+}
+
+export type InteractionJanitor = {
+  edit(data: InteractionApplicationCommandCallbackData): void
+  // disableComponents(): void
+  removeComponents(): void
 }
