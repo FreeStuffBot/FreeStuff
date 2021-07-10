@@ -97,7 +97,7 @@ export default class TestCommand extends Command {
           euro: 0,
           dollar: 0
         },
-        store: (Core.languageManager.get(g, 'platform_' + flags.store) ? flags.store as Store : '') || 'steam',
+        store: (LanguageManager.get(g, 'platform_' + flags.store) ? flags.store as Store : '') || 'steam',
         thumbnail: {
           blank: this.placeholderThumbnail,
           full: this.placeholderThumbnail,

@@ -4,6 +4,7 @@ import { Core } from '../../index'
 import Const from '../../bot/const'
 import { GuildData } from '../../types/datastructs'
 import Experiments from '../../controller/experiments'
+import LanguageManager from '../../bot/language-manager'
 
 
 export type themeSettings = {
@@ -73,10 +74,10 @@ export default class BaseTheme {
 
   static generatePriceString(content: GameInfo, data: GuildData): string {
     return data.currency === 'euro'
-      ? Core.languageManager.get(data, 'currency_sign_euro_position') === 'after'
-          ? `${content.org_price.euro} €`
-          : `€${content.org_price.euro}`
-      : Core.languageManager.get(data, 'currency_sign_dollar_position') === 'after'
+      ? LanguageManager.get(data, 'currency_sign_euro_position') === 'after'
+        ? `${content.org_price.euro} €`
+        : `€${content.org_price.euro}`
+      : LanguageManager.get(data, 'currency_sign_dollar_position') === 'after'
         ? `${content.org_price.dollar} $`
         : `$${content.org_price.dollar}`
   }
@@ -110,7 +111,7 @@ export default class BaseTheme {
       + (showDescription ? `> ${content.description}\n\n` : '')
       + `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until}`
       + (showRating ? `${divider}${Math.round(content.rating * 20) / 2}/10 ★` : '')
-      + (showStore ? `${divider}${Core.languageManager.get(data, 'platform_' + content.store)}` : '')
+      + (showStore ? `${divider}${LanguageManager.get(data, 'platform_' + content.store)}` : '')
       // + ((content.flags & GameFlag.TRASH) ? `${divider}${Core.text(data, '=game_meta_flag_trash')}` : '')
       // + ((content.flags & GameFlag.THIRDPARTY) ? `${divider}${Core.text(data, '=game_meta_flag_thirdparty')}` : '')
       + `\n\n${button}`

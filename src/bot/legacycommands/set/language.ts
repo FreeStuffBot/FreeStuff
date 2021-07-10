@@ -20,7 +20,7 @@ export default class SetLanguageHandler implements CommandHandler, SettingsSubco
         Core.text(g, '=cmd_set_language_status_1'),
         Core.text(g, '=cmd_set_language_status_2')
           + (g.language.startsWith('en') ? '' : '\n\n' + Core.text(g, '=cmd_set_language_status_2_en', { language: Core.text(g, '=lang_name_en') }))
-          + '\n\n' + Core.languageManager.displayLangList(true).map(l => `${l.endsWith(Core.languageManager.get(g, 'lang_name_en') + ')') ? '☛' : ''}‎ ${l}`).join('\n')
+          + '\n\n' + LanguageManager.displayLangList(true).map(l => `${l.endsWith(LanguageManager.get(g, 'lang_name_en') + ')') ? '☛' : ''}‎ ${l}`).join('\n')
       )
       return false
     }
@@ -33,7 +33,7 @@ export default class SetLanguageHandler implements CommandHandler, SettingsSubco
       return false
     }
 
-    let lang = Core.languageManager.languageByName(args[0])
+    let lang = LanguageManager.languageByName(args[0])
     if (lang.startsWith('en')) lang = Core.localisation.isGuildInEurope(mes.guild) ? 'en-GB' : 'en-US'
 
     const details = args.join(' ').toLocaleLowerCase()
@@ -45,17 +45,17 @@ export default class SetLanguageHandler implements CommandHandler, SettingsSubco
         Core.text(g, '=cmd_set_language_notfound_1'),
         Core.text(g, '=cmd_set_language_notfound_2')
         + (g.language.startsWith('en') ? '' : '\n\n' + Core.text(g, '=cmd_set_language_notfound_2_en'))
-        + '\n\n' + Core.languageManager.displayLangList(true).map(l => `${l.endsWith(Core.languageManager.get(g, 'lang_name_en') + ')') ? '☛' : ''}‎ ${l}`).join('\n')
+        + '\n\n' + LanguageManager.displayLangList(true).map(l => `${l.endsWith(LanguageManager.get(g, 'lang_name_en') + ')') ? '☛' : ''}‎ ${l}`).join('\n')
       )
       return false
     }
 
-    const langid = Core.languageManager.languageToId(lang)
+    const langid = LanguageManager.languageToId(lang)
     Core.databaseManager.changeSetting(mes.guild, g, 'language', langid)
 
     reply(
-      Core.languageManager.getRaw(lang, 'cmd_set_language_success_1'),
-      Core.languageManager.getRaw(lang, 'cmd_set_language_success_2')
+      LanguageManager.getRaw(lang, 'cmd_set_language_success_1'),
+      LanguageManager.getRaw(lang, 'cmd_set_language_success_2')
     )
 
     return true

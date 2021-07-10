@@ -119,44 +119,6 @@ export default class InteractionHandler {
   }
 
   /**
-   * Recursively traverses the given object until maxDepth, translating every string value found
-   */
-  private translateObject(object: any, guildData: GuildData | undefined, context: any, maxDepth: number) {
-    if (maxDepth <= 0) return
-    for (const key in object) {
-      if (key === 'context') continue
-      if (typeof object[key] === 'object') this.translateObject(object[key], guildData, context, maxDepth--)
-      else if (typeof object[key] === 'string') object[key] = Core.text(guildData, object[key], context)
-    }
-  }
-
-  /**
-   * Transforms the shorthand way of writing into proper discord api compatible objects
-   */
-  private normaliseData(data?: InteractionApplicationCommandCallbackData, guild?: GuildData) {
-    if (!data) return
-    // explicitly not using this. in this function due to unwanted side-effects in lambda functions
-    Core.interactionsHandler.translateObject(data, guild, data._context, 10)
-
-    // explicit lose typecheck (== instead of ===) to catch both null and undefined
-    if (data.content == null)
-      data.content = ''
-
-    if (data.description || data.title) {
-      if (!data.embeds) data.embeds = []
-      data.embeds.push({
-        title: data.title || undefined,
-        description: data.description || undefined,
-        footer: data.footer ? { text: data.footer } : undefined,
-        thumbnail: data.image ? { url: data.image } : undefined,
-        color: data.color || 0x2F3136
-      })
-      data.description = undefined
-      data.title = undefined
-    }
-  }
-
-  /**
    * Gets your default reply(...) function
    */
   private getReplyFunction(i: GenericInteraction, guild?: GuildData): InteractionReplyFunction {

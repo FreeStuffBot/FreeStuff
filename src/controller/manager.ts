@@ -184,7 +184,7 @@ export default class Manager {
 
       case 'reload_lang':
         Logger.manager('Reload language cache.')
-        Core.languageManager.load()
+        LanguageManager.load()
         break
 
       case 'resend_to_guild':

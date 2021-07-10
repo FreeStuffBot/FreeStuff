@@ -169,7 +169,7 @@ export default class DatabaseManager {
       react: (dbObject.settings & (1 << 5)) !== 0,
       trashGames: (dbObject.settings & (1 << 6)) !== 0,
       theme: dbObject.settings & 0b1111,
-      language: Core.languageManager.languageById((dbObject.settings >> 8 & 0b111111)),
+      language: LanguageManager.languageById((dbObject.settings >> 8 & 0b111111)),
       storesRaw: (dbObject.settings >> 14 & 0b11111111),
       storesList: this.storesRawToList(dbObject.settings >> 14 & 0b11111111),
       beta: (dbObject.settings & (1 << 30)) !== 0

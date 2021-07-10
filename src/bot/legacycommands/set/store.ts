@@ -143,7 +143,7 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
 
   private getStoreInfo(store: Store, g: GuildData): StoreData {
     return {
-      name: store === 'other' ? 'Other Stores' : Core.languageManager.get(g, 'platform_' + store),
+      name: store === 'other' ? 'Other Stores' : LanguageManager.get(g, 'platform_' + store),
       key: store,
       icon: Const.storeEmojis[store],
       bit: <unknown> FilterableStore[store.toUpperCase()] as number

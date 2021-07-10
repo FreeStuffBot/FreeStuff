@@ -18,7 +18,7 @@ export default class InfoCommand extends Command {
   public handle(_mes: Message, _args: string[], g: GuildData, repl: ReplyFunction): boolean {
     const translationCredits = g.language.startsWith('en')
       ? ''
-      : `\n\n${Core.text(g, '=translation_by')}\n${Core.languageManager.getRaw(g.language, 'translators').split(', ').map(n => `• ${n}`).join('\n')}`
+      : `\n\n${Core.text(g, '=translation_by')}\n${LanguageManager.getRaw(g.language, 'translators').split(', ').map(n => `• ${n}`).join('\n')}`
     repl(
       Core.text(g, '=cmd_info_1'),
       Core.text(g, '=cmd_info_2', {

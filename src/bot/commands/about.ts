@@ -9,7 +9,7 @@ export default class NewAboutCommand extends InteractionCommandHandler {
   public handle(_command: CommandInteraction, data: GuildData, reply: InteractionReplyFunction): boolean {
     const translationCredits = data.language.startsWith('en')
       ? ''
-      : `\n\n${Core.text(data, '=translation_by')}\n${Core.languageManager.getRaw(data.language, 'translators').split(', ').map(n => `• ${n}`).join('\n')}`
+      : `\n\n${Core.text(data, '=translation_by')}\n${LanguageManager.getRaw(data.language, 'translators').split(', ').map(n => `• ${n}`).join('\n')}`
 
     reply('ChannelMessageWithSource', {
       title: '=cmd_info_1',

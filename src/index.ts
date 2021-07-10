@@ -25,6 +25,7 @@ if (!config.apisettings?.key) invalidConfig('missing freestuff api key')
 
 
 import * as chalk from 'chalk'
+import { FreeStuffApi } from 'freestuff'
 import FreeStuffBot from './freestuffbot'
 import SentryManager from './thirdparty/sentry/sentry'
 import { GitCommit, logVersionDetails } from './lib/git-parser'
@@ -34,10 +35,14 @@ import Redis from './database/redis'
 import Logger from './lib/logger'
 import { Util } from './lib/util'
 import Manager from './controller/manager'
+import LanguageManager from './bot/language-manager'
+import WebhookServer from './controller/webhookserver'
 
 
 // eslint-disable-next-line import/no-mutable-exports
 export let Core: FreeStuffBot
+// eslint-disable-next-line import/no-mutable-exports
+export let FSAPI: FreeStuffApi
 
 async function run() {
   if (config.bot.mode === 'dev')
@@ -62,8 +67,8 @@ async function run() {
       process.exit(0)
 
     case 'startup':
-      mountBot(action.shardId, action.shardCount, commit)
-
+      initComponents(commit)
+      mountBot(action.shardId, action.shardCount)
   }
 }
 
@@ -74,7 +79,20 @@ run().catch((err) => {
 
 //
 
-function mountBot(shardId: number, shardCount: number, commit: GitCommit) {
+function initComponents(commit: GitCommit) {
+  LanguageManager.init()
+
+  this.FSAPI = new FreeStuffApi({
+    ...config.apisettings as any,
+    version: commit.shortHash,
+    sid: this.options.shards[0]
+  })
+
+  if (config.apisettings.server?.enable)
+    WebhookServer.start(config.apisettings.server)
+}
+
+function mountBot(shardId: number, shardCount: number) {
   // if (Core) {
   //   // unmount old bot
   //   Core.removeAllListeners()
@@ -96,5 +114,5 @@ function mountBot(shardId: number, shardCount: number, commit: GitCommit) {
     shardCount,
     shards: (shardId !== undefined) ? [ shardId ] : undefined
   })
-  Core.start(commit)
+  Core.start()
 }

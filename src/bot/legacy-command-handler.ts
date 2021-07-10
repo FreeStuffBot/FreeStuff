@@ -4,23 +4,24 @@ import FreeStuffBot from '../freestuffbot'
 import { GuildData } from '../types/datastructs'
 import { Command } from '../types/commands'
 import Const from './const'
-import HelpCommand from './oldcommands/help'
-import InfoCommand from './oldcommands/info'
-import InviteCommand from './oldcommands/invite'
-import SettingsCommand from './oldcommands/settings'
-import TestCommand from './oldcommands/test'
-import VoteCommand from './oldcommands/vote'
-import CheckCommand from './oldcommands/check'
-import HereCommand from './oldcommands/here'
-import FreeCommand from './oldcommands/free'
-import ResetCommand from './oldcommands/reset'
-import MydataCommand from './oldcommands/mydata'
-import AdvancedCommand from './oldcommands/advanced'
-import ResendCommand from './oldcommands/resend'
-import BetaCommand from './oldcommands/beta'
+import HelpCommand from './legacycommands/help'
+import InfoCommand from './legacycommands/info'
+import InviteCommand from './legacycommands/invite'
+import SettingsCommand from './legacycommands/settings'
+import TestCommand from './legacycommands/test'
+import VoteCommand from './legacycommands/vote'
+import CheckCommand from './legacycommands/check'
+import HereCommand from './legacycommands/here'
+import FreeCommand from './legacycommands/free'
+import ResetCommand from './legacycommands/reset'
+import MydataCommand from './legacycommands/mydata'
+import AdvancedCommand from './legacycommands/advanced'
+import ResendCommand from './legacycommands/resend'
+import BetaCommand from './legacycommands/beta'
+import Localisation from './localisation'
 
 
-export default class CommandHandler {
+export default class LegacyCommandHandler {
 
   public readonly commands: Command[] = [];
 
@@ -92,8 +93,8 @@ export default class CommandHandler {
 
     if (command === '') {
       const langNotif = g.language.startsWith('en')
-        ? (Core.localisation.getTranslationHint(orgmes.guild) && orgmes.member.hasPermission('MANAGE_GUILD'))
-            ? '\n\n' + Core.localisation.getTranslationHint(orgmes.guild)
+        ? (Localisation.getTranslationHint(orgmes.guild) && orgmes.member.hasPermission('MANAGE_GUILD'))
+            ? '\n\n' + Localisation.getTranslationHint(orgmes.guild)
             : ''
         : '\n\n' + Core.text(g, '=cmd_freestuff_2_en', { website: Const.links.website })
       reply(

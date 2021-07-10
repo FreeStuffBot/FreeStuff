@@ -1,6 +1,6 @@
 import { Guild } from 'discord.js'
-import { Core } from '../index'
 import { Util } from '../lib/util'
+import LanguageManager from './language-manager'
 
 
 export default class Localisation {
@@ -42,41 +42,41 @@ export default class Localisation {
     japan: 'zh-CN'
   }
 
-  public isGuildInEurope(guild: Guild) {
+  public static isGuildInEurope(guild: Guild) {
     if (!guild) return false
     const region = guild.region
     const europe = Localisation.EUROPEAN_REGIONS.includes(region)
     return europe
   }
 
-  public isGuildInAmerica(guild: Guild) {
+  public static isGuildInAmerica(guild: Guild) {
     if (!guild) return false
     const region = guild.region
     const europe = Localisation.AMERICAN_REGIONS.includes(region)
     return europe
   }
 
-  public getDefaultSettings(guild: Guild): number {
+  public static getDefaultSettings(guild: Guild): number {
     const europe = this.isGuildInEurope(guild)
     const useEuro = europe
     const defaultLang = europe ? 'en-GB' : 'en-US'
 
     return 0
       | Util.modifyBits(0, 1, 1, useEuro ? 0 : 1)
-      | Util.modifyBits(0, 8, 6, Core.languageManager.languageToId(defaultLang))
+      | Util.modifyBits(0, 8, 6, LanguageManager.languageToId(defaultLang))
       | Util.modifyBits(0, 14, 8, 0b11111111)
   }
 
-  public getTranslationHint(guild: Guild): string {
+  public static getTranslationHint(guild: Guild): string {
     const region = guild.region
     const europe = Localisation.EUROPEAN_REGIONS.includes(region)
     const hint = Localisation.EXTRA_LANGUAGE_HINTS[region]
 
     if (hint)
-      return Core.languageManager.getRaw(hint, 'translation_available')
+      return LanguageManager.getRaw(hint, 'translation_available')
 
     if (europe)
-      return Core.languageManager.getRaw(hint, 'translation_available_generic')
+      return LanguageManager.getRaw(hint, 'translation_available_generic')
 
     return ''
   }
