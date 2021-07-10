@@ -85,6 +85,7 @@ function initComponents(commit: GitCommit) {
 
   Cordo.findCommandHandlers([ __dirname, 'commands' ])
   Cordo.findComponentHandlers([ __dirname, 'components' ])
+  Cordo.registerMiddlewareForInteractionCallback((data, guild) => LanguageManager.translateObject(data, guild, data._context, 10))
 
   this.FSAPI = new FreeStuffApi({
     ...config.apisettings as any,

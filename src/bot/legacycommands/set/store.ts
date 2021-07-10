@@ -5,6 +5,7 @@ import { ReplyFunction, CommandHandler, SettingsSubcommand } from '../../../type
 import { FilterableStore, StoreData } from '../../../types/context'
 import { Core } from '../../../index'
 import Const from '../../const'
+import LanguageManager from '../../../bot/language-manager'
 
 
 export default class SetStoreHandler implements CommandHandler, SettingsSubcommand {

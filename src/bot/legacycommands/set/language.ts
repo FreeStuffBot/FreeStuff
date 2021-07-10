@@ -2,6 +2,8 @@ import { Message } from 'discord.js'
 import { GuildData } from '../../../types/datastructs'
 import { ReplyFunction, CommandHandler, SettingsSubcommand } from '../../../types/commands'
 import { Core } from '../../../index'
+import LanguageManager from '../../../bot/language-manager'
+import Localisation from '../../../bot/localisation'
 
 
 export default class SetLanguageHandler implements CommandHandler, SettingsSubcommand {
@@ -34,7 +36,7 @@ export default class SetLanguageHandler implements CommandHandler, SettingsSubco
     }
 
     let lang = LanguageManager.languageByName(args[0])
-    if (lang.startsWith('en')) lang = Core.localisation.isGuildInEurope(mes.guild) ? 'en-GB' : 'en-US'
+    if (lang.startsWith('en')) lang = Localisation.isGuildInEurope(mes.guild) ? 'en-GB' : 'en-US'
 
     const details = args.join(' ').toLocaleLowerCase()
     if (lang === 'en-US' && (details.includes('eu') || details.includes('gb') || details.includes('brit'))) lang = 'en-GB'

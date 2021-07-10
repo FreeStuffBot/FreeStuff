@@ -6,7 +6,7 @@ import Logger from '../lib/logger'
 import { Experiment, ManagerCommand, ShardAction, ShardStatus, ShardTask } from '../types/controller'
 import { getGitCommit } from '../lib/git-parser'
 import { Util } from '../lib/util'
-import NewFreeCommand from '../bot/commands/free'
+// import NewFreeCommand from '../bot/commands/free'
 import Experiments from './experiments'
 import RemoteConfig from './remote-config'
 
@@ -184,7 +184,7 @@ export default class Manager {
 
       case 'reload_lang':
         Logger.manager('Reload language cache.')
-        LanguageManager.load()
+        // TODO LanguageManager.load()
         break
 
       case 'resend_to_guild':
@@ -192,7 +192,7 @@ export default class Manager {
         for (const guildid of cmd.guilds) {
           if (!Util.belongsToShard(Long.fromString(guildid))) continue
           const guildData = await Core.databaseManager.getGuildData(guildid)
-          const freebies = NewFreeCommand.getCurrentFreebies()
+          const freebies = [] // TODO NewFreeCommand.getCurrentFreebies()
           Core.messageDistributor.sendToGuild(guildData, freebies, false, false)
           Logger.manager(`Resent to ${guildid}`)
         }

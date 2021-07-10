@@ -5,6 +5,7 @@ import { Command, ReplyFunction } from '../../types/commands'
 import { Core, config } from '../../index'
 import Const from '../const'
 import ParseArgs from '../../lib/parse-args'
+import LanguageManager from '../../bot/language-manager'
 
 
 export default class TestCommand extends Command {

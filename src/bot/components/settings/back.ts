@@ -1,7 +1,8 @@
-import { InteractionEditFunction, InteractionReplyActionEvent } from '../../../types/interactions'
+import { ReplyableComponentInteraction } from '../../../cordo/types/ibase'
 
-export default function handler(_: InteractionReplyActionEvent, edit: InteractionEditFunction) {
-  edit({
+
+export default function (i: ReplyableComponentInteraction) {
+  i.edit({
     title: 'hi'
   })
 }

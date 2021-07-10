@@ -3,6 +3,7 @@ import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import Const from '../const'
 import { Core } from '../../index'
+import LanguageManager from '../../bot/language-manager'
 
 
 export default class InfoCommand extends Command {
