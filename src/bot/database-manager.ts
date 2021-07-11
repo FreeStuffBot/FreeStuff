@@ -199,17 +199,17 @@ export default class DatabaseManager {
    * @param setting the setting to change
    * @param value it's new value
    */
-  public changeSetting(guild: Guild, current: GuildData, setting: 'channel', value: string | null)
-  public changeSetting(guild: Guild, current: GuildData, setting: 'role', value: string | null)
-  public changeSetting(guild: Guild, current: GuildData, setting: 'price', value: PriceClass)
-  public changeSetting(guild: Guild, current: GuildData, setting: 'theme', value: number | Theme)
-  public changeSetting(guild: Guild, current: GuildData, setting: 'currency', value: number | Currency)
-  public changeSetting(guild: Guild, current: GuildData, setting: 'react', value: boolean)
-  public changeSetting(guild: Guild, current: GuildData, setting: 'trash', value: boolean)
-  public changeSetting(guild: Guild, current: GuildData, setting: 'language', value: number)
-  public changeSetting(guild: Guild, current: GuildData, setting: 'platforms', value: Store[] | number)
-  public changeSetting(guild: Guild, current: GuildData, setting: 'beta', value: boolean)
-  public changeSetting(guild: Guild, current: GuildData, setting: GuildSetting, value: any) {
+  public async changeSetting(guild: Guild, current: GuildData, setting: 'channel', value: string | null)
+  public async changeSetting(guild: Guild, current: GuildData, setting: 'role', value: string | null)
+  public async changeSetting(guild: Guild, current: GuildData, setting: 'price', value: PriceClass)
+  public async changeSetting(guild: Guild, current: GuildData, setting: 'theme', value: number | Theme)
+  public async changeSetting(guild: Guild, current: GuildData, setting: 'currency', value: number | Currency)
+  public async changeSetting(guild: Guild, current: GuildData, setting: 'react', value: boolean)
+  public async changeSetting(guild: Guild, current: GuildData, setting: 'trash', value: boolean)
+  public async changeSetting(guild: Guild, current: GuildData, setting: 'language', value: number)
+  public async changeSetting(guild: Guild, current: GuildData, setting: 'platforms', value: Store[] | number)
+  public async changeSetting(guild: Guild, current: GuildData, setting: 'beta', value: boolean)
+  public async changeSetting(guild: Guild, current: GuildData, setting: GuildSetting, value: any) {
     const out = {} as any
     let bits = 0
     const c = current.settings
@@ -222,7 +222,8 @@ export default class DatabaseManager {
         out.role = value ? Long.fromString(value as string) : null
         break
       case 'price':
-        out.settings = (value as PriceClass).id
+        bits = (value as PriceClass).id
+        out.settings = Util.modifyBits(c, 2, 2, bits)
         break
       case 'theme':
         if (typeof value !== 'number')
@@ -242,7 +243,7 @@ export default class DatabaseManager {
         break
       case 'trash':
         bits = value ? 1 : 0
-        out.filter = Util.modifyBits(c, 6, 1, bits)
+        out.filter = Util.modifyBits(c, 0, 1, bits)
         break
       case 'language':
         bits = (value as number) & 0b111111
@@ -263,7 +264,7 @@ export default class DatabaseManager {
         break
     }
 
-    Database
+    await Database
       .collection('guilds')
       ?.updateOne({ _id: Long.fromString(guild.id) }, { $set: out })
   }

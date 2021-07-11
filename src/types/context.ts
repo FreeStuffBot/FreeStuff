@@ -1,3 +1,4 @@
+import Emojis from 'bot/emojis'
 import { MessageOptions } from 'discord.js'
 import { GameInfo, Store } from 'freestuff'
 import { GuildData } from './datastructs'
@@ -56,7 +57,8 @@ export type Platform = {
   id: string
   bit: number
   name: string
-  emoji: string
+  description: string
+  emoji: Emojis
   default: boolean
 }
 

@@ -15,6 +15,11 @@ export default class Emojis {
     this.string = string || `<${this.animated ? 'a' : ''}:${this.name}:${this.id}>`
   }
 
+  toObject(): ({ name: string } | { id: string }) {
+    if (this.id) return { id: this.id }
+    else return { name: this.name }
+  }
+
   toString(): string {
     return this.string
   }
@@ -61,9 +66,9 @@ export default class Emojis {
     apple: new Emojis('700097690653949952', 'store_apple'),
     google: new Emojis('700097689194594305', 'store_google'),
     switch: new Emojis('820258441225699338', 'switch'),
-    ps: new Emojis('❔', '', false, '❔'),
-    xbox: new Emojis('❔', '', false, '❔'),
-    other: new Emojis('❔', '', false, '❔')
+    ps: new Emojis('', '❔', false, '❔'),
+    xbox: new Emojis('', '❔', false, '❔'),
+    other: new Emojis('', '❔', false, '❔')
   }
 
 }

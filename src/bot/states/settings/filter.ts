@@ -8,24 +8,23 @@ import { Core } from '../../../index'
 
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
-  const storeOptions: MessageComponentSelectOption[] = Const.themes.map(t => ({
-    value: t.id + '',
-    label: t.name,
-    description: t.description,
-    default: i.guildData?.theme.id === t.id,
-    emoji: { name: t.emoji }
+  const platformOptions: MessageComponentSelectOption[] = Const.platforms.map(p => ({
+    value: p.id + '',
+    label: p.name,
+    description: p.description,
+    default: (i.guildData?.platformsRaw & p.bit) !== 0,
+    emoji: p.emoji.toObject()
   }))
 
   const priceOptions: MessageComponentSelectOption[] = Const.priceClasses.map(c => ({
     value: c.id + '',
     label: c.name,
-    description: 'Anything worth {price} or more before the discount',
-    default: false, // TODO i.guildData?.currency
-    _context: {
+    description: Core.text(i.guildData, 'Only games worth {price} or more before the discount', {
       price: (Core.text(i.guildData, '=currency_sign_position') === 'before')
-        ? `${i.guildData.currency}`
-        : 'TODO'
-    }
+        ? `${i.guildData.currency.symbol}${c.from}`
+        : `${c.from} ${i.guildData.currency.symbol}`
+    }),
+    default: i.guildData?.price.id === c.id
   }))
 
   return {
@@ -34,8 +33,10 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     components: [
       {
         type: ComponentType.SELECT,
-        custom_id: 'settings_stores_change',
-        options: storeOptions
+        custom_id: 'settings_platforms_change',
+        options: platformOptions,
+        min_values: 0,
+        max_values: platformOptions.length
       },
       {
         type: ComponentType.SELECT,

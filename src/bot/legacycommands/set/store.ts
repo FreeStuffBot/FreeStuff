@@ -81,16 +81,16 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
 
     if (platform.bit === undefined) {
       reply(
-        Core.text(g, '=cmd_set_store_not_supported_1', { icon: platform.emoji, name: platform.name }),
-        Core.text(g, '=cmd_set_store_not_supported_2', { icon: platform.emoji, name: platform.name })
+        Core.text(g, '=cmd_set_store_not_supported_1', { icon: platform.emoji.string, name: platform.name }),
+        Core.text(g, '=cmd_set_store_not_supported_2', { icon: platform.emoji.string, name: platform.name })
       )
       return false
     }
 
     if (args.length < 2) {
       reply(
-        Core.text(g, this.isPlatformEnabled(platform, g) ? '=cmd_set_store_status_on_1' : '=cmd_set_store_status_off_1', { icon: platform.emoji, name: platform.name }),
-        Core.text(g, this.isPlatformEnabled(platform, g) ? '=cmd_set_store_status_on_2' : '=cmd_set_store_status_off_2', { icon: platform.emoji, name: platform.name })
+        Core.text(g, this.isPlatformEnabled(platform, g) ? '=cmd_set_store_status_on_1' : '=cmd_set_store_status_off_1', { icon: platform.emoji.string, name: platform.name }),
+        Core.text(g, this.isPlatformEnabled(platform, g) ? '=cmd_set_store_status_on_2' : '=cmd_set_store_status_off_2', { icon: platform.emoji.string, name: platform.name })
       )
       return false
     }
@@ -98,25 +98,25 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
     if ([ 'on', 'true', '1', 'enable' ].includes(args[1].toLowerCase())) {
       Core.databaseManager.changeSetting(mes.guild, g, 'platforms', g.platformsRaw | platform.bit)
       reply(
-        Core.text(g, '=cmd_set_store_success_on_1', { icon: platform.emoji, name: platform.name }),
-        Core.text(g, '=cmd_set_store_success_on_2', { icon: platform.emoji, name: platform.name })
+        Core.text(g, '=cmd_set_store_success_on_1', { icon: platform.emoji.string, name: platform.name }),
+        Core.text(g, '=cmd_set_store_success_on_2', { icon: platform.emoji.string, name: platform.name })
       )
     } else if ([ 'off', 'false', '0', 'disable' ].includes(args[1].toLowerCase())) {
       Core.databaseManager.changeSetting(mes.guild, g, 'platforms', g.platformsRaw & ~platform.bit)
       reply(
-        Core.text(g, '=cmd_set_store_success_off_1', { icon: platform.emoji, name: platform.name }),
-        Core.text(g, '=cmd_set_store_success_off_2', { icon: platform.emoji, name: platform.name })
+        Core.text(g, '=cmd_set_store_success_off_1', { icon: platform.emoji.string, name: platform.name }),
+        Core.text(g, '=cmd_set_store_success_off_2', { icon: platform.emoji.string, name: platform.name })
       )
     } else if ([ 'only', 'single', 'just' ].includes(args[1].toLowerCase())) {
       Core.databaseManager.changeSetting(mes.guild, g, 'platforms', platform.bit)
       reply(
-        Core.text(g, '=cmd_set_store_success_only_1', { icon: platform.emoji, name: platform.name }),
-        Core.text(g, '=cmd_set_store_success_only_2', { icon: platform.emoji, name: platform.name })
+        Core.text(g, '=cmd_set_store_success_only_1', { icon: platform.emoji.string, name: platform.name }),
+        Core.text(g, '=cmd_set_store_success_only_2', { icon: platform.emoji.string, name: platform.name })
       )
     } else {
       reply(
-        Core.text(g, '=cmd_set_store_invalid_setting_1', { input: args[1], icon: platform.emoji, name: platform.name }),
-        Core.text(g, '=cmd_set_store_invalid_setting_2', { input: args[1], icon: platform.emoji, name: platform.name })
+        Core.text(g, '=cmd_set_store_invalid_setting_1', { input: args[1], icon: platform.emoji.string, name: platform.name }),
+        Core.text(g, '=cmd_set_store_invalid_setting_2', { input: args[1], icon: platform.emoji.string, name: platform.name })
       )
     }
     return true

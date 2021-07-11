@@ -189,56 +189,64 @@ export default class Const {
       id: 'other',
       bit: 1 << 0,
       name: '=platform_other',
-      emoji: Emojis.store.other.string,
+      description: 'Less popular platforms or publisher websites',
+      emoji: Emojis.store.other,
       default: false
     },
     {
       id: 'steam',
       bit: 1 << 1,
-      name: 'steam',
-      emoji: Emojis.store.steam.string,
+      name: '=platform_steam',
+      description: 'https://store.steampowered.com/',
+      emoji: Emojis.store.steam,
       default: true
     },
     {
       id: 'epic',
       bit: 1 << 2,
       name: '=platform_epic',
-      emoji: Emojis.store.epic.string,
+      description: 'https://www.epicgames.com/store/',
+      emoji: Emojis.store.epic,
       default: true
     },
     {
       id: 'humble',
       bit: 1 << 3,
       name: '=platform_humble',
-      emoji: Emojis.store.humble.string,
+      description: 'https://www.humblebundle.com/',
+      emoji: Emojis.store.humble,
       default: true
     },
     {
       id: 'gog',
       bit: 1 << 4,
       name: '=platform_gog',
-      emoji: Emojis.store.gog.string,
+      description: 'https://www.gog.com/',
+      emoji: Emojis.store.gog,
       default: true
     },
     {
       id: 'origin',
       bit: 1 << 5,
       name: '=platform_origin',
-      emoji: Emojis.store.origin.string,
+      description: 'https://www.origin.com/store',
+      emoji: Emojis.store.origin,
       default: true
     },
     {
       id: 'uplay',
       bit: 1 << 6,
       name: '=platform_uplay',
-      emoji: Emojis.store.uplay.string,
+      description: 'https://store.ubi.com/',
+      emoji: Emojis.store.uplay,
       default: true
     },
     {
       id: 'itch',
       bit: 1 << 7,
       name: '=platform_itch',
-      emoji: Emojis.store.itch.string,
+      description: 'https://itch.io/',
+      emoji: Emojis.store.itch,
       default: true
     }
   ]
