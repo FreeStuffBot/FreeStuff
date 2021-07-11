@@ -61,7 +61,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     components: [
       {
         type: ComponentType.SELECT,
-        custom_id: 'settings_language_change',
+        custom_id: 'settings_role_change',
         options,
         placeholder: 'Pick a role to ping'
       },

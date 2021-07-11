@@ -1,3 +1,4 @@
+import { Currency } from '../types/context'
 
 export default class Const {
 
@@ -54,5 +55,20 @@ export default class Const {
     discord: 'https://media.discordapp.net/attachments/672907465670787083/833652540641247262/discord_ext.png',
     switch: 'https://media.discordapp.net/attachments/672907465670787083/833652535356817418/switch_ext.png'
   }
+
+  public static readonly currencies: Currency[] = [
+    {
+      name: 'Euro',
+      symbol: '€',
+      value: 0,
+      calculated: false
+    },
+    {
+      name: 'USD',
+      symbol: '$',
+      value: 1,
+      calculated: false
+    }
+  ]
 
 }

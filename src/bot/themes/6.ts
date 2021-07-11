@@ -9,6 +9,10 @@ import Experiments from '../../controller/experiments'
 
 export default class ThemeSix implements Theme {
 
+  public readonly name = '=theme_six_name'
+  public readonly description = '=theme_six_desc'
+  public readonly emoji = '6️⃣'
+
   public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     return [
       (data.roleInstance && !settings.disableMention) ? data.roleInstance.toString() : '',

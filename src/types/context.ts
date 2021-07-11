@@ -26,7 +26,7 @@ export enum FilterableStore {
 }
 
 
-export interface StoreData {
+export type StoreData = {
   name: string
   key: Store
   icon: string
@@ -35,5 +35,18 @@ export interface StoreData {
 
 
 export interface Theme {
+  readonly name: string
+  readonly description: string
+  readonly emoji: string
   build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions]
 }
+
+
+export type Currency = {
+  name: string,
+  symbol: string,
+  value: number,
+  /** whether this currency is calculated from usd/eur or is actually real data */
+  calculated: boolean
+}
+

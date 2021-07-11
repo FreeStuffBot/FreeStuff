@@ -6,8 +6,8 @@ import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
   return {
-    title: 'More Settings',
-    description: 'bla bla bla\nfor help join here or something lmao: https://discord.gg/WrnKKF8',
+    title: 'More',
+    description: 'bla bla bla\nfor help join here or something lmao: https://discord.gg/WrnKKF8\nprivacy policy, terms of service, etc',
     components: [
       {
         type: ComponentType.BUTTON,
@@ -27,21 +27,6 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: i.guildData?.beta ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
         custom_id: 'settings_beta_toggle',
         label: i.guildData?.beta ? "You're in beta!" : 'Opt in to Beta'
-      },
-      {
-        type: ComponentType.LINE_BREAK
-      },
-      {
-        type: ComponentType.BUTTON,
-        style: ButtonStyle.LINK,
-        url: 'https://freestuffbot.xyz/privacy',
-        label: '=privacy_policy'
-      },
-      {
-        type: ComponentType.BUTTON,
-        style: ButtonStyle.LINK,
-        url: 'https://freestuffbot.xyz/terms',
-        label: '=terms_of_service'
       }
     ]
   }

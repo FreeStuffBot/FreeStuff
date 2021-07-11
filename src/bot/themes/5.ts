@@ -9,6 +9,10 @@ import Experiments from '../../controller/experiments'
 
 export default class ThemeFive implements Theme {
 
+  public readonly name = '=theme_five_name'
+  public readonly description = '=theme_five_desc'
+  public readonly emoji = '5️⃣'
+
   public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     return [
       (data.roleInstance && !settings.disableMention) ? data.roleInstance.toString() : '',

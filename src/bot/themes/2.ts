@@ -7,6 +7,10 @@ import BaseTheme, { themeSettings } from './basetheme'
 
 export default class ThemeTwo implements Theme {
 
+  public readonly name = '=theme_two_name'
+  public readonly description = '=theme_two_desc'
+  public readonly emoji = '2️⃣'
+
   public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     const fullSettings: themeSettings = {
       ...settings,

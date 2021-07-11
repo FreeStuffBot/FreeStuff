@@ -10,6 +10,10 @@ import LanguageManager from '../../bot/language-manager'
 
 export default class ThemeTen implements Theme {
 
+  public readonly name = '=theme_ten_name'
+  public readonly description = '=theme_ten_desc'
+  public readonly emoji = '🔟'
+
   public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     const useProxyUrl = Experiments.runExperimentOnServer('use_proxy_url', data)
     const button = content.urls.client

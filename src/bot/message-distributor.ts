@@ -25,7 +25,7 @@ import ThemeTen from './themes/10'
 
 export default class MessageDistributor {
 
-  private static readonly themes: Theme[] = [
+  public static readonly themes: Theme[] = [
     new ThemeOne(),
     new ThemeTwo(),
     new ThemeThree(),
