@@ -56,6 +56,10 @@ export default class LanguageManager {
     return LanguageManager.texts[language]?.[key] || key
   }
 
+  public static existsLanguageById(id: number | string): boolean {
+    return !!LanguageManager.idmap[id + '']
+  }
+
   public static languageById(id: number | string): string {
     return LanguageManager.idmap[id + ''] || LanguageManager.idmap[0]
   }

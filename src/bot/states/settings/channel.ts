@@ -7,7 +7,9 @@ import Emojis from '../../emojis'
 
 
 const recommendedChannelRegex = /free|games|gaming|deals/i
-const filterOutChannelRegex = /rules|meme/i
+const filterOutChannelRegex1 = /rules|meme|support/i
+const filterOutChannelRegex2 = /log|help|selfies|/i
+const filterOutChannelRegex3 = /team|partner/i
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
   if (!i.guildData)
@@ -22,7 +24,13 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   if (channelsFound.length > 25)
     channelsFound = channelsFound.filter(c => !c.nsfw)
   if (channelsFound.length > 25)
-    channelsFound = channelsFound.filter(c => !filterOutChannelRegex.test(c.name))
+    channelsFound = channelsFound.filter(c => !filterOutChannelRegex1.test(c.name))
+  if (channelsFound.length > 25)
+    channelsFound = channelsFound.filter(c => !filterOutChannelRegex2.test(c.name))
+  if (channelsFound.length > 25)
+    channelsFound = channelsFound.filter(c => !filterOutChannelRegex3.test(c.name))
+
+  // TODO in some absurd szenario there might be over 25 channels but then one regex kills all of them => empty array => error
 
   const options = channelsFound
     .sort((a, b) =>

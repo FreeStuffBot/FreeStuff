@@ -36,6 +36,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
 
   return {
     title: 'language',
+    description: '=lang_name',
     components: [
       {
         type: ComponentType.SELECT,
