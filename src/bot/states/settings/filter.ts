@@ -52,9 +52,9 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       },
       {
         type: ComponentType.BUTTON,
-        style: i.guildData?.react ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
+        style: i.guildData?.trashGames ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
         custom_id: 'settings_trash_toggle',
-        label: i.guildData?.react ? 'Bad Quality Games Enabled' : 'Enable Bad Quality Games',
+        label: i.guildData?.trashGames ? 'Bad Quality Games Enabled' : 'Enable Bad Quality Games',
         emoji: { name: '🗑️' }
       }
     ]

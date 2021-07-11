@@ -1,5 +1,5 @@
 /* eslint-disable no-dupe-class-members */
-import { Guild, TextChannel } from 'discord.js'
+import { Guild, Role, TextChannel } from 'discord.js'
 import { Long } from 'mongodb'
 import { CronJob } from 'cron'
 import { Store } from 'freestuff'
@@ -16,6 +16,10 @@ import Const from './const'
 
 
 export default class DatabaseManager {
+
+  private static cacheBucketF: Map<string, GuildData> = new Map()
+  private static cacheBucketT: Map<string, GuildData> = new Map()
+  private static cacheCurrentBucket: boolean = false
 
   public constructor(bot: FreeStuffBot) {
     bot.on('ready', async () => {
@@ -46,6 +50,8 @@ export default class DatabaseManager {
   /**
    * Start a scheduled cron task that once a day will remove all data from guilds that no longer have the bot on them from the database
    * ! Do not run this method multiple times without canceling the task first !
+   *
+   * Also starts the timer to clear and switch guild data cache buckets
    * @param bot bot instance
    */
   private startGarbageCollector(bot: FreeStuffBot): void {
@@ -70,6 +76,22 @@ export default class DatabaseManager {
         }
       }, 1000 * 60 * 30)
     }).start()
+
+    setTimeout(() => {
+      // only flip if the active bucket holds over 20 items
+      if (DatabaseManager.cacheCurrentBucket
+        && DatabaseManager.cacheBucketT.size < 20) return
+      else if (DatabaseManager.cacheBucketF.size < 20) return
+
+      // now do the flip
+      DatabaseManager.cacheCurrentBucket = !DatabaseManager.cacheCurrentBucket
+
+      // clear the new bucket
+      if (DatabaseManager.cacheCurrentBucket)
+        DatabaseManager.cacheBucketT = new Map()
+      else
+        DatabaseManager.cacheBucketF = new Map()
+    }, 10e3)
   }
 
   /**
@@ -140,9 +162,30 @@ export default class DatabaseManager {
    */
   public async getGuildData(guild: string, fetchInstances = true): Promise<GuildData> {
     if (!guild) return undefined
+
+    if (DatabaseManager.cacheCurrentBucket) {
+      let data = DatabaseManager.cacheBucketT.get(guild) // not using .has because buckets might swap in between the .has and the .get call
+      if (data) return data
+      data = DatabaseManager.cacheBucketF.get(guild)
+      DatabaseManager.cacheBucketT.set(guild, data) // take data from older bucket into newer bucket
+      if (data) return data
+    } else {
+      let data = DatabaseManager.cacheBucketF.get(guild)
+      if (data) return data
+      data = DatabaseManager.cacheBucketT.get(guild)
+      DatabaseManager.cacheBucketF.set(guild, data)
+      if (data) return data
+    }
+
     const obj = await this.getRawGuildData(guild)
     if (!obj) return undefined
-    return this.parseGuildData(obj, fetchInstances)
+    const data = await this.parseGuildData(obj, fetchInstances)
+
+    if (DatabaseManager.cacheCurrentBucket)
+      DatabaseManager.cacheBucketT.set(guild, data)
+    else
+      DatabaseManager.cacheBucketF.set(guild, data)
+    return data
   }
 
   /**
@@ -217,37 +260,47 @@ export default class DatabaseManager {
     switch (setting) {
       case 'channel':
         out.channel = value ? Long.fromString(value as string) : null
+        current.channel = out.channel
+        current.channelInstance = (value ? await Core.channels.fetch(value) : null) as TextChannel
         break
       case 'role':
         out.role = value ? Long.fromString(value as string) : null
+        current.role = out.role
+        current.roleInstance = (value ? await guild.roles.fetch(value) : null) as Role
         break
       case 'price':
         bits = (value as PriceClass).id
         out.settings = Util.modifyBits(c, 2, 2, bits)
+        current.price = value as PriceClass
         break
       case 'theme':
         if (typeof value !== 'number')
           value = (value as Theme).id
         bits = (value as number) & 0b11111
         out.settings = Util.modifyBits(c, 0, 5, bits)
+        current.theme = Const.themes[value]
         break
       case 'currency':
         if (typeof value !== 'number')
           value = (value as Currency).id
         bits = (value as number) & 0b1111
         out.settings = Util.modifyBits(c, 5, 4, bits)
+        current.currency = Const.currencies[value]
         break
       case 'react':
         bits = value ? 1 : 0
         out.settings = Util.modifyBits(c, 9, 1, bits)
+        current.react = !!value
         break
       case 'trash':
         bits = value ? 1 : 0
         out.filter = Util.modifyBits(c, 0, 1, bits)
+        current.trashGames = !!value
         break
       case 'language':
         bits = (value as number) & 0b111111
         out.settings = Util.modifyBits(c, 10, 6, bits)
+        current.language = LanguageManager.languageById(value)
         break
       case 'platforms':
         if (typeof value === 'number') {
@@ -257,10 +310,13 @@ export default class DatabaseManager {
             bits ^= platform.bit
         }
         out.filter = Util.modifyBits(c, 4, 8, bits)
+        current.platformsRaw = bits
+        current.platformsList = this.platformsRawToList(bits)
         break
       case 'beta':
         bits = value ? 1 : 0
         out.settings = Util.modifyBits(c, 30, 1, bits)
+        current.beta = !!value
         break
     }
 

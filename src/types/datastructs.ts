@@ -47,7 +47,10 @@ export interface DatabaseGuildData {
 }
 
 
-/** After the data is parsed to allow easier access */
+/**
+ * After the data is parsed to allow easier access
+ * @usage While this object might get updated once data changes, it is NOT guaranteed to. Treat it as a copy of the data at a specific time, not as an interface to the guild. => No caching this data manually in commands or components, no storing it for longer than needed
+ */
 export interface GuildData extends DatabaseGuildData {
   channelInstance: TextChannel
   roleInstance: Role
