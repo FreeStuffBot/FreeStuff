@@ -39,7 +39,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     },
     {
       label: '@everyone',
-      value: '-1',
+      value: '1',
       default: i.guildData.role?.toString() === '-1',
       description: 'Ping everyone. That\'s a lot of people.',
       emoji: { id: Emojis.global.id }

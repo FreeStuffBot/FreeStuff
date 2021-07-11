@@ -9,21 +9,9 @@ import { GuildData } from './datastructs'
 
 
 export type GuildSetting = 'channel'
-  | 'roleMention' | 'theme'| 'currency'
+  | 'role' | 'theme'| 'currency'
   | 'react' | 'trash' | 'price'
-  | 'language' | 'stores' | 'beta'
-
-
-export enum FilterableStore {
-  OTHER = 1 << 0,
-  STEAM = 1 << 1,
-  EPIC = 1 << 2,
-  HUMBLE = 1 << 3,
-  GOG = 1 << 4,
-  ORIGIN = 1 << 5,
-  UPLAY = 1 << 6,
-  ITCH = 1 << 7
-}
+  | 'language' | 'platforms' | 'beta'
 
 
 export type StoreData = {
@@ -34,19 +22,41 @@ export type StoreData = {
 }
 
 
-export interface Theme {
-  readonly name: string
-  readonly description: string
-  readonly emoji: string
+export interface ThemeBuilder {
   build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions]
 }
 
 
+export type Theme = {
+  id: number
+  name: string
+  description: string
+  emoji: string
+  builder: ThemeBuilder
+}
+
+
 export type Currency = {
-  name: string,
-  symbol: string,
-  value: number,
+  id: number
+  name: string
+  symbol: string
   /** whether this currency is calculated from usd/eur or is actually real data */
   calculated: boolean
+}
+
+
+export type PriceClass = {
+  id: number
+  from: number
+  name: string
+}
+
+
+export type Platform = {
+  id: string
+  bit: number
+  name: string
+  emoji: string
+  default: boolean
 }
 

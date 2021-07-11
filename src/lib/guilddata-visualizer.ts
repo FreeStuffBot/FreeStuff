@@ -11,6 +11,10 @@ export default function guildDataToViewString(g: GuildData, maxLength?: number, 
     delete gd.roleInstance
     gd.shard = gd.sharder % Core.options.shardCount
     gd.server = hostname() || 'unknown'
+    gd.currency = gd.currency.name
+    gd.price = gd.price.name
+    gd.theme = gd.theme.name
+    gd.platformsList = gd.platformsList.map(p => p.id)
   }
 
   let guilddata = `\`\`\`json\n${JSON.stringify(gd || { error: 'Guild Data Error' }, null, 2)}\`\`\``

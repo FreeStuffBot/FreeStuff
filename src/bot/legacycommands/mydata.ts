@@ -70,7 +70,7 @@ export default class MydataCommand extends Command {
   private fetchData(g: GuildData): string {
     const errormsg = Core.text(g, '=cmd_mydata_display_error', { invite: Const.links.supportInvite })
     const guilddata = guildDataToViewString(g, 2000, errormsg)
-    const raw = { _id: g._id, sharder: g.sharder, channel: g.channel, role: g.role, price: g.price, settings: g.settings }
+    const raw = { _id: g._id, sharder: g.sharder, channel: g.channel, role: g.role, settings: g.settings, filter: g.filter }
     return `**What we store:**\n\`\`\`${JSON.stringify(raw)}\`\`\`\n**Human readable**:\n${guilddata}`
   }
 

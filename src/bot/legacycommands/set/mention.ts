@@ -22,7 +22,7 @@ export default class SetMentionHandler implements CommandHandler, SettingsSubcom
   public handle(mes: Message, args: string[], g: GuildData, reply: ReplyFunction): boolean {
     if (args.length < 1) {
       if (g.role) {
-        Core.databaseManager.changeSetting(mes.guild, g, 'roleMention', undefined)
+        Core.databaseManager.changeSetting(mes.guild, g, 'role', undefined)
         reply(
           Core.text(g, '=cmd_set_mention_success_none_changed_1'),
           Core.text(g, '=cmd_set_mention_success_none_changed_2')
@@ -43,7 +43,7 @@ export default class SetMentionHandler implements CommandHandler, SettingsSubcom
         )
         return false
       }
-      Core.databaseManager.changeSetting(mes.guild, g, 'roleMention', '1')
+      Core.databaseManager.changeSetting(mes.guild, g, 'role', '1')
       reply(
         Core.text(g, '=cmd_set_mention_success_everyone_1'),
         Core.text(g, '=cmd_set_mention_success_everyone_2')
@@ -60,7 +60,7 @@ export default class SetMentionHandler implements CommandHandler, SettingsSubcom
 
     const role = mes.mentions.roles.first()
     if (!role) return false
-    Core.databaseManager.changeSetting(mes.guild, g, 'roleMention', role.id)
+    Core.databaseManager.changeSetting(mes.guild, g, 'role', role.id)
     reply(
       Core.text(g, '=cmd_set_mention_success_regular_1'),
       Core.text(g, '=cmd_set_mention_success_regular_2', { role: role.toString() })

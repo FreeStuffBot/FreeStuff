@@ -1,6 +1,5 @@
 import Const from '../const'
 import { ReplyableCommandInteraction } from '../../cordo/types/ibase'
-import Experiments from '../../controller/experiments'
 
 
 export default function (i: ReplyableCommandInteraction) {

@@ -62,7 +62,7 @@ export default class CheckCommand extends Command {
       return true
     }
     if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('EMBED_LINKS')
-        && Const.themesWithEmbeds.includes(g.theme)) {
+        && Const.themesWithEmbeds.includes(g.theme.id)) {
       repl(
         Core.text(g, '=cmd_check_noembeds_1'),
         Core.text(g, '=cmd_check_noembeds_2', { channel: g.channelInstance.toString() })
@@ -70,7 +70,7 @@ export default class CheckCommand extends Command {
       return true
     }
     if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('USE_EXTERNAL_EMOJIS')
-        && Const.themesWithExtemotes[g.theme]) {
+        && Const.themesWithExtemotes[g.theme.id]) {
       repl(
         Core.text(g, '=cmd_check_extemotes_1'),
         Core.text(g, '=cmd_check_extemotes_2')

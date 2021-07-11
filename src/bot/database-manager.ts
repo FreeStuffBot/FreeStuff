@@ -1,3 +1,4 @@
+/* eslint-disable no-dupe-class-members */
 import { Guild, TextChannel } from 'discord.js'
 import { Long } from 'mongodb'
 import { CronJob } from 'cron'
@@ -6,11 +7,12 @@ import { Core } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import Database from '../database/database'
 import { DatabaseGuildData, GuildData } from '../types/datastructs'
-import { FilterableStore, GuildSetting } from '../types/context'
+import { Currency, GuildSetting, Platform, PriceClass, Theme } from '../types/context'
 import { Util } from '../lib/util'
 import Logger from '../lib/logger'
 import Localisation from './localisation'
 import LanguageManager from './language-manager'
+import Const from './const'
 
 
 export default class DatabaseManager {
@@ -89,17 +91,17 @@ export default class DatabaseManager {
    * @param guild guild object
    * @param autoSettings whether the default settings should automatically be adjusted to the server (e.g: server region -> language)
    */
-  public addGuild(guild: Guild, autoSettings = true) {
-    const settings = autoSettings
-      ? Localisation.getDefaultSettings(guild)
-      : 0
+  public addGuild(guild: Guild) {
+    const settings = Localisation.getDefaultSettings(guild)
+    const filter = Localisation.getDefaultFilter(guild)
+
     const data: DatabaseGuildData = {
       _id: Long.fromString(guild.id),
       sharder: Long.fromString(guild.id).shiftRight(22),
       channel: null,
       role: null,
-      price: 3,
-      settings
+      settings,
+      filter
     }
     Database
       .collection('guilds')
@@ -111,9 +113,9 @@ export default class DatabaseManager {
    * @param guildid guild id
    * @param force weather to force a removal or not. if not forced this method will not remove guilds that are managed by another shard
    */
-  public removeGuild(guildid: Long, force = false) {
+  public async removeGuild(guildid: Long, force = false) {
     if (!force && !Util.belongsToShard(guildid)) return
-    Database
+    await Database
       .collection('guilds')
       ?.deleteOne({ _id: guildid })
   }
@@ -150,7 +152,7 @@ export default class DatabaseManager {
   public async parseGuildData(dbObject: DatabaseGuildData, fetchInstances = true): Promise<GuildData> {
     if (!dbObject) return undefined
     const responsible = (Core.options.shardCount === 1) || Util.belongsToShard(dbObject._id)
-    let guildInstance: Guild
+    let guildInstance: Guild = null
     try {
       if (fetchInstances)
         guildInstance = await Core.guilds.fetch(dbObject._id.toString())
@@ -160,44 +162,33 @@ export default class DatabaseManager {
 
     return {
       ...dbObject,
-      channelInstance: fetchInstances && dbObject.channel && responsible && guildInstance
+      channelInstance: guildInstance && dbObject.channel && responsible
         ? (guildInstance.channels.resolve((dbObject.channel as Long).toString()) as TextChannel)
         : undefined,
-      roleInstance: fetchInstances && dbObject.role && responsible && guildInstance
+      roleInstance: guildInstance && dbObject.role && responsible
         ? dbObject.role.toString() === '1'
           ? guildInstance.roles.everyone
           : guildInstance.roles.resolve((dbObject.role as Long).toString())
         : undefined,
-      currency: ((dbObject.settings & (1 << 4)) === 0 ? 'euro' : 'usd') as ('euro' | 'usd'),
-      react: (dbObject.settings & (1 << 5)) !== 0,
-      trashGames: (dbObject.settings & (1 << 6)) !== 0,
-      theme: dbObject.settings & 0b1111,
-      language: LanguageManager.languageById((dbObject.settings >> 8 & 0b111111)),
-      storesRaw: (dbObject.settings >> 14 & 0b11111111),
-      storesList: this.storesRawToList(dbObject.settings >> 14 & 0b11111111),
+      currency: Const.currencies[(dbObject.settings >> 5 & 0b1111)] || Const.currencies[0],
+      price: Const.priceClasses[(dbObject.filter >> 2 & 0b11)] || Const.priceClasses[2],
+      react: (dbObject.settings & (1 << 9)) !== 0,
+      trashGames: (dbObject.filter & (1 << 0)) !== 0,
+      theme: Const.themes[dbObject.settings & 0b11111] || Const.themes[0],
+      language: LanguageManager.languageById((dbObject.settings >> 10 & 0b111111)),
+      platformsRaw: (dbObject.filter >> 4 & 0b11111111),
+      platformsList: this.platformsRawToList(dbObject.filter >> 4 & 0b11111111),
       beta: (dbObject.settings & (1 << 30)) !== 0
     }
   }
 
-  public storesRawToList(raw: number): Store[] {
-    const out = [] as Store[]
-    if ((raw & FilterableStore.STEAM) !== 0) out.push('steam')
-    if ((raw & FilterableStore.EPIC) !== 0) out.push('epic')
-    if ((raw & FilterableStore.HUMBLE) !== 0) out.push('humble')
-    if ((raw & FilterableStore.GOG) !== 0) out.push('gog')
-    if ((raw & FilterableStore.ORIGIN) !== 0) out.push('origin')
-    if ((raw & FilterableStore.UPLAY) !== 0) out.push('uplay')
-    if ((raw & FilterableStore.ITCH) !== 0) out.push('itch')
-    if ((raw & FilterableStore.OTHER) !== 0) {
-      out.push('apple')
-      out.push('discord')
-      out.push('google')
-      out.push('ps')
-      out.push('xbox')
-      out.push('switch')
-      out.push('twitch')
-      out.push('other')
+  public platformsRawToList(raw: number): Platform[] {
+    const out = [] as Platform[]
+    for (const platform of Const.platforms) {
+      if ((raw & platform.bit) !== 0)
+        out.push(platform)
     }
+
     return out
   }
 
@@ -208,44 +199,63 @@ export default class DatabaseManager {
    * @param setting the setting to change
    * @param value it's new value
    */
-  public changeSetting(guild: Guild, current: GuildData, setting: GuildSetting, value: string | number | boolean) {
+  public changeSetting(guild: Guild, current: GuildData, setting: 'channel', value: string | null)
+  public changeSetting(guild: Guild, current: GuildData, setting: 'role', value: string | null)
+  public changeSetting(guild: Guild, current: GuildData, setting: 'price', value: PriceClass)
+  public changeSetting(guild: Guild, current: GuildData, setting: 'theme', value: number | Theme)
+  public changeSetting(guild: Guild, current: GuildData, setting: 'currency', value: number | Currency)
+  public changeSetting(guild: Guild, current: GuildData, setting: 'react', value: boolean)
+  public changeSetting(guild: Guild, current: GuildData, setting: 'trash', value: boolean)
+  public changeSetting(guild: Guild, current: GuildData, setting: 'language', value: number)
+  public changeSetting(guild: Guild, current: GuildData, setting: 'platforms', value: Store[] | number)
+  public changeSetting(guild: Guild, current: GuildData, setting: 'beta', value: boolean)
+  public changeSetting(guild: Guild, current: GuildData, setting: GuildSetting, value: any) {
     const out = {} as any
     let bits = 0
     const c = current.settings
 
     switch (setting) {
       case 'channel':
-        out.channel = Long.fromString(value as string)
+        out.channel = value ? Long.fromString(value as string) : null
         break
-      case 'roleMention':
+      case 'role':
         out.role = value ? Long.fromString(value as string) : null
         break
       case 'price':
-        out.price = value as number
+        out.settings = (value as PriceClass).id
         break
       case 'theme':
-        bits = (value as number) & 0b1111
-        out.settings = Util.modifyBits(c, 0, 4, bits)
+        if (typeof value !== 'number')
+          value = (value as Theme).id
+        bits = (value as number) & 0b11111
+        out.settings = Util.modifyBits(c, 0, 5, bits)
         break
       case 'currency':
-        bits = value ? 1 : 0
-        out.settings = Util.modifyBits(c, 4, 1, bits)
+        if (typeof value !== 'number')
+          value = (value as Currency).id
+        bits = (value as number) & 0b1111
+        out.settings = Util.modifyBits(c, 5, 4, bits)
         break
       case 'react':
         bits = value ? 1 : 0
-        out.settings = Util.modifyBits(c, 5, 1, bits)
+        out.settings = Util.modifyBits(c, 9, 1, bits)
         break
       case 'trash':
         bits = value ? 1 : 0
-        out.settings = Util.modifyBits(c, 6, 1, bits)
+        out.filter = Util.modifyBits(c, 6, 1, bits)
         break
       case 'language':
         bits = (value as number) & 0b111111
-        out.settings = Util.modifyBits(c, 8, 6, bits)
+        out.settings = Util.modifyBits(c, 10, 6, bits)
         break
-      case 'stores':
-        bits = (value as number) & 0b11111111
-        out.settings = Util.modifyBits(c, 14, 8, bits)
+      case 'platforms':
+        if (typeof value === 'number') {
+          bits = value & 0b11111111
+        } else {
+          for (const platform of (value as Platform[]))
+            bits ^= platform.bit
+        }
+        out.filter = Util.modifyBits(c, 4, 8, bits)
         break
       case 'beta':
         bits = value ? 1 : 0
@@ -261,15 +271,25 @@ export default class DatabaseManager {
   // settings: (do not use bit 31, causes unwanted effects with negative number conversion)
   // 3__ 2__________________ 1__________________ 0__________________
   // 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
-  //   _                 _______________ ___________ _ _ _ _ _______
+  //   _                             ___________ _ _______ _________
   // 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-  //   |                 |               |           | | | |  theme [0< 4]
-  //   |                 |               |           | | | currency (on = usd, off = eur) [4< 1]
-  //   |                 |               |           | | react with :free: emoji [5< 1]
-  //   |                 |               |           | show trash games [6< 1]
-  //   |                 |               |           alternative date format [7< 1] (DEPRECATED, bit can be used but needs to be reset first)
-  //   |                 |               language [8< 6]
-  //   |                 stores [14< 8] (itch uplay origin gog humble epic steam other)
-  //   opted in to beta tests
+  //   |                             |           | |       |
+  //   |                             |           | |       theme [0< 5]
+  //   |                             |           | |
+  //   |                             |           | currency [5< 4]
+  //   |                             |           react with :free: emoji [9< 1]
+  //   |                             language [10< 6]
+  //   opted in to beta tests [30< 1]
+
+  // filter: (do not use bit 31, causes unwanted effects with negative number conversion)
+  // 3__ 2__________________ 1__________________ 0__________________
+  // 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+  //                                         _______________ ___ _ _
+  // 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  //                                         |               |   | |
+  //                                         |               |   | show trash games [0< 1]
+  //                                         |               |   reserved [1< 1]
+  //                                         |               minimum price [2< 2]
+  //                                         platforms [4< 8]
 
 }

@@ -24,14 +24,14 @@ export default class SetReactHandler implements CommandHandler, SettingsSubcomma
     }
     if ([ 'on', 'true', '1' ].includes(args[0].toLowerCase())) {
       if (!g.react)
-        Core.databaseManager.changeSetting(mes.guild, g, 'react', 1)
+        Core.databaseManager.changeSetting(mes.guild, g, 'react', true)
       reply(
         Core.text(g, '=cmd_set_react_success_on_1'),
         Core.text(g, '=cmd_set_react_success_on_2')
       )
     } else if ([ 'off', 'false', '0' ].includes(args[0].toLowerCase())) {
       if (g.react)
-        Core.databaseManager.changeSetting(mes.guild, g, 'react', 0)
+        Core.databaseManager.changeSetting(mes.guild, g, 'react', false)
       reply(
         Core.text(g, '=cmd_set_react_success_off_1'),
         Core.text(g, '=cmd_set_react_success_off_2')

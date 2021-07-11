@@ -2,24 +2,23 @@ import Emojis from '../../emojis'
 import { GenericInteraction } from '../../../cordo/types/ibase'
 import { ButtonStyle, ComponentType } from '../../../cordo/types/iconst'
 import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
-import MessageDistributor from '../../message-distributor'
 import { MessageComponentSelectOption } from '../../../cordo/types/icomponent'
 import Const from '../../const'
 
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
-  const themeOptions: MessageComponentSelectOption[] = MessageDistributor.themes.map((t, n) => ({
-    value: n + '',
+  const themeOptions: MessageComponentSelectOption[] = Const.themes.map(t => ({
+    value: t.id + '',
     label: t.name,
     description: t.description,
-    default: i.guildData?.theme === n,
+    default: i.guildData?.theme.id === t.id,
     emoji: { name: t.emoji }
   }))
 
   const currencyOptions: MessageComponentSelectOption[] = Const.currencies.map(c => ({
-    value: c.value + '',
+    value: c.id + '',
     label: `${c.symbol} ${c.name}`,
-    default: false // TODO i.guildData?.currency
+    default: i.guildData?.currency.id === c.id
   }))
 
   // TODO: make the actual embed here be a test message with those settings applied

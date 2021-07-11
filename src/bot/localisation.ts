@@ -1,5 +1,6 @@
 import { Guild } from 'discord.js'
 import { Util } from '../lib/util'
+import Const from './const'
 import LanguageManager from './language-manager'
 
 
@@ -58,13 +59,17 @@ export default class Localisation {
 
   public static getDefaultSettings(guild: Guild): number {
     const europe = this.isGuildInEurope(guild)
-    const useEuro = europe
     const defaultLang = europe ? 'en-GB' : 'en-US'
 
     return 0
-      | Util.modifyBits(0, 1, 1, useEuro ? 0 : 1)
-      | Util.modifyBits(0, 8, 6, LanguageManager.languageToId(defaultLang))
-      | Util.modifyBits(0, 14, 8, 0b11111111)
+      | Util.modifyBits(0, 5, 4, europe ? 0 : 1)
+      | Util.modifyBits(0, 10, 6, LanguageManager.languageToId(defaultLang))
+  }
+
+  public static getDefaultFilter(_guild: Guild): number {
+    return 0
+      | Util.modifyBits(0, 2, 2, Const.defaultCurrency.id)
+      | Util.modifyBits(0, 4, 8, Const.defaultPlatforms)
   }
 
   public static getTranslationHint(guild: Guild): string {

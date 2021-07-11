@@ -2,17 +2,13 @@ import { MessageOptions } from 'discord.js'
 import { GameInfo } from 'freestuff'
 import Experiments from '../../controller/experiments'
 import { GuildData } from '../../types/datastructs'
-import { Theme } from '../../types/context'
+import { ThemeBuilder } from '../../types/context'
 import { Core } from '../../index'
 import Const from '../const'
 import LanguageManager from '../../bot/language-manager'
 
 
-export default class ThemeTen implements Theme {
-
-  public readonly name = '=theme_ten_name'
-  public readonly description = '=theme_ten_desc'
-  public readonly emoji = '🔟'
+export default class ThemeTen implements ThemeBuilder {
 
   public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     const useProxyUrl = Experiments.runExperimentOnServer('use_proxy_url', data)

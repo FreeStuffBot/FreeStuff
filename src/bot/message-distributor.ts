@@ -6,39 +6,13 @@ import Database from '../database/database'
 import { DbStats } from '../database/db-stats'
 import SentryManager from '../thirdparty/sentry/sentry'
 import Redis from '../database/redis'
-import { Theme } from '../types/context'
 import { DatabaseGuildData, GuildData } from '../types/datastructs'
 import RemoteConfig from '../controller/remote-config'
 import Logger from '../lib/logger'
 import Const from './const'
-import ThemeOne from './themes/1'
-import ThemeTwo from './themes/2'
-import ThemeThree from './themes/3'
-import ThemeFour from './themes/4'
-import ThemeFive from './themes/5'
-import ThemeSix from './themes/6'
-import ThemeSeven from './themes/7'
-import ThemeEight from './themes/8'
-import ThemeNine from './themes/9'
-import ThemeTen from './themes/10'
 
 
 export default class MessageDistributor {
-
-  public static readonly themes: Theme[] = [
-    new ThemeOne(),
-    new ThemeTwo(),
-    new ThemeThree(),
-    new ThemeFour(),
-    new ThemeFive(),
-    new ThemeSix(),
-    new ThemeSeven(),
-    new ThemeEight(),
-    new ThemeNine(),
-    new ThemeTen()
-  ];
-
-  //
 
   /**
    * Sends out the games to all guilds MessageDistributor shard is responsible for
@@ -140,9 +114,10 @@ export default class MessageDistributor {
     // forced will ignore filter settings
     if (!force) {
       content = content
-        .filter(game => data.price <= game.org_price[data.currency === 'euro' ? 'euro' : 'dollar']) // ! dollar != usd !
+        // TODO REENABLE PRICE FILTER
+        // .filter(game => data.price <= game.org_price[data.currency === 'euro' ? 'euro' : 'dollar']) // ! dollar != usd !
         .filter(game => data.trashGames || !(game.flags & GameFlag.TRASH))
-        .filter(game => data.storesList.includes(game.store))
+        .filter(game => data.platformsList.includes(Const.platforms.find(p => p.id === game.store) || Const.platforms[0]))
 
       if (!content.length) {
         Logger.excessive(`Guild ${g._id} return: no content left`)
@@ -175,13 +150,13 @@ export default class MessageDistributor {
       Logger.excessive(`Guild ${g._id} return: no VIEW_CHANNEL`)
       return []
     }
-    if (!permissions.has('EMBED_LINKS') && Const.themesWithEmbeds.includes(data.theme)) {
+    if (!permissions.has('EMBED_LINKS') && Const.themesWithEmbeds.includes(data.theme.id)) {
       Logger.excessive(`Guild ${g._id} return: no EMBED_LINKS`)
       return []
     }
-    if (!permissions.has('USE_EXTERNAL_EMOJIS') && Const.themesWithExtemotes[data.theme]) {
+    if (!permissions.has('USE_EXTERNAL_EMOJIS') && Const.themesWithExtemotes[data.theme.id]) {
       Logger.excessive(`Guild ${g._id} return: no USE_EXTERNAL_EMOJIS`)
-      data.theme = Const.themesWithExtemotes[data.theme]
+      data.theme = Const.themesWithExtemotes[data.theme.id]
     }
 
     // build message objects
@@ -212,7 +187,7 @@ export default class MessageDistributor {
    * @returns Tupel with message.content and message.options?
    */
   public static buildMessage(content: GameInfo, data: GuildData, test: boolean, disableMention: boolean): [ string, MessageOptions? ] {
-    const theme = MessageDistributor.themes[data.theme] || MessageDistributor.themes[0]
+    const theme = data.theme.builder
     return theme.build(content, data, { test, disableMention })
   }
 

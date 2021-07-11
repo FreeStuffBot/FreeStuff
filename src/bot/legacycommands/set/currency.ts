@@ -23,14 +23,14 @@ export default class SetCurrencyHandler implements CommandHandler, SettingsSubco
       return false
     }
     if ([ '€', 'euro', 'eur' ].includes(args[0].toLowerCase())) {
-      if (g.currency !== 'euro')
+      if (g.currency.id !== 0)
         Core.databaseManager.changeSetting(mes.guild, g, 'currency', 0)
       reply(
         Core.text(g, '=cmd_set_currency_success_euro_1'),
         Core.text(g, '=cmd_set_currency_success_euro_2')
       )
     } else if ([ '$', 'dollar', 'usd' ].includes(args[0].toLowerCase())) {
-      if (g.currency !== 'usd')
+      if (g.currency.id !== 1)
         Core.databaseManager.changeSetting(mes.guild, g, 'currency', 1)
       reply(
         Core.text(g, '=cmd_set_currency_success_dollar_1'),

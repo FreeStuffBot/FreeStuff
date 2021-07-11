@@ -1,6 +1,7 @@
 import { Long } from 'mongodb'
-import { GameAnalytics, GameInfo, Store } from 'freestuff'
+import { GameAnalytics, GameInfo } from 'freestuff'
 import { Role, TextChannel } from 'discord.js'
+import { Currency, Platform, PriceClass, Theme } from './context'
 
 
 /*
@@ -42,7 +43,7 @@ export interface DatabaseGuildData {
   channel: Long | null
   role: Long | null
   settings: number
-  price: number
+  filter: number
 }
 
 
@@ -50,12 +51,13 @@ export interface DatabaseGuildData {
 export interface GuildData extends DatabaseGuildData {
   channelInstance: TextChannel
   roleInstance: Role
-  theme: number
-  currency: 'euro' | 'usd'
+  theme: Theme
+  currency: Currency
+  price: PriceClass
   react: boolean
   trashGames: boolean
   language: string
-  storesRaw: number
-  storesList: Store[]
+  platformsRaw: number
+  platformsList: Platform[]
   beta: boolean
 }

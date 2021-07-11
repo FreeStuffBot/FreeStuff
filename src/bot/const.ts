@@ -1,4 +1,15 @@
-import { Currency } from '../types/context'
+import { Currency, PriceClass, Platform, Theme } from '../types/context'
+import ThemeOne from './themes/1'
+import ThemeTwo from './themes/2'
+import ThemeThree from './themes/3'
+import ThemeFour from './themes/4'
+import ThemeFive from './themes/5'
+import ThemeSix from './themes/6'
+import ThemeSeven from './themes/7'
+import ThemeEight from './themes/8'
+import ThemeNine from './themes/9'
+import ThemeTen from './themes/10'
+import Emojis from './emojis'
 
 export default class Const {
 
@@ -56,19 +67,184 @@ export default class Const {
     switch: 'https://media.discordapp.net/attachments/672907465670787083/833652535356817418/switch_ext.png'
   }
 
+  public static readonly themes: Theme[] = [
+    {
+      id: 0,
+      name: '=theme_one_name',
+      description: '=theme_one_desc',
+      emoji: '1️⃣',
+      builder: new ThemeOne()
+    },
+    {
+      id: 1,
+      name: '=theme_two_name',
+      description: '=theme_two_desc',
+      emoji: '2️⃣',
+      builder: new ThemeTwo()
+    },
+    {
+      id: 2,
+      name: '=theme_three_name',
+      description: '=theme_three_desc',
+      emoji: '3️⃣',
+      builder: new ThemeThree()
+    },
+    {
+      id: 3,
+      name: '=theme_four_name',
+      description: '=theme_four_desc',
+      emoji: '4️⃣',
+      builder: new ThemeFour()
+    },
+    {
+      id: 4,
+      name: '=theme_five_name',
+      description: '=theme_five_desc',
+      emoji: '5️⃣',
+      builder: new ThemeFive()
+    },
+    {
+      id: 5,
+      name: '=theme_six_name',
+      description: '=theme_six_desc',
+      emoji: '6️⃣',
+      builder: new ThemeSix()
+    },
+    {
+      id: 6,
+      name: '=theme_seven_name',
+      description: '=theme_seven_desc',
+      emoji: '7️⃣',
+      builder: new ThemeSeven()
+    },
+    {
+      id: 7,
+      name: '=theme_eight_name',
+      description: '=theme_eight_desc',
+      emoji: '8️⃣',
+      builder: new ThemeEight()
+    },
+    {
+      id: 8,
+      name: '=theme_nine_name',
+      description: '=theme_nine_desc',
+      emoji: '9️⃣',
+      builder: new ThemeNine()
+    },
+    {
+      id: 9,
+      name: '=theme_ten_name',
+      description: '=theme_ten_desc',
+      emoji: '🔟',
+      builder: new ThemeTen()
+    }
+  ]
+
+  public static readonly defaultTheme = Const.themes[0]
+
   public static readonly currencies: Currency[] = [
     {
+      id: 0,
       name: 'Euro',
       symbol: '€',
-      value: 0,
       calculated: false
     },
     {
+      id: 1,
       name: 'USD',
       symbol: '$',
-      value: 1,
       calculated: false
     }
   ]
+
+  public static readonly defaultCurrency = Const.currencies[0]
+
+  public static readonly priceClasses: PriceClass[] = [
+    {
+      id: 0,
+      from: 0,
+      name: 'Everything'
+    },
+    {
+      id: 1,
+      from: 1,
+      name: 'Almost Everything'
+    },
+    {
+      id: 2,
+      from: 3,
+      name: 'Default'
+    },
+    {
+      id: 3,
+      from: 10,
+      name: 'Big fish'
+    }
+  ]
+
+  public static readonly defaultPriceClass = Const.priceClasses[2]
+
+  public static readonly platforms: Platform[] = [
+    {
+      id: 'other',
+      bit: 1 << 0,
+      name: '=platform_other',
+      emoji: Emojis.store.other.string,
+      default: false
+    },
+    {
+      id: 'steam',
+      bit: 1 << 1,
+      name: 'steam',
+      emoji: Emojis.store.steam.string,
+      default: true
+    },
+    {
+      id: 'epic',
+      bit: 1 << 2,
+      name: '=platform_epic',
+      emoji: Emojis.store.epic.string,
+      default: true
+    },
+    {
+      id: 'humble',
+      bit: 1 << 3,
+      name: '=platform_humble',
+      emoji: Emojis.store.humble.string,
+      default: true
+    },
+    {
+      id: 'gog',
+      bit: 1 << 4,
+      name: '=platform_gog',
+      emoji: Emojis.store.gog.string,
+      default: true
+    },
+    {
+      id: 'origin',
+      bit: 1 << 5,
+      name: '=platform_origin',
+      emoji: Emojis.store.origin.string,
+      default: true
+    },
+    {
+      id: 'uplay',
+      bit: 1 << 6,
+      name: '=platform_uplay',
+      emoji: Emojis.store.uplay.string,
+      default: true
+    },
+    {
+      id: 'itch',
+      bit: 1 << 7,
+      name: '=platform_itch',
+      emoji: Emojis.store.itch.string,
+      default: true
+    }
+  ]
+
+  public static readonly defaultPlatforms = Const.platforms
+    .filter(p => p.default)
+    .reduce((val, p) => (val ^= p.bit), 0)
 
 }

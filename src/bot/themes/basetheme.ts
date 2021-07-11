@@ -73,7 +73,7 @@ export default class BaseTheme {
   }
 
   static generatePriceString(content: GameInfo, data: GuildData): string {
-    return data.currency === 'euro'
+    return data.currency.id === 0
       ? LanguageManager.get(data, 'currency_sign_euro_position') === 'after'
         ? `${content.org_price.euro} €`
         : `€${content.org_price.euro}`
