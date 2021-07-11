@@ -43,7 +43,7 @@ export default class CordoReplies {
       replyPrivately(data: InteractionApplicationCommandCallbackData) {
         CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, { ...data, flags: InteractionResponseFlags.EPHEMERAL })
       },
-      state(state?: string, ...args: any) {
+      async state(state?: string, ...args: any) {
         if (!state) state = i.data.id
 
         if (!Cordo._data.uiStates[state]) {
@@ -51,8 +51,9 @@ export default class CordoReplies {
           return
         }
 
-        const data = Cordo._data.uiStates[state](i, args)
-        CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data)
+        let data = Cordo._data.uiStates[state](i, args)
+        if ((data as any).then) data = await data
+        CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data as InteractionApplicationCommandCallbackData)
       }
     }
   }
@@ -83,7 +84,7 @@ export default class CordoReplies {
       removeComponents() {
         CordoAPI.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, { components: [] })
       },
-      state(state?: string, ...args: any) {
+      async state(state?: string, ...args: any) {
         if (!state) state = i.data.custom_id
 
         if (!Cordo._data.uiStates[state]) {
@@ -91,8 +92,9 @@ export default class CordoReplies {
           return
         }
 
-        const data = Cordo._data.uiStates[state](i, args)
-        CordoAPI.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, data)
+        let data = Cordo._data.uiStates[state](i, args)
+        if ((data as any).then) data = await data
+        CordoAPI.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, data as InteractionApplicationCommandCallbackData)
       }
     }
   }
@@ -107,7 +109,7 @@ export default class CordoReplies {
       removeComponents() {
         CordoAPI.interactionCallback(context.interaction, InteractionCallbackType.UPDATE_MESSAGE, { components: [] })
       },
-      state(state?: string, ...args: any) {
+      async state(state?: string, ...args: any) {
         if (!state) state = context.interaction.id
 
         if (!Cordo._data.uiStates[state]) {
@@ -115,8 +117,9 @@ export default class CordoReplies {
           return
         }
 
-        const data = Cordo._data.uiStates[state](context.interaction, args)
-        CordoAPI.interactionCallback(context.interaction, InteractionCallbackType.UPDATE_MESSAGE, data)
+        let data = Cordo._data.uiStates[state](context.interaction, args)
+        if ((data as any).then) data = await data
+        CordoAPI.interactionCallback(context.interaction, InteractionCallbackType.UPDATE_MESSAGE, data as InteractionApplicationCommandCallbackData)
       }
     }
   }

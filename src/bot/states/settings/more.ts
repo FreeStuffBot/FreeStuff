@@ -7,7 +7,7 @@ import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
   return {
     title: 'More Settings',
-    description: 'bla bla bla',
+    description: 'bla bla bla\nfor help join here or something lmao: https://discord.gg/WrnKKF8',
     components: [
       {
         type: ComponentType.BUTTON,
@@ -42,12 +42,6 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: ButtonStyle.LINK,
         url: 'https://freestuffbot.xyz/terms',
         label: '=terms_of_service'
-      },
-      {
-        type: ComponentType.BUTTON,
-        style: ButtonStyle.LINK,
-        url: 'https://discord.gg/WrnKKF8',
-        label: '=contact'
       }
     ]
   }

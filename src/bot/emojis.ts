@@ -35,10 +35,18 @@ export default class Emojis {
   //
 
   public static readonly bigSpace = new Emojis('716252611962994718', 'nothing')
-  public static readonly mention = new Emojis('863103982603075634', 'mention')
-  public static readonly channel = new Emojis('863103982120992769', 'channel')
-  public static readonly overflow = new Emojis('863142285465485372', 'overflow')
   public static readonly caretLeft = new Emojis('863506003751337996', 'caret_left')
+
+  public static readonly mention = new Emojis('863103982603075634', 'mention')
+  public static readonly mentionGreen = new Emojis('863736579342991370', 'mention_green')
+  public static readonly channel = new Emojis('863103982120992769', 'channel')
+  public static readonly channelGreen = new Emojis('863736579335913483', 'channel_green')
+  public static readonly announcementChannel = new Emojis('863732741752487946', 'announcement_channel')
+  public static readonly announcementChannelGreen = new Emojis('863742472790474812', 'announcement_channel_green')
+  public static readonly overflow = new Emojis('863142285465485372', 'overflow')
+
+  public static readonly global = new Emojis('863734030280032256', 'global')
+  public static readonly no = new Emojis('863734030457372692', 'no')
 
   public static readonly store: { [store in Store]: Emojis } = {
     steam: new Emojis('820258442303242320', 'steam'),

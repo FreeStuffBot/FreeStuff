@@ -64,5 +64,4 @@ export type InteractionReplyStateLevelTwo = {
 
 // States
 
-export type InteractionUIState = (i: GenericInteraction, ...args: any) => InteractionApplicationCommandCallbackData
-
+export type InteractionUIState = (i: GenericInteraction, ...args: any) => InteractionApplicationCommandCallbackData | Promise<InteractionApplicationCommandCallbackData>

@@ -27,7 +27,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       {
         type: ComponentType.BUTTON,
         style: i.guildData?.role ? ButtonStyle.SECONDARY : ButtonStyle.PRIMARY,
-        custom_id: 'settings_mention',
+        custom_id: 'settings_role',
         label: i.guildData?.role ? 'Change role mention' : 'Mention a role',
         emoji: { id: Emojis.mention.id }
       },
