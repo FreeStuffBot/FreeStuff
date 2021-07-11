@@ -28,7 +28,7 @@ export default class Emojis {
       .split('_')[1]
       .toLowerCase()
       .split('')
-      .reduce((str, char) => (str + Emojis.regionalIndicators[char.charCodeAt(0) - 97]), '')
+      .reduce((str, char) => (str + (Emojis.regionalIndicators[char.charCodeAt(0) - 97] || '')), '')
     return new Emojis(null, name, false, char)
   }
 

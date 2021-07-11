@@ -93,6 +93,16 @@ export default class LanguageManager {
     return out
   }
 
+  public static getAllLanguages(): { id: string, name: string, nameEn: string, flag: string, ranking: number }[] {
+    return LanguageManager.list.map(lang => ({
+      id: lang,
+      name: LanguageManager.getText(lang, 'lang_name'),
+      nameEn: LanguageManager.getText(lang, 'lang_name_en'),
+      flag: LanguageManager.getText(lang, 'lang_flag_emoji'),
+      ranking: parseInt(LanguageManager.getText(lang, '_ranking') + '')
+    }))
+  }
+
   /**
    * Recursively traverses the given object until maxDepth, translating every string value found
    */

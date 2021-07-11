@@ -1,4 +1,4 @@
-import { TextChannel } from 'discord.js'
+import { NewsChannel, TextChannel } from 'discord.js'
 import { Core } from '../../../index'
 import { GenericInteraction } from '../../../cordo/types/ibase'
 import { ButtonStyle, ComponentType } from '../../../cordo/types/iconst'
@@ -7,20 +7,29 @@ import Emojis from '../../emojis'
 
 
 const recommendedChannelRegex = /free|games|gaming|deals/i
+const filterOutChannelRegex = /rules|meme/i
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
   if (!i.guildData)
     return { title: 'An error occured' }
 
-  const options = Core.guilds.resolve(i.guild_id).channels.cache
+  let channelsFound = Core.guilds.resolve(i.guild_id).channels.cache
     .array()
     .filter(c => (c.type === 'text' || c.type === 'news'))
-    .filter(c => c.permissionsFor(Core.user).has('VIEW_CHANNEL'))
+    .filter(c => c.permissionsFor(Core.user).has('VIEW_CHANNEL')) as (TextChannel | NewsChannel)[]
+
+  // ah dang list is too long, let's start filtering some out
+  if (channelsFound.length > 25)
+    channelsFound = channelsFound.filter(c => !c.nsfw)
+  if (channelsFound.length > 25)
+    channelsFound = channelsFound.filter(c => !filterOutChannelRegex.test(c.name))
+
+  const options = channelsFound
     .sort((a, b) =>
       (recommendedChannelRegex.test(b.name) ? 999 : 0) - (recommendedChannelRegex.test(a.name) ? 999 : 0)
       + (b.position - a.position)
     )
-    .slice(0, 24)
+    .slice(0, 25)
     .map(c => ({
       label: c.name.substr(0, 25),
       value: c.id,
