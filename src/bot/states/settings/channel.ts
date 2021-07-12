@@ -8,8 +8,9 @@ import Emojis from '../../emojis'
 
 const recommendedChannelRegex = /free|games|gaming|deals/i
 const filterOutChannelRegex1 = /rules|meme|support/i
-const filterOutChannelRegex2 = /log|help|selfies|/i
-const filterOutChannelRegex3 = /team|partner/i
+const filterOutChannelRegex2 = /log|help|selfies/i
+const filterOutChannelRegex3 = /team|partner|suggestions/i
+const highProbChannelRegex = /announcement|new|general|computer|play|important|feed/i
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
   if (!i.guildData)
@@ -18,24 +19,43 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   let channelsFound = Core.guilds.resolve(i.guild_id).channels.cache
     .array()
     .filter(c => (c.type === 'text' || c.type === 'news'))
-    .filter(c => c.permissionsFor(Core.user).has('VIEW_CHANNEL')) as (TextChannel | NewsChannel)[]
+    .filter((c) => {
+      const p = c.permissionsFor(Core.user)
+      return p.has('VIEW_CHANNEL') && p.has('SEND_MESSAGES')
+    }) as (TextChannel | NewsChannel)[]
+
+  let youHaveTooManyChannelsStage = 0
 
   // ah dang list is too long, let's start filtering some out
-  if (channelsFound.length > 25)
+  if (channelsFound.length > 25) {
     channelsFound = channelsFound.filter(c => !c.nsfw)
-  if (channelsFound.length > 25)
-    channelsFound = channelsFound.filter(c => !filterOutChannelRegex1.test(c.name))
-  if (channelsFound.length > 25)
-    channelsFound = channelsFound.filter(c => !filterOutChannelRegex2.test(c.name))
-  if (channelsFound.length > 25)
-    channelsFound = channelsFound.filter(c => !filterOutChannelRegex3.test(c.name))
+    youHaveTooManyChannelsStage++
+  }
+  if (channelsFound.length > 25) {
+    channelsFound = channelsFound.filter(c => !filterOutChannelRegex1.test(c.name) || recommendedChannelRegex.test(c.name))
+    youHaveTooManyChannelsStage++
+  }
+  if (channelsFound.length > 25) {
+    channelsFound = channelsFound.filter(c => !filterOutChannelRegex2.test(c.name) || recommendedChannelRegex.test(c.name))
+    youHaveTooManyChannelsStage++
+  }
+  if (channelsFound.length > 25) {
+    channelsFound = channelsFound.filter(c => !filterOutChannelRegex3.test(c.name) || recommendedChannelRegex.test(c.name))
+    youHaveTooManyChannelsStage++
+  }
+  if (channelsFound.length > 25) {
+    channelsFound = channelsFound.filter(c => highProbChannelRegex.test(c.name) || recommendedChannelRegex.test(c.name))
+    youHaveTooManyChannelsStage++
+  }
 
   // TODO in some absurd szenario there might be over 25 channels but then one regex kills all of them => empty array => error
 
   const options = channelsFound
     .sort((a, b) =>
-      (recommendedChannelRegex.test(b.name) ? 999 : 0) - (recommendedChannelRegex.test(a.name) ? 999 : 0)
-      + (b.position - a.position)
+      (recommendedChannelRegex.test(a.name) ? -1000 : 0)
+      - (recommendedChannelRegex.test(b.name) ? -1000 : 0)
+      + (a.position + a.parent.position * 100)
+      - (b.position + b.parent.position * 100)
     )
     .slice(0, 25)
     .map(c => ({
@@ -56,6 +76,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
 
   return {
     title: 'display',
+    description: `OH MY GOD, youHaveTooManyChannelsStage: ${youHaveTooManyChannelsStage}`,
     components: [
       {
         type: ComponentType.SELECT,
