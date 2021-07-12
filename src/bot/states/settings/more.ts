@@ -19,7 +19,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
-        custom_id: 'settings_mydata_request',
+        custom_id: 'settings_mydata',
         label: 'View my Data'
       },
       {

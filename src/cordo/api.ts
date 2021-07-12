@@ -10,8 +10,8 @@ import { ComponentType, InteractionCallbackType } from './types/iconst'
 
 export default class CordoAPI {
 
-  public static interactionCallback(i: GenericInteraction, type: number, data?: InteractionApplicationCommandCallbackData, guild?: GuildData) {
-    CordoAPI.normaliseData(data, guild)
+  public static interactionCallback(i: GenericInteraction, type: number, data?: InteractionApplicationCommandCallbackData) {
+    CordoAPI.normaliseData(data, i.guildData)
 
     if (!i._answered) {
       i._answered = true
@@ -65,7 +65,7 @@ export default class CordoAPI {
       delete data.title
     }
 
-    if (data.components && data.components.length && (data.components[0].type as any) !== ComponentType.ROW) {
+    if (data.components?.length && (data.components[0].type as any) !== ComponentType.ROW) {
       const rows: MessageComponent[][] = []
       let newlineFlag = true
       for (const comp of data.components) {

@@ -35,6 +35,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         type: ComponentType.SELECT,
         custom_id: 'settings_platforms_change',
         options: platformOptions,
+        placeholder: '(All disabled)',
         min_values: 0,
         max_values: platformOptions.length
       },

@@ -1,4 +1,4 @@
-import { NewsChannel, TextChannel } from 'discord.js'
+import { GuildChannel, NewsChannel, TextChannel } from 'discord.js'
 import { Core } from '../../../index'
 import { GenericInteraction } from '../../../cordo/types/ibase'
 import { ButtonStyle, ComponentType } from '../../../cordo/types/iconst'
@@ -10,7 +10,11 @@ const recommendedChannelRegex = /free|games|gaming|deals/i
 const filterOutChannelRegex1 = /rules|meme|support/i
 const filterOutChannelRegex2 = /log|help|selfies/i
 const filterOutChannelRegex3 = /team|partner|suggestions/i
-const highProbChannelRegex = /announcement|new|general|computer|play|important|feed/i
+const highProbChannelRegex = /announcement|new|general|computer|play|important|feed|bot|commands/i
+
+function isRecommended(i: GenericInteraction, c: GuildChannel) {
+  return recommendedChannelRegex.test(c.name) || i.channel_id === c.id
+}
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
   if (!i.guildData)
@@ -32,19 +36,19 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     youHaveTooManyChannelsStage++
   }
   if (channelsFound.length > 25) {
-    channelsFound = channelsFound.filter(c => !filterOutChannelRegex1.test(c.name) || recommendedChannelRegex.test(c.name))
+    channelsFound = channelsFound.filter(c => !filterOutChannelRegex1.test(c.name) || isRecommended(i, c))
     youHaveTooManyChannelsStage++
   }
   if (channelsFound.length > 25) {
-    channelsFound = channelsFound.filter(c => !filterOutChannelRegex2.test(c.name) || recommendedChannelRegex.test(c.name))
+    channelsFound = channelsFound.filter(c => !filterOutChannelRegex2.test(c.name) || isRecommended(i, c))
     youHaveTooManyChannelsStage++
   }
   if (channelsFound.length > 25) {
-    channelsFound = channelsFound.filter(c => !filterOutChannelRegex3.test(c.name) || recommendedChannelRegex.test(c.name))
+    channelsFound = channelsFound.filter(c => !filterOutChannelRegex3.test(c.name) || isRecommended(i, c))
     youHaveTooManyChannelsStage++
   }
   if (channelsFound.length > 25) {
-    channelsFound = channelsFound.filter(c => highProbChannelRegex.test(c.name) || recommendedChannelRegex.test(c.name))
+    channelsFound = channelsFound.filter(c => highProbChannelRegex.test(c.name) || isRecommended(i, c))
     youHaveTooManyChannelsStage++
   }
 
@@ -52,8 +56,8 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
 
   const options = channelsFound
     .sort((a, b) =>
-      (recommendedChannelRegex.test(a.name) ? -1000 : 0)
-      - (recommendedChannelRegex.test(b.name) ? -1000 : 0)
+      (isRecommended(i, a) ? -1000 : 0)
+      - (isRecommended(i, b) ? -1000 : 0)
       + (a.position + a.parent.position * 100)
       - (b.position + b.parent.position * 100)
     )
@@ -65,10 +69,10 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       description: (c as TextChannel).topic?.substr(0, 50) || '',
       emoji: {
         id: (c.type === 'news')
-          ? recommendedChannelRegex.test(c.name)
+          ? isRecommended(i, c)
             ? Emojis.announcementChannelGreen.id
             : Emojis.announcementChannel.id
-          : recommendedChannelRegex.test(c.name)
+          : isRecommended(i, c)
             ? Emojis.channelGreen.id
             : Emojis.channel.id
       }

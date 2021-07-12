@@ -2,7 +2,6 @@
 import { Guild, Role, TextChannel } from 'discord.js'
 import { Long } from 'mongodb'
 import { CronJob } from 'cron'
-import { Store } from 'freestuff'
 import { Core } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import Database from '../database/database'
@@ -140,6 +139,8 @@ export default class DatabaseManager {
     await Database
       .collection('guilds')
       ?.deleteOne({ _id: guildid })
+    DatabaseManager.cacheBucketF.delete(guildid.toString())
+    DatabaseManager.cacheBucketT.delete(guildid.toString())
   }
 
   /**
@@ -250,7 +251,7 @@ export default class DatabaseManager {
   public async changeSetting(guild: Guild, current: GuildData, setting: 'react', value: boolean)
   public async changeSetting(guild: Guild, current: GuildData, setting: 'trash', value: boolean)
   public async changeSetting(guild: Guild, current: GuildData, setting: 'language', value: number)
-  public async changeSetting(guild: Guild, current: GuildData, setting: 'platforms', value: Store[] | number)
+  public async changeSetting(guild: Guild, current: GuildData, setting: 'platforms', value: Platform[] | number)
   public async changeSetting(guild: Guild, current: GuildData, setting: 'beta', value: boolean)
   public async changeSetting(guild: Guild, current: GuildData, setting: GuildSetting, value: any) {
     const out = {} as any

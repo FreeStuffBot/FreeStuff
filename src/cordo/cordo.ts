@@ -52,7 +52,8 @@ export default class Cordo {
     if (typeof dir !== 'string') dir = path.join(...dir)
     for (const file of fs.readdirSync(dir)) {
       const fullPath = path.join(dir, file)
-      const fullName = (prefix ? prefix + '_' : '') + file.split('.')[0]
+      let fullName = (prefix ? prefix + '_' : '') + file.split('.')[0]
+      while (fullName.endsWith('_')) fullName = fullName.substr(0, fullName.length - 1)
 
       if (file.includes('.')) {
         if (!file.endsWith('.js')) continue
@@ -67,7 +68,8 @@ export default class Cordo {
     if (typeof dir !== 'string') dir = path.join(...dir)
     for (const file of fs.readdirSync(dir)) {
       const fullPath = path.join(dir, file)
-      const fullName = (prefix ? prefix + '_' : '') + file.split('.')[0]
+      let fullName = (prefix ? prefix + '_' : '') + file.split('.')[0]
+      while (fullName.endsWith('_')) fullName = fullName.substr(0, fullName.length - 1)
 
       if (file.includes('.')) {
         if (!file.endsWith('.js')) continue
@@ -82,7 +84,8 @@ export default class Cordo {
     if (typeof dir !== 'string') dir = path.join(...dir)
     for (const file of fs.readdirSync(dir)) {
       const fullPath = path.join(dir, file)
-      const fullName = (prefix ? prefix + '_' : '') + file.split('.')[0]
+      let fullName = (prefix ? prefix + '_' : '') + file.split('.')[0]
+      while (fullName.endsWith('_')) fullName = fullName.substr(0, fullName.length - 1)
 
       if (file.includes('.')) {
         if (!file.endsWith('.js')) continue
