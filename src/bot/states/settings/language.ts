@@ -6,10 +6,10 @@ import LanguageManager from '../../language-manager'
 import Tracker from '../../tracker'
 
 
-function buildDescriptionForLanguage(lang: { id: string, nameEn: string }): string {
+function buildDescriptionForLanguage(lang: { id: string, nameEn: string }, allowEastereggs: boolean): string {
   const name = lang.nameEn[0].toUpperCase() + lang.nameEn.substr(1).toLowerCase()
   if (lang.id.startsWith('en')) {
-    if (lang.id.endsWith('US')) return 'English with football fields per pizza slice'
+    if (lang.id.endsWith('US')) return allowEastereggs ? 'English with football fields per pizza slice' : 'English with the imperial system'
     else return 'English with the metric system'
   }
   const out = `${name} by ${LanguageManager.getRaw(lang.id, 'translators', false)}`
@@ -20,6 +20,7 @@ function buildDescriptionForLanguage(lang: { id: string, nameEn: string }): stri
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
   if (!i.guildData) return { title: 'An error occured' }
+  const firstTimeOnPage = !Tracker.isTracked(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
 
   const options = LanguageManager
@@ -31,7 +32,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       label: l.name,
       value: l.id,
       default: i.guildData.language === l.id,
-      description: buildDescriptionForLanguage(l),
+      description: buildDescriptionForLanguage(l, !firstTimeOnPage),
       emoji: { name: Emojis.fromFlagName(l.flag).string }
     }))
 
