@@ -31,3 +31,11 @@ export enum ButtonStyle {
   DANGER = 4,
   LINK = 5
 }
+
+export enum InteractionComponentFlag {
+  ACCESS_EVERYONE = 'e',
+  ACCESS_PRIVATE = 'p',
+  ACCESS_ADMIN = 'a',
+  ACCESS_MANAGE_SERVER = 's',
+  ACCESS_MANAGE_MESSAGES = 'm'
+}

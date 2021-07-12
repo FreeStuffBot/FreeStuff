@@ -1,5 +1,5 @@
 import { GenericInteraction } from '../../../cordo/types/ibase'
-import { ButtonStyle, ComponentType } from '../../../cordo/types/iconst'
+import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../cordo/types/iconst'
 import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
 import Emojis from '../../emojis'
 import LanguageManager from '../../language-manager'
@@ -42,7 +42,8 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         type: ComponentType.SELECT,
         custom_id: 'settings_language_change',
         options,
-        placeholder: 'Pick a channel to send games to'
+        placeholder: 'Pick a channel to send games to',
+        flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
         type: ComponentType.BUTTON,

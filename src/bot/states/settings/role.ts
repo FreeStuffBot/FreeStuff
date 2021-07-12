@@ -1,13 +1,13 @@
 import { Permissions } from 'discord.js'
 import { GenericInteraction } from '../../../cordo/types/ibase'
-import { ButtonStyle, ComponentType } from '../../../cordo/types/iconst'
+import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../cordo/types/iconst'
 import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
 import Emojis from '../../emojis'
 import { Core } from '../../../index'
 import { MessageComponentSelectOption } from '../../../cordo/types/icomponent'
 
 
-const recommendedRoleRegex = /free|games|deals/i
+const recommendedRoleRegex = /free|game|deal|ping|notification/i
 
 export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
   if (!i.guildData)
@@ -63,7 +63,8 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
         type: ComponentType.SELECT,
         custom_id: 'settings_role_change',
         options,
-        placeholder: 'Pick a role to ping'
+        placeholder: 'Pick a role to ping',
+        flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
         type: ComponentType.BUTTON,

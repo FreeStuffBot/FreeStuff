@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 
 import { InteractionEmoji } from './ibase'
-import { ButtonStyle, ComponentType } from './iconst'
+import { ButtonStyle, ComponentType, InteractionComponentFlag } from './iconst'
 
 
 // Button
@@ -11,6 +11,7 @@ export type MessageComponentButton = {
   label?: string
   emoji?: Partial<InteractionEmoji>
   disabled?: boolean
+  flags?: InteractionComponentFlag[]
 } & ({
   style: ButtonStyle.PRIMARY | ButtonStyle.SECONDARY | ButtonStyle.SUCCESS | ButtonStyle.DANGER
   custom_id: string
@@ -37,6 +38,7 @@ export type MessageComponentSelectMenu = {
   min_values?: number
   max_values?: number
   disabled?: boolean
+  flags?: InteractionComponentFlag[]
 }
 
 // Custom

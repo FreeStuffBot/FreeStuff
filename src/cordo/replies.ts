@@ -36,6 +36,9 @@ export default class CordoReplies {
       ...i,
       reply(data: InteractionApplicationCommandCallbackData) {
         CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data)
+      },
+      replyInteractive(data: InteractionApplicationCommandCallbackData) {
+        CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data)
         const context = CordoReplies.newInteractionReplyContext(i)
         CordoReplies.activeInteractionReplyContexts.push(context)
         return CordoReplies.getLevelTwoReplyState(context)
@@ -66,6 +69,9 @@ export default class CordoReplies {
       },
       reply(data: InteractionApplicationCommandCallbackData) {
         CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data)
+      },
+      replyInteractive(data: InteractionApplicationCommandCallbackData) {
+        CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, data)
         const context = CordoReplies.newInteractionReplyContext(i)
         CordoReplies.activeInteractionReplyContexts.push(context)
         return CordoReplies.getLevelTwoReplyState(context)
@@ -75,6 +81,12 @@ export default class CordoReplies {
       },
       edit(data: InteractionApplicationCommandCallbackData) {
         CordoAPI.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, data)
+      },
+      editInteractive(data: InteractionApplicationCommandCallbackData) {
+        CordoAPI.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, data)
+        const context = CordoReplies.newInteractionReplyContext(i)
+        CordoReplies.activeInteractionReplyContexts.push(context)
+        return CordoReplies.getLevelTwoReplyState(context)
       },
       // disableComponents() { TODO
       //   API.interactionCallback(i, InteractionCallbackType.UPDATE_MESSAGE, {

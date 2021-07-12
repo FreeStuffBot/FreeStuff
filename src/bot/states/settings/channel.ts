@@ -1,12 +1,12 @@
 import { GuildChannel, NewsChannel, TextChannel } from 'discord.js'
 import { Core } from '../../../index'
 import { GenericInteraction } from '../../../cordo/types/ibase'
-import { ButtonStyle, ComponentType } from '../../../cordo/types/iconst'
+import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../cordo/types/iconst'
 import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
 import Emojis from '../../emojis'
 
 
-const recommendedChannelRegex = /free|games|gaming|deals/i
+const recommendedChannelRegex = /free|game|gaming|deal/i
 const filterOutChannelRegex1 = /rules|meme|support/i
 const filterOutChannelRegex2 = /log|help|selfies/i
 const filterOutChannelRegex3 = /team|partner|suggestions/i
@@ -86,7 +86,8 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         type: ComponentType.SELECT,
         custom_id: 'settings_channel_change',
         options,
-        placeholder: 'Pick a channel to send games to'
+        placeholder: 'Pick a channel to send games to',
+        flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
         type: ComponentType.BUTTON,

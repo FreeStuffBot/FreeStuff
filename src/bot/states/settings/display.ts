@@ -1,6 +1,6 @@
 import Emojis from '../../emojis'
 import { GenericInteraction } from '../../../cordo/types/ibase'
-import { ButtonStyle, ComponentType } from '../../../cordo/types/iconst'
+import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../cordo/types/iconst'
 import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
 import { MessageComponentSelectOption } from '../../../cordo/types/icomponent'
 import Const from '../../const'
@@ -31,12 +31,14 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       {
         type: ComponentType.SELECT,
         custom_id: 'settings_theme_change',
-        options: themeOptions
+        options: themeOptions,
+        flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
         type: ComponentType.SELECT,
         custom_id: 'settings_currency_change',
-        options: currencyOptions
+        options: currencyOptions,
+        flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
         type: ComponentType.BUTTON,
@@ -50,7 +52,8 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: i.guildData?.react ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
         custom_id: 'settings_reaction_toggle',
         label: i.guildData?.react ? 'Auto Reaction Enabled' : 'Enable Auto Reaction',
-        emoji: { name: '🆓' }
+        emoji: { name: '🆓' },
+        flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       }
     ]
   }

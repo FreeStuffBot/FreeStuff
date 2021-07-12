@@ -3,7 +3,7 @@
 
 import { GuildData } from 'types/datastructs'
 import { InteractionApplicationCommandCallbackData, InteractionReplyStateLevelTwo } from './custom'
-import { ComponentType, InteractionType } from './iconst'
+import { ComponentType, InteractionComponentFlag, InteractionType } from './iconst'
 
 
 export type InteractionUser = {
@@ -101,6 +101,7 @@ export type InteractionTypeComponent = {
     commponent_type: ComponentType.BUTTON | ComponentType.SELECT
     custom_id: string
     values?: string[]
+    flags: InteractionComponentFlag[]
   }
 }
 
@@ -122,16 +123,19 @@ export type CommandInteraction = InteractionBase & (InteractionLocationGuild | I
 export type ComponentInteraction = InteractionBase & (InteractionLocationGuild | InteractionLocationDM) & InteractionTypeComponent
 
 export type ReplyableCommandInteraction = CommandInteraction & {
-  reply(data: InteractionApplicationCommandCallbackData): InteractionReplyStateLevelTwo
+  reply(data: InteractionApplicationCommandCallbackData): void
+  replyInteractive(data: InteractionApplicationCommandCallbackData): InteractionReplyStateLevelTwo
   replyPrivately(data: InteractionApplicationCommandCallbackData): void
   state(state?: string, ...args: any): void
 }
 
 export type ReplyableComponentInteraction = ComponentInteraction & {
   ack(): void
-  reply(data: InteractionApplicationCommandCallbackData): InteractionReplyStateLevelTwo
+  reply(data: InteractionApplicationCommandCallbackData): void
+  replyInteractive(data: InteractionApplicationCommandCallbackData): InteractionReplyStateLevelTwo
   replyPrivately(data: InteractionApplicationCommandCallbackData): void
   edit(data: InteractionApplicationCommandCallbackData): void
+  editInteractive(data: InteractionApplicationCommandCallbackData): InteractionReplyStateLevelTwo
   // disableComponents(): void
   removeComponents(): void
   state(state?: string, ...args: any): void

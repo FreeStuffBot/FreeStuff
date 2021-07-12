@@ -1,6 +1,6 @@
 import Emojis from '../../emojis'
 import { GenericInteraction } from '../../../cordo/types/ibase'
-import { ButtonStyle, ComponentType } from '../../../cordo/types/iconst'
+import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../cordo/types/iconst'
 import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
 import { MessageComponentSelectOption } from '../../../cordo/types/icomponent'
 import Const from '../../const'
@@ -37,12 +37,14 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         options: platformOptions,
         placeholder: '(All disabled)',
         min_values: 0,
-        max_values: platformOptions.length
+        max_values: platformOptions.length,
+        flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
         type: ComponentType.SELECT,
         custom_id: 'settings_price_change',
-        options: priceOptions
+        options: priceOptions,
+        flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
         type: ComponentType.BUTTON,
@@ -56,7 +58,8 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: i.guildData?.trashGames ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
         custom_id: 'settings_trash_toggle',
         label: i.guildData?.trashGames ? 'Bad Quality Games Enabled' : 'Enable Bad Quality Games',
-        emoji: { name: '🗑️' }
+        emoji: { name: '🗑️' },
+        flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       }
     ]
   }

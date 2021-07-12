@@ -1,6 +1,6 @@
 import Emojis from '../../emojis'
 import { GenericInteraction } from '../../../cordo/types/ibase'
-import { ButtonStyle, ComponentType } from '../../../cordo/types/iconst'
+import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../cordo/types/iconst'
 import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
 
 
@@ -20,13 +20,15 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_mydata',
-        label: 'View my Data'
+        label: 'View Server Data',
+        flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
         type: ComponentType.BUTTON,
         style: i.guildData?.beta ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
         custom_id: 'settings_beta_toggle',
-        label: i.guildData?.beta ? "You're in beta!" : 'Opt in to Beta'
+        label: i.guildData?.beta ? "You're in beta!" : 'Opt in to Beta',
+        flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       }
     ]
   }

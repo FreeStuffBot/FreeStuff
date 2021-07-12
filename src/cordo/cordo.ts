@@ -2,8 +2,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 import Logger from '../lib/logger'
 import { Core } from '../index'
+import PermissionStrings from '../lib/permission-strings'
 import { InteractionCommandHandler, InteractionComponentHandler, InteractionUIState } from './types/custom'
-import { InteractionCallbackType, InteractionResponseFlags, InteractionType } from './types/iconst'
+import { InteractionCallbackType, InteractionComponentFlag, InteractionResponseFlags, InteractionType } from './types/iconst'
 import { InteractionCallbackMiddleware } from './types/middleware'
 import { CommandInteraction, ComponentInteraction, GenericInteraction } from './types/ibase'
 import CordoAPI from './api'
@@ -153,6 +154,26 @@ export default class Cordo {
   }
 
   private static onComponent(i: ComponentInteraction) {
+    i.data.flags = []
+    if (i.data.custom_id.includes('-')) {
+      const id = i.data.custom_id.split('-')[0]
+      const flags = i.data.custom_id.substr(id.length + 1)
+      i.data.custom_id = id
+      i.data.flags = flags.split('-').join('').split('') as InteractionComponentFlag[]
+    }
+
+    if (!i.data.flags.includes(InteractionComponentFlag.ACCESS_EVERYONE) && i.message.interaction?.user.id !== (i.user?.id || i.member.user.id))
+      return Cordo.interactionNotOwned(i, i.message.interaction ? `/${i.message.interaction?.name}` : 'the command', i.message.interaction?.user.username)
+
+    if (i.member) {
+      if (i.data.flags.includes(InteractionComponentFlag.ACCESS_ADMIN) && !PermissionStrings.containsAdmin(i.member.permissions))
+        return Cordo.interactionNotPermitted(i, '=interaction_not_permitted_admin')
+      if (i.data.flags.includes(InteractionComponentFlag.ACCESS_MANAGE_SERVER) && !PermissionStrings.containsManageServer(i.member.permissions))
+        return Cordo.interactionNotPermitted(i, '=interaction_not_permitted_manage_server')
+      if (i.data.flags.includes(InteractionComponentFlag.ACCESS_MANAGE_MESSAGES) && !PermissionStrings.containsManageMessages(i.member.permissions))
+        return Cordo.interactionNotPermitted(i, '=interaction_not_permitted_manage_messages')
+    }
+
     const context = CordoReplies.findActiveInteractionReplyContext(i.message.interaction?.id)
     if (context?.resetTimeoutOnInteraction) {
       clearTimeout(context.timeoutRunner)
@@ -169,6 +190,23 @@ export default class Cordo {
       Logger.warn(`Unhandled component with custom_id "${i.data.custom_id}"`)
       CordoAPI.interactionCallback(i, InteractionCallbackType.DEFERRED_UPDATE_MESSAGE)
     }
+  }
+
+  private static interactionNotPermitted(i: GenericInteraction, text?: string): any {
+    return CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, {
+      title: '=interaction_not_permitted_title',
+      description: text || '=interaction_not_permitted_generic',
+      flags: InteractionResponseFlags.EPHEMERAL
+    })
+  }
+
+  private static interactionNotOwned(i: GenericInteraction, command?: string, owner?: string): any {
+    return CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, {
+      title: '=interaction_not_owned_title',
+      description: '=interaction_not_owned_description',
+      flags: InteractionResponseFlags.EPHEMERAL,
+      _context: { command, owner }
+    })
   }
 
 }

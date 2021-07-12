@@ -1,17 +1,17 @@
 import axios from 'axios'
 import Logger from '../lib/logger'
 import { config } from '../index'
-import { GuildData } from '../types/datastructs'
+import PermissionStrings from '../lib/permission-strings'
 import Cordo from './cordo'
 import { InteractionApplicationCommandCallbackData } from './types/custom'
-import { GenericInteraction } from './types/ibase'
+import { GenericInteraction, InteractionLocationGuild } from './types/ibase'
 import { MessageComponent } from './types/icomponent'
-import { ComponentType, InteractionCallbackType } from './types/iconst'
+import { ComponentType, InteractionCallbackType, InteractionComponentFlag } from './types/iconst'
 
 export default class CordoAPI {
 
   public static interactionCallback(i: GenericInteraction, type: number, data?: InteractionApplicationCommandCallbackData) {
-    CordoAPI.normaliseData(data, i.guildData)
+    CordoAPI.normaliseData(data, i)
 
     if (!i._answered) {
       i._answered = true
@@ -44,10 +44,10 @@ export default class CordoAPI {
   /**
    * Transforms the shorthand way of writing into proper discord api compatible objects
    */
-  private static normaliseData(data?: InteractionApplicationCommandCallbackData, guild?: GuildData) {
+  private static normaliseData(data: InteractionApplicationCommandCallbackData, i: GenericInteraction) {
     if (!data) return
     // explicitly not using this. in this function due to unwanted side-effects in lambda functions
-    Cordo._data.middlewares.interactionCallback.forEach(f => f(data, guild))
+    Cordo._data.middlewares.interactionCallback.forEach(f => f(data, i.guildData))
 
     if (!data.content)
       data.content = ''
@@ -69,6 +69,20 @@ export default class CordoAPI {
       const rows: MessageComponent[][] = []
       let newlineFlag = true
       for (const comp of data.components) {
+        if (comp.type !== ComponentType.LINE_BREAK && comp.flags?.length && !!(comp as any).custom_id) {
+          (comp as any).custom_id += `-${comp.flags.join('')}`
+          if (!!(i as InteractionLocationGuild).member && !comp.flags.includes(InteractionComponentFlag.ACCESS_EVERYONE)) {
+            const perms = BigInt((i as InteractionLocationGuild).member.permissions)
+            if (comp.flags.includes(InteractionComponentFlag.ACCESS_ADMIN) && !PermissionStrings.containsAdmin(perms))
+              comp.disabled = true
+            else if (comp.flags.includes(InteractionComponentFlag.ACCESS_MANAGE_SERVER) && !PermissionStrings.containsManageServer(perms))
+              comp.disabled = true
+            else if (comp.flags.includes(InteractionComponentFlag.ACCESS_MANAGE_MESSAGES) && !PermissionStrings.containsManageMessages(perms))
+              comp.disabled = true
+          }
+          delete comp.flags
+        }
+
         switch (comp.type) {
           case ComponentType.LINE_BREAK: {
             if (rows[rows.length - 1].length)
