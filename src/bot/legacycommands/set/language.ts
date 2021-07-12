@@ -53,7 +53,7 @@ export default class SetLanguageHandler implements CommandHandler, SettingsSubco
     }
 
     const langid = LanguageManager.languageToId(lang)
-    Core.databaseManager.changeSetting(mes.guild, g, 'language', langid)
+    Core.databaseManager.changeSetting(g, 'language', langid)
 
     reply(
       LanguageManager.getRaw(lang, 'cmd_set_language_success_1'),

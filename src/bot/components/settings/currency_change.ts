@@ -13,7 +13,6 @@ export default async function (i: ReplyableComponentInteraction) {
 
   const currency = Const.currencies[parseInt(val) || 0]
 
-  const guild = await Core.guilds.fetch(i.guild_id)
-  await Core.databaseManager.changeSetting(guild, i.guildData, 'currency', currency)
+  await Core.databaseManager.changeSetting(i.guildData, 'currency', currency)
   i.state('settings_display')
 }

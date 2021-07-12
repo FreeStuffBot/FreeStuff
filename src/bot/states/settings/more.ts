@@ -2,9 +2,12 @@ import Emojis from '../../emojis'
 import { GenericInteraction } from '../../../cordo/types/ibase'
 import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../cordo/types/iconst'
 import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
+import Tracker from '../../tracker'
 
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
+  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_MORE')
+
   return {
     title: 'More',
     description: 'bla bla bla\nfor help join here or something lmao: https://discord.gg/WrnKKF8\nprivacy policy, terms of service, etc',
@@ -21,7 +24,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_mydata',
         label: 'View Server Data',
-        flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
+        flags: [ InteractionComponentFlag.ACCESS_EVERYONE, InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
         type: ComponentType.BUTTON,

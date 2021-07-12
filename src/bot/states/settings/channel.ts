@@ -4,6 +4,7 @@ import { GenericInteraction } from '../../../cordo/types/ibase'
 import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../cordo/types/iconst'
 import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
 import Emojis from '../../emojis'
+import Tracker from '../../tracker'
 
 
 const recommendedChannelRegex = /free|game|gaming|deal/i
@@ -17,8 +18,8 @@ function isRecommended(i: GenericInteraction, c: GuildChannel) {
 }
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
-  if (!i.guildData)
-    return { title: 'An error occured' }
+  if (!i.guildData) return { title: 'An error occured' }
+  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
 
   let channelsFound = Core.guilds.resolve(i.guild_id).channels.cache
     .array()

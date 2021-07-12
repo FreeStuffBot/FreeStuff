@@ -1,5 +1,6 @@
 import Const from '../const'
 import { ReplyableCommandInteraction } from '../../cordo/types/ibase'
+import Tracker from '../tracker'
 
 
 export default function (i: ReplyableCommandInteraction) {
@@ -19,6 +20,7 @@ export default function (i: ReplyableCommandInteraction) {
   // if (!freeLonger.length && !freeToday.length) replyText = Core.text(data, '=cmd_free_no_freebies')
 
   const replyText = 'test :)'
+  Tracker.set(i.guildData, 'PAGE_DISCOVERED_FREE_GAMES_LIST')
 
   i.reply({
     title: '=cmd_free_title',

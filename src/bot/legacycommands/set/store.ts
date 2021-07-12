@@ -52,7 +52,7 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
     if (args[1] && args[1].toLocaleLowerCase().startsWith('bundle')) cutoff += ' ' + args.splice(1, 1)[0]
 
     if ([ 'all', 'everything' ].includes(storeName)) {
-      Core.databaseManager.changeSetting(mes.guild, g, 'platforms', 0b11111111111111111111111)
+      Core.databaseManager.changeSetting(g, 'platforms', 0b11111111111111111111111)
       reply(
         Core.text(g, '=cmd_set_store_success_all_1'),
         Core.text(g, '=cmd_set_store_success_all_2')
@@ -61,7 +61,7 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
     }
 
     if ([ 'none', 'no' ].includes(storeName)) {
-      Core.databaseManager.changeSetting(mes.guild, g, 'platforms', 0)
+      Core.databaseManager.changeSetting(g, 'platforms', 0)
       reply(
         Core.text(g, '=cmd_set_store_success_none_1'),
         Core.text(g, '=cmd_set_store_success_none_2')
@@ -96,19 +96,19 @@ export default class SetStoreHandler implements CommandHandler, SettingsSubcomma
     }
 
     if ([ 'on', 'true', '1', 'enable' ].includes(args[1].toLowerCase())) {
-      Core.databaseManager.changeSetting(mes.guild, g, 'platforms', g.platformsRaw | platform.bit)
+      Core.databaseManager.changeSetting(g, 'platforms', g.platformsRaw | platform.bit)
       reply(
         Core.text(g, '=cmd_set_store_success_on_1', { icon: platform.emoji.string, name: platform.name }),
         Core.text(g, '=cmd_set_store_success_on_2', { icon: platform.emoji.string, name: platform.name })
       )
     } else if ([ 'off', 'false', '0', 'disable' ].includes(args[1].toLowerCase())) {
-      Core.databaseManager.changeSetting(mes.guild, g, 'platforms', g.platformsRaw & ~platform.bit)
+      Core.databaseManager.changeSetting(g, 'platforms', g.platformsRaw & ~platform.bit)
       reply(
         Core.text(g, '=cmd_set_store_success_off_1', { icon: platform.emoji.string, name: platform.name }),
         Core.text(g, '=cmd_set_store_success_off_2', { icon: platform.emoji.string, name: platform.name })
       )
     } else if ([ 'only', 'single', 'just' ].includes(args[1].toLowerCase())) {
-      Core.databaseManager.changeSetting(mes.guild, g, 'platforms', platform.bit)
+      Core.databaseManager.changeSetting(g, 'platforms', platform.bit)
       reply(
         Core.text(g, '=cmd_set_store_success_only_1', { icon: platform.emoji.string, name: platform.name }),
         Core.text(g, '=cmd_set_store_success_only_2', { icon: platform.emoji.string, name: platform.name })

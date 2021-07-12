@@ -5,13 +5,14 @@ import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/
 import Emojis from '../../emojis'
 import { Core } from '../../../index'
 import { MessageComponentSelectOption } from '../../../cordo/types/icomponent'
+import Tracker from '../../tracker'
 
 
 const recommendedRoleRegex = /free|game|deal|ping|notification/i
 
 export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
-  if (!i.guildData)
-    return { title: 'An error occured' }
+  if (!i.guildData) return { title: 'An error occured' }
+  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_ROLE')
 
   const member = await Core.guilds.resolve(i.guild_id).members.fetch(Core.user)
   const permissions: Permissions = i.guildData.channelInstance

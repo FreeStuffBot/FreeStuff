@@ -4,9 +4,13 @@ import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../c
 import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
 import { MessageComponentSelectOption } from '../../../cordo/types/icomponent'
 import Const from '../../const'
+import Tracker from '../../tracker'
 
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
+  if (!i.guildData) return { title: 'An error occured' }
+  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_DISPLAY')
+
   const themeOptions: MessageComponentSelectOption[] = Const.themes.map(t => ({
     value: t.id + '',
     label: t.name,

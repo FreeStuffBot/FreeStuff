@@ -5,9 +5,13 @@ import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/
 import { MessageComponentSelectOption } from '../../../cordo/types/icomponent'
 import Const from '../../const'
 import { Core } from '../../../index'
+import Tracker from '../../tracker'
 
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
+  if (!i.guildData) return { title: 'An error occured' }
+  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_FILTER')
+
   const platformOptions: MessageComponentSelectOption[] = Const.platforms.map(p => ({
     value: p.id + '',
     label: p.name,

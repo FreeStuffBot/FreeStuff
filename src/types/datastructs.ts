@@ -44,6 +44,7 @@ export interface DatabaseGuildData {
   role: Long | null
   settings: number
   filter: number
+  tracker: number
 }
 
 

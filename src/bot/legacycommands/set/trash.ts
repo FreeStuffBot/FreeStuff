@@ -24,14 +24,14 @@ export default class SetTrashHandler implements CommandHandler, SettingsSubcomma
     }
     if ([ 'on', 'true', '1', 'yes' ].includes(args[0].toLowerCase())) {
       if (!g.trashGames)
-        Core.databaseManager.changeSetting(mes.guild, g, 'trash', true)
+        Core.databaseManager.changeSetting(g, 'trash', true)
       reply(
         Core.text(g, '=cmd_set_trash_success_on_1'),
         Core.text(g, '=cmd_set_trash_success_on_2')
       )
     } else if ([ 'off', 'false', '0', 'no' ].includes(args[0].toLowerCase())) {
       if (g.trashGames)
-        Core.databaseManager.changeSetting(mes.guild, g, 'trash', false)
+        Core.databaseManager.changeSetting(g, 'trash', false)
       reply(
         Core.text(g, '=cmd_set_trash_success_off_1'),
         Core.text(g, '=cmd_set_trash_success_off_2')

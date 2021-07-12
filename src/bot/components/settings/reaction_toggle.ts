@@ -7,7 +7,6 @@ export default async function (i: ReplyableComponentInteraction) {
   if (i.member && !PermissionStrings.containsManageServer(i.member.permissions))
     return i.ack()
 
-  const guild = await Core.guilds.fetch(i.guild_id)
-  await Core.databaseManager.changeSetting(guild, i.guildData, 'react', !i.guildData.react)
+  await Core.databaseManager.changeSetting(i.guildData, 'react', !i.guildData.react)
   i.state('settings_display')
 }

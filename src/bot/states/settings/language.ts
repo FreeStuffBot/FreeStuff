@@ -3,6 +3,7 @@ import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../c
 import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
 import Emojis from '../../emojis'
 import LanguageManager from '../../language-manager'
+import Tracker from '../../tracker'
 
 
 function buildDescriptionForLanguage(lang: { id: string, nameEn: string }): string {
@@ -18,8 +19,8 @@ function buildDescriptionForLanguage(lang: { id: string, nameEn: string }): stri
 }
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
-  if (!i.guildData)
-    return { title: 'An error occured' }
+  if (!i.guildData) return { title: 'An error occured' }
+  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
 
   const options = LanguageManager
     .getAllLanguages()

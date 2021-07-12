@@ -64,7 +64,7 @@ export default class SetChannelHandler implements CommandHandler, SettingsSubcom
         'https://media.discordapp.net/attachments/672907465670787083/690942039218454558/unknown.png'
       )
     } else {
-      Core.databaseManager.changeSetting(mes.guild, g, 'channel', channel.id)
+      Core.databaseManager.changeSetting(g, 'channel', channel.id)
       reply(
         Core.text(g, '=cmd_set_channel_success_1'),
         Core.text(g, '=cmd_set_channel_success_2', { channel: channel.toString() })

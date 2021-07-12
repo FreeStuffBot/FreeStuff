@@ -26,14 +26,14 @@ export default class BetaCommand extends Command {
     }
     if ([ 'on', 'true', '1', 'yes', 'enable' ].includes(args[0].toLowerCase())) {
       if (!g.beta)
-        Core.databaseManager.changeSetting(mes.guild, g, 'beta', true)
+        Core.databaseManager.changeSetting(g, 'beta', true)
       reply(
         Core.text(g, '=cmd_beta_opt_in_1'),
         Core.text(g, '=cmd_beta_opt_in_2')
       )
     } else if ([ 'off', 'false', '0', 'no', 'disable' ].includes(args[0].toLowerCase())) {
       if (g.beta)
-        Core.databaseManager.changeSetting(mes.guild, g, 'beta', false)
+        Core.databaseManager.changeSetting(g, 'beta', false)
       reply(
         Core.text(g, '=cmd_beta_opt_out_1'),
         Core.text(g, '=cmd_beta_opt_out_2')

@@ -13,6 +13,7 @@ export type GuildSetting = 'channel'
   | 'role' | 'theme'| 'currency'
   | 'react' | 'trash' | 'price'
   | 'language' | 'platforms' | 'beta'
+  | 'tracker'
 
 
 export type StoreData = {

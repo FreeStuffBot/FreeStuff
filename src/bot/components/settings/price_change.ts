@@ -13,7 +13,6 @@ export default async function (i: ReplyableComponentInteraction) {
 
   const price = Const.priceClasses[parseInt(val) || 0]
 
-  const guild = await Core.guilds.fetch(i.guild_id)
-  await Core.databaseManager.changeSetting(guild, i.guildData, 'price', price)
+  await Core.databaseManager.changeSetting(i.guildData, 'price', price)
   i.state('settings_filter')
 }

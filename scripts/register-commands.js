@@ -24,12 +24,6 @@ const commands = [
     description: 'Would you like to get this bot in your own server? Run this command to find out how!'
   },
   {
-    name: 'misc',
-    description: 'Miscellaneous, unimportant commands the bot has to offer.'
-    // freestuff on the other hand would kinda imply that this command can do everything to do with freestuff which is not the case
-    // TODO hosts mydata, resend, reset, beta, here
-  },
-  {
     name: 'settings',
     description: 'Change settings for the FreeStuff Bot.'
   },

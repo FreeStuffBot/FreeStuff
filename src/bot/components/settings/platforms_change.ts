@@ -15,7 +15,6 @@ export default async function (i: ReplyableComponentInteraction) {
     .map(v => Const.platforms.find(p => p.id === v))
     .filter(p => !!p)
 
-  const guild = await Core.guilds.fetch(i.guild_id)
-  await Core.databaseManager.changeSetting(guild, i.guildData, 'platforms', platforms)
+  await Core.databaseManager.changeSetting(i.guildData, 'platforms', platforms)
   i.state('settings_filter')
 }

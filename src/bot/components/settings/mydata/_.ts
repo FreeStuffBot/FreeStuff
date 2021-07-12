@@ -2,10 +2,13 @@ import { Core } from '../../../../index'
 import Const from '../../../const'
 import { ReplyableComponentInteraction } from '../../../../cordo/types/ibase'
 import guildDataToViewString from '../../../../lib/guilddata-visualizer'
-import { ButtonStyle, ComponentType } from '../../../../cordo/types/iconst'
+import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../../cordo/types/iconst'
+import Tracker from '../../../tracker'
 
 
 export default function (i: ReplyableComponentInteraction) {
+  Tracker.set(i.guildData, 'ACTION_DATA_REQUESTED')
+
   const errormsg = Core.text(i.guildData, '=cmd_mydata_display_error', { invite: Const.links.supportInvite })
   const guilddata = guildDataToViewString(i.guildData, 2000, errormsg)
   const raw = {
@@ -14,7 +17,8 @@ export default function (i: ReplyableComponentInteraction) {
     channel: i.guildData.channel,
     role: i.guildData.role,
     price: i.guildData.price,
-    settings: i.guildData.settings
+    settings: i.guildData.settings,
+    tracker: i.guildData.tracker
   }
 
   // TODO only show guild data if the user has manage guild permissions
@@ -29,7 +33,11 @@ export default function (i: ReplyableComponentInteraction) {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         label: 'Delete Guild Data',
-        custom_id: 'settings_mydata_delete'
+        custom_id: 'settings_mydata_delete',
+        flags: [
+          // because this is a reply to a bot message the interaction owner is now the bot itself no longer the user. Since this is ephemeral anyway it doesn't matter tho
+          InteractionComponentFlag.ACCESS_EVERYONE
+        ]
       },
       {
         type: ComponentType.BUTTON,

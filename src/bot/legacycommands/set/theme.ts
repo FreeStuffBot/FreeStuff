@@ -25,7 +25,7 @@ export default class SetThemeHandler implements CommandHandler, SettingsSubcomma
       return false
     }
     if ([ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10' ].includes(args[0])) {
-      Core.databaseManager.changeSetting(mes.guild, g, 'theme', parseInt(args[0], 10) - 1)
+      Core.databaseManager.changeSetting(g, 'theme', parseInt(args[0], 10) - 1)
       reply(
         Core.text(g, '=cmd_set_theme_success_1'),
         Core.text(g, '=cmd_set_theme_success_2')

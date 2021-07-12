@@ -14,7 +14,6 @@ export default async function (i: ReplyableComponentInteraction) {
   const id = LanguageManager.languageToId(val)
   if (id === -1) return i.ack()
 
-  const guild = await Core.guilds.fetch(i.guild_id)
-  await Core.databaseManager.changeSetting(guild, i.guildData, 'language', id)
+  await Core.databaseManager.changeSetting(i.guildData, 'language', id)
   i.state('settings_language')
 }

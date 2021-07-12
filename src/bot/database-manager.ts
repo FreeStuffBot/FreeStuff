@@ -122,7 +122,8 @@ export default class DatabaseManager {
       channel: null,
       role: null,
       settings,
-      filter
+      filter,
+      tracker: 0
     }
     Database
       .collection('guilds')
@@ -238,70 +239,70 @@ export default class DatabaseManager {
 
   /**
    * Change a guild's setting
-   * @param guild guild instance
-   * @param current current guild data object
+   * @param data current guild data object
    * @param setting the setting to change
    * @param value it's new value
    */
-  public async changeSetting(guild: Guild, current: GuildData, setting: 'channel', value: string | null)
-  public async changeSetting(guild: Guild, current: GuildData, setting: 'role', value: string | null)
-  public async changeSetting(guild: Guild, current: GuildData, setting: 'price', value: PriceClass)
-  public async changeSetting(guild: Guild, current: GuildData, setting: 'theme', value: number | Theme)
-  public async changeSetting(guild: Guild, current: GuildData, setting: 'currency', value: number | Currency)
-  public async changeSetting(guild: Guild, current: GuildData, setting: 'react', value: boolean)
-  public async changeSetting(guild: Guild, current: GuildData, setting: 'trash', value: boolean)
-  public async changeSetting(guild: Guild, current: GuildData, setting: 'language', value: number)
-  public async changeSetting(guild: Guild, current: GuildData, setting: 'platforms', value: Platform[] | number)
-  public async changeSetting(guild: Guild, current: GuildData, setting: 'beta', value: boolean)
-  public async changeSetting(guild: Guild, current: GuildData, setting: GuildSetting, value: any) {
+  public async changeSetting(data: GuildData, setting: 'channel', value: string | null)
+  public async changeSetting(data: GuildData, setting: 'role', value: string | null)
+  public async changeSetting(data: GuildData, setting: 'price', value: PriceClass)
+  public async changeSetting(data: GuildData, setting: 'theme', value: number | Theme)
+  public async changeSetting(data: GuildData, setting: 'currency', value: number | Currency)
+  public async changeSetting(data: GuildData, setting: 'react', value: boolean)
+  public async changeSetting(data: GuildData, setting: 'trash', value: boolean)
+  public async changeSetting(data: GuildData, setting: 'language', value: number)
+  public async changeSetting(data: GuildData, setting: 'platforms', value: Platform[] | number)
+  public async changeSetting(data: GuildData, setting: 'beta', value: boolean)
+  public async changeSetting(data: GuildData, setting: 'tracker', value: number)
+  public async changeSetting(data: GuildData, setting: GuildSetting, value: any) {
     const out = {} as any
     let bits = 0
-    const c = current.settings
+    const c = data.settings
 
     switch (setting) {
       case 'channel':
         out.channel = value ? Long.fromString(value as string) : null
-        current.channel = out.channel
-        current.channelInstance = (value ? await Core.channels.fetch(value) : null) as TextChannel
+        data.channel = out.channel
+        data.channelInstance = (value ? await Core.channels.fetch(value) : null) as TextChannel
         break
       case 'role':
         out.role = value ? Long.fromString(value as string) : null
-        current.role = out.role
-        current.roleInstance = (value ? await guild.roles.fetch(value) : null) as Role
+        data.role = out.role
+        data.roleInstance = (value ? await (await Core.guilds.fetch(data._id.toString())).roles.fetch(value) : null) as Role
         break
       case 'price':
         bits = (value as PriceClass).id
         out.settings = Util.modifyBits(c, 2, 2, bits)
-        current.price = value as PriceClass
+        data.price = value as PriceClass
         break
       case 'theme':
         if (typeof value !== 'number')
           value = (value as Theme).id
         bits = (value as number) & 0b11111
         out.settings = Util.modifyBits(c, 0, 5, bits)
-        current.theme = Const.themes[value]
+        data.theme = Const.themes[value]
         break
       case 'currency':
         if (typeof value !== 'number')
           value = (value as Currency).id
         bits = (value as number) & 0b1111
         out.settings = Util.modifyBits(c, 5, 4, bits)
-        current.currency = Const.currencies[value]
+        data.currency = Const.currencies[value]
         break
       case 'react':
         bits = value ? 1 : 0
         out.settings = Util.modifyBits(c, 9, 1, bits)
-        current.react = !!value
+        data.react = !!value
         break
       case 'trash':
         bits = value ? 1 : 0
         out.filter = Util.modifyBits(c, 0, 1, bits)
-        current.trashGames = !!value
+        data.trashGames = !!value
         break
       case 'language':
         bits = (value as number) & 0b111111
         out.settings = Util.modifyBits(c, 10, 6, bits)
-        current.language = LanguageManager.languageById(value)
+        data.language = LanguageManager.languageById(value)
         break
       case 'platforms':
         if (typeof value === 'number') {
@@ -311,19 +312,23 @@ export default class DatabaseManager {
             bits ^= platform.bit
         }
         out.filter = Util.modifyBits(c, 4, 8, bits)
-        current.platformsRaw = bits
-        current.platformsList = this.platformsRawToList(bits)
+        data.platformsRaw = bits
+        data.platformsList = this.platformsRawToList(bits)
         break
       case 'beta':
         bits = value ? 1 : 0
         out.settings = Util.modifyBits(c, 30, 1, bits)
-        current.beta = !!value
+        data.beta = !!value
+        break
+      case 'tracker':
+        out.tracker = value
+        data.tracker = value
         break
     }
 
     await Database
       .collection('guilds')
-      ?.updateOne({ _id: Long.fromString(guild.id) }, { $set: out })
+      ?.updateOne({ _id: data._id }, { $set: out })
   }
 
   // settings: (do not use bit 31, causes unwanted effects with negative number conversion)

@@ -13,7 +13,6 @@ export default async function (i: ReplyableComponentInteraction) {
 
   const theme = Const.themes[parseInt(val) || 0]
 
-  const guild = await Core.guilds.fetch(i.guild_id)
-  await Core.databaseManager.changeSetting(guild, i.guildData, 'theme', theme)
+  await Core.databaseManager.changeSetting(i.guildData, 'theme', theme)
   i.state('settings_display')
 }
