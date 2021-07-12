@@ -21,7 +21,7 @@ function buildDescriptionForLanguage(lang: { id: string, nameEn: string }, allow
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
   if (!i.guildData) return { title: 'An error occured' }
   const firstTimeOnPage = !Tracker.isTracked(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
-  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
+  if (firstTimeOnPage) Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
 
   const options = LanguageManager
     .getAllLanguages()
