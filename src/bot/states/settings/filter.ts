@@ -23,10 +23,10 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   const priceOptions: MessageComponentSelectOption[] = Const.priceClasses.map(c => ({
     value: c.id + '',
     label: c.name,
-    description: Core.text(i.guildData, 'Only games worth {price} or more before the discount', {
+    description: Core.text(i.guildData, 'Only send games worth {price} or more', {
       price: (Core.text(i.guildData, '=currency_sign_position') === 'before')
         ? `${i.guildData.currency.symbol}${c.from}`
-        : `${c.from} ${i.guildData.currency.symbol}`
+        : `${c.from}${i.guildData.currency.symbol}`
     }),
     default: i.guildData?.price.id === c.id
   }))

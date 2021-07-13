@@ -4,17 +4,24 @@ import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../.
 import Emojis from '../../../emojis'
 
 
+export const onGuildDataDeleteCooldown: string[] = []
+
 export default function (i: ReplyableComponentInteraction) {
   // TODO if user is not admin show them they can't do that
   const isAdmin = i.member && PermissionStrings.containsAdmin(i.member.permissions)
+  const onCooldown = onGuildDataDeleteCooldown.includes(i.guild_id)
 
   i.edit({
     title: isAdmin
       ? 'Are you sure?'
-      : 'Only an admin can do this',
+      : onCooldown
+        ? 'Slow down!'
+        : 'Only an admin can do this',
     description: isAdmin
       ? 'Once you click the button below there is no going back?'
-      : 'Please ask someone else if you really really wanna do this.',
+      : onCooldown
+        ? 'Looks like someone already deleted this server\'s data in the past 12h. Please try again later!'
+        : 'Please ask someone else if you really really wanna do this.',
     components: [
       {
         type: ComponentType.BUTTON,

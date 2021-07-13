@@ -37,5 +37,7 @@ export enum InteractionComponentFlag {
   ACCESS_PRIVATE = 'p',
   ACCESS_ADMIN = 'a',
   ACCESS_MANAGE_SERVER = 's',
-  ACCESS_MANAGE_MESSAGES = 'm'
+  ACCESS_MANAGE_MESSAGES = 'm',
+  ACCESS_BOT_ADMIN = 'x',
+  HIDE_IF_NOT_ALLOWED = 'h'
 }

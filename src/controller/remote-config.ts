@@ -25,4 +25,8 @@ export default class RemoteConfig {
     return this.get().excessive_logging ?? false
   }
 
+  public static get botAdmins(): string[] {
+    return this.get().bot_admins ?? []
+  }
+
 }

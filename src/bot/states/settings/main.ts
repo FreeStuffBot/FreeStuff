@@ -1,7 +1,7 @@
 import { Core } from '../../../index'
 import Emojis from '../../emojis'
 import { GenericInteraction } from '../../../cordo/types/ibase'
-import { ButtonStyle, ComponentType } from '../../../cordo/types/iconst'
+import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../cordo/types/iconst'
 import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
 import Tracker from '../../tracker'
 
@@ -55,6 +55,16 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_MORE') ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_more',
         label: 'More'
+      },
+      {
+        type: ComponentType.BUTTON,
+        style: ButtonStyle.SECONDARY,
+        custom_id: 'admin_main',
+        emoji: { name: '✨' },
+        flags: [
+          InteractionComponentFlag.ACCESS_BOT_ADMIN,
+          InteractionComponentFlag.HIDE_IF_NOT_ALLOWED
+        ]
       }
     ]
   }

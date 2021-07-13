@@ -2,6 +2,7 @@ import axios from 'axios'
 import Logger from '../lib/logger'
 import { config } from '../index'
 import PermissionStrings from '../lib/permission-strings'
+import RemoteConfig from '../controller/remote-config'
 import Cordo from './cordo'
 import { InteractionApplicationCommandCallbackData } from './types/custom'
 import { GenericInteraction, InteractionLocationGuild } from './types/ibase'
@@ -73,12 +74,19 @@ export default class CordoAPI {
           (comp as any).custom_id += `-${comp.flags.join('')}`
           if (!!(i as InteractionLocationGuild).member && !comp.flags.includes(InteractionComponentFlag.ACCESS_EVERYONE)) {
             const perms = BigInt((i as InteractionLocationGuild).member.permissions)
-            if (comp.flags.includes(InteractionComponentFlag.ACCESS_ADMIN) && !PermissionStrings.containsAdmin(perms))
-              comp.disabled = true
-            else if (comp.flags.includes(InteractionComponentFlag.ACCESS_MANAGE_SERVER) && !PermissionStrings.containsManageServer(perms))
-              comp.disabled = true
-            else if (comp.flags.includes(InteractionComponentFlag.ACCESS_MANAGE_MESSAGES) && !PermissionStrings.containsManageMessages(perms))
-              comp.disabled = true
+            if (comp.flags.includes(InteractionComponentFlag.ACCESS_ADMIN) && !PermissionStrings.containsAdmin(perms)) {
+              if (comp.flags.includes(InteractionComponentFlag.HIDE_IF_NOT_ALLOWED)) comp.type = null
+              else comp.disabled = true
+            } else if (comp.flags.includes(InteractionComponentFlag.ACCESS_MANAGE_SERVER) && !PermissionStrings.containsManageServer(perms)) {
+              if (comp.flags.includes(InteractionComponentFlag.HIDE_IF_NOT_ALLOWED)) comp.type = null
+              else comp.disabled = true
+            } else if (comp.flags.includes(InteractionComponentFlag.ACCESS_MANAGE_MESSAGES) && !PermissionStrings.containsManageMessages(perms)) {
+              if (comp.flags.includes(InteractionComponentFlag.HIDE_IF_NOT_ALLOWED)) comp.type = null
+              else comp.disabled = true
+            } else if (comp.flags.includes(InteractionComponentFlag.ACCESS_BOT_ADMIN) && !RemoteConfig.botAdmins.includes(i.user?.id || i.member.user.id)) {
+              if (comp.flags.includes(InteractionComponentFlag.HIDE_IF_NOT_ALLOWED)) comp.type = null
+              else comp.disabled = true
+            }
           }
           delete comp.flags
         }
