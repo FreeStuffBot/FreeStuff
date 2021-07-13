@@ -69,14 +69,6 @@ export default class CheckCommand extends Command {
       )
       return true
     }
-    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('USE_EXTERNAL_EMOJIS')
-        && Const.themesWithExtemotes[g.theme.id]) {
-      repl(
-        Core.text(g, '=cmd_check_extemotes_1'),
-        Core.text(g, '=cmd_check_extemotes_2')
-      )
-      return true
-    }
 
     repl(
       Core.text(g, '=cmd_check_success_1'),

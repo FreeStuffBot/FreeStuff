@@ -31,7 +31,6 @@ export default class Const {
   }
 
   public static readonly themesWithEmbeds = [ 0, 1, 2, 3, 4, 5 ];
-  public static readonly themesWithExtemotes = { 0: 1, 2: 3 };
 
   public static readonly embedDefaultColor = 0x2F3136
 

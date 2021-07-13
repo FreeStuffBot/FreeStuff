@@ -154,10 +154,6 @@ export default class MessageDistributor {
       Logger.excessive(`Guild ${g._id} return: no EMBED_LINKS`)
       return []
     }
-    if (!permissions.has('USE_EXTERNAL_EMOJIS') && Const.themesWithExtemotes[data.theme.id]) {
-      Logger.excessive(`Guild ${g._id} return: no USE_EXTERNAL_EMOJIS`)
-      data.theme = Const.themesWithExtemotes[data.theme.id]
-    }
 
     // build message objects
     let messageContents = content.map((game, index) => MessageDistributor.buildMessage(game, data, test, !!index))
