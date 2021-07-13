@@ -47,13 +47,13 @@ export default class LanguageManager {
 
   public static getRaw(language: string, key: string, fallback = true): string {
     if (!LanguageManager.list.length) return key
-    if (!fallback) return LanguageManager.getText(language, key)
-    if (!language || !LanguageManager.texts[language]) return LanguageManager.getText(LanguageManager.idmap[0], key)
+    if (!fallback) return LanguageManager.getText(language, key) || key
+    if (!language || !LanguageManager.texts[language]) return LanguageManager.getText(LanguageManager.idmap[0], key) || key
     return LanguageManager.getText(language, key) || LanguageManager.getText(LanguageManager.idmap[0], key) || key
   }
 
   private static getText(language: string, key: string): string {
-    return LanguageManager.texts[language]?.[key] || key
+    return LanguageManager.texts[language]?.[key]
   }
 
   public static existsLanguageById(id: number | string): boolean {

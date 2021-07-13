@@ -64,6 +64,12 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         label: i.guildData?.trashGames ? 'Bad Quality Games Enabled' : 'Enable Bad Quality Games',
         emoji: { name: '🗑️' },
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
+      },
+      {
+        type: ComponentType.BUTTON,
+        style: ButtonStyle.LINK,
+        url: Const.links.guide,
+        label: 'Help'
       }
     ]
   }

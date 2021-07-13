@@ -16,8 +16,8 @@ import Const from './const'
 
 export default class DatabaseManager {
 
-  private static cacheBucketF: Map<string, GuildData> = new Map()
-  private static cacheBucketT: Map<string, GuildData> = new Map()
+  private static cacheBucketF: Map<string, GuildData> = new Map() // active bucket if cacheCurrentBucket === False
+  private static cacheBucketT: Map<string, GuildData> = new Map() // active bucket if cacheCurrentBucket === True
   private static cacheCurrentBucket: boolean = false
 
   public constructor(bot: FreeStuffBot) {
@@ -76,21 +76,32 @@ export default class DatabaseManager {
       }, 1000 * 60 * 30)
     }).start()
 
-    setTimeout(() => {
-      // only flip if the active bucket holds over 20 items
-      if (DatabaseManager.cacheCurrentBucket
-        && DatabaseManager.cacheBucketT.size < 20) return
-      else if (DatabaseManager.cacheBucketF.size < 20) return
-
-      // now do the flip
+    setInterval(() => {
+      // do the flip
       DatabaseManager.cacheCurrentBucket = !DatabaseManager.cacheCurrentBucket
 
-      // clear the new bucket
-      if (DatabaseManager.cacheCurrentBucket)
+      // clear the new bucket and save changes in the old one
+      if (DatabaseManager.cacheCurrentBucket) {
         DatabaseManager.cacheBucketT = new Map()
-      else
+        for (const obj of DatabaseManager.cacheBucketF.values())
+          this.saveQueuedChanges(obj)
+      } else {
         DatabaseManager.cacheBucketF = new Map()
+        for (const obj of DatabaseManager.cacheBucketT.values())
+          this.saveQueuedChanges(obj)
+      }
     }, 10e3)
+  }
+
+  private async saveQueuedChanges(data: GuildData) {
+    if (!(data as any)._changes) return
+    await Database
+      .collection('guilds')
+      .updateOne(
+        { _id: data._id },
+        { $set: (data as any)._changes }
+      )
+    delete (data as any)._changes
   }
 
   /**
@@ -326,9 +337,13 @@ export default class DatabaseManager {
         break
     }
 
-    await Database
-      .collection('guilds')
-      ?.updateOne({ _id: data._id }, { $set: out })
+    // await Database
+    //   .collection('guilds')
+    //   ?.updateOne({ _id: data._id }, { $set: out })
+    (data as any)._changes = {
+      ...((data as any)._changes || {}),
+      ...out
+    }
   }
 
   // settings: (do not use bit 31, causes unwanted effects with negative number conversion)

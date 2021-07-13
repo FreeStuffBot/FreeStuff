@@ -1,3 +1,4 @@
+import { MessageEmbed } from 'discord.js'
 import Emojis from '../../emojis'
 import { GenericInteraction } from '../../../cordo/types/ibase'
 import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../cordo/types/iconst'
@@ -5,6 +6,7 @@ import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/
 import { MessageComponentSelectOption } from '../../../cordo/types/icomponent'
 import Const from '../../const'
 import Tracker from '../../tracker'
+import MessageDistributor from '../../message-distributor'
 
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
@@ -15,22 +17,28 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     value: t.id + '',
     label: t.name,
     description: t.description,
-    default: i.guildData?.theme.id === t.id,
+    default: i.guildData.theme.id === t.id,
     emoji: { name: t.emoji }
   }))
 
   const currencyOptions: MessageComponentSelectOption[] = Const.currencies.map(c => ({
     value: c.id + '',
     label: `${c.symbol} ${c.name}`,
-    default: i.guildData?.currency.id === c.id
+    default: i.guildData.currency.id === c.id
   }))
 
-  // TODO: make the actual embed here be a test message with those settings applied
-  // second embed below that one with just a description: for more info click here -> fsb.xyz/guide
+  const message = MessageDistributor.buildMessage(Const.testAnnouncementContent, i.guildData, true, true)
+  const embeds: MessageEmbed[] = []
+  if (message[1].embed) embeds.push(message[1].embed as MessageEmbed)
+
+  // embeds.push({
+  //   description: 'hiii',
+  //   color: Const.embedDefaultColor
+  // } as MessageEmbed)
 
   return {
-    title: 'Display Settings',
-    description: 'bla bla bla\nfor help join here or something lmao: https://discord.gg/WrnKKF8',
+    content: message[0],
+    embeds,
     components: [
       {
         type: ComponentType.SELECT,
@@ -42,6 +50,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         type: ComponentType.SELECT,
         custom_id: 'settings_currency_change',
         options: currencyOptions,
+        disabled: !i.guildData.theme.toggleCurrencies,
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
@@ -53,11 +62,17 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       },
       {
         type: ComponentType.BUTTON,
-        style: i.guildData?.react ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
+        style: i.guildData.react ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
         custom_id: 'settings_reaction_toggle',
-        label: i.guildData?.react ? 'Auto Reaction Enabled' : 'Enable Auto Reaction',
+        label: i.guildData.react ? 'Auto Reaction Enabled' : 'Enable Auto Reaction',
         emoji: { name: '🆓' },
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
+      },
+      {
+        type: ComponentType.BUTTON,
+        style: ButtonStyle.LINK,
+        url: Const.links.guide,
+        label: 'Help'
       }
     ]
   }

@@ -35,6 +35,7 @@ export type Theme = {
   description: string
   emoji: string
   builder: ThemeBuilder
+  toggleCurrencies: boolean
 }
 
 

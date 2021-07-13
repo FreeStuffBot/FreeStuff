@@ -1,3 +1,4 @@
+import { GameInfo } from 'freestuff'
 import { Currency, PriceClass, Platform, Theme } from '../types/context'
 import ThemeOne from './themes/1'
 import ThemeTwo from './themes/2'
@@ -27,12 +28,15 @@ export default class Const {
     privacy: 'https://freestuffbot.xyz/privacy',
     terms: 'https://freestuffbot.xyz/terms',
     testgame: 'https://freestuffbot.xyz/testgame',
+    guide: 'https://freestuffbot.xyz/guide',
     themes: 'https://freestuffbot.xyz/themes'
   }
 
   public static readonly themesWithEmbeds = [ 0, 1, 2, 3, 4, 5 ];
 
   public static readonly embedDefaultColor = 0x2F3136
+
+  public static readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/830794212894572574/thumbnail_placeholder.png'
 
   public static readonly storeIcons = {
     steam: 'https://media.discordapp.net/attachments/672907465670787083/820258285566820402/steam.png',
@@ -72,70 +76,80 @@ export default class Const {
       name: '=theme_one_name',
       description: '=theme_one_desc',
       emoji: '1️⃣',
-      builder: new ThemeOne()
+      builder: new ThemeOne(),
+      toggleCurrencies: true
     },
     {
       id: 1,
       name: '=theme_two_name',
       description: '=theme_two_desc',
       emoji: '2️⃣',
-      builder: new ThemeTwo()
+      builder: new ThemeTwo(),
+      toggleCurrencies: true
     },
     {
       id: 2,
       name: '=theme_three_name',
       description: '=theme_three_desc',
       emoji: '3️⃣',
-      builder: new ThemeThree()
+      builder: new ThemeThree(),
+      toggleCurrencies: true
     },
     {
       id: 3,
       name: '=theme_four_name',
       description: '=theme_four_desc',
       emoji: '4️⃣',
-      builder: new ThemeFour()
+      builder: new ThemeFour(),
+      toggleCurrencies: true
     },
     {
       id: 4,
       name: '=theme_five_name',
       description: '=theme_five_desc',
       emoji: '5️⃣',
-      builder: new ThemeFive()
+      builder: new ThemeFive(),
+      toggleCurrencies: false
     },
     {
       id: 5,
       name: '=theme_six_name',
       description: '=theme_six_desc',
       emoji: '6️⃣',
-      builder: new ThemeSix()
+      builder: new ThemeSix(),
+      toggleCurrencies: false
     },
     {
       id: 6,
       name: '=theme_seven_name',
       description: '=theme_seven_desc',
       emoji: '7️⃣',
-      builder: new ThemeSeven()
+      builder: new ThemeSeven(),
+      toggleCurrencies: false
     },
     {
       id: 7,
       name: '=theme_eight_name',
       description: '=theme_eight_desc',
       emoji: '8️⃣',
-      builder: new ThemeEight()
+      builder: new ThemeEight(),
+      toggleCurrencies: false
     },
     {
       id: 8,
       name: '=theme_nine_name',
       description: '=theme_nine_desc',
       emoji: '9️⃣',
-      builder: new ThemeNine()
+      builder: new ThemeNine(),
+      toggleCurrencies: false
     },
     {
       id: 9,
       name: '=theme_ten_name',
       description: '=theme_ten_desc',
       emoji: '🔟',
-      builder: new ThemeTen()
+      builder: new ThemeTen(),
+      toggleCurrencies: false
     }
   ]
 
@@ -253,5 +267,40 @@ export default class Const {
   public static readonly defaultPlatforms = Const.platforms
     .filter(p => p.default)
     .reduce((val, p) => (val ^= p.bit), 0)
+
+  public static readonly testAnnouncementContent: GameInfo = {
+    id: 0,
+    title: '=cmd_test_announcement_header',
+    org_price: {
+      euro: 19.99,
+      dollar: 19.99
+    },
+    price: {
+      euro: 0,
+      dollar: 0
+    },
+    store: 'steam',
+    thumbnail: {
+      blank: Const.placeholderThumbnail,
+      full: Const.placeholderThumbnail,
+      org: Const.placeholderThumbnail,
+      tags: Const.placeholderThumbnail
+    },
+    kind: 'game',
+    description: '=cmd_test_announcement_description',
+    tags: [],
+    rating: 0.8,
+    urls: {
+      org: Const.links.testgame,
+      default: Const.links.testgame,
+      browser: Const.links.testgame
+    },
+    flags: 0,
+    until: null,
+    type: 'free',
+    store_meta: {
+      steam_subids: '12345 98760'
+    }
+  }
 
 }

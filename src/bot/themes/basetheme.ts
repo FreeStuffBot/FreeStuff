@@ -108,7 +108,7 @@ export default class BaseTheme {
 
   static generateDescription(content: GameInfo, data: GuildData, until: string, priceString: string, showDescription: boolean, showRating: boolean, showStore: boolean, divider: string, button: string) {
     return ''
-      + (showDescription ? `> ${content.description}\n\n` : '')
+      + (showDescription ? `> ${content.description.startsWith('=') ? Core.text(data, content.description) : content.description}\n\n` : '')
       + `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until}`
       + (showRating ? `${divider}${Math.round(content.rating * 20) / 2}/10 ★` : '')
       + (showStore ? `${divider}${LanguageManager.get(data, 'platform_' + content.store)}` : '')

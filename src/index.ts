@@ -85,7 +85,7 @@ function initComponents(commit: GitCommit, action: ShardAction) {
   LanguageManager.init()
 
   Cordo.findContext([ __dirname, 'bot' ])
-  Cordo.registerMiddlewareForInteractionCallback((data, guild) => LanguageManager.translateObject(data, guild, data._context, 10))
+  Cordo.registerMiddlewareForInteractionCallback((data, guild) => LanguageManager.translateObject(data, guild, data._context, 14))
 
   FSAPI = new FreeStuffApi({
     ...config.apisettings as any,

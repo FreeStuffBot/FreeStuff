@@ -15,7 +15,7 @@ export default class ThemeNine implements ThemeBuilder {
       ((data.roleInstance && !settings.disableMention) ? data.roleInstance.toString() : '')
       + ' '
       + Core.text(data, '=announcement_theme9', {
-        name: content.title,
+        name: (content.title.startsWith('=') ? Core.text(data, content.title) : content.title),
         url: (useProxyUrl ? content.urls.default : content.urls.org)
       }),
       {}

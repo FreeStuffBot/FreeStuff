@@ -11,8 +11,6 @@ import MessageDistributor from '../../bot/message-distributor'
 
 export default class TestCommand extends Command {
 
-  private readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/830794212894572574/thumbnail_placeholder.png'
-
   private testCooldown = [ ];
   private testCooldownHarsh = [ ];
 
@@ -93,10 +91,10 @@ export default class TestCommand extends Command {
         },
         store: (LanguageManager.get(g, 'platform_' + flags.store) ? flags.store as Store : '') || 'steam',
         thumbnail: {
-          blank: this.placeholderThumbnail,
-          full: this.placeholderThumbnail,
-          org: this.placeholderThumbnail,
-          tags: this.placeholderThumbnail
+          blank: Const.placeholderThumbnail,
+          full: Const.placeholderThumbnail,
+          org: Const.placeholderThumbnail,
+          tags: Const.placeholderThumbnail
         },
         kind: 'game',
         description: Core.text(g, '=cmd_test_announcement_description'),
