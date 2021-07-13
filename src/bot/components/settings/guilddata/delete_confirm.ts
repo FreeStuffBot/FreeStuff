@@ -20,8 +20,8 @@ export default async function (i: ReplyableComponentInteraction) {
   await Core.databaseManager.addGuild(guild)
 
   i.edit({
-    title: '=cmd_reset_success_1',
-    description: '=cmd_reset_success_2',
+    title: '=settings_guilddata_delete_success_1',
+    description: '=settings_guilddata_delete_success_2',
     components: []
   })
 }

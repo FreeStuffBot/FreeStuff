@@ -27,7 +27,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     default: i.guildData.currency.id === c.id
   }))
 
-  const message = MessageDistributor.buildMessage(Const.testAnnouncementContent, i.guildData, true, true)
+  const message = MessageDistributor.buildMessage(Const.testAnnouncementContent, i.guildData, true, false)
   const embeds: MessageEmbed[] = []
   if (message[1].embed) embeds.push(message[1].embed as MessageEmbed)
 
@@ -57,14 +57,14 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_main',
-        label: 'Back',
+        label: '=generic_back',
         emoji: { id: Emojis.caretLeft.id }
       },
       {
         type: ComponentType.BUTTON,
         style: i.guildData.react ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
         custom_id: 'settings_reaction_toggle',
-        label: i.guildData.react ? 'Auto Reaction Enabled' : 'Enable Auto Reaction',
+        label: i.guildData.react ? '=settings_display_reactions_on_state' : '=settings_display_reactions_on_prompt',
         emoji: { name: '🆓' },
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
@@ -72,8 +72,11 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         type: ComponentType.BUTTON,
         style: ButtonStyle.LINK,
         url: Const.links.guide,
-        label: 'Help'
+        label: '=generic_help'
       }
-    ]
+    ],
+    allowed_mentions: {
+      parse: []
+    }
   }
 }

@@ -14,28 +14,28 @@ export default function (i: ReplyableComponentInteraction) {
   i.edit({
     title: isAdmin
       ? onCooldown
-        ? 'Slow down!'
-        : 'Are you sure?'
-      : 'Only an admin can do this',
+        ? '=settings_guilddata_delete_dialogue_cooldown_1'
+        : '=settings_guilddata_delete_dialogue_confirmation_1'
+      : '=settings_guilddata_delete_dialogue_not_allowed_1',
     description: isAdmin
       ? onCooldown
-        ? 'Looks like someone already deleted this server\'s data in the past 12h. Please try again later!'
-        : 'Once you click the button below there is no going back?'
-      : 'Please ask someone else if you really really wanna do this.',
+        ? '=settings_guilddata_delete_dialogue_cooldown_2'
+        : '=settings_guilddata_delete_dialogue_confirmation_2'
+      : '=settings_guilddata_delete_dialogue_not_allowed_2',
     components: [
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
-        custom_id: 'settings_mydata_delete_cancel',
-        label: 'Cancel',
+        custom_id: 'settings_guilddata_delete_cancel',
+        label: '=generic_cancel',
         emoji: { id: Emojis.caretLeft.id },
         flags: [ InteractionComponentFlag.ACCESS_EVERYONE ]
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.DANGER,
-        label: 'Delete',
-        custom_id: 'settings_mydata_delete_confirm',
+        label: '=generic_delete',
+        custom_id: 'settings_guilddata_delete_confirm',
         disabled: !isAdmin || onCooldown,
         flags: [
           // because this is a reply to a bot message the interaction owner is now the bot itself no longer the user. Since this is ephemeral anyway it doesn't matter tho

@@ -23,23 +23,29 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   const priceOptions: MessageComponentSelectOption[] = Const.priceClasses.map(c => ({
     value: c.id + '',
     label: c.name,
-    description: Core.text(i.guildData, 'Only send games worth {price} or more', {
-      price: (Core.text(i.guildData, '=currency_sign_position') === 'before')
-        ? `${i.guildData.currency.symbol}${c.from}`
-        : `${c.from}${i.guildData.currency.symbol}`
-    }),
+    description: Core.text(
+      i.guildData,
+      c.from === 0
+        ? '=settings_filter_price_class_desc_everything'
+        : '=settings_filter_price_class_desc_generic',
+      {
+        price: (Core.text(i.guildData, '=currency_sign_position') === 'before')
+          ? `${i.guildData.currency.symbol}${c.from}`
+          : `${c.from}${i.guildData.currency.symbol}`
+      }
+    ),
     default: i.guildData?.price.id === c.id
   }))
 
   return {
-    title: 'Filter Settings',
-    description: 'bla bla bla\nfor help join here or something lmao: https://discord.gg/WrnKKF8',
+    title: '=settings_filter_ui_1',
+    description: '=settings_filter_ui_2',
     components: [
       {
         type: ComponentType.SELECT,
         custom_id: 'settings_platforms_change',
         options: platformOptions,
-        placeholder: '(All disabled)',
+        placeholder: '=settings_filter_platforms_none',
         min_values: 0,
         max_values: platformOptions.length,
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
@@ -54,14 +60,14 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_main',
-        label: 'Back',
+        label: '=generic_back',
         emoji: { id: Emojis.caretLeft.id }
       },
       {
         type: ComponentType.BUTTON,
         style: i.guildData?.trashGames ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
         custom_id: 'settings_trash_toggle',
-        label: i.guildData?.trashGames ? 'Bad Quality Games Enabled' : 'Enable Bad Quality Games',
+        label: i.guildData?.trashGames ? '=settings_filter_trash_on_state' : '=settings_filter_trash_on_prompt',
         emoji: { name: '🗑️' },
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
@@ -69,7 +75,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         type: ComponentType.BUTTON,
         style: ButtonStyle.LINK,
         url: Const.links.guide,
-        label: 'Help'
+        label: '=generic_help'
       }
     ]
   }

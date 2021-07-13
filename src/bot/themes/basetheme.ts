@@ -38,7 +38,6 @@ export default class BaseTheme {
       rawMessage,
       {
         embed: {
-        // author: { name: Core.text(data, '=announcement_header') },
           title: content.title,
           description,
           image,
@@ -73,13 +72,9 @@ export default class BaseTheme {
   }
 
   static generatePriceString(content: GameInfo, data: GuildData): string {
-    return data.currency.id === 0
-      ? LanguageManager.get(data, 'currency_sign_euro_position') === 'after'
-        ? `${content.org_price.euro} €`
-        : `€${content.org_price.euro}`
-      : LanguageManager.get(data, 'currency_sign_dollar_position') === 'after'
-        ? `${content.org_price.dollar} $`
-        : `$${content.org_price.dollar}`
+    return LanguageManager.get(data, 'currency_sign_position') === 'after'
+      ? `${content.org_price.dollar}${data.currency.symbol}`
+      : `${data.currency.symbol}${content.org_price.dollar}`
   }
 
   static generateImageObject(content: GameInfo, data: GuildData, settings: themeSettings): Object {

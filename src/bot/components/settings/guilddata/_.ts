@@ -9,7 +9,7 @@ import Tracker from '../../../tracker'
 export default function (i: ReplyableComponentInteraction) {
   Tracker.set(i.guildData, 'ACTION_DATA_REQUESTED')
 
-  const errormsg = Core.text(i.guildData, '=cmd_mydata_display_error', { invite: Const.links.supportInvite })
+  const errormsg = Core.text(i.guildData, '=settings_guilddata_display_error', { invite: Const.links.supportInvite })
   const guilddata = guildDataToViewString(i.guildData, 2000, errormsg)
   const raw = {
     _id: i.guildData._id,
@@ -26,14 +26,14 @@ export default function (i: ReplyableComponentInteraction) {
   // Always show user data (aka nothing)
 
   i.replyPrivately({
-    title: '=cmd_mydata_success_1',
+    title: '=settings_guilddata_success_1',
     description: `**What we store:**\n\`\`\`${JSON.stringify(raw)}\`\`\`\n**Human readable**:\n${guilddata}\n**About you specifically:**\nNothing :sparkles:`,
     components: [
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
-        label: 'Delete Guild Data',
-        custom_id: 'settings_mydata_delete',
+        label: '=settings_guilddata_delete_button',
+        custom_id: 'settings_guilddata_delete',
         flags: [
           // because this is a reply to a bot message the interaction owner is now the bot itself no longer the user. Since this is ephemeral anyway it doesn't matter tho
           InteractionComponentFlag.ACCESS_EVERYONE
@@ -42,7 +42,7 @@ export default function (i: ReplyableComponentInteraction) {
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.LINK,
-        label: 'Privacy Policy',
+        label: '=privacy_policy',
         url: Const.links.privacy
       }
     ]

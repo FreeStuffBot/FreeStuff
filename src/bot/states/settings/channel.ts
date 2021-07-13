@@ -55,6 +55,8 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
 
   // TODO in some absurd szenario there might be over 25 channels but then one regex kills all of them => empty array => error
 
+  const hereText = ` (${Core.text(i.guildData, '=settings_channel_list_here')})`
+
   const channels = channelsFound
     .sort((a, b) =>
       (isRecommended(i, a) ? -1000 : 0)
@@ -66,12 +68,14 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     .map((c) => {
       const p = c.permissionsFor(Core.user)
       let description = '' // (c as TextChannel).topic?.substr(0, 50) || ''
-      if (!p.has('VIEW_CHANNEL')) description = '⚠️ Missing "View Channel" Permission'
-      else if (!p.has('SEND_MESSAGES')) description = '⚠️ Missing "Send Messages" Permission'
-      else if (!p.has('EMBED_LINKS')) description = 'Missing "Embed Messages" Permission'
+      if (!p.has('VIEW_CHANNEL')) description = '⚠️ ' + Core.text(i.guildData, '=settings_channel_list_warning_missing_view_channel')
+      else if (!p.has('SEND_MESSAGES')) description = '⚠️ ' + Core.text(i.guildData, '=settings_channel_list_warning_missing_send_messages')
+      else if (!p.has('EMBED_LINKS')) description = '=settings_channel_list_warning_missing_embed_messages'
 
       return {
-        label: c.name.substr(0, 25),
+        label: (c.id === i.channel_id) && (c.name.length + hereText.length <= 25)
+          ? c.name + hereText
+          : c.name.substr(0, 25),
         value: c.id,
         default: i.guildData.channel?.toString() === c.id,
         description,
@@ -89,31 +93,36 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
 
   const options: MessageComponentSelectOption[] = [
     {
-      label: 'No channel',
+      label: '=settings_channel_list_no_channel_1',
       value: '0',
       default: !i.guildData.channel || !i.guildData.channelInstance,
-      description: 'Disable free games feed',
+      description: '=settings_channel_list_no_channel_2',
       emoji: { id: Emojis.no.id }
     },
     ...channels
   ]
 
+  let description = '=settings_channel_ui_2_regular'
+  if (youHaveTooManyChannelsStage > 2)
+    description = Core.text(i.guildData, '=settings_channel_ui_2_way_too_many') + '\n\n*' + Core.text(i.guildData, '=settings_channel_ui_too_many_channels_tip') + '*'
+  else if (youHaveTooManyChannelsStage > 0)
+    description = Core.text(i.guildData, '=settings_channel_ui_2_too_many') + '\n\n*' + Core.text(i.guildData, '=settings_channel_ui_too_many_channels_tip') + '*'
+
   return {
-    title: 'display',
-    description: `OH MY GOD, youHaveTooManyChannelsStage: ${youHaveTooManyChannelsStage}`,
+    title: '=settings_channel_ui_1',
+    description,
     components: [
       {
         type: ComponentType.SELECT,
         custom_id: 'settings_channel_change',
         options,
-        placeholder: 'Pick a channel to send games to',
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_main',
-        label: 'Back',
+        label: '=generic_back',
         emoji: { id: Emojis.caretLeft.id }
       }
     ]

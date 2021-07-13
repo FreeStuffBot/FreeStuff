@@ -4,15 +4,24 @@ import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/
 import Emojis from '../../emojis'
 import LanguageManager from '../../language-manager'
 import Tracker from '../../tracker'
+import { Core } from '../../..'
 
 
-function buildDescriptionForLanguage(lang: { id: string, nameEn: string }, allowEastereggs: boolean): string {
+function buildDescriptionForLanguage(i: GenericInteraction, lang: { id: string, nameEn: string }, allowEastereggs: boolean): string {
   const name = lang.nameEn[0].toUpperCase() + lang.nameEn.substr(1).toLowerCase()
   if (lang.id.startsWith('en')) {
-    if (lang.id.endsWith('US')) return allowEastereggs ? 'English with football fields per pizza slice' : 'English with the imperial system'
-    else return 'English with the metric system'
+    if (lang.id.endsWith('US')) {
+      return allowEastereggs
+        ? '=settings_language_list_desc_english_us_easteregg'
+        : '=settings_language_list_desc_english_us'
+    } else {
+      return '=settings_language_list_desc_english_eu'
+    }
   }
-  const out = `${name} by ${LanguageManager.getRaw(lang.id, 'translators', false)}`
+  const out = Core.text(i.guildData, '=settings_language_list_description', {
+    language: name,
+    translators: LanguageManager.getRaw(lang.id, 'translators', false)
+  })
   return (out.length > 50)
     ? out.substr(0, 47) + '...'
     : out
@@ -21,7 +30,7 @@ function buildDescriptionForLanguage(lang: { id: string, nameEn: string }, allow
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
   if (!i.guildData) return { title: 'An error occured' }
   const firstTimeOnPage = !Tracker.isTracked(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
-  if (firstTimeOnPage) Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
+  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
 
   const options = LanguageManager
     .getAllLanguages()
@@ -32,26 +41,25 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       label: l.name,
       value: l.id,
       default: i.guildData.language === l.id,
-      description: buildDescriptionForLanguage(l, !firstTimeOnPage),
+      description: buildDescriptionForLanguage(i, l, !firstTimeOnPage),
       emoji: { name: Emojis.fromFlagName(l.flag).string }
     }))
 
   return {
-    title: 'language',
-    description: '=lang_name',
+    title: '=settings_language_ui_1',
+    description: '=settings_language_ui_2',
     components: [
       {
         type: ComponentType.SELECT,
         custom_id: 'settings_language_change',
         options,
-        placeholder: 'Pick a channel to send games to',
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_main',
-        label: 'Back',
+        label: '=generic_back',
         emoji: { id: Emojis.caretLeft.id }
       }
     ]

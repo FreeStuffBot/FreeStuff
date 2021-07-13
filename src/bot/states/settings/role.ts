@@ -29,20 +29,21 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     )
     .filter(r => (r.mentionable || everyone) && (r.name !== '@everyone') && (!r.managed))
     .slice(0, 23)
+  const overflow = Core.guilds.resolve(i.guild_id).roles.cache.size > 23
 
   const options: MessageComponentSelectOption[] = [
     {
-      label: 'Disable Mentions',
+      label: '=settings_role_list_no_mention_1',
       value: '0',
       default: !i.guildData.role || i.guildData.role?.toString() === '0',
-      description: 'Do not ping anyone.',
+      description: '=settings_role_list_no_mention_2',
       emoji: { id: Emojis.no.id }
     },
     {
-      label: '@everyone',
+      label: '=settings_role_list_everyone_1',
       value: '1',
       default: i.guildData.role?.toString() === '1',
-      description: 'Ping everyone. That\'s a lot of people.',
+      description: '=settings_role_list_everyone_2',
       emoji: { id: Emojis.global.id }
     },
     ...roles.map(r => ({
@@ -53,25 +54,30 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     }))
   ]
 
-  let text = 'Pick a role to ping when a new game becomes free!'
-  if (!everyone) text = Core.text(i.guildData, text) + '\n\n' + Core.text(i.guildData, 'Some roles might be hidden because the bot doesn\'t have the `Mention All Roles` permission!')
+  let text = '=settings_role_ui_2'
+  if (!everyone || overflow) {
+    text = Core.text(i.guildData, text)
+      + '\n\n'
+      + Core.text(i.guildData, everyone
+        ? '=settings_role_list_hidden_overflow_disclaimer'
+        : '=settings_role_list_hidden_permissions_disclaimer')
+  }
 
   return {
-    title: 'PING PONG',
+    title: '=settings_role_ui_1',
     description: text,
     components: [
       {
         type: ComponentType.SELECT,
         custom_id: 'settings_role_change',
         options,
-        placeholder: 'Pick a role to ping',
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_main',
-        label: 'Back',
+        label: '=generic_back',
         emoji: { id: Emojis.caretLeft.id }
       }
     ]

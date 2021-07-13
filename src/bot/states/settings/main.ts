@@ -1,36 +1,67 @@
 import { Core } from '../../../index'
 import Emojis from '../../emojis'
 import { GenericInteraction } from '../../../cordo/types/ibase'
-import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../cordo/types/iconst'
+import { ButtonStyle, ComponentType, InteractionComponentFlag, InteractionType } from '../../../cordo/types/iconst'
 import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
 import Tracker from '../../tracker'
+import Const from '../../const'
 
+
+const recentlyInSetup: string[] = []
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
   if (!i.guildData) return { title: 'An error occured' }
+  const firstTimeOnPage = !Tracker.isTracked(i.guildData, 'PAGE_DISCOVERED_SETTINGS_MAIN')
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_MAIN')
 
-  const hintChannel = Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
+  const hintChannel = !i.guildData.channelInstance
   const hintRole = !hintChannel && Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_ROLE')
   const hintFilter = !hintChannel && !hintRole && Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_FILTER')
   const hintDisplay = !hintChannel && !hintRole && !hintFilter && Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_DISPLAY')
 
+  if ((hintChannel || hintRole || hintFilter || hintDisplay) && !recentlyInSetup.includes(i.guild_id)) {
+    recentlyInSetup.push(i.guild_id)
+    setTimeout(() => recentlyInSetup.splice(0, 1), 1000 * 60 * 5)
+  }
+
+  const delayed = !firstTimeOnPage && i.type === InteractionType.COMMAND
+  let description = recentlyInSetup.includes(i.guild_id)
+    ? '=settings_main_ui_2_guided_finished'
+    : '=settings_main_ui_2_regular'
+  if (hintChannel) {
+    description = delayed
+      ? '=settings_main_ui_2_guided_channel_delayed'
+      : '=settings_main_ui_2_guided_channel_normal'
+  } else if (hintRole) {
+    description = delayed
+      ? '=settings_main_ui_2_guided_role_delayed'
+      : '=settings_main_ui_2_guided_role_normal'
+  } else if (hintFilter) {
+    description = delayed
+      ? '=settings_main_ui_2_guided_filter_delayed'
+      : '=settings_main_ui_2_guided_filter_normal'
+  } else if (hintDisplay) {
+    description = delayed
+      ? '=settings_main_ui_2_guided_display_delayed'
+      : '=settings_main_ui_2_guided_display_normal'
+  }
+
   return {
-    title: '=cmd_free_title',
-    description: 'bruh',
+    title: '=settings_main_ui_1',
+    description,
     components: [
       {
         type: ComponentType.BUTTON,
         style: hintChannel ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_channel',
-        label: i.guildData?.channelInstance ? 'Change channel' : 'Set channel',
+        label: i.guildData?.channelInstance ? '=settings_main_btn_channel_change' : '=settings_main_btn_channel_set',
         emoji: { id: Emojis.channel.id }
       },
       {
         type: ComponentType.BUTTON,
         style: hintRole ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_role',
-        label: i.guildData?.roleInstance ? 'Change role mention' : 'Mention a role',
+        label: i.guildData?.roleInstance ? '=settings_main_btn_role_change' : '=settings_main_btn_role_set',
         emoji: { id: Emojis.mention.id }
       },
       {
@@ -47,19 +78,19 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         type: ComponentType.BUTTON,
         style: hintDisplay ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_display',
-        label: 'Display Settings'
+        label: '=settings_main_btn_display'
       },
       {
         type: ComponentType.BUTTON,
         style: hintFilter ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_filter',
-        label: 'Filter Settings'
+        label: '=settings_main_btn_filter'
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_more',
-        label: 'More'
+        label: '=settings_main_btn_more'
       },
       {
         type: ComponentType.BUTTON,
@@ -71,6 +102,9 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
           InteractionComponentFlag.HIDE_IF_NOT_ALLOWED
         ]
       }
-    ]
+    ],
+    _context: {
+      invite: Const.links.supportInvite
+    }
   }
 }

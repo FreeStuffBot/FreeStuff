@@ -11,7 +11,7 @@ Go in bot/commands. They export a handler function as default which gets called 
 
 ### Components
 
-Go in bot/components. They too export a handler function as default which gets called when the command gets run.
+Go in bot/components. They too export a handler function as default which gets called when the component gets interacted with (button press or dropdown selection).
 You can create folders to build hierarchy. Each folder prefixes the resulting component id with the foldername and a _
 For instance the handler in `components/foo/bar/test.ts` gets triggered for a component with the custom_id of `foo_bar_test`
 
