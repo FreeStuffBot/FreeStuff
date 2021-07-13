@@ -10,27 +10,32 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   if (!i.guildData) return { title: 'An error occured' }
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_MAIN')
 
+  const hintChannel = Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
+  const hintRole = !hintChannel && Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_ROLE')
+  const hintFilter = !hintChannel && !hintRole && Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_FILTER')
+  const hintDisplay = !hintChannel && !hintRole && !hintFilter && Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_DISPLAY')
+
   return {
     title: '=cmd_free_title',
     description: 'bruh',
     components: [
       {
         type: ComponentType.BUTTON,
-        style: Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL') ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
+        style: hintChannel ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_channel',
         label: i.guildData?.channelInstance ? 'Change channel' : 'Set channel',
         emoji: { id: Emojis.channel.id }
       },
       {
         type: ComponentType.BUTTON,
-        style: Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_ROLE') ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
+        style: hintRole ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_role',
         label: i.guildData?.roleInstance ? 'Change role mention' : 'Mention a role',
         emoji: { id: Emojis.mention.id }
       },
       {
         type: ComponentType.BUTTON,
-        style: Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE') ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
+        style: ButtonStyle.SECONDARY,
         custom_id: 'settings_language',
         label: '=lang_name',
         emoji: { name: Emojis.fromFlagName(Core.text(i.guildData, '=lang_flag_emoji')).string }
@@ -40,19 +45,19 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       },
       {
         type: ComponentType.BUTTON,
-        style: Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_DISPLAY') ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
+        style: hintDisplay ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_display',
         label: 'Display Settings'
       },
       {
         type: ComponentType.BUTTON,
-        style: Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_FILTER') ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
+        style: hintFilter ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_filter',
         label: 'Filter Settings'
       },
       {
         type: ComponentType.BUTTON,
-        style: Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_MORE') ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
+        style: ButtonStyle.SECONDARY,
         custom_id: 'settings_more',
         label: 'More'
       },

@@ -62,13 +62,13 @@ export default class Localisation {
     const defaultLang = europe ? 'en-GB' : 'en-US'
 
     return 0
-      | Util.modifyBits(0, 5, 4, europe ? 0 : 1)
+      | Util.modifyBits(0, 5, 4, europe ? Const.currencies[0].id : Const.currencies[1].id)
       | Util.modifyBits(0, 10, 6, LanguageManager.languageToId(defaultLang))
   }
 
   public static getDefaultFilter(_guild: Guild): number {
     return 0
-      | Util.modifyBits(0, 2, 2, Const.defaultCurrency.id)
+      | Util.modifyBits(0, 2, 2, Const.defaultPriceClass.id)
       | Util.modifyBits(0, 4, 8, Const.defaultPlatforms)
   }
 

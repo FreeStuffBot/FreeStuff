@@ -13,15 +13,15 @@ export default function (i: ReplyableComponentInteraction) {
 
   i.edit({
     title: isAdmin
-      ? 'Are you sure?'
-      : onCooldown
+      ? onCooldown
         ? 'Slow down!'
-        : 'Only an admin can do this',
+        : 'Are you sure?'
+      : 'Only an admin can do this',
     description: isAdmin
-      ? 'Once you click the button below there is no going back?'
-      : onCooldown
+      ? onCooldown
         ? 'Looks like someone already deleted this server\'s data in the past 12h. Please try again later!'
-        : 'Please ask someone else if you really really wanna do this.',
+        : 'Once you click the button below there is no going back?'
+      : 'Please ask someone else if you really really wanna do this.',
     components: [
       {
         type: ComponentType.BUTTON,
@@ -36,7 +36,7 @@ export default function (i: ReplyableComponentInteraction) {
         style: ButtonStyle.DANGER,
         label: 'Delete',
         custom_id: 'settings_mydata_delete_confirm',
-        disabled: !isAdmin,
+        disabled: !isAdmin || onCooldown,
         flags: [
           // because this is a reply to a bot message the interaction owner is now the bot itself no longer the user. Since this is ephemeral anyway it doesn't matter tho
           InteractionComponentFlag.ACCESS_EVERYONE,

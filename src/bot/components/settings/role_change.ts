@@ -12,7 +12,7 @@ export default async function (i: ReplyableComponentInteraction) {
 
   const guild = await Core.guilds.fetch(i.guild_id)
   if (val === '0') {
-    await Core.databaseManager.changeSetting(i.guildData, 'role', '0')
+    await Core.databaseManager.changeSetting(i.guildData, 'role', null)
   } else if (val === '1') {
     await Core.databaseManager.changeSetting(i.guildData, 'role', '1')
   } else {
