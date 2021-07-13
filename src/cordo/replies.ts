@@ -50,7 +50,7 @@ export default class CordoReplies {
         if (!state) state = i.data.id
 
         if (!Cordo._data.uiStates[state]) {
-          Logger.warn(`Component ${i.data.custom_id} tried to apply state non-existant ${state}`)
+          Logger.warn(`Component ${i.data.custom_id} tried to apply state non-existent ${state}`)
           return
         }
 
@@ -100,7 +100,7 @@ export default class CordoReplies {
         if (!state) state = i.data.custom_id
 
         if (!Cordo._data.uiStates[state]) {
-          Logger.warn(`Component ${i.data.custom_id} tried to apply state non-existant ${state}`)
+          Logger.warn(`Component ${i.data.custom_id} tried to apply state non-existent ${state}`)
           return
         }
 
@@ -125,7 +125,7 @@ export default class CordoReplies {
         if (!state) state = context.interaction.id
 
         if (!Cordo._data.uiStates[state]) {
-          Logger.warn(`Janitor tried to apply state non-existant ${state}`)
+          Logger.warn(`Janitor tried to apply state non-existent ${state}`)
           return
         }
 

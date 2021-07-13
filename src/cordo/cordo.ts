@@ -207,7 +207,7 @@ export default class Cordo {
 
   private static interactionNotPermitted(i: GenericInteraction, text?: string): any {
     return CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, {
-      title: '=interaction_not_permitted_title',
+      title: '=interaction_not_permitted_1',
       description: text || '=interaction_not_permitted_generic',
       flags: InteractionResponseFlags.EPHEMERAL
     })
@@ -215,8 +215,8 @@ export default class Cordo {
 
   private static interactionNotOwned(i: GenericInteraction, command?: string, owner?: string): any {
     return CordoAPI.interactionCallback(i, InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE, {
-      title: '=interaction_not_owned_title',
-      description: '=interaction_not_owned_description',
+      title: '=interaction_not_owned_1',
+      description: '=interaction_not_owned_2',
       flags: InteractionResponseFlags.EPHEMERAL,
       _context: { command, owner }
     })
