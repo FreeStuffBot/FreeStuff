@@ -158,13 +158,13 @@ export default class Const {
   public static readonly currencies: Currency[] = [
     {
       id: 0,
-      name: 'Euro',
+      name: '=currency_euro',
       symbol: '€',
       calculated: false
     },
     {
       id: 1,
-      name: 'USD',
+      name: '=currency_usd',
       symbol: '$',
       calculated: false
     }
@@ -176,22 +176,22 @@ export default class Const {
     {
       id: 0,
       from: 0,
-      name: 'Everything'
+      name: '=price_class_a'
     },
     {
       id: 1,
       from: 1,
-      name: 'Almost Everything'
+      name: '=price_class_b'
     },
     {
       id: 2,
       from: 3,
-      name: 'Default'
+      name: '=price_class_c'
     },
     {
       id: 3,
       from: 10,
-      name: 'Big fish'
+      name: '=price_class_d'
     }
   ]
 

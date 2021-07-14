@@ -5,6 +5,7 @@ import Emojis from '../../emojis'
 import LanguageManager from '../../language-manager'
 import Tracker from '../../tracker'
 import { Core } from '../../..'
+import PermissionStrings from '../../../lib/permission-strings'
 
 
 function buildDescriptionForLanguage(i: GenericInteraction, lang: { id: string, nameEn: string }, allowEastereggs: boolean): string {
@@ -18,7 +19,7 @@ function buildDescriptionForLanguage(i: GenericInteraction, lang: { id: string, 
       return '=settings_language_list_desc_english_eu'
     }
   }
-  const out = Core.text(i.guildData, '=settings_language_list_description', {
+  const out = Core.text(i.guildData, '=settings_language_list_desc_generic', {
     language: name,
     translators: LanguageManager.getRaw(lang.id, 'translators', false)
   })
@@ -62,6 +63,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         label: '=generic_back',
         emoji: { id: Emojis.caretLeft.id }
       }
-    ]
+    ],
+    footer: PermissionStrings.containsManageServer(i.member.permissions) ? '' : '=settings_permission_disclaimer'
   }
 }

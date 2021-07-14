@@ -7,6 +7,8 @@ import { MessageComponentSelectOption } from '../../../cordo/types/icomponent'
 import Const from '../../const'
 import Tracker from '../../tracker'
 import MessageDistributor from '../../message-distributor'
+import { Core } from '../../..'
+import PermissionStrings from '../../../lib/permission-strings'
 
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
@@ -23,13 +25,17 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
 
   const currencyOptions: MessageComponentSelectOption[] = Const.currencies.map(c => ({
     value: c.id + '',
-    label: `${c.symbol} ${c.name}`,
+    label: `${c.symbol} ${Core.text(i.guildData, c.name)}`,
     default: i.guildData.currency.id === c.id
   }))
 
   const message = MessageDistributor.buildMessage(Const.testAnnouncementContent, i.guildData, true, false)
   const embeds: MessageEmbed[] = []
-  if (message[1].embed) embeds.push(message[1].embed as MessageEmbed)
+  if (message[1].embed) {
+    if (!PermissionStrings.containsManageServer(i.member.permissions) && message[1].embed.footer?.text)
+      message[1].embed.footer.text += ' • ' + Core.text(i.guildData, '=settings_permission_disclaimer')
+    embeds.push(message[1].embed as MessageEmbed)
+  }
 
   // embeds.push({
   //   description: 'hiii',

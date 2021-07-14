@@ -16,7 +16,7 @@ export default function (i: ReplyableComponentInteraction) {
     sharder: i.guildData.sharder,
     channel: i.guildData.channel,
     role: i.guildData.role,
-    price: i.guildData.price,
+    filter: i.guildData.filter,
     settings: i.guildData.settings,
     tracker: i.guildData.tracker
   }

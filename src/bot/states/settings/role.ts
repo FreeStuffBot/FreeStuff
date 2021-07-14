@@ -6,6 +6,7 @@ import Emojis from '../../emojis'
 import { Core } from '../../../index'
 import { MessageComponentSelectOption } from '../../../cordo/types/icomponent'
 import Tracker from '../../tracker'
+import PermissionStrings from '../../../lib/permission-strings'
 
 
 const recommendedRoleRegex = /free|game|deal|ping|notification/i
@@ -80,6 +81,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
         label: '=generic_back',
         emoji: { id: Emojis.caretLeft.id }
       }
-    ]
+    ],
+    footer: PermissionStrings.containsManageServer(i.member.permissions) ? '' : '=settings_permission_disclaimer'
   }
 }

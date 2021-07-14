@@ -6,6 +6,7 @@ import { MessageComponentSelectOption } from '../../../cordo/types/icomponent'
 import Const from '../../const'
 import { Core } from '../../../index'
 import Tracker from '../../tracker'
+import PermissionStrings from '../../../lib/permission-strings'
 
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
@@ -77,6 +78,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         url: Const.links.guide,
         label: '=generic_help'
       }
-    ]
+    ],
+    footer: PermissionStrings.containsManageServer(i.member.permissions) ? '' : '=settings_permission_disclaimer'
   }
 }

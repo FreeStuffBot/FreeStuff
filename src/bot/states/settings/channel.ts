@@ -6,6 +6,7 @@ import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/
 import Emojis from '../../emojis'
 import Tracker from '../../tracker'
 import { MessageComponentSelectOption } from '../../../cordo/types/icomponent'
+import PermissionStrings from '../../../lib/permission-strings'
 
 
 const recommendedChannelRegex = /free|game|gaming|deal/i
@@ -125,6 +126,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         label: '=generic_back',
         emoji: { id: Emojis.caretLeft.id }
       }
-    ]
+    ],
+    footer: PermissionStrings.containsManageServer(i.member.permissions) ? '' : '=settings_permission_disclaimer'
   }
 }
