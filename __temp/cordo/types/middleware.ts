@@ -1,4 +1,4 @@
-import { GuildData } from '../../types/datastructs'
+import { GuildData } from '../../../src/types/datastructs'
 import { InteractionApplicationCommandCallbackData } from './custom'
 
 

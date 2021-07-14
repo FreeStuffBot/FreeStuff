@@ -1,3 +1,4 @@
+import Cordo from 'cordo'
 import { Client } from 'discord.js'
 import * as chalk from 'chalk'
 import LanguageManager from './bot/language-manager'
@@ -10,7 +11,6 @@ import Const from './bot/const'
 import { GuildData } from './types/datastructs'
 import Logger from './lib/logger'
 import Manager from './controller/manager'
-import Cordo from './cordo/cordo'
 import { config, FSAPI } from './index'
 
 

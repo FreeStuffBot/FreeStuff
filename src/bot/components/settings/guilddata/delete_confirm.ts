@@ -1,6 +1,6 @@
 import { Long } from 'mongodb'
 import { Core } from '../../../../index'
-import { ReplyableComponentInteraction } from '../../../../cordo/types/ibase'
+import { ReplyableComponentInteraction } from 'cordo'
 import PermissionStrings from '../../../../lib/permission-strings'
 import { onGuildDataDeleteCooldown } from './delete'
 

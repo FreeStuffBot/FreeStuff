@@ -1,10 +1,8 @@
 import { Permissions } from 'discord.js'
-import { GenericInteraction } from '../../../cordo/types/ibase'
-import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../cordo/types/iconst'
-import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
+import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag } from 'cordo'
 import Emojis from '../../emojis'
 import { Core } from '../../../index'
-import { MessageComponentSelectOption } from '../../../cordo/types/icomponent'
+import { MessageComponentSelectOption } from 'cordo'
 import Tracker from '../../tracker'
 import PermissionStrings from '../../../lib/permission-strings'
 

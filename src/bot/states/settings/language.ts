@@ -1,6 +1,4 @@
-import { GenericInteraction } from '../../../cordo/types/ibase'
-import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../cordo/types/iconst'
-import { InteractionApplicationCommandCallbackData } from '../../../cordo/types/custom'
+import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag } from 'cordo'
 import Emojis from '../../emojis'
 import LanguageManager from '../../language-manager'
 import Tracker from '../../tracker'

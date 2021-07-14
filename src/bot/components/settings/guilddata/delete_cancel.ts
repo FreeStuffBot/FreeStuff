@@ -1,4 +1,4 @@
-import { ReplyableComponentInteraction } from '../../../../cordo/types/ibase'
+import { ReplyableComponentInteraction } from 'cordo'
 
 
 export default function (i: ReplyableComponentInteraction) {

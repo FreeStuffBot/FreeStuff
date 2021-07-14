@@ -1,5 +1,5 @@
 import Const from '../const'
-import { ReplyableCommandInteraction } from '../../cordo/types/ibase'
+import { ReplyableCommandInteraction } from 'cordo'
 import Tracker from '../tracker'
 
 

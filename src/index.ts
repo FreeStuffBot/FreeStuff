@@ -37,8 +37,9 @@ import { Util } from './lib/util'
 import Manager from './controller/manager'
 import LanguageManager from './bot/language-manager'
 import WebhookServer from './controller/webhookserver'
-import Cordo from './cordo/cordo'
+import Cordo from 'cordo'
 import { ShardAction } from './types/controller'
+import RemoteConfig from './controller/remote-config'
 
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -84,8 +85,25 @@ run().catch((err) => {
 function initComponents(commit: GitCommit, action: ShardAction) {
   LanguageManager.init()
 
+  Cordo.init({
+    botId: config.bot.clientid,
+    contextPath: [ __dirname, 'bot' ],
+    botAdmins: (id: string) => RemoteConfig.botAdmins.includes(id),
+    texts: {
+      interaction_not_owned_title: '=interaction_not_owned_1',
+      interaction_not_owned_description: '=interaction_not_owned_2',
+      interaction_not_permitted_title: '=interaction_not_permitted_1',
+      interaction_not_permitted_description_generic: '=interaction_not_permitted_2_generic',
+      interaction_not_permitted_description_bot_admin: '=interaction_not_permitted_2_bot_admin',
+      interaction_not_permitted_description_guild_admin: '=interaction_not_permitted_2_admin',
+      interaction_not_permitted_description_manage_server: '=interaction_not_permitted_2_manage_server',
+      interaction_not_permitted_description_manage_messages: '=interaction_not_permitted_2_manage_messages',
+      interaction_failed: 'We are very sorry but an error occured while processing your command. Please try again.'
+    }
+  })
   Cordo.findContext([ __dirname, 'bot' ])
-  Cordo.registerMiddlewareForInteractionCallback((data, guild) => LanguageManager.translateObject(data, guild, data._context, 14))
+  Cordo.addMiddlewareInteractionCallback((data, guild) => LanguageManager.translateObject(data, guild, data._context, 14))
+  Cordo.setMiddlewareGuildData((guildid: string) => Core?.databaseManager.getGuildData(guildid))
 
   FSAPI = new FreeStuffApi({
     ...config.apisettings as any,

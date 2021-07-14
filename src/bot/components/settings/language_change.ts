@@ -1,5 +1,5 @@
 import { Core } from '../../../index'
-import { ReplyableComponentInteraction } from '../../../cordo/types/ibase'
+import { ReplyableComponentInteraction } from 'cordo'
 import LanguageManager from '../../language-manager'
 import PermissionStrings from '../../../lib/permission-strings'
 

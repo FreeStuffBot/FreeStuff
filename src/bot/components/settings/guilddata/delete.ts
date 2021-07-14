@@ -1,6 +1,5 @@
 import PermissionStrings from '../../../../lib/permission-strings'
-import { ReplyableComponentInteraction } from '../../../../cordo/types/ibase'
-import { ButtonStyle, ComponentType, InteractionComponentFlag } from '../../../../cordo/types/iconst'
+import { ButtonStyle, ComponentType, InteractionComponentFlag, ReplyableComponentInteraction } from 'cordo'
 import Emojis from '../../../emojis'
 
 

@@ -1,4 +1,4 @@
-import Logger from '../lib/logger'
+import Logger from '../../src/lib/logger'
 import { InteractionApplicationCommandCallbackData, InteractionComponentHandler, InteractionReplyContext, InteractionReplyStateLevelThree, InteractionReplyStateLevelTwo } from './types/custom'
 import { InteractionCallbackType, InteractionResponseFlags } from './types/iconst'
 import { CommandInteraction, ComponentInteraction, GenericInteraction, InteractionJanitor, ReplyableCommandInteraction, ReplyableComponentInteraction } from './types/ibase'

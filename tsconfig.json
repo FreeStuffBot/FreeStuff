@@ -16,7 +16,8 @@
     ],
     "typeRoots": [
       // add path to @types
-      "node_modules/@types"
+      "node_modules/@types",
+      "./src/types"
     ],
     "baseUrl": "./src",
     "experimentalDecorators": true,
@@ -24,5 +25,5 @@
   },
   "include": [
     "./src/**/*"
-  ]
+, "__temp/cordo"  ]
 }
