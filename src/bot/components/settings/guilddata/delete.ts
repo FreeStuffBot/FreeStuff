@@ -1,5 +1,5 @@
-import PermissionStrings from '../../../../lib/permission-strings'
 import { ButtonStyle, ComponentType, InteractionComponentFlag, ReplyableComponentInteraction } from 'cordo'
+import PermissionStrings from '../../../../lib/permission-strings'
 import Emojis from '../../../emojis'
 
 

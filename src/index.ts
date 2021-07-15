@@ -101,7 +101,6 @@ function initComponents(commit: GitCommit, action: ShardAction) {
       interaction_failed: 'We are very sorry but an error occured while processing your command. Please try again.'
     }
   })
-  Cordo.findContext([ __dirname, 'bot' ])
   Cordo.addMiddlewareInteractionCallback((data, guild) => LanguageManager.translateObject(data, guild, data._context, 14))
   Cordo.setMiddlewareGuildData((guildid: string) => Core?.databaseManager.getGuildData(guildid))
 

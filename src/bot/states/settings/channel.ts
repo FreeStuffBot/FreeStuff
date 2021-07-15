@@ -1,9 +1,8 @@
 import { GuildChannel, NewsChannel, TextChannel } from 'discord.js'
+import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
 import { Core } from '../../../index'
-import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag } from 'cordo'
 import Emojis from '../../emojis'
 import Tracker from '../../tracker'
-import { MessageComponentSelectOption } from 'cordo'
 import PermissionStrings from '../../../lib/permission-strings'
 
 

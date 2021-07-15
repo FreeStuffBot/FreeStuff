@@ -1,6 +1,6 @@
+import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, InteractionType } from 'cordo'
 import { Core } from '../../../index'
 import Emojis from '../../emojis'
-import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, InteractionType } from 'cordo'
 import Tracker from '../../tracker'
 import Const from '../../const'
 

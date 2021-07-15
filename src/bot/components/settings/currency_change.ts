@@ -1,5 +1,5 @@
-import { Core } from '../../../index'
 import { ReplyableComponentInteraction } from 'cordo'
+import { Core } from '../../../index'
 import Const from '../../const'
 import PermissionStrings from '../../../lib/permission-strings'
 

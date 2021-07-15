@@ -1,7 +1,7 @@
+import { ButtonStyle, ComponentType, InteractionComponentFlag, ReplyableComponentInteraction } from 'cordo'
 import { Core } from '../../../../index'
 import Const from '../../../const'
 import guildDataToViewString from '../../../../lib/guilddata-visualizer'
-import { ButtonStyle, ComponentType, InteractionComponentFlag, ReplyableComponentInteraction } from 'cordo'
 import Tracker from '../../../tracker'
 
 
