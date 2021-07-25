@@ -22,19 +22,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-api-buildx-
       
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      
       - name: Build api image
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: freestuffbot/discord:ci
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
