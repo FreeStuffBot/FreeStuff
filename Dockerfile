@@ -1,18 +1,48 @@
-FROM node:alpine
+##### Base #####
 
+FROM node:14-alpine as base
+
+# Install Git because it's needed by the bot to determine it's own version
 RUN apk add git
 
-RUN mkdir -p /usr/freestuffbot
-WORKDIR /usr/freestuffbot
+WORKDIR /app
 
+# Copy the package meta files
 COPY package*.json ./
 
-#RUN npm install --only=production
+# Install production dependencies
+RUN npm install --production
+
+##### BUILD #####
+
+FROM base as builder
+
+WORKDIR /app
+
+# Install all the dependencies
 RUN npm install
 
-COPY . .
-COPY config.docker.js config.js
+# Copy the source-code
+COPY src ./src
+COPY tsconfig.json ./
 
+# Build the project
 RUN npm run build
 
+##### PRODUCTION IMAGE #####
+
+FROM base
+
+WORKDIR /app
+
+# Copy the configuration file
+COPY config.docker.js config.js
+
+# Copy the transpiled source-code
+COPY --from=builder /app/build ./build
+
+# Copy the .git directory
+COPY .git ./.git
+
+# Launch the bot
 CMD [ "npm", "start" ]
