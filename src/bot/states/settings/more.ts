@@ -10,6 +10,23 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     title: '=settings_more_ui_1',
     description: '=settings_more_ui_2',
     components: [
+      // {
+      //   type: ComponentType.BUTTON,
+      //   style: ButtonStyle.SECONDARY,
+      //   custom_id: 'settings_run_test',
+      //   label: '=settings_more_btn_test',
+      //   flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
+      // },
+      // {
+      //   type: ComponentType.BUTTON,
+      //   style: ButtonStyle.SECONDARY,
+      //   custom_id: 'settings_run_resend',
+      //   label: '=settings_more_btn_resend',
+      //   flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
+      // },
+      // {
+      //   type: ComponentType.LINE_BREAK
+      // },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,

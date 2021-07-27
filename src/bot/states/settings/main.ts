@@ -102,7 +102,8 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       }
     ],
     _context: {
-      invite: Const.links.supportInvite
+      invite: Const.links.supportInvite,
+      guide: Const.links.guide
     }
   }
 }

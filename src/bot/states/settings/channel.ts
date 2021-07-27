@@ -59,8 +59,8 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     .sort((a, b) =>
       (isRecommended(i, a) ? -1000 : 0)
       - (isRecommended(i, b) ? -1000 : 0)
-      + (a.position + a.parent.position * 100)
-      - (b.position + b.parent.position * 100)
+      + (a.position + (a.parent?.position || 0) * 100)
+      - (b.position + (b.parent?.position || 0) * 100)
     )
     .slice(0, 24)
     .map((c) => {
