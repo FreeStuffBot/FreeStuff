@@ -21,7 +21,7 @@ export default class Localisation {
     'eu',
     'amsterdam',
     'dubai'
-  ];
+  ]
 
   private static readonly AMERICAN_REGIONS = [
     'us-west',
@@ -37,7 +37,7 @@ export default class Localisation {
     'na',
     'south-america',
     'sa'
-  ];
+  ]
 
   private static readonly EXTRA_LANGUAGE_HINTS = {
     brazil: 'pt-BR',

@@ -13,9 +13,9 @@ export class DbStats {
         const guildCount = bot.guilds.cache.size
         const guildMemberCount = bot.guilds.cache.array().reduce((count, g) => count + g.memberCount, 0)
 
-        Logger.process(`Updated Stats. Guilds: ${bot.guilds.cache.size}; Members: ${guildMemberCount}; Shard ${bot.options.shards[0]}`);
-        (await this.usage).guilds.updateYesterday(guildCount, true);
-        (await this.usage).members.updateYesterday(guildMemberCount, true)
+        Logger.process(`Updated Stats. Guilds: ${bot.guilds.cache.size}; Members: ${guildMemberCount}; Shard ${bot.options.shards[0]}`)
+        ;(await this.usage).guilds.updateYesterday(guildCount, true)
+        ;(await this.usage).members.updateYesterday(guildMemberCount, true)
 
         this.updateTopClients()
       }, 60000)
@@ -55,7 +55,7 @@ export class DbStats {
 
 export class DbStatUsage {
 
-  public readonly raw: { [key: string]: number[] } = {};
+  public readonly raw: { [key: string]: number[] } = {}
 
   //
 

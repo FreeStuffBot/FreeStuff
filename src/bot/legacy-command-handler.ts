@@ -23,7 +23,7 @@ import Localisation from './localisation'
 
 export default class LegacyCommandHandler {
 
-  public readonly commands: Command[] = [];
+  public readonly commands: Command[] = []
 
   public constructor(bot: FreeStuffBot) {
     this.commands.push(new HelpCommand())

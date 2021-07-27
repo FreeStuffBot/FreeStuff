@@ -4,7 +4,6 @@ import * as chalk from 'chalk'
 import LanguageManager from './bot/language-manager'
 import LegacyCommandHandler from './bot/legacy-command-handler'
 import DatabaseManager from './bot/database-manager'
-import AdminCommandHandler from './bot/admin-command-handler'
 import AnnouncementManager from './bot/announcement-manager'
 import { DbStats } from './database/db-stats'
 import Const from './bot/const'
@@ -16,10 +15,9 @@ import { config, FSAPI } from './index'
 
 export default class FreeStuffBot extends Client {
 
-  public commandHandler: LegacyCommandHandler;
-  public databaseManager: DatabaseManager;
-  public adminCommandHandler: AdminCommandHandler;
-  public announcementManager: AnnouncementManager;
+  public commandHandler: LegacyCommandHandler
+  public databaseManager: DatabaseManager
+  public announcementManager: AnnouncementManager
 
   //
 
@@ -29,7 +27,6 @@ export default class FreeStuffBot extends Client {
 
     this.commandHandler = new LegacyCommandHandler(this)
     this.databaseManager = new DatabaseManager(this)
-    this.adminCommandHandler = new AdminCommandHandler(this)
     this.announcementManager = new AnnouncementManager(this)
 
     DbStats.startMonitoring(this)
@@ -64,7 +61,7 @@ export default class FreeStuffBot extends Client {
 
     const shard = `Shard ${(this.options.shards as number[]).join(', ')} / ${this.options.shardCount}`
     Logger.process(chalk`Bot ready! Logged in as {yellowBright ${this.user?.tag}} {gray (${shard})}`)
-    if (config.bot.mode !== 'regular') Logger.process([ 'Guilds:', ...this.guilds.cache.map(g => `  ${g.name} :: ${g.id}`) ].join('\n'))
+    if (config.bot.mode === 'dev') Logger.process([ 'Guilds:', ...this.guilds.cache.map(g => `  ${g.name} :: ${g.id}`) ].join('\n'))
 
     this.startBotActvity()
     DbStats.usage.then(u => u.reconnects.updateToday(1, true))

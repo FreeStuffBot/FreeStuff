@@ -7,7 +7,7 @@ import Localisation from '../bot/localisation'
 
 export default class Experiments {
 
-  private static experiments = {};
+  private static experiments = {}
 
   public static updateExperiments(data?: Experiment[]) {
     Logger.info('Experiments updated')

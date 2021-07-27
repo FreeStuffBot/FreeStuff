@@ -7,8 +7,8 @@ import Const from '../const'
 
 export default class CheckCommand extends Command {
 
-  private checkCooldown = [ ];
-  private checkCooldownHarsh = [ ];
+  private checkCooldown = [ ]
+  private checkCooldownHarsh = [ ]
 
   public constructor() {
     super({
@@ -62,7 +62,7 @@ export default class CheckCommand extends Command {
       return true
     }
     if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('EMBED_LINKS')
-        && Const.themesWithEmbeds.includes(g.theme.id)) {
+        && g.theme.usesEmbeds) {
       repl(
         Core.text(g, '=cmd_check_noembeds_1'),
         Core.text(g, '=cmd_check_noembeds_2', { channel: g.channelInstance.toString() })

@@ -32,8 +32,6 @@ export default class Const {
     themes: 'https://freestuffbot.xyz/themes'
   }
 
-  public static readonly themesWithEmbeds = [ 0, 1, 2, 3, 4, 5 ];
-
   public static readonly embedDefaultColor = 0x2F3136
 
   public static readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/830794212894572574/thumbnail_placeholder.png'
@@ -77,7 +75,8 @@ export default class Const {
       description: '=theme_one_desc',
       emoji: '1️⃣',
       builder: new ThemeOne(),
-      toggleCurrencies: true
+      toggleCurrencies: true,
+      usesEmbeds: true
     },
     {
       id: 1,
@@ -85,7 +84,8 @@ export default class Const {
       description: '=theme_two_desc',
       emoji: '2️⃣',
       builder: new ThemeTwo(),
-      toggleCurrencies: true
+      toggleCurrencies: true,
+      usesEmbeds: true
     },
     {
       id: 2,
@@ -93,7 +93,8 @@ export default class Const {
       description: '=theme_three_desc',
       emoji: '3️⃣',
       builder: new ThemeThree(),
-      toggleCurrencies: true
+      toggleCurrencies: true,
+      usesEmbeds: true
     },
     {
       id: 3,
@@ -101,7 +102,8 @@ export default class Const {
       description: '=theme_four_desc',
       emoji: '4️⃣',
       builder: new ThemeFour(),
-      toggleCurrencies: true
+      toggleCurrencies: true,
+      usesEmbeds: true
     },
     {
       id: 4,
@@ -109,7 +111,8 @@ export default class Const {
       description: '=theme_five_desc',
       emoji: '5️⃣',
       builder: new ThemeFive(),
-      toggleCurrencies: false
+      toggleCurrencies: false,
+      usesEmbeds: true
     },
     {
       id: 5,
@@ -117,7 +120,8 @@ export default class Const {
       description: '=theme_six_desc',
       emoji: '6️⃣',
       builder: new ThemeSix(),
-      toggleCurrencies: false
+      toggleCurrencies: false,
+      usesEmbeds: true
     },
     {
       id: 6,
@@ -125,7 +129,8 @@ export default class Const {
       description: '=theme_seven_desc',
       emoji: '7️⃣',
       builder: new ThemeSeven(),
-      toggleCurrencies: false
+      toggleCurrencies: false,
+      usesEmbeds: false
     },
     {
       id: 7,
@@ -133,7 +138,8 @@ export default class Const {
       description: '=theme_eight_desc',
       emoji: '8️⃣',
       builder: new ThemeEight(),
-      toggleCurrencies: false
+      toggleCurrencies: false,
+      usesEmbeds: false
     },
     {
       id: 8,
@@ -141,7 +147,8 @@ export default class Const {
       description: '=theme_nine_desc',
       emoji: '9️⃣',
       builder: new ThemeNine(),
-      toggleCurrencies: false
+      toggleCurrencies: false,
+      usesEmbeds: false
     },
     {
       id: 9,
@@ -149,7 +156,8 @@ export default class Const {
       description: '=theme_ten_desc',
       emoji: '🔟',
       builder: new ThemeTen(),
-      toggleCurrencies: false
+      toggleCurrencies: false,
+      usesEmbeds: false
     }
   ]
 

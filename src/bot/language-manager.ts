@@ -5,9 +5,9 @@ import { Core } from '../index'
 
 export default class LanguageManager {
 
-  private static list = [];
-  private static idmap = {};
-  private static texts = {};
+  private static list = []
+  private static idmap = {}
+  private static texts = {}
 
   public static init() {
     LanguageManager.load()

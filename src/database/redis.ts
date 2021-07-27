@@ -4,7 +4,7 @@ import { Core, config } from '../index'
 import Logger from '../lib/logger'
 
 
-export type dbcollection = 'guilds' | 'stats-usage' | 'games';
+export type dbcollection = 'guilds' | 'stats-usage' | 'games'
 
 export default class Redis {
 

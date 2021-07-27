@@ -7,8 +7,8 @@ import { Core } from '../../index'
 
 export default class ResetCommand extends Command {
 
-  private cmdCooldown = [ ];
-  private cmdCooldownHarsh = [ ];
+  private cmdCooldown = [ ]
+  private cmdCooldownHarsh = [ ]
 
   public constructor() {
     super({

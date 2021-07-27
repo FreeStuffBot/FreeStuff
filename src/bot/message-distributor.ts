@@ -72,9 +72,9 @@ export default class MessageDistributor {
     const announcementsMadeTotal = announcementsMade.map(e => e.reach).reduce((p, c) => (p + c), 0)
 
     content.forEach(c => Redis.setSharded('am_' + c.id, '0')) // AMount (of announcements done)
-    await Redis.setSharded('lga', ''); // Last Guild Announced (guild id)
+    await Redis.setSharded('lga', '') // Last Guild Announced (guild id)
 
-    (await DbStats.usage).announcements.updateToday(announcementsMadeTotal, true)
+    ;(await DbStats.usage).announcements.updateToday(announcementsMadeTotal, true)
 
     announcementsMade.forEach(game => FSAPI.postGameAnalytics(game.id, 'discord', { reach: game.reach }))
   }
@@ -150,7 +150,7 @@ export default class MessageDistributor {
       Logger.excessive(`Guild ${g._id} return: no VIEW_CHANNEL`)
       return []
     }
-    if (!permissions.has('EMBED_LINKS') && Const.themesWithEmbeds.includes(data.theme.id)) {
+    if (!permissions.has('EMBED_LINKS') && data.theme.usesEmbeds) {
       Logger.excessive(`Guild ${g._id} return: no EMBED_LINKS`)
       return []
     }
@@ -170,7 +170,7 @@ export default class MessageDistributor {
     if (messages.length && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
       await messages[messages.length - 1].react('🆓')
     // if (!test && (data.channelInstance as Channel).type === 'news')
-    //   messages.forEach(m => m.crosspost());
+    //   messages.forEach(m => m.crosspost())
     // TODO check if ratelimited
     // TODO check if it has the "manage messages" permission. although not required to publish own messages, there needs to be a way to turn MessageDistributor off
 

@@ -9,8 +9,8 @@ import MessageDistributor from '../../bot/message-distributor'
 
 export default class TestCommand extends Command {
 
-  private testCooldown = [ ];
-  private testCooldownHarsh = [ ];
+  private testCooldown = [ ]
+  private testCooldownHarsh = [ ]
 
   public constructor() {
     super({
@@ -63,7 +63,7 @@ export default class TestCommand extends Command {
       return true
     }
     if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('EMBED_LINKS')
-        && Const.themesWithEmbeds.includes(g.theme.id)) {
+        && g.theme.usesEmbeds) {
       repl(
         Core.text(g, '=cmd_test_noembeds_1'),
         Core.text(g, '=cmd_test_noembeds_2', { channel: g.channelInstance.toString() })

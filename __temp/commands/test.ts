@@ -8,7 +8,7 @@ export default class NewTestCommand extends InteractionCommandHandler {
 
   private readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/830794212894572574/thumbnail_placeholder.png'
 
-  private testCooldown = [ ];
+  private testCooldown = [ ]
 
   public async handle(command: CommandInteraction, data: GuildData, reply: InteractionReplyFunction): Promise<boolean> {
     // TODO MAKE SURE TO CHECK FOR PERMISSIONS !!!!!!!

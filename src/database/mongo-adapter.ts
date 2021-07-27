@@ -3,7 +3,7 @@ import * as mongo from 'mongodb'
 
 export default class MongoAdapter {
 
-  public static client: mongo.MongoClient;
+  public static client: mongo.MongoClient
 
   //
 

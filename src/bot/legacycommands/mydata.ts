@@ -8,8 +8,8 @@ import Const from '../const'
 
 export default class MydataCommand extends Command {
 
-  private cmdCooldown = [ ];
-  private cmdCooldownHarsh = [ ];
+  private cmdCooldown = [ ]
+  private cmdCooldownHarsh = [ ]
 
   public constructor() {
     super({

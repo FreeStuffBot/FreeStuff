@@ -9,8 +9,8 @@ import MessageDistributor from './message-distributor'
 
 export default class AnnouncementManager {
 
-  public currentlyAnnouncing = false;
-  private semaphore: Semaphore;
+  public currentlyAnnouncing = false
+  private semaphore: Semaphore
 
   public constructor(bot: FreeStuffBot) {
     const checkInterval = config.bot.mode === 'regular' ? 60 : 5
@@ -83,8 +83,8 @@ export default class AnnouncementManager {
 
   //
 
-  private static readonly TWELVE_HOURS = 1000 * 60 * 60 * 12;
-  private static current: GameInfo[] = [];
+  private static readonly TWELVE_HOURS = 1000 * 60 * 60 * 12
+  private static current: GameInfo[] = []
 
   public static async updateCurrentFreebies() {
     Logger.excessive('Updating current freebie list')

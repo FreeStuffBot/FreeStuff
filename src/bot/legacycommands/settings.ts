@@ -18,7 +18,7 @@ import SetPrefixHanler from './set/prefix'
 
 export default class SettingsCommand extends Command {
 
-  public readonly commands: Map<string, (CommandHandler & SettingsSubcommand)> = new Map();
+  public readonly commands: Map<string, (CommandHandler & SettingsSubcommand)> = new Map()
 
   public constructor() {
     super({
