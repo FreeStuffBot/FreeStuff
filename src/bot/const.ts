@@ -273,11 +273,11 @@ export default class Const {
     title: '=cmd_test_announcement_header',
     org_price: {
       euro: 19.99,
-      dollar: 19.99
+      usd: 19.99
     },
     price: {
       euro: 0,
-      dollar: 0
+      usd: 0
     },
     store: 'steam',
     thumbnail: {

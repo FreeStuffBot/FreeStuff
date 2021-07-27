@@ -5,6 +5,7 @@ import Const from '../../bot/const'
 import { GuildData } from '../../types/datastructs'
 import Experiments from '../../controller/experiments'
 import LanguageManager from '../../bot/language-manager'
+import Localisation from '../localisation'
 
 
 export type themeSettings = {
@@ -17,7 +18,7 @@ export type themeSettings = {
 export default class BaseTheme {
 
   public static build(content: GameInfo, data: GuildData, settings: themeSettings): [string, MessageOptions] {
-    const priceString = BaseTheme.generatePriceString(content, data)
+    const priceString = Localisation.renderPriceTag(data, content)
     const until = BaseTheme.generateUntil(content, data)
     const button = BaseTheme.generateButton(content, data)
     const showDescription = content.description && settings.themeExtraInfo
@@ -69,12 +70,6 @@ export default class BaseTheme {
       return `${Core.text(data, '=open_in_browser')}: **[https://s.team/a/${content.urls.org.split('/app/')[1].split('/')[0]}](${useProxyUrl ? content.urls.browser : content.urls.org})**\n${Core.text(data, '=open_in_steam_client')}: **${content.urls.client}**`
 
     return `**[${Core.text(data, '=open_in_browser')}](${useProxyUrl ? content.urls.browser : content.urls.org})** • **[${Core.text(data, '=open_in_epic_games_client')}](${content.urls.client})**`
-  }
-
-  static generatePriceString(content: GameInfo, data: GuildData): string {
-    return LanguageManager.get(data, 'currency_sign_position') === 'after'
-      ? `${content.org_price.dollar}${data.currency.symbol}`
-      : `${data.currency.symbol}${content.org_price.dollar}`
   }
 
   static generateImageObject(content: GameInfo, data: GuildData, settings: themeSettings): Object {

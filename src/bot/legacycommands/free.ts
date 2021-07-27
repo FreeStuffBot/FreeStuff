@@ -3,8 +3,8 @@ import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core } from '../../index'
 import Experiments from '../../controller/experiments'
-// import NewFreeCommand from '../commands/free'
 import Emojis from '../emojis'
+import AnnouncementManager from '../announcement-manager'
 
 
 export default class FreeCommand extends Command {
@@ -26,7 +26,7 @@ export default class FreeCommand extends Command {
 
     const freeLonger: string[] = []
     const freeToday: string[] = []
-    for (const game of [] /* TODO NewFreeCommand.getCurrentFreebies() */) {
+    for (const game of AnnouncementManager.getCurrentFreebies()) {
       // g happens to be undefined here at times, investigate
       const str = `${Emojis.store[game.store].string || ':gray_question:'} **[${game.title}](${useProxyUrl ? game.urls.default : game.urls.org})**\n${Emojis.bigSpace.string} ~~${g?.currency.id === 0 ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • ${Core.text(g, '=cmd_free_until')} ${game.until ? `<t:${game.until.getTime() / 1000}:${('_today' in game) ? 't' : 'd'}>` : 'unknown'}\n`
       if ('_today' in game) freeToday.push(str)

@@ -1,9 +1,10 @@
 import { Semaphore } from 'await-semaphore'
+import { GameInfo } from 'freestuff'
 import { config, FSAPI } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import Redis from '../database/redis'
+import Logger from '../lib/logger'
 import MessageDistributor from './message-distributor'
-// import NewFreeCommand from './commands/free'
 
 
 export default class AnnouncementManager {
@@ -68,7 +69,7 @@ export default class AnnouncementManager {
   private async announce(gameids: string) {
     this.setPending(gameids)
 
-    // TODO NewFreeCommand.updateCurrentFreebies()
+    AnnouncementManager.updateCurrentFreebies()
 
     this.currentlyAnnouncing = true
 
@@ -78,6 +79,33 @@ export default class AnnouncementManager {
 
     Redis.setSharded('pending', '')
     this.currentlyAnnouncing = false
+  }
+
+  //
+
+  private static readonly TWELVE_HOURS = 1000 * 60 * 60 * 12;
+  private static current: GameInfo[] = [];
+
+  public static async updateCurrentFreebies() {
+    Logger.excessive('Updating current freebie list')
+    const ids = await FSAPI.getGameList('free')
+    const data = await FSAPI.getGameDetails(ids, 'info')
+    let games = Object.values(data)
+
+    const currentTime = new Date()
+    games = games
+      .filter(g => g.until && g.until.getTime() > currentTime.getTime())
+      .sort((a, b) => b.until.getTime() - a.until.getTime())
+    games.forEach((g) => {
+      if (g.until.getTime() - currentTime.getTime() < this.TWELVE_HOURS)
+        (g as any)._today = true
+    })
+
+    this.current = games
+  }
+
+  public static getCurrentFreebies(): GameInfo[] {
+    return this.current
   }
 
 }

@@ -1,11 +1,14 @@
-/* eslint-disable import/first, import/order */
+/*
+ * LOAD AND PREPARE CONFIGURATION
+ */
+
+/* eslint-disable import/first, import/order, no-console */
 import { config as loadDotEnv } from 'dotenv'
 import { configjs } from './types/config'
 loadDotEnv()
 export const config = require('../config.js') as configjs
 
 function invalidConfig(reason: string) {
-  // eslint-disable-next-line no-console
   console.error(`Could not start bot for reason config invalid: ${reason}`)
   process.exit(-1)
 }
@@ -18,9 +21,40 @@ if (!config.bot?.clientid) invalidConfig('missing bot client id')
 if (!config.bot?.mode) invalidConfig('missing bot mode')
 if (!config.apisettings?.key) invalidConfig('missing freestuff api key')
 
+// load cmdl config overrides
+import ParseArgs from './lib/parse-args'
+if (process.argv) {
+  try {
+    const args = ParseArgs.parse(process.argv)
+
+    const overrideConfig = (key: string, value: string | boolean | number, conf: any) => {
+      if (!key.includes('.')) {
+        conf[key] = value
+        return
+      }
+
+      const item = key.split('.')[0]
+      overrideConfig(
+        key.substr(item.length + 1),
+        value,
+        conf[item]
+      )
+    }
+
+    Object
+      .entries(args)
+      .filter(a => !a[0].startsWith('_'))
+      .map(a => overrideConfig(a[0], a[1], config))
+  } catch (ex) {
+    console.error(ex)
+    console.error('Issue parsing argv, ignoring cmdline arguments')
+  }
+}
+// eslint-enable no-console
+
 
 /*
- *
+ * WAIT FOR MANAGER ASSIGNMENT, THEN START INSTANCE(s)
  */
 
 

@@ -1,3 +1,4 @@
+import { config } from '..'
 import Logger from '../lib/logger'
 
 
@@ -26,7 +27,7 @@ export default class RemoteConfig {
   }
 
   public static get botAdmins(): string[] {
-    return this.get().bot_admins ?? []
+    return this.get().bot_admins ?? config.admins ?? []
   }
 
 }

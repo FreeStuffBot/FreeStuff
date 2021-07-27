@@ -6,7 +6,6 @@ import Emojis from '../../../emojis'
 export const onGuildDataDeleteCooldown: string[] = []
 
 export default function (i: ReplyableComponentInteraction) {
-  // TODO if user is not admin show them they can't do that
   const isAdmin = i.member && PermissionStrings.containsAdmin(i.member.permissions)
   const onCooldown = onGuildDataDeleteCooldown.includes(i.guild_id)
 

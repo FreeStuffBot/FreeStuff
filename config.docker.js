@@ -41,9 +41,5 @@ module.exports = {
     sentry: {
       dsn: secret('FSB_SENTRY_DSN')
     }
-  },
-  admins: [
-    '137258778092503042',
-    '171675309177831424'
-  ]
+  }
 }

@@ -1,11 +1,9 @@
 import { Message } from 'discord.js'
-import { Store } from 'freestuff'
 import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core, config } from '../../index'
 import Const from '../const'
 import ParseArgs from '../../lib/parse-args'
-import LanguageManager from '../../bot/language-manager'
 import MessageDistributor from '../../bot/message-distributor'
 
 
@@ -78,40 +76,7 @@ export default class TestCommand extends Command {
     try {
       let price = parseFloat(flags.price + '')
       if (!price) price = 19.99
-      MessageDistributor.test(mes.guild, {
-        id: 0,
-        title: Core.text(g, '=cmd_test_announcement_header'),
-        org_price: {
-          euro: price,
-          dollar: price
-        },
-        price: {
-          euro: 0,
-          dollar: 0
-        },
-        store: (LanguageManager.get(g, 'platform_' + flags.store) ? flags.store as Store : '') || 'steam',
-        thumbnail: {
-          blank: Const.placeholderThumbnail,
-          full: Const.placeholderThumbnail,
-          org: Const.placeholderThumbnail,
-          tags: Const.placeholderThumbnail
-        },
-        kind: 'game',
-        description: Core.text(g, '=cmd_test_announcement_description'),
-        tags: [],
-        rating: 0.8,
-        urls: {
-          org: Const.links.testgame,
-          default: Const.links.testgame,
-          browser: Const.links.testgame
-        },
-        flags: 0,
-        until: null,
-        type: 'free',
-        store_meta: {
-          steam_subids: '12345 98760'
-        }
-      })
+      MessageDistributor.test(mes.guild, Const.testAnnouncementContent)
     } catch (ex) {
       if (Object.keys(flags)) {
         repl('Yikes', 'Some of the flags you set caused errors. Try removing them.')

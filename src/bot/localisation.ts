@@ -1,5 +1,7 @@
 import { Guild } from 'discord.js'
+import { GameInfo } from 'freestuff'
 import { Util } from '../lib/util'
+import { GuildData } from '../types/datastructs'
 import Const from './const'
 import LanguageManager from './language-manager'
 
@@ -84,6 +86,13 @@ export default class Localisation {
       return LanguageManager.getRaw(hint, 'translation_available_generic')
 
     return ''
+  }
+
+  public static renderPriceTag(data: GuildData, game: GameInfo) {
+    const price = game.org_price.euro // TODO
+    return LanguageManager.get(data, 'currency_sign_position') === 'after'
+      ? `${price}${data.currency.symbol}`
+      : `${data.currency.symbol}${price}`
   }
 
 }

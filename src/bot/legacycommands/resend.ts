@@ -4,7 +4,7 @@ import { Command, ReplyFunction } from '../../types/commands'
 import { Core, config } from '../../index'
 import Const from '../const'
 import MessageDistributor from '../../bot/message-distributor'
-// import NewFreeCommand from '../commands/free'
+import AnnouncementManager from '../announcement-manager'
 
 
 export default class ResendCommand extends Command {
@@ -34,7 +34,7 @@ export default class ResendCommand extends Command {
       return true
     }
 
-    const freebies = [] // TODO NewFreeCommand.getCurrentFreebies()
+    const freebies = AnnouncementManager.getCurrentFreebies()
     if (!freebies?.length) {
       repl(
         Core.text(g, '=cmd_resend_nothing_free_1'),

@@ -168,7 +168,6 @@ export default class DatabaseManager {
     return obj
   }
 
-  // TODO BIG FAT TODO TO ADD SOME CACHING HERE
   /**
    * Get the guilds data from the database
    * @param guild guild object

@@ -20,10 +20,6 @@ export default function (i: ReplyableComponentInteraction) {
     tracker: i.guildData.tracker
   }
 
-  // TODO only show guild data if the user has manage guild permissions
-  // Show a warning otherwise
-  // Always show user data (aka nothing)
-
   i.replyPrivately({
     title: '=settings_guilddata_success_1',
     description: `**What we store:**\n\`\`\`${JSON.stringify(raw)}\`\`\`\n**Human readable**:\n${guilddata}\n**About you specifically:**\nNothing :sparkles:`,
