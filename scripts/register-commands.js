@@ -9,7 +9,7 @@ const clientid = config.bot.clientid
 const commands = [
   {
     name: 'about',
-    description: '"What\'s this bot about?" you ask? Well run this command to get an answer to all of your questions!'
+    description: 'Get info about the FreeStuff bot.'
   },
   {
     name: 'free',
@@ -17,27 +17,15 @@ const commands = [
   },
   {
     name: 'help',
-    description: 'View a nice support page to help you use this bot.'
+    description: 'Get help for the FreeStuff Bot.'
   },
   {
     name: 'invite',
-    description: 'Would you like to get this bot in your own server? Run this command to find out how!'
+    description: 'Would you like to get this bot in your own server?'
   },
   {
     name: 'settings',
     description: 'Change settings for the FreeStuff Bot.'
-  },
-  {
-    name: 'test',
-    description: 'Send a test announcement to see if everything is working.'
-    // options: [
-    //   {
-    //     name: 'silent',
-    //     description: "BLABLABLA",
-    //     type: 5,
-    //     required: false
-    //   }
-    // ]
   },
   {
     name: 'vote',

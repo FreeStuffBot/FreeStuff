@@ -16,7 +16,7 @@ export default function (i: ReplyableComponentInteraction) {
   if (!i.guildData) return { title: 'An error occured' }
 
   i
-    .replyInteractive({
+    .editInteractive({
       title: 'Super Secret Admin Panel 🚀',
       description: 'poggers',
       components: [

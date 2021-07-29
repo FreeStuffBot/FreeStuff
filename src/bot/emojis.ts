@@ -49,6 +49,9 @@ export default class Emojis {
   public static readonly announcementChannel = new Emojis('863732741752487946', 'announcement_channel')
   public static readonly announcementChannelGreen = new Emojis('863742472790474812', 'announcement_channel_green')
   public static readonly overflow = new Emojis('863142285465485372', 'overflow')
+  public static readonly support = new Emojis('870412781827002418', 'support')
+  public static readonly settings = new Emojis('870412781780869150', 'settings')
+  public static readonly bot = new Emojis('870418849739198465', 'bot')
 
   public static readonly global = new Emojis('863734030280032256', 'global')
   public static readonly no = new Emojis('863734030457372692', 'no')

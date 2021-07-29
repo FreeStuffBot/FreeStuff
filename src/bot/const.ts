@@ -36,6 +36,11 @@ export default class Const {
 
   public static readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/830794212894572574/thumbnail_placeholder.png'
 
+  public static readonly brandIcons = {
+    graySquare: 'https://cdn.discordapp.com/attachments/672907465670787083/870424590269181992/icon_trans.png',
+    regularSquare: 'https://cdn.discordapp.com/attachments/672907465670787083/870424608623448114/icon.png'
+  }
+
   public static readonly storeIcons = {
     steam: 'https://media.discordapp.net/attachments/672907465670787083/820258285566820402/steam.png',
     epic: 'https://cdn.discordapp.com/attachments/672907465670787083/820258283293638676/epic.png',
