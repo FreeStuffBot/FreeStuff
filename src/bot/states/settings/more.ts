@@ -10,6 +10,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     title: '=settings_more_ui_1',
     description: '=settings_more_ui_2',
     components: [
+      // TODO
       // {
       //   type: ComponentType.BUTTON,
       //   style: ButtonStyle.SECONDARY,

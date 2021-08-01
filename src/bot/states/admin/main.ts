@@ -2,7 +2,7 @@ import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationC
 import Emojis from '../../emojis'
 
 
-export default function (_i: GenericInteraction): InteractionApplicationCommandCallbackData {
+export default function (_i: GenericInteraction, args: [ boolean ]): InteractionApplicationCommandCallbackData {
   // row one: server specific
   // row two: global
   return {
@@ -20,7 +20,7 @@ export default function (_i: GenericInteraction): InteractionApplicationCommandC
       },
       {
         type: ComponentType.BUTTON,
-        style: ButtonStyle.SECONDARY,
+        style: args[0] ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
         custom_id: 'admin_refetch',
         label: '[Refetch]'
       },

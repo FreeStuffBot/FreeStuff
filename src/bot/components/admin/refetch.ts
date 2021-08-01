@@ -3,6 +3,6 @@ import AnnouncementManager from '../../announcement-manager'
 
 
 export default function (i: ReplyableComponentInteraction) {
-  i.ack()
+  i.state('admin_main', true)
   AnnouncementManager.updateCurrentFreebies()
 }
