@@ -3,6 +3,7 @@ import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core } from '../../index'
 import Const from '../const'
+import Experiments from '../../controller/experiments'
 
 
 export default class CheckCommand extends Command {
@@ -21,6 +22,14 @@ export default class CheckCommand extends Command {
   }
 
   public handle(mes: Message, _args: string[], g: GuildData, repl: ReplyFunction): boolean {
+    if (Experiments.runExperimentOnServer('slashcommand_hint_settings', g)) {
+      repl(
+        Core.text(g, '=slash_command_introduction_info_short'),
+        Core.text(g, '=slash_command_introduction_label_short', { command: '/settings' })
+      )
+      return true
+    }
+
     if (this.checkCooldownHarsh.includes(mes.guild.id))
       return true
     if (this.checkCooldown.includes(mes.guild.id)) {

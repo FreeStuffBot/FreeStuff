@@ -5,6 +5,7 @@ import { Core, config } from '../../index'
 import Const from '../const'
 import ParseArgs from '../../lib/parse-args'
 import MessageDistributor from '../../bot/message-distributor'
+import Experiments from '../../controller/experiments'
 
 
 export default class TestCommand extends Command {
@@ -22,6 +23,14 @@ export default class TestCommand extends Command {
   }
 
   public handle(mes: Message, args: string[], g: GuildData, repl: ReplyFunction): boolean {
+    if (Experiments.runExperimentOnServer('slashcommand_hint_settings', g)) {
+      repl(
+        Core.text(g, '=slash_command_introduction_info_short'),
+        Core.text(g, '=slash_command_introduction_label_short', { command: '/settings' })
+      )
+      return true
+    }
+
     if (this.testCooldownHarsh.includes(mes.guild.id))
       return true
     if (this.testCooldown.includes(mes.guild.id)) {

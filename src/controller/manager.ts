@@ -19,7 +19,7 @@ import RemoteConfig from './remote-config'
 export default class Manager {
 
   private static readonly DEFAULT_SOCKET_HOST = 'wss://management.freestuffbot.xyz'
-  private static readonly DEFAULT_SOCKET_PATH = '/api/internal/socket'
+  private static readonly DEFAULT_SOCKET_PATH = '/internal/socket'
 
   private static started = false
   private static socket: Socket = null
@@ -211,6 +211,12 @@ export default class Manager {
     const timestamp = Date.now().toString(32)
     const random = Util.generateWord('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 6)
     return `${host}.${timestamp}.${random}`
+  }
+
+  //
+
+  public static getSelfUUID(): string {
+    return this.selfUUID
   }
 
 }

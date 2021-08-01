@@ -3,6 +3,7 @@ import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import Const from '../const'
 import { Core } from '../../index'
+import Experiments from '../../controller/experiments'
 
 
 export default class ResetCommand extends Command {
@@ -21,6 +22,14 @@ export default class ResetCommand extends Command {
   }
 
   public async handle(mes: Message, args: string[], g: GuildData, repl: ReplyFunction): Promise<boolean> {
+    if (Experiments.runExperimentOnServer('slashcommand_hint_settings', g)) {
+      repl(
+        Core.text(g, '=slash_command_introduction_info_short'),
+        Core.text(g, '=slash_command_introduction_label_short', { command: '/settings' })
+      )
+      return true
+    }
+
     if (this.cmdCooldownHarsh.includes(mes.guild.id))
       return true
     if (this.cmdCooldown.includes(mes.guild.id)) {

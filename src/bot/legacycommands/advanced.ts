@@ -3,6 +3,7 @@ import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import Const from '../const'
 import { Core } from '../../index'
+import Experiments from '../../controller/experiments'
 
 
 export default class AdvancedCommand extends Command {
@@ -24,6 +25,14 @@ export default class AdvancedCommand extends Command {
   }
 
   public handle(mes: Message, _args: string[], g: GuildData, repl: ReplyFunction): boolean {
+    if (Experiments.runExperimentOnServer('slashcommand_hint_settings', g)) {
+      repl(
+        Core.text(g, '=slash_command_introduction_info_short'),
+        Core.text(g, '=slash_command_introduction_label_short', { command: '/settings' })
+      )
+      return true
+    }
+
     const commands = this.raw.map(c => `• \`@${mes.guild.me.user.username} ${c[0]}\` ─ ${Core.text(g, c[1])}`)
 
     repl(

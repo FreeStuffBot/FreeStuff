@@ -16,7 +16,7 @@ export default class BetaCommand extends Command {
     })
   }
 
-  public handle(mes: Message, args: string[], g: GuildData, reply: ReplyFunction): boolean {
+  public handle(_mes: Message, args: string[], g: GuildData, reply: ReplyFunction): boolean {
     if (args.length < 1) {
       reply(
         Core.text(g, g.beta ? '=cmd_beta_info_enabled_1' : '=cmd_beta_info_disabled_1'),

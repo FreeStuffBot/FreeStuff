@@ -6,7 +6,7 @@ import LanguageManager from '../../language-manager'
 
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
-  const translationCredits = i.guildData.language.startsWith('en')
+  const translationCredits = (!i.guildData || i.guildData.language.startsWith('en'))
     ? ''
     : `\n\n${Core.text(i.guildData, '=translation_by')}\n${LanguageManager.getRaw(i.guildData.language, 'translators').split(', ').map(n => `• ${n}`).join('\n')}`
 
@@ -28,15 +28,16 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
+        visible: !!i.guildData,
         custom_id: 'settings_main',
-        label: 'Bot Settings',
+        label: '=page_settings',
         emoji: { id: Emojis.settings.id }
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'help_main',
-        label: 'Help Page',
+        label: '=page_help',
         emoji: { id: Emojis.support.id }
       }
     ],

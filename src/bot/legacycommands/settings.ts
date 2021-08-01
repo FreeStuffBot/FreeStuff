@@ -4,6 +4,7 @@ import { Command, CommandHandler, ReplyFunction, SettingsSubcommand } from '../.
 import { Core } from '../../index'
 import Const from '../const'
 import Logger from '../../lib/logger'
+import Experiments from '../../controller/experiments'
 import SetChannelHandler from './set/channel'
 import SetLanguageHandler from './set/language'
 import SetMentionHandler from './set/mention'
@@ -41,6 +42,14 @@ export default class SettingsCommand extends Command {
   }
 
   public handle(mes: Message, args: string[], g: GuildData, repl: ReplyFunction): boolean {
+    if (Experiments.runExperimentOnServer('slashcommand_hint_settings', g)) {
+      repl(
+        Core.text(g, '=slash_command_introduction_info_short'),
+        Core.text(g, '=slash_command_introduction_label_short', { command: '/settings' })
+      )
+      return true
+    }
+
     if (!g) {
       repl(
         Core.text(g, '=cmd_error_readd_1'),

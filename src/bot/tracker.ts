@@ -33,6 +33,7 @@ export default class Tracker {
   }
 
   public static set(g: GuildData, hint: keyof typeof Tracker.TRACKING_POINT, value = true) {
+    if (!g) return
     const state = this.isTracked(g, hint)
     if (state === value) return // no change
     Core.databaseManager?.changeSetting(g, 'tracker', g.tracker ^ Tracker.TRACKING_POINT[hint])
