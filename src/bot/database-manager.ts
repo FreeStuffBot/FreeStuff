@@ -94,7 +94,7 @@ export default class DatabaseManager {
   }
 
   private async saveQueuedChanges(data: GuildData) {
-    if (!(data as any)._changes) return
+    if (!(data as any)?._changes) return
     await Database
       .collection('guilds')
       .updateOne(

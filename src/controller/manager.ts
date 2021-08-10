@@ -90,7 +90,7 @@ export default class Manager {
       },
       path: socketPath,
       jsonp: false,
-      transports: [ 'websocket' ],
+      // transports: [ 'websocket' ],
       auth: {
         key: config.mode.master.auth || config.apisettings.key
       }
