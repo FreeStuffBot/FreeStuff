@@ -348,14 +348,13 @@ export default class DatabaseManager {
   // settings: (do not use bit 31, causes unwanted effects with negative number conversion)
   // 3__ 2__________________ 1__________________ 0__________________
   // 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
-  //   _                             ___________ _ _______ _________
+  //   _                           _____________ _ _______ _________
   // 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-  //   |                             |           | |       |
-  //   |                             |           | |       theme [0< 5]
-  //   |                             |           | |
-  //   |                             |           | currency [5< 4]
-  //   |                             |           react with :free: emoji [9< 1]
-  //   |                             language [10< 6]
+  //   |                           |             | |       |
+  //   |                           |             | |       theme [0< 5]
+  //   |                           |             | currency [5< 4]
+  //   |                           |             react with :free: emoji [9< 1]
+  //   |                           language [10< 7]
   //   opted in to beta tests [30< 1]
 
   // filter: (do not use bit 31, causes unwanted effects with negative number conversion)
