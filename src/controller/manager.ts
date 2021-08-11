@@ -123,6 +123,11 @@ export default class Manager {
       this.connectSocket()
       this.socketConnectionIdleTimeout = null
     }, this.IDLE_TIMEOUT)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket test32') }, 1000)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket test33') }, 5000)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket test34') }, 50000)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket test35') }, 120000)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket test36') }, this.IDLE_TIMEOUT)
     Logger.excessive('Manager#connectSocket breakpoint3' + !!this.socketConnectionIdleTimeout)
 
     this.socket.connect()
@@ -137,6 +142,7 @@ export default class Manager {
         this.socket.emit('status', { id: shard.id, status: shard.status })
 
       if (this.socketConnectionIdleTimeout) {
+        Logger.excessive('Manager#connectSocket breakpoint6')
         clearTimeout(this.socketConnectionIdleTimeout)
         this.socketConnectionIdleTimeout = null
       }
