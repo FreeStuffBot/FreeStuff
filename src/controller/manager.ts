@@ -105,48 +105,52 @@ export default class Manager {
 
     this.prepareSocket()
     this.connectSocket()
-    console.log('Manager#connectSocket d3 ', this.socketConnectionIdleTimeout)
+    setInterval(() => {
+      if (!this.socket.connected) {
+        this.socket.disconnect()
+        this.connectSocket()
+      }
+    }, this.IDLE_TIMEOUT)
   }
 
   private static connectSocket() {
     Logger.process('Connecting to manager socket...')
-    setTimeout(() => { console.log('Manager#connectSocket z test30') }, 0)
-    setTimeout(() => { console.log('Manager#connectSocket z test31') }, 10)
-    setInterval(() => { console.log('Manager#connectSocket interval') }, 3000)
+    // setTimeout(() => { console.log('Manager#connectSocket z test30') }, 0)
+    // setTimeout(() => { console.log('Manager#connectSocket z test31') }, 10)
+    // setInterval(() => { console.log('Manager#connectSocket interval') }, 3000)
 
-    Logger.excessive('Manager#connectSocket breakpoint1 ' + !!this.socketConnectionIdleTimeout)
-    if (this.socketConnectionIdleTimeout)
-      clearTimeout(this.socketConnectionIdleTimeout)
+    // Logger.excessive('Manager#connectSocket breakpoint1 ' + !!this.socketConnectionIdleTimeout)
+    // if (this.socketConnectionIdleTimeout)
+    //   clearTimeout(this.socketConnectionIdleTimeout)
 
-    Logger.excessive('Manager#connectSocket breakpoint2 ' + this.IDLE_TIMEOUT)
-    setTimeout(() => { Logger.excessive('Manager#connectSocket a test32') }, 1000)
-    setTimeout(() => { Logger.excessive('Manager#connectSocket a test33') }, 5000)
-    setTimeout(() => { Logger.excessive('Manager#connectSocket a test34') }, 50000)
-    setTimeout(() => { Logger.excessive('Manager#connectSocket a test35') }, 120000)
-    setTimeout(() => { Logger.excessive('Manager#connectSocket a test36') }, this.IDLE_TIMEOUT)
+    // Logger.excessive('Manager#connectSocket breakpoint2 ' + this.IDLE_TIMEOUT)
+    // setTimeout(() => { Logger.excessive('Manager#connectSocket a test32') }, 1000)
+    // setTimeout(() => { Logger.excessive('Manager#connectSocket a test33') }, 5000)
+    // setTimeout(() => { Logger.excessive('Manager#connectSocket a test34') }, 50000)
+    // setTimeout(() => { Logger.excessive('Manager#connectSocket a test35') }, 120000)
+    // setTimeout(() => { Logger.excessive('Manager#connectSocket a test36') }, this.IDLE_TIMEOUT)
 
-    this.socketConnectionIdleTimeout = setTimeout(() => {
-      console.log('Manager#connectSocket c test1')
-      Logger.excessive('Manager#connectSocket breakpoint4')
-      Logger.warn('Socket connection timed out. Re-trying.')
-      console.log('Manager#connectSocket c test2')
-      this.socket.disconnect()
-      this.connectSocket()
-      this.socketConnectionIdleTimeout = null
-      console.log('Manager#connectSocket c test3')
-    }, this.IDLE_TIMEOUT)
-    console.log('Manager#connectSocket d1 ', this.socketConnectionIdleTimeout)
-    setTimeout(() => { console.log('Manager#connectSocket b test30') }, 0)
-    setTimeout(() => { console.log('Manager#connectSocket b test31') }, 10)
-    setTimeout(() => { console.log('Manager#connectSocket b test32') }, 1000)
-    setTimeout(() => { console.log('Manager#connectSocket b test33') }, 5000)
-    setTimeout(() => { console.log('Manager#connectSocket b test34') }, 50000)
-    setTimeout(() => { console.log('Manager#connectSocket b test35') }, 120000)
-    setTimeout(() => { console.log('Manager#connectSocket b test36') }, this.IDLE_TIMEOUT)
-    Logger.excessive('Manager#connectSocket breakpoint3 ' + !!this.socketConnectionIdleTimeout)
+    // this.socketConnectionIdleTimeout = setTimeout(() => {
+    //   console.log('Manager#connectSocket c test1')
+    //   Logger.excessive('Manager#connectSocket breakpoint4')
+    //   Logger.warn('Socket connection timed out. Re-trying.')
+    //   console.log('Manager#connectSocket c test2')
+    //   this.socket.disconnect()
+    //   this.connectSocket()
+    //   console.log('Manager#connectSocket c test3')
+    // }, this.IDLE_TIMEOUT)
+    // console.log('Manager#connectSocket d1 ', this.socketConnectionIdleTimeout)
+    // setTimeout(() => { console.log('Manager#connectSocket b test30') }, 0)
+    // setTimeout(() => { console.log('Manager#connectSocket b test31') }, 10)
+    // setTimeout(() => { console.log('Manager#connectSocket b test32') }, 1000)
+    // setTimeout(() => { console.log('Manager#connectSocket b test33') }, 5000)
+    // setTimeout(() => { console.log('Manager#connectSocket b test34') }, 50000)
+    // setTimeout(() => { console.log('Manager#connectSocket b test35') }, 120000)
+    // setTimeout(() => { console.log('Manager#connectSocket b test36') }, this.IDLE_TIMEOUT)
+    // Logger.excessive('Manager#connectSocket breakpoint3 ' + !!this.socketConnectionIdleTimeout)
 
     this.socket.connect()
-    Logger.excessive('Manager#connectSocket breakpoint6 ' + !!this.socketConnectionIdleTimeout)
+    // Logger.excessive('Manager#connectSocket breakpoint6 ' + !!this.socketConnectionIdleTimeout)
   }
 
   private static prepareSocket() {
