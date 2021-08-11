@@ -75,13 +75,7 @@ export default class Manager {
       this.shards.get(shard).status = status
     }
 
-    this.reportStatus()
-  }
-
-  private static reportStatus() {
-    if (!this.socket) return
-    const shards = [ ...this.shards.values() ]
-    this.socket.emit('status', { shards })
+    this.socket.emit('status', { id: shard, status })
   }
 
   private static async openSocket() {
@@ -134,7 +128,8 @@ export default class Manager {
 
     this.socket.on('connect', () => {
       Logger.process('Manager socket connected')
-      this.reportStatus()
+      for (const shard of this.shards.values())
+        this.socket.emit('status', { id: shard.id, status: shard.status })
 
       if (this.socketConnectionIdleTimeout) {
         clearTimeout(this.socketConnectionIdleTimeout)
@@ -150,7 +145,8 @@ export default class Manager {
     })
 
     this.socket.on('reconnect', () => {
-      this.reportStatus()
+      for (const shard of this.shards.values())
+        this.socket.emit('status', { id: shard.id, status: shard.status })
     })
 
     this.socket.on('task', (task: WorkerTask) => {
