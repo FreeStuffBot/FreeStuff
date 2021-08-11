@@ -1,6 +1,7 @@
 import Cordo from 'cordo'
 import { Client } from 'discord.js'
 import * as chalk from 'chalk'
+import { CronJob } from 'cron'
 import LanguageManager from './bot/language-manager'
 import LegacyCommandHandler from './bot/legacy-command-handler'
 import DatabaseManager from './bot/database-manager'
@@ -32,6 +33,9 @@ export default class FreeStuffBot extends Client {
     // TODO find an actual fix for this instead of this garbage lol
     const manualConnectTimer = setTimeout(() => (this.ws as any)?.connection?.triggerReady(), 30000)
     this.on('ready', () => clearTimeout(manualConnectTimer))
+
+    AnnouncementManager.updateCurrentFreebies()
+    new CronJob('0 0 0 * * *', () => AnnouncementManager.updateCurrentFreebies()).start()
 
     this.registerEventHandlers()
 
