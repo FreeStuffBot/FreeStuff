@@ -105,10 +105,14 @@ export default class Manager {
 
     this.prepareSocket()
     this.connectSocket()
+    console.log('Manager#connectSocket d3 ', this.socketConnectionIdleTimeout)
   }
 
   private static connectSocket() {
     Logger.process('Connecting to manager socket...')
+    setTimeout(() => { console.log('Manager#connectSocket z test30') }, 0)
+    setTimeout(() => { console.log('Manager#connectSocket z test31') }, 10)
+    setInterval(() => { console.log('Manager#connectSocket interval') }, 3000)
 
     Logger.excessive('Manager#connectSocket breakpoint1 ' + !!this.socketConnectionIdleTimeout)
     if (this.socketConnectionIdleTimeout)
@@ -131,6 +135,9 @@ export default class Manager {
       this.socketConnectionIdleTimeout = null
       console.log('Manager#connectSocket c test3')
     }, this.IDLE_TIMEOUT)
+    console.log('Manager#connectSocket d1 ', this.socketConnectionIdleTimeout)
+    setTimeout(() => { console.log('Manager#connectSocket b test30') }, 0)
+    setTimeout(() => { console.log('Manager#connectSocket b test31') }, 10)
     setTimeout(() => { console.log('Manager#connectSocket b test32') }, 1000)
     setTimeout(() => { console.log('Manager#connectSocket b test33') }, 5000)
     setTimeout(() => { console.log('Manager#connectSocket b test34') }, 50000)
@@ -162,6 +169,7 @@ export default class Manager {
 
       this.socket.disconnect()
       this.connectSocket()
+      console.log('Manager#connectSocket d2 ', this.socketConnectionIdleTimeout)
     })
 
     this.socket.on('reconnect', () => {
