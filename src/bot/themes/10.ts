@@ -4,6 +4,7 @@ import Experiments from '../../controller/experiments'
 import { GuildData } from '../../types/datastructs'
 import { ThemeBuilder } from '../../types/context'
 import { Core } from '../../index'
+import DatabaseManager from '../database-manager'
 import Const from '../const'
 import LanguageManager from '../../bot/language-manager'
 

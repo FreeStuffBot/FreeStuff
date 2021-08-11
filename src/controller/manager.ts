@@ -1,14 +1,15 @@
 import { hostname } from 'os'
 import { io, Socket } from 'socket.io-client'
 import { Long } from 'mongodb'
-import { config, Core, FSAPI } from '../index'
+import { config, FSAPI } from '../index'
 import Logger from '../lib/logger'
-import { Experiment, ManagerCommand, ShardAction, ShardStatus, ShardTask } from '../types/controller'
+import { Experiment, WorkerCommand, ShardStatus, WorkerTask, WorkerAction, Shard } from '../types/controller'
 import { getGitCommit } from '../lib/git-parser'
 import { Util } from '../lib/util'
 import MessageDistributor from '../bot/message-distributor'
 import LanguageManager from '../bot/language-manager'
 import AnnouncementManager from '../bot/announcement-manager'
+import DatabaseManager from '../bot/database-manager'
 import Experiments from './experiments'
 import RemoteConfig from './remote-config'
 
@@ -24,35 +25,35 @@ export default class Manager {
   private static started = false
   private static socket: Socket = null
   private static assignmentPromise: (any) => any = null
-  private static assignedShardId = -1
-  private static assignedShardCount = -1
-  private static currentStatus: ShardStatus = 'idle'
+  private static task: WorkerTask = null
+  private static shards: Map<number, Shard> = new Map()
   private static selfUUID = Manager.generateSelfUUID()
-  private static disconnectedForTooLong: any = null
+  private static socketConnectionIdleTimeout: any = null
 
-  private static readonly IDLE_TIMEOUT = 60 * 1000
+  private static readonly IDLE_TIMEOUT = 2 * 60 * 1000 // 2 minutes
 
-  public static ready(): Promise<ShardAction> {
+  public static ready(): Promise<WorkerAction> {
     if (this.started) throw new Error('Already started')
     this.started = true
 
     if (config.mode.name === 'single') {
       return Promise.resolve({
         id: 'startup',
-        shardCount: undefined,
-        shardId: undefined
+        task: null
       })
     }
 
     if (config.mode.name === 'shard') {
       return Promise.resolve({
         id: 'startup',
-        shardCount: config.mode.shardCount,
-        shardId: config.mode.shardId
+        task: {
+          ids: [ config.mode.shardId ],
+          total: config.mode.shardCount
+        }
       })
     }
 
-    if (config.mode.name === 'discovery') {
+    if (config.mode.name === 'worker') {
       this.openSocket()
       return new Promise((res) => {
         this.assignmentPromise = (data: any) => res(data)
@@ -63,15 +64,27 @@ export default class Manager {
     return Promise.resolve({ id: 'shutdown' })
   }
 
-  public static status(status: ShardStatus) {
-    Logger.info(`Service status: ${status}`)
-    this.currentStatus = status
+  public static status(shard: number, status: ShardStatus) {
+    if (shard === null) {
+      Logger.info(`All shards status: ${status}`)
+      for (const id of this.shards.keys())
+        this.shards.get(id).status = status
+    } else {
+      Logger.info(`Shard ${shard} status: ${status}`)
+      this.shards.get(shard).status = status
+    }
+
+    this.reportStatus()
+  }
+
+  private static reportStatus() {
     if (!this.socket) return
-    this.socket.emit('status', status)
+    const shards = [ ...this.shards.values() ]
+    this.socket.emit('status', { shards })
   }
 
   private static async openSocket() {
-    if (config.mode.name !== 'discovery') return // for type safety below
+    if (config.mode.name !== 'worker') return // for type safety below
 
     const socketHost = config.mode.master.host || this.DEFAULT_SOCKET_HOST
     const socketPath = config.mode.master.path || this.DEFAULT_SOCKET_PATH
@@ -81,56 +94,66 @@ export default class Manager {
       reconnectionDelayMax: 10000,
       reconnectionDelay: 1000,
       query: {
-        type: 'shard',
-        client: 'discord',
-        mode: config.bot.mode,
+        type: 'worker',
         version: gitCommit.hash,
         server: hostname(),
         id: this.selfUUID
       },
       path: socketPath,
       jsonp: false,
-      // transports: [ 'websocket' ],
+      transports: [ 'websocket' ],
       auth: {
         key: config.mode.master.auth || config.apisettings.key
       }
     })
 
     this.prepareSocket()
+    this.connectSocket()
+  }
 
+  private static connectSocket() {
     Logger.process('Connecting to manager socket...')
+
+    if (this.socketConnectionIdleTimeout)
+      clearTimeout(this.socketConnectionIdleTimeout)
+
+    this.socketConnectionIdleTimeout = setTimeout(() => {
+      Logger.warn('Socket connection timed out. Re-trying.')
+      this.socket.disconnect()
+      this.connectSocket()
+      this.socketConnectionIdleTimeout = null
+    }, this.IDLE_TIMEOUT)
+
     this.socket.connect()
   }
 
   private static prepareSocket() {
     this.socket.on('connect', () => {
       Logger.process('Manager socket connected')
-      this.socket.emit('status', this.currentStatus)
+      this.reportStatus()
 
-      if (this.disconnectedForTooLong) {
-        clearTimeout(this.disconnectedForTooLong)
-        this.disconnectedForTooLong = null
+      if (this.socketConnectionIdleTimeout) {
+        clearTimeout(this.socketConnectionIdleTimeout)
+        this.socketConnectionIdleTimeout = null
       }
     })
 
     this.socket.on('disconnect', () => {
       Logger.process('Manager socket disconnected')
 
-      this.disconnectedForTooLong = setTimeout(() => {
-        Logger.warn('Socket connection timed out. Restarting.')
-        this.runCommand({ id: 'shutdown' })
-      }, this.IDLE_TIMEOUT)
+      this.socket.disconnect()
+      this.connectSocket()
     })
 
     this.socket.on('reconnect', () => {
-      this.socket.emit('status', this.currentStatus)
+      this.reportStatus()
     })
 
-    this.socket.on('task', (task: ShardTask) => {
+    this.socket.on('task', (task: WorkerTask) => {
       this.newTask(task)
     })
 
-    this.socket.on('command', (cmd: ManagerCommand) => {
+    this.socket.on('command', (cmd: WorkerCommand) => {
       this.runCommand(cmd)
     })
 
@@ -147,38 +170,39 @@ export default class Manager {
     })
   }
 
-  private static newTask(task: ShardTask) {
-    Logger.process(`Manager assigned task: ${Object.values(task).join(', ')}`)
+  private static newTask(task: WorkerTask) {
+    Logger.process(`Manager assigned task: ids[${task.ids}]`)
+    this.task = task
 
-    if (task.id === 'ready') {
-      Logger.process('Cannot undo connection, restarting')
-      process.exit(0)
+    for (const shard of task.ids) {
+      if (this.shards.has(shard)) continue
+
+      this.shards.set(shard, {
+        id: shard,
+        status: 'idle'
+      })
     }
 
-    if (task.id === 'assigned') {
-      if (!this.assignmentPromise) {
-        if (this.assignedShardId !== task.shardId) {
-          Logger.process('Reassignment to different shard id, restarting')
-          process.exit(0)
-        }
-        if (this.assignedShardCount !== task.shardCount) {
-          Logger.process('Reassignment to different shard count, restarting')
-          process.exit(0)
-        }
-      } else {
-        this.assignedShardCount = task.shardCount
-        this.assignedShardId = task.shardId
-        this.assignmentPromise({
-          id: 'startup',
-          shardCount: task.shardCount,
-          shardId: task.shardId
-        })
-        this.assignmentPromise = null
-      }
+    if (!this.assignmentPromise) {
+      // if (this.assignedShardId !== task.shardId) {
+      //   Logger.process('Reassignment to different shard id, restarting')
+      //   process.exit(0)
+      // }
+      // if (this.assignedShardCount !== task.shardCount) {
+      //   Logger.process('Reassignment to different shard count, restarting')
+      //   process.exit(0)
+      // }
+      // TODO
+    } else {
+      this.assignmentPromise({
+        id: 'startup',
+        task
+      })
+      this.assignmentPromise = null
     }
   }
 
-  private static async runCommand(cmd: ManagerCommand) {
+  private static async runCommand(cmd: WorkerCommand) {
     switch (cmd.id) {
       case 'shutdown':
         Logger.manager('Shutdown.')
@@ -193,7 +217,7 @@ export default class Manager {
         Logger.manager('Resend received')
         for (const guildid of cmd.guilds) {
           if (!Util.belongsToShard(Long.fromString(guildid))) continue
-          const guildData = await Core.databaseManager.getGuildData(guildid)
+          const guildData = await DatabaseManager.getGuildData(guildid)
           const freebies = AnnouncementManager.getCurrentFreebies()
           MessageDistributor.sendToGuild(guildData, freebies, false, false)
           Logger.manager(`Resent to ${guildid}`)
@@ -217,6 +241,10 @@ export default class Manager {
 
   public static getSelfUUID(): string {
     return this.selfUUID
+  }
+
+  public static getTask(): WorkerTask {
+    return this.task
   }
 
 }

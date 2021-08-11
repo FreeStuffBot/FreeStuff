@@ -72,8 +72,9 @@ import Manager from './controller/manager'
 import LanguageManager from './bot/language-manager'
 import WebhookServer from './controller/webhookserver'
 import Cordo from 'cordo'
-import { ShardAction } from './types/controller'
 import RemoteConfig from './controller/remote-config'
+import { WorkerAction } from './types/controller'
+import DatabaseManager from './bot/database-manager'
 
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -96,6 +97,8 @@ async function run() {
   Database.init()
   Redis.init()
 
+  DatabaseManager.init()
+
   const action = await Manager.ready()
 
   switch (action.id) {
@@ -105,7 +108,7 @@ async function run() {
 
     case 'startup':
       initComponents(commit, action)
-      mountBot(action.shardId, action.shardCount)
+      mountBot(action.task.ids, action.task.total)
   }
 }
 
@@ -116,7 +119,7 @@ run().catch((err) => {
 
 //
 
-function initComponents(commit: GitCommit, action: ShardAction) {
+function initComponents(commit: GitCommit, action: WorkerAction) {
   LanguageManager.init()
 
   Cordo.init({
@@ -136,26 +139,19 @@ function initComponents(commit: GitCommit, action: ShardAction) {
     }
   })
   Cordo.addMiddlewareInteractionCallback((data, guild) => LanguageManager.translateObject(data, guild, data._context, 14))
-  Cordo.setMiddlewareGuildData((guildid: string) => Core?.databaseManager.getGuildData(guildid))
+  Cordo.setMiddlewareGuildData((guildid: string) => DatabaseManager.getGuildData(guildid))
 
   FSAPI = new FreeStuffApi({
     ...config.apisettings as any,
     version: commit.shortHash,
-    sid: action.id === 'startup' ? action.shardId : 'err'
+    sid: action.id === 'startup' ? action.task.ids[0] : 'err'
   })
 
   if (config.apisettings.server?.enable)
     WebhookServer.start(config.apisettings.server)
 }
 
-function mountBot(shardId: number, shardCount: number) {
-  // if (Core) {
-  //   // unmount old bot
-  //   Core.removeAllListeners()
-  //   Core.destroy()
-  //   return
-  // }
-
+function mountBot(shardIds: number[], shardCount: number) {
   Core = new FreeStuffBot({
     ws: {
       intents: [
@@ -163,12 +159,15 @@ function mountBot(shardId: number, shardCount: number) {
         'GUILD_MESSAGES'
       ]
     },
+    retryLimit: 999999,
     disableMentions: 'none',
     messageSweepInterval: 2,
     messageCacheLifetime: 0,
     messageCacheMaxSize: 0,
+    fetchAllMembers: false,
+    messageEditHistoryMaxSize: 0,
     shardCount,
-    shards: (shardId !== undefined) ? [ shardId ] : undefined
+    shards: (shardIds !== undefined) ? shardIds : undefined
   })
   Core.start()
 }

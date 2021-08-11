@@ -19,7 +19,7 @@ module.exports = {
     clientid: secret('FSB_DBOT_ID') || '672822334641537041'
   },
   mode: {
-    name: 'discovery',
+    name: 'worker',
     master: {
       host: process.env.NODE_ENV === 'production'
         ? undefined

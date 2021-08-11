@@ -118,7 +118,7 @@ export default class Cordo {
     i._answered = false
 
     if (i.guild_id)
-      i.guildData = await Core.databaseManager.getGuildData(i.guild_id)
+      i.guildData = await DatabaseManager.getGuildData(i.guild_id)
 
     if (i.type === InteractionType.COMMAND)
       Cordo.onCommand(i)

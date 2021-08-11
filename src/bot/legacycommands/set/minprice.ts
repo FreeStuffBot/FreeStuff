@@ -71,7 +71,7 @@ export default class SetMinpriceHandler implements CommandHandler, SettingsSubco
     //       Core.text(g, '=cmd_set_price_success_2', { price: pricestr })
     //     )
     //   }
-    //   // Core.databaseManager.changeSetting(g, 'price', )
+    //   // DatabaseManager.changeSetting(g, 'price', )
     // }
 
     return true

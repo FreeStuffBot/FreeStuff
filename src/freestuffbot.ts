@@ -16,17 +16,15 @@ import { config, FSAPI } from './index'
 export default class FreeStuffBot extends Client {
 
   public commandHandler: LegacyCommandHandler
-  public databaseManager: DatabaseManager
   public announcementManager: AnnouncementManager
 
   //
 
   public start() {
     if (this.readyAt) return // bot is already started
-    Manager.status('startup')
+    Manager.status(null, 'startup')
 
     this.commandHandler = new LegacyCommandHandler(this)
-    this.databaseManager = new DatabaseManager(this)
     this.announcementManager = new AnnouncementManager(this)
 
     DbStats.startMonitoring(this)
@@ -37,39 +35,46 @@ export default class FreeStuffBot extends Client {
 
     this.registerEventHandlers()
 
-    Manager.status('identifying')
+    Manager.status(null, 'identifying')
     this.login(config.bot.token)
   }
 
   private registerEventHandlers() {
     // keep { } here or else this. behaves differently
-    this.on('ready', () => { this.onReady() })
-    this.on('shardDisconnect', () => { Manager.status('disconnected') })
-    this.on('shardReconnecting', () => { Manager.status('reconnecting') })
-    this.on('shardResume', () => { Manager.status('operational') })
-    this.on('shardReady', () => { Manager.status('operational') })
+    this.on('shardReady', (id) => { this.onShardReady(id) })
+    this.on('shardDisconnect', (_, id) => { Manager.status(id, 'disconnected') })
+    this.on('shardReconnecting', (id) => { Manager.status(id, 'reconnecting') })
+    this.on('shardResume', (id) => { Manager.status(id, 'operational') })
+    this.on('shardReady', (id) => { Manager.status(id, 'operational') })
+
+    this.on('ready', () => {
+      this.startBotActvity()
+      FSAPI.ping().then((res) => {
+        if (res._status !== 200)
+          Logger.warn(`API Ping failed with code ${res._status}: ${res.error}, ${res.message}`)
+      })
+    })
 
     // interactions
     this.on('raw', (ev: any) => {
       if (ev.t === 'INTERACTION_CREATE')
         Cordo.emitInteraction(ev.d)
     })
+
+    // database sync
+    this.on('guildCreate', (guild) => {
+      DatabaseManager.addGuild(guild)
+    })
   }
 
-  private onReady() {
-    Manager.status('operational')
+  private onShardReady(id: number) {
+    DatabaseManager.onShardReady(id)
 
-    const shard = `Shard ${(this.options.shards as number[]).join(', ')} / ${this.options.shardCount}`
-    Logger.process(chalk`Bot ready! Logged in as {yellowBright ${this.user?.tag}} {gray (${shard})}`)
-    if (config.bot.mode === 'dev') Logger.process([ 'Guilds:', ...this.guilds.cache.map(g => `  ${g.name} :: ${g.id}`) ].join('\n'))
+    const shard = `Shard ${id} of [${this.options.shards}] / ${this.options.shardCount}`
+    Logger.process(chalk`Shard ${id} ready! Logged in as {yellowBright ${this.user?.tag}} {gray (${shard})}`)
+    if (config.bot.mode === 'dev') Logger.process([ 'Shard ' + id + ' Guilds:', ...this.guilds.cache.map(g => `  ${g.name} :: ${g.id}`) ].join('\n'))
 
-    this.startBotActvity()
     DbStats.usage.then(u => u.reconnects.updateToday(1, true))
-
-    FSAPI.ping().then((res) => {
-      if (res._status !== 200)
-        Logger.warn(`API Ping failed with code ${res._status}: ${res.error}, ${res.message}`)
-    })
   }
 
   private startBotActvity() {

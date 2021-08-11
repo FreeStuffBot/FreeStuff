@@ -3,6 +3,7 @@ import { GameInfo } from 'freestuff'
 import { GuildData } from '../../types/datastructs'
 import { ThemeBuilder } from '../../types/context'
 import { Core } from '../../index'
+import DatabaseManager from '../database-manager'
 import Const from '../../bot/const'
 import Experiments from '../../controller/experiments'
 

@@ -2,6 +2,7 @@ import { Message } from 'discord.js'
 import { GuildData } from '../../../types/datastructs'
 import { ReplyFunction, CommandHandler, SettingsSubcommand } from '../../../types/commands'
 import { Core } from '../../../index'
+import DatabaseManager from '../../database-manager'
 
 
 export default class SetCurrencyHandler implements CommandHandler, SettingsSubcommand {
@@ -14,7 +15,7 @@ export default class SetCurrencyHandler implements CommandHandler, SettingsSubco
     ]
   }
 
-  public handle(mes: Message, args: string[], g: GuildData, reply: ReplyFunction): boolean {
+  public handle(_mes: Message, args: string[], g: GuildData, reply: ReplyFunction): boolean {
     if (args.length < 1) {
       reply(
         Core.text(g, '=cmd_set_currency_missing_args_1'),
@@ -24,14 +25,14 @@ export default class SetCurrencyHandler implements CommandHandler, SettingsSubco
     }
     if ([ '€', 'euro', 'eur' ].includes(args[0].toLowerCase())) {
       if (g.currency.id !== 0)
-        Core.databaseManager.changeSetting(g, 'currency', 0)
+        DatabaseManager.changeSetting(g, 'currency', 0)
       reply(
         Core.text(g, '=cmd_set_currency_success_euro_1'),
         Core.text(g, '=cmd_set_currency_success_euro_2')
       )
     } else if ([ '$', 'dollar', 'usd' ].includes(args[0].toLowerCase())) {
       if (g.currency.id !== 1)
-        Core.databaseManager.changeSetting(g, 'currency', 1)
+        DatabaseManager.changeSetting(g, 'currency', 1)
       reply(
         Core.text(g, '=cmd_set_currency_success_dollar_1'),
         Core.text(g, '=cmd_set_currency_success_dollar_2')

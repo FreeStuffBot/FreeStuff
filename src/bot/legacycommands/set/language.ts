@@ -4,6 +4,7 @@ import { ReplyFunction, CommandHandler, SettingsSubcommand } from '../../../type
 import { Core } from '../../../index'
 import LanguageManager from '../../../bot/language-manager'
 import Localisation from '../../../bot/localisation'
+import DatabaseManager from '../../database-manager'
 
 
 export default class SetLanguageHandler implements CommandHandler, SettingsSubcommand {
@@ -53,7 +54,7 @@ export default class SetLanguageHandler implements CommandHandler, SettingsSubco
     }
 
     const langid = LanguageManager.languageToId(lang)
-    Core.databaseManager.changeSetting(g, 'language', langid)
+    DatabaseManager.changeSetting(g, 'language', langid)
 
     reply(
       LanguageManager.getRaw(lang, 'cmd_set_language_success_1'),

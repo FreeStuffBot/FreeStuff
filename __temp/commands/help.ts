@@ -1,4 +1,5 @@
 import { Core } from '../../index'
+import DatabaseManager from '../database-manager'
 import { CommandInteraction, InteractionCommandHandler, InteractionReplyFunction } from '../../types/interactions'
 import { GuildData } from '../../types/datastructs'
 

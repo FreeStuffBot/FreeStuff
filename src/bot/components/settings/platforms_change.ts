@@ -1,5 +1,5 @@
 import { ReplyableComponentInteraction } from 'cordo'
-import { Core } from '../../../index'
+import DatabaseManager from '../../database-manager'
 import Const from '../../const'
 import PermissionStrings from '../../../lib/permission-strings'
 
@@ -15,6 +15,6 @@ export default async function (i: ReplyableComponentInteraction) {
     .map(v => Const.platforms.find(p => p.id === v))
     .filter(p => !!p)
 
-  await Core.databaseManager.changeSetting(i.guildData, 'platforms', platforms)
+  await DatabaseManager.changeSetting(i.guildData, 'platforms', platforms)
   i.state('settings_filter')
 }

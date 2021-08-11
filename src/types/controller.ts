@@ -5,39 +5,29 @@
  */
 
 
+export type ShardStatus = 'idle' | 'reconnecting' | 'startup' | 'disconnected' | 'identifying' | 'operational' // | 'timeout'
+
 export interface Shard {
   id: number
-  server: string
-  status: 'ok' | 'timeout' | 'offline' | 'crashed'
-  lastHeartbeat: number
-  guildCount: number
+  status: ShardStatus
 }
 
 
-export interface ShardStatusPayload extends Shard {
-  totalShardCount: number
+export type WorkerTask = {
+  ids: number[]
+  total: number
 }
 
 
-export type ShardAction = {
+export type WorkerAction = {
   id: 'startup',
-  shardCount?: number
-  shardId?: number
+  task: WorkerTask
 } | {
   id: 'shutdown'
 }
 
 
-export type ShardTask = {
-  id: 'ready'
-} | {
-  id: 'assigned'
-  shardId: number
-  shardCount: number
-}
-
-
-export type ManagerCommand = ({
+export type WorkerCommand = ({
   id: 'shutdown'
 } | {
   id: 'reload_lang'
@@ -55,5 +45,3 @@ export type Experiment = {
   group: string
 }
 
-
-export type ShardStatus = 'idle' | 'reconnecting' | 'startup' | 'disconnected' | 'identifying' | 'operational'

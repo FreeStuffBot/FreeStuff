@@ -1,5 +1,5 @@
-import { Core } from '../index'
 import { GuildData } from '../types/datastructs'
+import DatabaseManager from './database-manager'
 
 
 export default class Tracker {
@@ -36,7 +36,7 @@ export default class Tracker {
     if (!g) return
     const state = this.isTracked(g, hint)
     if (state === value) return // no change
-    Core.databaseManager?.changeSetting(g, 'tracker', g.tracker ^ Tracker.TRACKING_POINT[hint])
+    DatabaseManager?.changeSetting(g, 'tracker', g.tracker ^ Tracker.TRACKING_POINT[hint])
   }
 
 }

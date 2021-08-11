@@ -3,6 +3,7 @@ import { CommandInteraction, InteractionCommandHandler, InteractionReplyFunction
 import { GuildData } from '../../types/datastructs'
 import Const from '../const'
 import { Core } from '../../index'
+import DatabaseManager from '../database-manager'
 import Experiments from '../../controller/experiments'
 import Logger from '../../lib/logger'
 import Emojis from '../../lib/emojis'

@@ -3,6 +3,7 @@ import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import Const from '../const'
 import { Core } from '../../index'
+import DatabaseManager from '../database-manager'
 import Experiments from '../../controller/experiments'
 
 
@@ -62,8 +63,8 @@ export default class ResetCommand extends Command {
       return true
     }
 
-    await Core.databaseManager.removeGuild(g._id)
-    await Core.databaseManager.addGuild(mes.guild)
+    await DatabaseManager.removeGuild(g._id)
+    await DatabaseManager.addGuild(mes.guild)
 
     repl(
       Core.text(g, '=cmd_reset_success_1'),

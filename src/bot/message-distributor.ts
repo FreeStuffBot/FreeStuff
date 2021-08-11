@@ -9,6 +9,7 @@ import Redis from '../database/redis'
 import { DatabaseGuildData, GuildData } from '../types/datastructs'
 import RemoteConfig from '../controller/remote-config'
 import Logger from '../lib/logger'
+import DatabaseManager from './database-manager'
 import Const from './const'
 
 
@@ -104,7 +105,7 @@ export default class MessageDistributor {
    * @returns Array of guild ids that were actually announced (and not filtered out by guild settings)
    */
   public static async sendToGuild(g: DatabaseGuildData, content: GameInfo[], test: boolean, force: boolean): Promise<number[]> {
-    const data = await Core.databaseManager.parseGuildData(g)
+    const data = await DatabaseManager.parseGuildData(g)
 
     if (!data) {
       Logger.excessive(`Guild ${g._id} return: no data`)

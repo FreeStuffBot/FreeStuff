@@ -34,7 +34,7 @@ export default class NewTestCommand extends InteractionCommandHandler {
     }
 
     if (!data) {
-      Core.databaseManager.addGuild(guild)
+      DatabaseManager.addGuild(guild)
       reply('ChannelMessageWithSource', {
         title: '=cmd_error_fixable_1',
         description: '=cmd_error_fixable_2',

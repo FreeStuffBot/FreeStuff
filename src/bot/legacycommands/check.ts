@@ -2,6 +2,7 @@ import { Message } from 'discord.js'
 import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core } from '../../index'
+import DatabaseManager from '../database-manager'
 import Const from '../const'
 import Experiments from '../../controller/experiments'
 
@@ -42,7 +43,7 @@ export default class CheckCommand extends Command {
     }
 
     if (!g) {
-      Core.databaseManager.addGuild(mes.guild)
+      DatabaseManager.addGuild(mes.guild)
       repl(
         Core.text(g, '=cmd_error_fixable_1'),
         Core.text(g, '=cmd_error_fixable_2', { discordInvite: Const.links.supportInvite })

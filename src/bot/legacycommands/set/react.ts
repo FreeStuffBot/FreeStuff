@@ -2,6 +2,7 @@ import { Message } from 'discord.js'
 import { GuildData } from '../../../types/datastructs'
 import { ReplyFunction, CommandHandler, SettingsSubcommand } from '../../../types/commands'
 import { Core } from '../../../index'
+import DatabaseManager from '../../database-manager'
 
 
 export default class SetReactHandler implements CommandHandler, SettingsSubcommand {
@@ -14,7 +15,7 @@ export default class SetReactHandler implements CommandHandler, SettingsSubcomma
     ]
   }
 
-  public handle(mes: Message, args: string[], g: GuildData, reply: ReplyFunction): boolean {
+  public handle(_mes: Message, args: string[], g: GuildData, reply: ReplyFunction): boolean {
     if (args.length < 1) {
       reply(
         Core.text(g, g.react ? '=cmd_set_react_status_on_1' : '=cmd_set_react_status_off_1'),
@@ -24,14 +25,14 @@ export default class SetReactHandler implements CommandHandler, SettingsSubcomma
     }
     if ([ 'on', 'true', '1' ].includes(args[0].toLowerCase())) {
       if (!g.react)
-        Core.databaseManager.changeSetting(g, 'react', true)
+        DatabaseManager.changeSetting(g, 'react', true)
       reply(
         Core.text(g, '=cmd_set_react_success_on_1'),
         Core.text(g, '=cmd_set_react_success_on_2')
       )
     } else if ([ 'off', 'false', '0' ].includes(args[0].toLowerCase())) {
       if (g.react)
-        Core.databaseManager.changeSetting(g, 'react', false)
+        DatabaseManager.changeSetting(g, 'react', false)
       reply(
         Core.text(g, '=cmd_set_react_success_off_1'),
         Core.text(g, '=cmd_set_react_success_off_2')

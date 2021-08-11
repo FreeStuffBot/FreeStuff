@@ -2,6 +2,7 @@ import { Message } from 'discord.js'
 import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core } from '../../index'
+import DatabaseManager from '../database-manager'
 
 
 export default class BetaCommand extends Command {
@@ -26,14 +27,14 @@ export default class BetaCommand extends Command {
     }
     if ([ 'on', 'true', '1', 'yes', 'enable' ].includes(args[0].toLowerCase())) {
       if (!g.beta)
-        Core.databaseManager.changeSetting(g, 'beta', true)
+        DatabaseManager.changeSetting(g, 'beta', true)
       reply(
         Core.text(g, '=cmd_beta_opt_in_1'),
         Core.text(g, '=cmd_beta_opt_in_2')
       )
     } else if ([ 'off', 'false', '0', 'no', 'disable' ].includes(args[0].toLowerCase())) {
       if (g.beta)
-        Core.databaseManager.changeSetting(g, 'beta', false)
+        DatabaseManager.changeSetting(g, 'beta', false)
       reply(
         Core.text(g, '=cmd_beta_opt_out_1'),
         Core.text(g, '=cmd_beta_opt_out_2')

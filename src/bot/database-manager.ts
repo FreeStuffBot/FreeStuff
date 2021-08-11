@@ -3,12 +3,12 @@ import { Guild, Role, TextChannel } from 'discord.js'
 import { Long } from 'mongodb'
 import { CronJob } from 'cron'
 import { Core } from '../index'
-import FreeStuffBot from '../freestuffbot'
 import Database from '../database/database'
 import { DatabaseGuildData, GuildData } from '../types/datastructs'
 import { Currency, GuildSetting, Platform, PriceClass, Theme } from '../types/context'
 import { Util } from '../lib/util'
 import Logger from '../lib/logger'
+import Manager from '../controller/manager'
 import Localisation from './localisation'
 import LanguageManager from './language-manager'
 import Const from './const'
@@ -20,60 +20,50 @@ export default class DatabaseManager {
   private static cacheBucketT: Map<string, GuildData> = new Map() // active bucket if cacheCurrentBucket === True
   private static cacheCurrentBucket: boolean = false
 
-  public constructor(bot: FreeStuffBot) {
-    bot.on('ready', async () => {
-      // Check if any guild is not in the database yet
-      // Might happen when someone adds the bot while it's offline
+  public static init() {
+    DatabaseManager.startGarbageCollector()
+  }
 
-      const dbGuilds = await this.getAssignedGuilds()
+  public static async onShardReady(id: number) {
+    const dbGuilds = await DatabaseManager.getAssignedGuilds(id)
 
-      for (const guild of bot.guilds.cache.values()) {
-        if (!dbGuilds.find(g => g._id.toString() === guild.id))
-          this.addGuild(guild)
-      }
-    })
-
-    bot.on('guildCreate', async (guild) => {
-      if (await Database
-        .collection('guilds')
-        ?.findOne({
-          _id: Long.fromString(guild.id)
-        })) return
-
-      this.addGuild(guild)
-    })
-
-    this.startGarbageCollector(bot)
+    if (!Core) return
+    for (const guild of Core.guilds.cache.values()) {
+      if (!dbGuilds.find(g => g._id.toString() === guild.id))
+        DatabaseManager.addGuild(guild)
+    }
   }
 
   /**
    * Start a scheduled cron task that once a day will remove all data from guilds that no longer have the bot on them from the database
-   * ! Do not run this method multiple times without canceling the task first !
+   * ! Do not run DatabaseManager method multiple times without canceling the task first !
    *
    * Also starts the timer to clear and switch guild data cache buckets
    * @param bot bot instance
    */
-  private startGarbageCollector(bot: FreeStuffBot): void {
+  private static startGarbageCollector(): void {
     new CronJob('0 0 0 * * *', async () => {
-      const dbGuilds = await this.getAssignedGuilds()
-      const removalQueue: DatabaseGuildData[] = []
-      for (const guild of dbGuilds) {
-        bot.guilds.fetch(guild._id.toString())
-          .then(() => {})
-          .catch(_err => removalQueue.push(guild))
-      }
-
-      setTimeout(async () => {
-        const dbGuilds = await this.getAssignedGuilds()
+      for (const shard of Manager.getTask()?.ids ?? [ 0 ]) {
+        const dbGuilds = await DatabaseManager.getAssignedGuilds(shard)
+        const removalQueue: DatabaseGuildData[] = []
         for (const guild of dbGuilds) {
-          bot.guilds.fetch(guild._id.toString())
+          Core?.guilds.fetch(guild._id.toString())
             .then(() => {})
-            .catch((_err) => {
-              if (removalQueue.find(g => g._id.equals(guild._id)))
-                this.removeGuild(guild._id)
-            })
+            .catch(_err => removalQueue.push(guild))
         }
-      }, 1000 * 60 * 30)
+
+        setTimeout(async () => {
+          const dbGuilds = await DatabaseManager.getAssignedGuilds(shard)
+          for (const guild of dbGuilds) {
+            Core?.guilds.fetch(guild._id.toString())
+              .then(() => {})
+              .catch((_err) => {
+                if (removalQueue.find(g => g._id.equals(guild._id)))
+                  DatabaseManager.removeGuild(guild._id)
+              })
+          }
+        }, 1000 * 60 * 30)
+      }
     }).start()
 
     setInterval(() => {
@@ -84,16 +74,16 @@ export default class DatabaseManager {
       if (DatabaseManager.cacheCurrentBucket) {
         DatabaseManager.cacheBucketT = new Map()
         for (const obj of DatabaseManager.cacheBucketF.values())
-          this.saveQueuedChanges(obj)
+          DatabaseManager.saveQueuedChanges(obj)
       } else {
         DatabaseManager.cacheBucketF = new Map()
         for (const obj of DatabaseManager.cacheBucketT.values())
-          this.saveQueuedChanges(obj)
+          DatabaseManager.saveQueuedChanges(obj)
       }
     }, 10e3)
   }
 
-  private async saveQueuedChanges(data: GuildData) {
+  private static async saveQueuedChanges(data: GuildData) {
     if (!(data as any)?._changes) return
     await Database
       .collection('guilds')
@@ -107,13 +97,13 @@ export default class DatabaseManager {
   /**
    * Returns an array of the guilddata from each of the guilds belonging to the current shard
    */
-  public getAssignedGuilds(): Promise<DatabaseGuildData[]> {
+  public static getAssignedGuilds(shardid: number): Promise<DatabaseGuildData[]> {
     return Database
       .collection('guilds')
       ?.find(
-        Core.options.shardCount === 1
-          ? { }
-          : { sharder: { $mod: [ Core.options.shardCount, Core.options.shards[0] ] } }
+        Manager.getTask().total
+          ? { sharder: { $mod: [ Manager.getTask().total, shardid ] } }
+          : { }
       )
       .toArray()
   }
@@ -123,7 +113,12 @@ export default class DatabaseManager {
    * @param guild guild object
    * @param autoSettings whether the default settings should automatically be adjusted to the server (e.g: server region -> language)
    */
-  public addGuild(guild: Guild) {
+  public static async addGuild(guild: Guild) {
+    const exists = await Database
+      .collection('guilds')
+      ?.findOne({ _id: Long.fromString(guild.id) })
+    if (exists) return
+
     const settings = Localisation.getDefaultSettings(guild)
     const filter = Localisation.getDefaultFilter(guild)
 
@@ -144,9 +139,9 @@ export default class DatabaseManager {
   /**
    * Remove a guild from the database
    * @param guildid guild id
-   * @param force weather to force a removal or not. if not forced this method will not remove guilds that are managed by another shard
+   * @param force weather to force a removal or not. if not forced DatabaseManager method will not remove guilds that are managed by another shard
    */
-  public async removeGuild(guildid: Long, force = false) {
+  public static async removeGuild(guildid: Long, force = false) {
     if (!force && !Util.belongsToShard(guildid)) return
     await Database
       .collection('guilds')
@@ -159,7 +154,7 @@ export default class DatabaseManager {
    * Get the raw / unparsed guilds data from the database
    * @param guild guild object
    */
-  public async getRawGuildData(guild: string): Promise<DatabaseGuildData> {
+  public static async getRawGuildData(guild: string): Promise<DatabaseGuildData> {
     const obj = await Database
       .collection('guilds')
       ?.findOne({ _id: Long.fromString(guild) })
@@ -172,7 +167,7 @@ export default class DatabaseManager {
    * Get the guilds data from the database
    * @param guild guild object
    */
-  public async getGuildData(guild: string, fetchInstances = true): Promise<GuildData> {
+  public static async getGuildData(guild: string, fetchInstances = true): Promise<GuildData> {
     if (!guild) return undefined
 
     if (DatabaseManager.cacheCurrentBucket) {
@@ -189,9 +184,9 @@ export default class DatabaseManager {
       if (data) return data
     }
 
-    const obj = await this.getRawGuildData(guild)
+    const obj = await DatabaseManager.getRawGuildData(guild)
     if (!obj) return undefined
-    const data = await this.parseGuildData(obj, fetchInstances)
+    const data = await DatabaseManager.parseGuildData(obj, fetchInstances)
 
     if (DatabaseManager.cacheCurrentBucket)
       DatabaseManager.cacheBucketT.set(guild, data)
@@ -204,7 +199,7 @@ export default class DatabaseManager {
    * Parse a DatabaseGuildData object to a GuildData object
    * @param dbObject raw input
    */
-  public async parseGuildData(dbObject: DatabaseGuildData, fetchInstances = true): Promise<GuildData> {
+  public static async parseGuildData(dbObject: DatabaseGuildData, fetchInstances = true): Promise<GuildData> {
     if (!dbObject) return undefined
     const responsible = (Core.options.shardCount === 1) || Util.belongsToShard(dbObject._id)
     let guildInstance: Guild = null
@@ -232,12 +227,12 @@ export default class DatabaseManager {
       theme: Const.themes[dbObject.settings & 0b11111] || Const.themes[0],
       language: LanguageManager.languageById((dbObject.settings >> 10 & 0b111111)),
       platformsRaw: (dbObject.filter >> 4 & 0b11111111),
-      platformsList: this.platformsRawToList(dbObject.filter >> 4 & 0b11111111),
+      platformsList: DatabaseManager.platformsRawToList(dbObject.filter >> 4 & 0b11111111),
       beta: (dbObject.settings & (1 << 30)) !== 0
     }
   }
 
-  public platformsRawToList(raw: number): Platform[] {
+  public static platformsRawToList(raw: number): Platform[] {
     const out = [] as Platform[]
     for (const platform of Const.platforms) {
       if ((raw & platform.bit) !== 0)
@@ -253,18 +248,18 @@ export default class DatabaseManager {
    * @param setting the setting to change
    * @param value it's new value
    */
-  public async changeSetting(data: GuildData, setting: 'channel', value: string | null)
-  public async changeSetting(data: GuildData, setting: 'role', value: string | null)
-  public async changeSetting(data: GuildData, setting: 'price', value: PriceClass)
-  public async changeSetting(data: GuildData, setting: 'theme', value: number | Theme)
-  public async changeSetting(data: GuildData, setting: 'currency', value: number | Currency)
-  public async changeSetting(data: GuildData, setting: 'react', value: boolean)
-  public async changeSetting(data: GuildData, setting: 'trash', value: boolean)
-  public async changeSetting(data: GuildData, setting: 'language', value: number)
-  public async changeSetting(data: GuildData, setting: 'platforms', value: Platform[] | number)
-  public async changeSetting(data: GuildData, setting: 'beta', value: boolean)
-  public async changeSetting(data: GuildData, setting: 'tracker', value: number)
-  public async changeSetting(data: GuildData, setting: GuildSetting, value: any) {
+  public static async changeSetting(data: GuildData, setting: 'channel', value: string | null)
+  public static async changeSetting(data: GuildData, setting: 'role', value: string | null)
+  public static async changeSetting(data: GuildData, setting: 'price', value: PriceClass)
+  public static async changeSetting(data: GuildData, setting: 'theme', value: number | Theme)
+  public static async changeSetting(data: GuildData, setting: 'currency', value: number | Currency)
+  public static async changeSetting(data: GuildData, setting: 'react', value: boolean)
+  public static async changeSetting(data: GuildData, setting: 'trash', value: boolean)
+  public static async changeSetting(data: GuildData, setting: 'language', value: number)
+  public static async changeSetting(data: GuildData, setting: 'platforms', value: Platform[] | number)
+  public static async changeSetting(data: GuildData, setting: 'beta', value: boolean)
+  public static async changeSetting(data: GuildData, setting: 'tracker', value: number)
+  public static async changeSetting(data: GuildData, setting: GuildSetting, value: any) {
     const out = {} as any
     let bits = 0
     const c = data.settings
@@ -323,7 +318,7 @@ export default class DatabaseManager {
         }
         out.filter = Util.modifyBits(c, 4, 8, bits)
         data.platformsRaw = bits
-        data.platformsList = this.platformsRawToList(bits)
+        data.platformsList = DatabaseManager.platformsRawToList(bits)
         break
       case 'beta':
         bits = value ? 1 : 0

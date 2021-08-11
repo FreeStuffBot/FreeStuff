@@ -2,6 +2,7 @@ import { Long } from 'mongodb'
 import { ReplyableComponentInteraction } from 'cordo'
 import { Core } from '../../../../index'
 import PermissionStrings from '../../../../lib/permission-strings'
+import DatabaseManager from '../../../database-manager'
 import { onGuildDataDeleteCooldown } from './delete'
 
 
@@ -15,9 +16,9 @@ export default async function (i: ReplyableComponentInteraction) {
   onGuildDataDeleteCooldown.push(i.guild_id)
   setTimeout(() => onGuildDataDeleteCooldown.splice(0, 1), 1000 * 60 * 60 * 12)
 
-  await Core.databaseManager.removeGuild(Long.fromString(i.guild_id))
+  await DatabaseManager.removeGuild(Long.fromString(i.guild_id))
   const guild = await Core.guilds.fetch(i.guild_id)
-  await Core.databaseManager.addGuild(guild)
+  await DatabaseManager.addGuild(guild)
 
   i.edit({
     title: '=settings_guilddata_delete_success_1',

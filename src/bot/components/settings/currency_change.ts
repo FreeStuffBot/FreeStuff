@@ -1,5 +1,5 @@
 import { ReplyableComponentInteraction } from 'cordo'
-import { Core } from '../../../index'
+import DatabaseManager from '../../database-manager'
 import Const from '../../const'
 import PermissionStrings from '../../../lib/permission-strings'
 
@@ -13,6 +13,6 @@ export default async function (i: ReplyableComponentInteraction) {
 
   const currency = Const.currencies[parseInt(val) || 0]
 
-  await Core.databaseManager.changeSetting(i.guildData, 'currency', currency)
+  await DatabaseManager.changeSetting(i.guildData, 'currency', currency)
   i.state('settings_display')
 }

@@ -8,7 +8,7 @@ type botMode = {
   shardId: number
   shardCount: number
 } | {
-  name: 'discovery'
+  name: 'worker'
   master: {
     host?: string
     path?: string

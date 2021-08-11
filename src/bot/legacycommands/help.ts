@@ -2,6 +2,7 @@ import { Message } from 'discord.js'
 import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core } from '../../index'
+import DatabaseManager from '../database-manager'
 import Experiments from '../../controller/experiments'
 
 

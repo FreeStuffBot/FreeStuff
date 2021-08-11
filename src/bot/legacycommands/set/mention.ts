@@ -2,6 +2,7 @@ import { Message } from 'discord.js'
 import { GuildData } from '../../../types/datastructs'
 import { ReplyFunction, CommandHandler, SettingsSubcommand } from '../../../types/commands'
 import { Core } from '../../../index'
+import DatabaseManager from '../../database-manager'
 
 
 export default class SetMentionHandler implements CommandHandler, SettingsSubcommand {
@@ -22,7 +23,7 @@ export default class SetMentionHandler implements CommandHandler, SettingsSubcom
   public handle(mes: Message, args: string[], g: GuildData, reply: ReplyFunction): boolean {
     if (args.length < 1) {
       if (g.role) {
-        Core.databaseManager.changeSetting(g, 'role', undefined)
+        DatabaseManager.changeSetting(g, 'role', undefined)
         reply(
           Core.text(g, '=cmd_set_mention_success_none_changed_1'),
           Core.text(g, '=cmd_set_mention_success_none_changed_2')
@@ -43,7 +44,7 @@ export default class SetMentionHandler implements CommandHandler, SettingsSubcom
         )
         return false
       }
-      Core.databaseManager.changeSetting(g, 'role', '1')
+      DatabaseManager.changeSetting(g, 'role', '1')
       reply(
         Core.text(g, '=cmd_set_mention_success_everyone_1'),
         Core.text(g, '=cmd_set_mention_success_everyone_2')
@@ -60,7 +61,7 @@ export default class SetMentionHandler implements CommandHandler, SettingsSubcom
 
     const role = mes.mentions.roles.first()
     if (!role) return false
-    Core.databaseManager.changeSetting(g, 'role', role.id)
+    DatabaseManager.changeSetting(g, 'role', role.id)
     reply(
       Core.text(g, '=cmd_set_mention_success_regular_1'),
       Core.text(g, '=cmd_set_mention_success_regular_2', { role: role.toString() })

@@ -65,7 +65,7 @@ export default class InteractionHandler {
   private async runCommand(interaction: CommandInteraction, handler: InteractionCommandHandler) {
     try {
       const data = interaction.guild_id
-        ? await Core.databaseManager.getGuildData(interaction.guild_id)
+        ? await DatabaseManager.getGuildData(interaction.guild_id)
         : undefined
 
       const reply = this.getReplyFunction(interaction, data)

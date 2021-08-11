@@ -2,6 +2,7 @@ import { CronJob } from 'cron'
 import { Core } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import Logger from '../lib/logger'
+import DatabaseManager from '../bot/database-manager'
 import Database, { dbcollection } from './database'
 
 
@@ -37,7 +38,7 @@ export class DbStats {
       size: g.memberCount,
       icon: g.iconURL(),
       features: g.features,
-      setup: !!((await Core.databaseManager.getGuildData(g.id))?.channelInstance)
+      setup: !!((await DatabaseManager.getGuildData(g.id))?.channelInstance)
     }))
 
     await Promise.all(out).then((out) => {

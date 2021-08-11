@@ -1,5 +1,5 @@
 import { ReplyableComponentInteraction } from 'cordo'
-import { Core } from '../../../index'
+import DatabaseManager from '../../database-manager'
 import PermissionStrings from '../../../lib/permission-strings'
 import Tracker from '../../tracker'
 
@@ -10,6 +10,6 @@ export default async function (i: ReplyableComponentInteraction) {
 
   Tracker.set(i.guildData, 'ACTION_BETA_ENABLED_PREVIOUSLY')
 
-  await Core.databaseManager.changeSetting(i.guildData, 'beta', !i.guildData.beta)
+  await DatabaseManager.changeSetting(i.guildData, 'beta', !i.guildData.beta)
   i.state('settings_more')
 }

@@ -1,6 +1,4 @@
-import { hostname } from 'os'
 import { GuildData } from '../types/datastructs'
-import { Core } from '../index'
 import Tracker from '../bot/tracker'
 import Logger from './logger'
 
@@ -10,8 +8,6 @@ export default function guildDataToViewString(g: GuildData, maxLength?: number, 
   if (gd) {
     delete gd.channelInstance
     delete gd.roleInstance
-    gd.shard = gd.sharder % Core.options.shardCount
-    gd.server = hostname() || 'unknown'
     gd.currency = gd.currency.name
     gd.price = gd.price.name
     gd.theme = gd.theme.name

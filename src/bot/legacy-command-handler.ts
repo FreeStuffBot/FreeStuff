@@ -19,6 +19,7 @@ import AdvancedCommand from './legacycommands/advanced'
 import ResendCommand from './legacycommands/resend'
 import BetaCommand from './legacycommands/beta'
 import Localisation from './localisation'
+import DatabaseManager from './database-manager'
 
 
 export default class LegacyCommandHandler {
@@ -50,7 +51,7 @@ export default class LegacyCommandHandler {
 
       const args = m.content.split(/ +/)
       args.splice(0, 1)
-      Core.databaseManager.getGuildData(m.guild.id).then((g) => {
+      DatabaseManager.getGuildData(m.guild.id).then((g) => {
         this.handleCommand(args.splice(0, 1)[0] || '', args, m, g).then((success) => {
           if (!success
             && m.guild.me.permissionsIn(m.channel).has('ADD_REACTIONS')

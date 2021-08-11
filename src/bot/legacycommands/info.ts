@@ -3,6 +3,7 @@ import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import Const from '../const'
 import { Core } from '../../index'
+import DatabaseManager from '../database-manager'
 import LanguageManager from '../../bot/language-manager'
 import Experiments from '../../controller/experiments'
 
