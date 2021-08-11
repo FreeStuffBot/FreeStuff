@@ -1,7 +1,6 @@
 import { MessageOptions } from 'discord.js'
 import { GameFlag, GameInfo } from 'freestuff'
 import { Core } from '../../index'
-import DatabaseManager from '../database-manager'
 import Const from '../../bot/const'
 import { GuildData } from '../../types/datastructs'
 import Experiments from '../../controller/experiments'

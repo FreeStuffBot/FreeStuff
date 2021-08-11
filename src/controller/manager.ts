@@ -110,15 +110,20 @@ export default class Manager {
   private static connectSocket() {
     Logger.process('Connecting to manager socket...')
 
+    Logger.excessive('Manager#connectSocket breakpoint1 ' + !!this.socketConnectionIdleTimeout)
     if (this.socketConnectionIdleTimeout)
       clearTimeout(this.socketConnectionIdleTimeout)
 
+    Logger.excessive('Manager#connectSocket breakpoint2' + this.IDLE_TIMEOUT)
+
     this.socketConnectionIdleTimeout = setTimeout(() => {
+      Logger.excessive('Manager#connectSocket breakpoint4')
       Logger.warn('Socket connection timed out. Re-trying.')
       this.socket.disconnect()
       this.connectSocket()
       this.socketConnectionIdleTimeout = null
     }, this.IDLE_TIMEOUT)
+    Logger.excessive('Manager#connectSocket breakpoint3' + !!this.socketConnectionIdleTimeout)
 
     this.socket.connect()
   }
