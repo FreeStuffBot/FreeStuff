@@ -115,6 +115,11 @@ export default class Manager {
       clearTimeout(this.socketConnectionIdleTimeout)
 
     Logger.excessive('Manager#connectSocket breakpoint2' + this.IDLE_TIMEOUT)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket a test32') }, 1000)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket a test33') }, 5000)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket a test34') }, 50000)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket a test35') }, 120000)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket a test36') }, this.IDLE_TIMEOUT)
 
     this.socketConnectionIdleTimeout = setTimeout(() => {
       Logger.excessive('Manager#connectSocket breakpoint4')
@@ -123,11 +128,11 @@ export default class Manager {
       this.connectSocket()
       this.socketConnectionIdleTimeout = null
     }, this.IDLE_TIMEOUT)
-    setTimeout(() => { Logger.excessive('Manager#connectSocket test32') }, 1000)
-    setTimeout(() => { Logger.excessive('Manager#connectSocket test33') }, 5000)
-    setTimeout(() => { Logger.excessive('Manager#connectSocket test34') }, 50000)
-    setTimeout(() => { Logger.excessive('Manager#connectSocket test35') }, 120000)
-    setTimeout(() => { Logger.excessive('Manager#connectSocket test36') }, this.IDLE_TIMEOUT)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket b test32') }, 1000)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket b test33') }, 5000)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket b test34') }, 50000)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket b test35') }, 120000)
+    setTimeout(() => { Logger.excessive('Manager#connectSocket b test36') }, this.IDLE_TIMEOUT)
     Logger.excessive('Manager#connectSocket breakpoint3' + !!this.socketConnectionIdleTimeout)
 
     this.socket.connect()
