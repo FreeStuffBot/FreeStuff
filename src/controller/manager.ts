@@ -122,11 +122,14 @@ export default class Manager {
     setTimeout(() => { Logger.excessive('Manager#connectSocket a test36') }, this.IDLE_TIMEOUT)
 
     this.socketConnectionIdleTimeout = setTimeout(() => {
+      console.log('Manager#connectSocket c test1')
       Logger.excessive('Manager#connectSocket breakpoint4')
       Logger.warn('Socket connection timed out. Re-trying.')
+      console.log('Manager#connectSocket c test2')
       this.socket.disconnect()
       this.connectSocket()
       this.socketConnectionIdleTimeout = null
+      console.log('Manager#connectSocket c test3')
     }, this.IDLE_TIMEOUT)
     setTimeout(() => { console.log('Manager#connectSocket b test32') }, 1000)
     setTimeout(() => { console.log('Manager#connectSocket b test33') }, 5000)
