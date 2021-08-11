@@ -29,8 +29,10 @@ export default class DatabaseManager {
 
     if (!Core) return
     for (const guild of Core.guilds.cache.values()) {
-      if (!dbGuilds.find(g => g._id.toString() === guild.id))
-        DatabaseManager.addGuild(guild)
+      if (guild.shardID !== id) continue
+      if (dbGuilds.find(g => g._id.toString() === guild.id)) continue
+
+      DatabaseManager.addGuild(guild)
     }
   }
 
