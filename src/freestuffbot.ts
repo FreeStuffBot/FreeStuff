@@ -40,6 +40,7 @@ export default class FreeStuffBot extends Client {
   }
 
   private registerEventHandlers() {
+    Logger.excessive('FreeStuffBot#registerEventHandlers')
     // keep { } here or else this. behaves differently
     this.on('shardReady', (id) => { this.onShardReady(id) })
     this.on('shardDisconnect', (_, id) => { Manager.status(id, 'disconnected') })

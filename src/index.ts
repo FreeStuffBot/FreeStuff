@@ -120,6 +120,7 @@ run().catch((err) => {
 //
 
 function initComponents(commit: GitCommit, action: WorkerAction) {
+  Logger.excessive('<index>#initComponents')
   LanguageManager.init()
 
   Cordo.init({
@@ -152,6 +153,7 @@ function initComponents(commit: GitCommit, action: WorkerAction) {
 }
 
 function mountBot(shardIds: number[], shardCount: number) {
+  Logger.excessive('<index>#mountBot')
   Core = new FreeStuffBot({
     ws: {
       intents: [
@@ -159,13 +161,12 @@ function mountBot(shardIds: number[], shardCount: number) {
         'GUILD_MESSAGES'
       ]
     },
-    retryLimit: 999999,
     disableMentions: 'none',
     messageSweepInterval: 2,
     messageCacheLifetime: 0,
     messageCacheMaxSize: 0,
     fetchAllMembers: false,
-    messageEditHistoryMaxSize: 0,
+    messageEditHistoryMaxSize: 1,
     shardCount,
     shards: (shardIds !== undefined) ? shardIds : undefined
   })

@@ -35,6 +35,7 @@ export default class Manager {
   public static ready(): Promise<WorkerAction> {
     if (this.started) throw new Error('Already started')
     this.started = true
+    Logger.excessive('Manager#ready')
 
     if (config.mode.name === 'single') {
       return Promise.resolve({
@@ -84,6 +85,7 @@ export default class Manager {
   }
 
   private static async openSocket() {
+    Logger.excessive('Manager#openSocket')
     if (config.mode.name !== 'worker') return // for type safety below
 
     const socketHost = config.mode.master.host || this.DEFAULT_SOCKET_HOST
@@ -128,6 +130,8 @@ export default class Manager {
   }
 
   private static prepareSocket() {
+    Logger.excessive('Manager#prepareSocket')
+
     this.socket.on('connect', () => {
       Logger.process('Manager socket connected')
       this.reportStatus()
