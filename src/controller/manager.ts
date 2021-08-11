@@ -115,8 +115,8 @@ export default class Manager {
     setInterval(() => { console.log('Manager#connectSocket interval') }, 3000)
 
     Logger.excessive('Manager#connectSocket breakpoint1 ' + !!this.socketConnectionIdleTimeout)
-    if (this.socketConnectionIdleTimeout)
-      clearTimeout(this.socketConnectionIdleTimeout)
+    // if (this.socketConnectionIdleTimeout)
+    //   clearTimeout(this.socketConnectionIdleTimeout)
 
     Logger.excessive('Manager#connectSocket breakpoint2 ' + this.IDLE_TIMEOUT)
     setTimeout(() => { Logger.excessive('Manager#connectSocket a test32') }, 1000)
@@ -125,15 +125,15 @@ export default class Manager {
     setTimeout(() => { Logger.excessive('Manager#connectSocket a test35') }, 120000)
     setTimeout(() => { Logger.excessive('Manager#connectSocket a test36') }, this.IDLE_TIMEOUT)
 
-    this.socketConnectionIdleTimeout = setTimeout(() => {
-      console.log('Manager#connectSocket c test1')
-      Logger.excessive('Manager#connectSocket breakpoint4')
-      Logger.warn('Socket connection timed out. Re-trying.')
-      console.log('Manager#connectSocket c test2')
-      this.socket.disconnect()
-      this.connectSocket()
-      console.log('Manager#connectSocket c test3')
-    }, this.IDLE_TIMEOUT)
+    // this.socketConnectionIdleTimeout = setTimeout(() => {
+    //   console.log('Manager#connectSocket c test1')
+    //   Logger.excessive('Manager#connectSocket breakpoint4')
+    //   Logger.warn('Socket connection timed out. Re-trying.')
+    //   console.log('Manager#connectSocket c test2')
+    //   this.socket.disconnect()
+    //   this.connectSocket()
+    //   console.log('Manager#connectSocket c test3')
+    // }, this.IDLE_TIMEOUT)
     console.log('Manager#connectSocket d1 ', this.socketConnectionIdleTimeout)
     setTimeout(() => { console.log('Manager#connectSocket b test30') }, 0)
     setTimeout(() => { console.log('Manager#connectSocket b test31') }, 10)
@@ -156,11 +156,11 @@ export default class Manager {
       for (const shard of this.shards.values())
         this.socket.emit('status', { id: shard.id, status: shard.status })
 
-      if (this.socketConnectionIdleTimeout) {
-        Logger.excessive('Manager#connectSocket breakpoint6')
-        clearTimeout(this.socketConnectionIdleTimeout)
-        this.socketConnectionIdleTimeout = null
-      }
+      // if (this.socketConnectionIdleTimeout) {
+      //   Logger.excessive('Manager#connectSocket breakpoint6')
+      //   clearTimeout(this.socketConnectionIdleTimeout)
+      //   this.socketConnectionIdleTimeout = null
+      // }
     })
 
     this.socket.on('disconnect', () => {
