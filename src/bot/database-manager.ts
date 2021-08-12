@@ -69,7 +69,6 @@ export default class DatabaseManager {
     }).start()
 
     setInterval(() => {
-      Logger.excessive('GuildCache bucket flip')
 
       // clear the older bucket
       if (DatabaseManager.cacheCurrentBucket)
@@ -82,11 +81,9 @@ export default class DatabaseManager {
 
       // save changes in the old one
       if (DatabaseManager.cacheCurrentBucket) {
-        Logger.excessive(`GuildCache saved ${DatabaseManager.cacheBucketF.size} items`)
         for (const obj of DatabaseManager.cacheBucketF.values())
           DatabaseManager.saveQueuedChanges(obj)
       } else {
-        Logger.excessive(`GuildCache saved ${DatabaseManager.cacheBucketT.size} items`)
         for (const obj of DatabaseManager.cacheBucketT.values())
           DatabaseManager.saveQueuedChanges(obj)
       }
