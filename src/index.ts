@@ -3,9 +3,7 @@
  */
 
 /* eslint-disable import/first, import/order, no-console */
-import { config as loadDotEnv } from 'dotenv'
 import { configjs } from './types/config'
-loadDotEnv()
 export const config = require('../config.js') as configjs
 
 function invalidConfig(reason: string) {

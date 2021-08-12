@@ -1,10 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /** DETAILED CONFIG TYPINGS CAN BE FOUND IN src/types/config.ts! */
 
-const production = process.env.NODE_ENV === 'production'
-const dev = process.env.NODE_ENV === 'dev'
-const debug = process.env.NODE_ENV === 'debug'
-
 
 module.exports = {
   bot: {
