@@ -31,7 +31,7 @@ export default class MessageDistributor {
           channel: { $ne: null }
         }
       : {
-          sharder: { $mod: [ Core.options.shardCount, Core.options.shards[0] ], $gt: startAt },
+          sharder: { $or: [ (Core.options.shards as number[]).map(shard => ({ $mod: [ Core.options.shardCount, shard ] })) ], $gt: startAt },
           channel: { $ne: null }
         }
 
@@ -115,8 +115,7 @@ export default class MessageDistributor {
     // forced will ignore filter settings
     if (!force) {
       content = content
-        // TODO REENABLE PRICE FILTER
-        // .filter(game => data.price <= game.org_price[data.currency === 'euro' ? 'euro' : 'dollar']) // ! dollar != usd !
+        .filter(game => data.price.from <= game.org_price.euro /* TODO */)
         .filter(game => data.trashGames || !(game.flags & GameFlag.TRASH))
         .filter(game => data.platformsList.includes(Const.platforms.find(p => p.id === game.store) || Const.platforms[0]))
 

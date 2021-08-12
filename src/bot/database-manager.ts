@@ -69,16 +69,24 @@ export default class DatabaseManager {
     }).start()
 
     setInterval(() => {
+      Logger.excessive('GuildCache bucket flip')
+
+      // clear the older bucket
+      if (DatabaseManager.cacheCurrentBucket)
+        DatabaseManager.cacheBucketF = new Map()
+      else
+        DatabaseManager.cacheBucketT = new Map()
+
       // do the flip
       DatabaseManager.cacheCurrentBucket = !DatabaseManager.cacheCurrentBucket
 
-      // clear the new bucket and save changes in the old one
+      // save changes in the old one
       if (DatabaseManager.cacheCurrentBucket) {
-        DatabaseManager.cacheBucketT = new Map()
+        Logger.excessive(`GuildCache saved ${DatabaseManager.cacheBucketF.size} items`)
         for (const obj of DatabaseManager.cacheBucketF.values())
           DatabaseManager.saveQueuedChanges(obj)
       } else {
-        DatabaseManager.cacheBucketF = new Map()
+        Logger.excessive(`GuildCache saved ${DatabaseManager.cacheBucketT.size} items`)
         for (const obj of DatabaseManager.cacheBucketT.values())
           DatabaseManager.saveQueuedChanges(obj)
       }
@@ -103,7 +111,7 @@ export default class DatabaseManager {
     return Database
       .collection('guilds')
       ?.find(
-        Manager.getTask().total
+        Manager.getTask()?.total
           ? { sharder: { $mod: [ Manager.getTask().total, shardid ] } }
           : { }
       )
@@ -188,7 +196,7 @@ export default class DatabaseManager {
 
     const obj = await DatabaseManager.getRawGuildData(guild)
     if (!obj) return undefined
-    const data = await DatabaseManager.parseGuildData(obj, fetchInstances)
+    const data = await DatabaseManager.parseGuildData(obj, fetchInstances, false)
 
     if (DatabaseManager.cacheCurrentBucket)
       DatabaseManager.cacheBucketT.set(guild, data)
@@ -201,8 +209,16 @@ export default class DatabaseManager {
    * Parse a DatabaseGuildData object to a GuildData object
    * @param dbObject raw input
    */
-  public static async parseGuildData(dbObject: DatabaseGuildData, fetchInstances = true): Promise<GuildData> {
+  public static async parseGuildData(dbObject: DatabaseGuildData, fetchInstances = true, checkCache = true): Promise<GuildData> {
     if (!dbObject) return undefined
+
+    if (checkCache) {
+      if (DatabaseManager.cacheCurrentBucket && DatabaseManager.cacheBucketT.get(dbObject._id.toString()))
+        return DatabaseManager.cacheBucketT.get(dbObject._id.toString())
+      else if (!DatabaseManager.cacheCurrentBucket && DatabaseManager.cacheBucketF.get(dbObject._id.toString()))
+        return DatabaseManager.cacheBucketF.get(dbObject._id.toString())
+    }
+
     const responsible = (Core.options.shardCount === 1) || Util.belongsToShard(dbObject._id)
     let guildInstance: Guild = null
     try {

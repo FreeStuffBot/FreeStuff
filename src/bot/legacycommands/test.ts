@@ -84,8 +84,6 @@ export default class TestCommand extends Command {
     const flags = ParseArgs.parse(args)
 
     try {
-      let price = parseFloat(flags.price + '')
-      if (!price) price = 19.99
       MessageDistributor.test(mes.guild, Const.testAnnouncementContent)
     } catch (ex) {
       if (Object.keys(flags)) {

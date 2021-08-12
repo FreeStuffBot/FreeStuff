@@ -1,10 +1,10 @@
 import { hostname } from 'os'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData } from 'cordo'
 import { Long } from 'mongodb'
-import { Core } from '../../..'
 import Database from '../../../database/database'
 import Emojis from '../../emojis'
 import Manager from '../../../controller/manager'
+import { Core } from '../../..'
 
 
 export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
@@ -14,7 +14,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
       .findOne({ _id: Long.fromString(i.guild_id) })
 
     data._ = {
-      shard: Core.options.shards[0],
+      shard: ((typeof i.guildData.sharder === 'number') ? i.guildData.sharder : i.guildData.sharder.getLowBits()) % Core.options.shardCount,
       worker: Manager.getSelfUUID(),
       container: await hostname()
     }

@@ -29,6 +29,7 @@ export default class Manager {
   private static shards: Map<number, Shard> = new Map()
   private static selfUUID = Manager.generateSelfUUID()
   private static socketConnectionIdleTimeout: any = null
+  private static meta: { workerIndex: number } = { workerIndex: 0 }
 
   private static readonly IDLE_TIMEOUT = 2 * 60 * 1000 // 2 minutes
 
@@ -66,6 +67,8 @@ export default class Manager {
   }
 
   public static status(shard: number, status: ShardStatus) {
+    if (config.mode.name !== 'worker') return
+
     if (shard === null) {
       Logger.info(`All shards status: ${status}`)
       for (const id of this.shards.keys())
@@ -75,7 +78,8 @@ export default class Manager {
       this.shards.get(shard).status = status
     }
 
-    this.socket.emit('status', { id: shard, status })
+    if (this.socket?.connected)
+      this.socket.emit('status', { id: shard, status })
   }
 
   private static async openSocket() {
@@ -167,6 +171,10 @@ export default class Manager {
     this.socket.on('config.global', (data: any) => {
       RemoteConfig.update(data)
     })
+
+    this.socket.on('meta', (data: any) => {
+      this.meta = data
+    })
   }
 
   private static newTask(task: WorkerTask) {
@@ -183,6 +191,7 @@ export default class Manager {
     }
 
     if (!this.assignmentPromise) {
+      process.exit(0) // TODO make properly
       // if (this.assignedShardId !== task.shardId) {
       //   Logger.process('Reassignment to different shard id, restarting')
       //   process.exit(0)
@@ -244,6 +253,10 @@ export default class Manager {
 
   public static getTask(): WorkerTask {
     return this.task
+  }
+
+  public static getMeta() {
+    return this.meta
   }
 
 }

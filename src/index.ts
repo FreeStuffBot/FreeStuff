@@ -108,7 +108,7 @@ async function run() {
 
     case 'startup':
       initComponents(commit, action)
-      mountBot(action.task.ids, action.task.total)
+      mountBot(action.task?.ids, action.task?.total)
   }
 }
 
@@ -145,7 +145,7 @@ function initComponents(commit: GitCommit, action: WorkerAction) {
   FSAPI = new FreeStuffApi({
     ...config.apisettings as any,
     version: commit.shortHash,
-    sid: action.id === 'startup' ? action.task.ids[0] : 'err'
+    sid: action.id === 'startup' ? (action.task?.ids[0] || '0') : 'err'
   })
 
   if (config.apisettings.server?.enable)

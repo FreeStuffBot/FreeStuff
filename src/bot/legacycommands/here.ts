@@ -2,7 +2,6 @@ import { Message, WebhookClient } from 'discord.js'
 import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import { Core, config } from '../../index'
-import DatabaseManager from '../database-manager'
 import Logger from '../../lib/logger'
 import RemoteConfig from '../../controller/remote-config'
 import guildDataToViewString from '../../lib/guilddata-visualizer'
@@ -54,7 +53,7 @@ export default class HereCommand extends Command {
         })()
       : 'No channel set!'
 
-    const guilddata = guildDataToViewString(g)
+    const guilddata = guildDataToViewString(g, 2048, undefined, true)
 
     const webhook = new WebhookClient(webhookId, webhookToken)
     webhook.send('', {

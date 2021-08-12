@@ -18,12 +18,12 @@ export default class AnnouncementManager {
 
     FSAPI.on('free_games', async (ids) => {
       const release = await this.semaphore.acquire()
-      let pending = await Redis.getSharded('pending')
+      let pending = await Redis.getSharded('queue')
 
       if (pending) pending += ' ' + ids.join(' ')
       else pending = ids.join(' ')
 
-      await Redis.setSharded('pending', pending)
+      await Redis.setSharded('queue', pending)
       release()
     })
 
@@ -54,12 +54,14 @@ export default class AnnouncementManager {
     release()
   }
 
+  /** QUEUE is games that it needs to announce but hasn't started yet */
   public async setQueue(value: string) {
     const release = await this.semaphore.acquire()
     await Redis.setSharded('queue', value)
     release()
   }
 
+  /** PENDING is games that it needs to announce but has already started */
   public async setPending(value: string) {
     const release = await this.semaphore.acquire()
     await Redis.setSharded('pending', value)
@@ -67,11 +69,10 @@ export default class AnnouncementManager {
   }
 
   private async announce(gameids: string) {
-    this.setPending(gameids)
-
-    AnnouncementManager.updateCurrentFreebies()
-
     this.currentlyAnnouncing = true
+
+    this.setPending(gameids)
+    AnnouncementManager.updateCurrentFreebies()
 
     const numberIds = gameids.split(' ').map(id => parseInt(id, 10))
     const gameInfos = await FSAPI.getGameDetails(numberIds, 'info')
