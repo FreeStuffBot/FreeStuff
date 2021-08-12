@@ -52,7 +52,7 @@ async function run(remove = true, add = true, whitelist) {
     for (const command of commands) {
       if (whitelist && !whitelist.includes(command.name)) continue
       axios
-        .post(`https://discord.com/api/v8/applications/${clientid}/commands`, command, opts)
+        .post(`https://discord.com/api/v8/applications/${clientid}/guilds/517009303203479572/commands`, command, opts)
         .catch(err => console.error(err.response.status, command.name, JSON.stringify(err.response.data, null, 2)))
     }
   }

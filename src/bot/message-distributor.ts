@@ -31,8 +31,10 @@ export default class MessageDistributor {
           channel: { $ne: null }
         }
       : {
-          sharder: { $or: [ (Core.options.shards as number[]).map(shard => ({ $mod: [ Core.options.shardCount, shard ] })) ], $gt: startAt },
-          channel: { $ne: null }
+          $and: [
+            { $or: (Core.options.shards as number[]).map(shard => ({ sharder: { $mod: [ Core.options.shardCount, shard ] } })) },
+            { sharder: { $gt: startAt }, channel: { $ne: null } }
+          ]
         }
 
     const guilds: DatabaseGuildData[] = await Database
