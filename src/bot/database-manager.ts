@@ -266,17 +266,13 @@ export default class DatabaseManager {
    * @param setting the setting to change
    * @param value it's new value
    */
-  public static async changeSetting(data: GuildData, setting: 'channel', value: string | null)
-  public static async changeSetting(data: GuildData, setting: 'role', value: string | null)
+  public static async changeSetting(data: GuildData, setting: 'channel' | 'role', value: string | null)
+  public static async changeSetting(data: GuildData, setting: 'react' | 'trash' | 'beta', value: boolean)
+  public static async changeSetting(data: GuildData, setting: 'language' | 'tracker', value: number)
   public static async changeSetting(data: GuildData, setting: 'price', value: PriceClass)
   public static async changeSetting(data: GuildData, setting: 'theme', value: number | Theme)
   public static async changeSetting(data: GuildData, setting: 'currency', value: number | Currency)
-  public static async changeSetting(data: GuildData, setting: 'react', value: boolean)
-  public static async changeSetting(data: GuildData, setting: 'trash', value: boolean)
-  public static async changeSetting(data: GuildData, setting: 'language', value: number)
   public static async changeSetting(data: GuildData, setting: 'platforms', value: Platform[] | number)
-  public static async changeSetting(data: GuildData, setting: 'beta', value: boolean)
-  public static async changeSetting(data: GuildData, setting: 'tracker', value: number)
   public static async changeSetting(data: GuildData, setting: GuildSetting, value: any) {
     const out = {} as any
     let bits = 0

@@ -103,7 +103,7 @@ export default class LanguageManager {
       name: LanguageManager.getText(lang, 'lang_name'),
       nameEn: LanguageManager.getText(lang, 'lang_name_en'),
       flag: LanguageManager.getText(lang, 'lang_flag_emoji'),
-      ranking: parseInt(LanguageManager.getText(lang, '_ranking') + '')
+      ranking: parseInt(LanguageManager.getText(lang, '_ranking') + '', 10)
     }))
   }
 

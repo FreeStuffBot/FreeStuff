@@ -11,7 +11,7 @@ export default async function (i: ReplyableComponentInteraction) {
   const val = i.data.values[0]
   if (!val) return i.ack()
 
-  const theme = Const.themes[parseInt(val) || 0]
+  const theme = Const.themes[parseInt(val, 10) || 0]
 
   await DatabaseManager.changeSetting(i.guildData, 'theme', theme)
   i.state('settings_display')

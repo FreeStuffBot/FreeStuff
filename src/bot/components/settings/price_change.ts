@@ -11,7 +11,7 @@ export default async function (i: ReplyableComponentInteraction) {
   const val = i.data.values[0]
   if (!val) return i.ack()
 
-  const price = Const.priceClasses[parseInt(val) || 0]
+  const price = Const.priceClasses[parseInt(val, 10) || 0]
 
   await DatabaseManager.changeSetting(i.guildData, 'price', price)
   i.state('settings_filter')
