@@ -1,7 +1,6 @@
 import { Message } from 'discord.js'
 import Const from '../const'
 import { Core } from '../../index'
-import DatabaseManager from '../database-manager'
 import { GuildData } from '../../types/datastructs'
 import { Command, ReplyFunction } from '../../types/commands'
 import Experiments from '../../controller/experiments'

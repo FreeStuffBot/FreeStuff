@@ -12,9 +12,10 @@
   },
   "author": "FreeStuff Bot Team",
   "contributors": [
-    "Maanex (https://maanex.me)",
-    "Badosz (https://badosz.com)",
-    "EasyThe (https://twitter.com/easythebg)"
+    "Andreas May (https://github.com/Maanex)",
+    "Rami Sabbagh (https://github.com/Rami-Sabbagh)",
+    "Seyhan Halil (https://github.com/EasyThe)",
+    "Bartosz Król (https://github.com/badosz0)"
   ],
   "license": "ISC",
   "dependencies": {
