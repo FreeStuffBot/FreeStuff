@@ -5,7 +5,7 @@ const fs = require('fs')
 
 function secret(name) {
   try {
-    return fs.readdirSync('/run/secrets/' + name).toString()
+    return fs.readFileSync('/run/secrets/' + name).toString()
   } catch (ex) {
     return process.env[name]
   }
