@@ -1,3 +1,4 @@
+import { config } from '..'
 import Logger from '../lib/logger'
 
 
@@ -23,6 +24,10 @@ export default class RemoteConfig {
 
   public static get excessiveLogging(): number {
     return this.get().excessive_logging ?? false
+  }
+
+  public static get botAdmins(): string[] {
+    return this.get().bot_admins ?? config.admins ?? []
   }
 
 }

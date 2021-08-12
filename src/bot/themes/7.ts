@@ -1,11 +1,11 @@
 import { MessageOptions } from 'discord.js'
 import { GameInfo } from 'freestuff'
 import { GuildData } from '../../types/datastructs'
-import { Theme } from '../../types/context'
+import { ThemeBuilder } from '../../types/context'
 import Experiments from '../../controller/experiments'
 
 
-export default class ThemeSeven implements Theme {
+export default class ThemeSeven implements ThemeBuilder {
 
   public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     const useProxyUrl = Experiments.runExperimentOnServer('use_proxy_url', data)

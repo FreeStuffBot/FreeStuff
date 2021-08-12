@@ -2,7 +2,9 @@ import { CronJob } from 'cron'
 import { Core } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import Logger from '../lib/logger'
+import DatabaseManager from '../bot/database-manager'
 import Database, { dbcollection } from './database'
+import Manager from '../controller/manager'
 
 
 export class DbStats {
@@ -13,9 +15,9 @@ export class DbStats {
         const guildCount = bot.guilds.cache.size
         const guildMemberCount = bot.guilds.cache.array().reduce((count, g) => count + g.memberCount, 0)
 
-        Logger.process(`Updated Stats. Guilds: ${bot.guilds.cache.size}; Members: ${guildMemberCount}; Shard ${bot.options.shards[0]}`);
-        (await this.usage).guilds.updateYesterday(guildCount, true);
-        (await this.usage).members.updateYesterday(guildMemberCount, true)
+        Logger.process(`Updated Stats. Guilds: ${bot.guilds.cache.size}; Members: ${guildMemberCount}; Shards ${bot.options.shards}`)
+        ;(await this.usage).guilds.updateYesterday(guildCount, true)
+        ;(await this.usage).members.updateYesterday(guildMemberCount, true)
 
         this.updateTopClients()
       }, 60000)
@@ -30,21 +32,21 @@ export class DbStats {
 
   public static async updateTopClients() {
     const top = Core.guilds.cache.sort((a, b) => b.memberCount - a.memberCount).values()
-    const top10 = Array.from(top).splice(0, 10)
-    const out = top10.map(async g => ({
+    const top20 = Array.from(top).splice(0, 20)
+    const out = top20.map(async g => ({
       id: g.id,
       name: g.name,
       size: g.memberCount,
       icon: g.iconURL(),
       features: g.features,
-      setup: !!((await Core.databaseManager.getGuildData(g.id))?.channelInstance)
+      setup: !!((await DatabaseManager.getGuildData(g.id))?.channelInstance)
     }))
 
     await Promise.all(out).then((out) => {
       Database
         .collection('stats-top-clients')
         ?.findOneAndUpdate(
-          { _id: Core.options.shards[0] || 0 },
+          { _id: Manager.getMeta().workerIndex || 0 },
           { $set: { value: out } },
           { upsert: true }
         )
@@ -55,7 +57,7 @@ export class DbStats {
 
 export class DbStatUsage {
 
-  public readonly raw: { [key: string]: number[] } = {};
+  public readonly raw: { [key: string]: number[] } = {}
 
   //
 

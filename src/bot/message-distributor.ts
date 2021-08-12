@@ -1,50 +1,25 @@
 import { Message, Guild, MessageOptions } from 'discord.js'
 import { Long } from 'mongodb'
 import { GameFlag, GameInfo } from 'freestuff'
-import { Core } from '../index'
+import { Core, FSAPI } from '../index'
 import Database from '../database/database'
 import { DbStats } from '../database/db-stats'
 import SentryManager from '../thirdparty/sentry/sentry'
 import Redis from '../database/redis'
-import { Theme } from '../types/context'
 import { DatabaseGuildData, GuildData } from '../types/datastructs'
 import RemoteConfig from '../controller/remote-config'
 import Logger from '../lib/logger'
+import DatabaseManager from './database-manager'
 import Const from './const'
-import ThemeOne from './themes/1'
-import ThemeTwo from './themes/2'
-import ThemeThree from './themes/3'
-import ThemeFour from './themes/4'
-import ThemeFive from './themes/5'
-import ThemeSix from './themes/6'
-import ThemeSeven from './themes/7'
-import ThemeEight from './themes/8'
-import ThemeNine from './themes/9'
-import ThemeTen from './themes/10'
 
 
 export default class MessageDistributor {
 
-  private readonly themes: Theme[] = [
-    new ThemeOne(),
-    new ThemeTwo(),
-    new ThemeThree(),
-    new ThemeFour(),
-    new ThemeFive(),
-    new ThemeSix(),
-    new ThemeSeven(),
-    new ThemeEight(),
-    new ThemeNine(),
-    new ThemeTen()
-  ];
-
-  //
-
   /**
-   * Sends out the games to all guilds this shard is responsible for
+   * Sends out the games to all guilds MessageDistributor shard is responsible for
    * @param content game(s) to announce
    */
-  public async distribute(content: GameInfo[]): Promise<void> {
+  public static async distribute(content: GameInfo[]): Promise<void> {
     content = content.filter(g => g.type === 'free') // TODO
 
     const lga = await Redis.getSharded('lga')
@@ -56,8 +31,10 @@ export default class MessageDistributor {
           channel: { $ne: null }
         }
       : {
-          sharder: { $mod: [ Core.options.shardCount, Core.options.shards[0] ], $gt: startAt },
-          channel: { $ne: null }
+          $and: [
+            { $or: (Core.options.shards as number[]).map(shard => ({ sharder: { $mod: [ Core.options.shardCount, shard ] } })) },
+            { sharder: { $gt: startAt }, channel: { $ne: null } }
+          ]
         }
 
     const guilds: DatabaseGuildData[] = await Database
@@ -78,7 +55,7 @@ export default class MessageDistributor {
       try {
         Redis.setSharded('lga', g.sharder + '')
         Logger.excessive(`Sending to ${g._id}`)
-        const successIn = await this.sendToGuild(g, content, false, false)
+        const successIn = await MessageDistributor.sendToGuild(g, content, false, false)
         Logger.excessive(`Success in ${g._id}: ${successIn}`)
         if (successIn.length) {
           for (const id of successIn)
@@ -98,11 +75,11 @@ export default class MessageDistributor {
     const announcementsMadeTotal = announcementsMade.map(e => e.reach).reduce((p, c) => (p + c), 0)
 
     content.forEach(c => Redis.setSharded('am_' + c.id, '0')) // AMount (of announcements done)
-    await Redis.setSharded('lga', ''); // Last Guild Announced (guild id)
+    await Redis.setSharded('lga', '') // Last Guild Announced (guild id)
 
-    (await DbStats.usage).announcements.updateToday(announcementsMadeTotal, true)
+    ;(await DbStats.usage).announcements.updateToday(announcementsMadeTotal, true)
 
-    announcementsMade.forEach(game => Core.fsapi.postGameAnalytics(game.id, 'discord', { reach: game.reach }))
+    announcementsMade.forEach(game => FSAPI.postGameAnalytics(game.id, 'discord', { reach: game.reach }))
   }
 
   /**
@@ -110,13 +87,13 @@ export default class MessageDistributor {
    * @param guild guild to run the test on
    * @param content content of the test message
    */
-  public test(guild: Guild, content: GameInfo): void {
+  public static test(guild: Guild, content: GameInfo): void {
     Database
       .collection('guilds')
       .findOne({ _id: Long.fromString(guild.id) })
       .then((g: DatabaseGuildData) => {
         if (!g) return
-        this.sendToGuild(g, [ content ], true, true)
+        MessageDistributor.sendToGuild(g, [ content ], true, true)
       })
       .catch(Logger.error)
   }
@@ -125,12 +102,12 @@ export default class MessageDistributor {
    * Sends announcement message(s) to a guild
    * @param g Guild to announce to
    * @param content Games to announce
-   * @param test Whether this was a test message (/test command)
+   * @param test Whether MessageDistributor was a test message (/test command)
    * @param force Whether or not to ignore guild filter settings
    * @returns Array of guild ids that were actually announced (and not filtered out by guild settings)
    */
-  public async sendToGuild(g: DatabaseGuildData, content: GameInfo[], test: boolean, force: boolean): Promise<number[]> {
-    const data = await Core.databaseManager.parseGuildData(g)
+  public static async sendToGuild(g: DatabaseGuildData, content: GameInfo[], test: boolean, force: boolean): Promise<number[]> {
+    const data = await DatabaseManager.parseGuildData(g)
 
     if (!data) {
       Logger.excessive(`Guild ${g._id} return: no data`)
@@ -140,9 +117,9 @@ export default class MessageDistributor {
     // forced will ignore filter settings
     if (!force) {
       content = content
-        .filter(game => data.price <= game.org_price[data.currency === 'euro' ? 'euro' : 'dollar']) // ! dollar != usd !
+        .filter(game => data.price.from <= game.org_price.euro /* TODO */)
         .filter(game => data.trashGames || !(game.flags & GameFlag.TRASH))
-        .filter(game => data.storesList.includes(game.store))
+        .filter(game => data.platformsList.includes(Const.platforms.find(p => p.id === game.store) || Const.platforms[0]))
 
       if (!content.length) {
         Logger.excessive(`Guild ${g._id} return: no content left`)
@@ -175,17 +152,13 @@ export default class MessageDistributor {
       Logger.excessive(`Guild ${g._id} return: no VIEW_CHANNEL`)
       return []
     }
-    if (!permissions.has('EMBED_LINKS') && Const.themesWithEmbeds.includes(data.theme)) {
+    if (!permissions.has('EMBED_LINKS') && data.theme.usesEmbeds) {
       Logger.excessive(`Guild ${g._id} return: no EMBED_LINKS`)
       return []
     }
-    if (!permissions.has('USE_EXTERNAL_EMOJIS') && Const.themesWithExtemotes[data.theme]) {
-      Logger.excessive(`Guild ${g._id} return: no USE_EXTERNAL_EMOJIS`)
-      data.theme = Const.themesWithExtemotes[data.theme]
-    }
 
     // build message objects
-    let messageContents = content.map((game, index) => this.buildMessage(game, data, test, !!index))
+    let messageContents = content.map((game, index) => MessageDistributor.buildMessage(game, data, test, !!index))
     messageContents = messageContents.filter(mes => !!mes)
     if (!messageContents.length) {
       Logger.excessive(`Guild ${g._id} return: no message contents length`)
@@ -199,9 +172,9 @@ export default class MessageDistributor {
     if (messages.length && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
       await messages[messages.length - 1].react('🆓')
     // if (!test && (data.channelInstance as Channel).type === 'news')
-    //   messages.forEach(m => m.crosspost());
+    //   messages.forEach(m => m.crosspost())
     // TODO check if ratelimited
-    // TODO check if it has the "manage messages" permission. although not required to publish own messages, there needs to be a way to turn this off
+    // TODO check if it has the "manage messages" permission. although not required to publish own messages, there needs to be a way to turn MessageDistributor off
 
     Logger.excessive(`Guild ${g._id} noret: success`)
     return content.map(game => game.id)
@@ -211,8 +184,8 @@ export default class MessageDistributor {
    * Finds the used theme and lets that theme build the message
    * @returns Tupel with message.content and message.options?
    */
-  public buildMessage(content: GameInfo, data: GuildData, test: boolean, disableMention: boolean): [ string, MessageOptions? ] {
-    const theme = this.themes[data.theme] || this.themes[0]
+  public static buildMessage(content: GameInfo, data: GuildData, test: boolean, disableMention: boolean): [ string, MessageOptions? ] {
+    const theme = data.theme.builder
     return theme.build(content, data, { test, disableMention })
   }
 

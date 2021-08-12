@@ -1,10 +1,11 @@
 import * as redis from 'redis'
 import SentryManager from '../thirdparty/sentry/sentry'
-import { Core, config } from '../index'
+import { config } from '../index'
 import Logger from '../lib/logger'
+import Manager from '../controller/manager'
 
 
-export type dbcollection = 'guilds' | 'stats-usage' | 'games';
+export type dbcollection = 'guilds' | 'stats-usage' | 'games'
 
 export default class Redis {
 
@@ -35,7 +36,7 @@ export default class Redis {
   }
 
   public static getSharded(key: string): Promise<any> {
-    return this.get(`s${Core.options.shards[0]}_${key}`)
+    return this.get(`w${Manager.getMeta().workerIndex}_${key}`)
   }
 
   public static set(key: string, value: string): Promise<string> {
@@ -50,7 +51,7 @@ export default class Redis {
   }
 
   public static setSharded(key: string, value: string): Promise<string> {
-    return this.set(`s${Core.options.shards[0]}_${key}`, value)
+    return this.set(`w${Manager.getMeta().workerIndex}_${key}`, value)
   }
 
   public static async inc(key: string, amount = 1): Promise<number> {
@@ -73,7 +74,7 @@ export default class Redis {
   }
 
   public static incSharded(key: string, amount = 1): Promise<number> {
-    return this.inc(`s${Core.options.shards[0]}_${key}`, amount)
+    return this.inc(`w${Manager.getMeta().workerIndex}_${key}`, amount)
   }
 
 }

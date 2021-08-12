@@ -1,13 +1,14 @@
 import { MessageOptions } from 'discord.js'
 import { GameInfo } from 'freestuff'
 import { GuildData } from '../../types/datastructs'
-import { Theme } from '../../types/context'
+import { ThemeBuilder } from '../../types/context'
 import { Core } from '../../index'
+import DatabaseManager from '../database-manager'
 import Const from '../../bot/const'
 import Experiments from '../../controller/experiments'
 
 
-export default class ThemeFive implements Theme {
+export default class ThemeFive implements ThemeBuilder {
 
   public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     return [

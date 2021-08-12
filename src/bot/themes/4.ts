@@ -1,11 +1,11 @@
 import { MessageOptions } from 'discord.js'
 import { GameInfo } from 'freestuff'
 import { GuildData } from '../../types/datastructs'
-import { Theme } from '../../types/context'
+import { ThemeBuilder } from '../../types/context'
 import BaseTheme, { themeSettings } from './basetheme'
 
 
-export default class ThemeFour implements Theme {
+export default class ThemeFour implements ThemeBuilder {
 
   public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     const fullSettings: themeSettings = {

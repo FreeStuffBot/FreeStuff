@@ -2,11 +2,12 @@ import Logger from '../lib/logger'
 import { Core } from '../index'
 import { Experiment } from '../types/controller'
 import { GuildData } from '../types/datastructs'
+import Localisation from '../bot/localisation'
 
 
 export default class Experiments {
 
-  private static experiments = {};
+  private static experiments = {}
 
   public static updateExperiments(data?: Experiment[]) {
     Logger.info('Experiments updated')
@@ -35,8 +36,8 @@ export default class Experiments {
     switch (experiment.group) {
       case 'all': return true
       case 'beta': return guildData.beta
-      case 'europe': return Core.localisation.isGuildInEurope(guildData.channelInstance?.guild)
-      case 'usa': return Core.localisation.isGuildInAmerica(guildData.channelInstance?.guild)
+      case 'europe': return Localisation.isGuildInEurope(guildData.channelInstance?.guild)
+      case 'usa': return Localisation.isGuildInAmerica(guildData.channelInstance?.guild)
     }
     return false
   }

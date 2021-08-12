@@ -1,12 +1,13 @@
 import { MessageOptions } from 'discord.js'
 import { GameInfo } from 'freestuff'
 import { GuildData } from '../../types/datastructs'
-import { Theme } from '../../types/context'
+import { ThemeBuilder } from '../../types/context'
 import { Core } from '../../index'
+import DatabaseManager from '../database-manager'
 import Experiments from '../../controller/experiments'
 
 
-export default class ThemeNine implements Theme {
+export default class ThemeNine implements ThemeBuilder {
 
   public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     const useProxyUrl = Experiments.runExperimentOnServer('use_proxy_url', data)
@@ -15,7 +16,7 @@ export default class ThemeNine implements Theme {
       ((data.roleInstance && !settings.disableMention) ? data.roleInstance.toString() : '')
       + ' '
       + Core.text(data, '=announcement_theme9', {
-        name: content.title,
+        name: (content.title.startsWith('=') ? Core.text(data, content.title) : content.title),
         url: (useProxyUrl ? content.urls.default : content.urls.org)
       }),
       {}

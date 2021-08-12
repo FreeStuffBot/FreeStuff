@@ -4,6 +4,8 @@ import { Core } from '../../index'
 import Const from '../../bot/const'
 import { GuildData } from '../../types/datastructs'
 import Experiments from '../../controller/experiments'
+import LanguageManager from '../../bot/language-manager'
+import Localisation from '../localisation'
 
 
 export type themeSettings = {
@@ -16,7 +18,7 @@ export type themeSettings = {
 export default class BaseTheme {
 
   public static build(content: GameInfo, data: GuildData, settings: themeSettings): [string, MessageOptions] {
-    const priceString = BaseTheme.generatePriceString(content, data)
+    const priceString = Localisation.renderPriceTag(data, content)
     const until = BaseTheme.generateUntil(content, data)
     const button = BaseTheme.generateButton(content, data)
     const showDescription = content.description && settings.themeExtraInfo
@@ -37,7 +39,6 @@ export default class BaseTheme {
       rawMessage,
       {
         embed: {
-        // author: { name: Core.text(data, '=announcement_header') },
           title: content.title,
           description,
           image,
@@ -71,16 +72,6 @@ export default class BaseTheme {
     return `**[${Core.text(data, '=open_in_browser')}](${useProxyUrl ? content.urls.browser : content.urls.org})** • **[${Core.text(data, '=open_in_epic_games_client')}](${content.urls.client})**`
   }
 
-  static generatePriceString(content: GameInfo, data: GuildData): string {
-    return data.currency === 'euro'
-      ? Core.languageManager.get(data, 'currency_sign_euro_position') === 'after'
-          ? `${content.org_price.euro} €`
-          : `€${content.org_price.euro}`
-      : Core.languageManager.get(data, 'currency_sign_dollar_position') === 'after'
-        ? `${content.org_price.dollar} $`
-        : `$${content.org_price.dollar}`
-  }
-
   static generateImageObject(content: GameInfo, data: GuildData, settings: themeSettings): Object {
     if (!settings.themeImages) return undefined
 
@@ -107,10 +98,10 @@ export default class BaseTheme {
 
   static generateDescription(content: GameInfo, data: GuildData, until: string, priceString: string, showDescription: boolean, showRating: boolean, showStore: boolean, divider: string, button: string) {
     return ''
-      + (showDescription ? `> ${content.description}\n\n` : '')
+      + (showDescription ? `> ${content.description.startsWith('=') ? Core.text(data, content.description) : content.description}\n\n` : '')
       + `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until}`
       + (showRating ? `${divider}${Math.round(content.rating * 20) / 2}/10 ★` : '')
-      + (showStore ? `${divider}${Core.languageManager.get(data, 'platform_' + content.store)}` : '')
+      + (showStore ? `${divider}${LanguageManager.get(data, 'platform_' + content.store)}` : '')
       // + ((content.flags & GameFlag.TRASH) ? `${divider}${Core.text(data, '=game_meta_flag_trash')}` : '')
       // + ((content.flags & GameFlag.THIRDPARTY) ? `${divider}${Core.text(data, '=game_meta_flag_thirdparty')}` : '')
       + `\n\n${button}`

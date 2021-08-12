@@ -1,6 +1,9 @@
 import { Guild } from 'discord.js'
-import { Core } from '../index'
+import { GameInfo } from 'freestuff'
 import { Util } from '../lib/util'
+import { GuildData } from '../types/datastructs'
+import Const from './const'
+import LanguageManager from './language-manager'
 
 
 export default class Localisation {
@@ -18,7 +21,7 @@ export default class Localisation {
     'eu',
     'amsterdam',
     'dubai'
-  ];
+  ]
 
   private static readonly AMERICAN_REGIONS = [
     'us-west',
@@ -34,7 +37,7 @@ export default class Localisation {
     'na',
     'south-america',
     'sa'
-  ];
+  ]
 
   private static readonly EXTRA_LANGUAGE_HINTS = {
     brazil: 'pt-BR',
@@ -42,43 +45,54 @@ export default class Localisation {
     japan: 'zh-CN'
   }
 
-  public isGuildInEurope(guild: Guild) {
+  public static isGuildInEurope(guild: Guild) {
     if (!guild) return false
     const region = guild.region
     const europe = Localisation.EUROPEAN_REGIONS.includes(region)
     return europe
   }
 
-  public isGuildInAmerica(guild: Guild) {
+  public static isGuildInAmerica(guild: Guild) {
     if (!guild) return false
     const region = guild.region
     const europe = Localisation.AMERICAN_REGIONS.includes(region)
     return europe
   }
 
-  public getDefaultSettings(guild: Guild): number {
+  public static getDefaultSettings(guild: Guild): number {
     const europe = this.isGuildInEurope(guild)
-    const useEuro = europe
     const defaultLang = europe ? 'en-GB' : 'en-US'
 
     return 0
-      | Util.modifyBits(0, 1, 1, useEuro ? 0 : 1)
-      | Util.modifyBits(0, 8, 6, Core.languageManager.languageToId(defaultLang))
-      | Util.modifyBits(0, 14, 8, 0b11111111)
+      | Util.modifyBits(0, 5, 4, europe ? Const.currencies[0].id : Const.currencies[1].id)
+      | Util.modifyBits(0, 10, 6, LanguageManager.languageToId(defaultLang))
   }
 
-  public getTranslationHint(guild: Guild): string {
+  public static getDefaultFilter(_guild: Guild): number {
+    return 0
+      | Util.modifyBits(0, 2, 2, Const.defaultPriceClass.id)
+      | Util.modifyBits(0, 4, 8, Const.defaultPlatforms)
+  }
+
+  public static getTranslationHint(guild: Guild): string {
     const region = guild.region
     const europe = Localisation.EUROPEAN_REGIONS.includes(region)
     const hint = Localisation.EXTRA_LANGUAGE_HINTS[region]
 
     if (hint)
-      return Core.languageManager.getRaw(hint, 'translation_available')
+      return LanguageManager.getRaw(hint, 'translation_available')
 
     if (europe)
-      return Core.languageManager.getRaw(hint, 'translation_available_generic')
+      return LanguageManager.getRaw(hint, 'translation_available_generic')
 
     return ''
+  }
+
+  public static renderPriceTag(data: GuildData, game: GameInfo) {
+    const price = game.org_price.euro // TODO
+    return LanguageManager.get(data, 'currency_sign_position') === 'after'
+      ? `${price}${data.currency.symbol}`
+      : `${data.currency.symbol}${price}`
   }
 
 }

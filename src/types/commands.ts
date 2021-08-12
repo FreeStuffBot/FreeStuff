@@ -7,6 +7,7 @@ import { GuildData } from './datastructs'
  */
 
 
+/** @deprecated */
 export interface CommandInfo {
   name: string
   desc: string
@@ -17,14 +18,17 @@ export interface CommandInfo {
 }
 
 
+/** @deprecated */
 export type ReplyFunction = (message: string, content: string, footer?: string, color?: number, image?: string) => void
 
 
+/** @deprecated */
 export interface CommandHandler {
   handle(mes: Message, args: string[], data: GuildData, reply: ReplyFunction): boolean | Promise<boolean>
 }
 
 
+/** @deprecated */
 export abstract class Command implements CommandHandler {
 
   public constructor(
@@ -40,6 +44,7 @@ export abstract class Command implements CommandHandler {
 }
 
 
+/** @deprecated */
 export interface SettingsSubcommand {
   /** [ usage, description, description variables ] */
   getMetaInfo(g: GuildData): [ string, string, any? ] | ([ string, string, any? ])[]

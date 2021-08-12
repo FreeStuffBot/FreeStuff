@@ -1,0 +1,45 @@
+import { Message } from 'discord.js'
+import { GuildData } from '../../types/datastructs'
+import { Command, ReplyFunction } from '../../types/commands'
+import { Core } from '../../index'
+import DatabaseManager from '../database-manager'
+import Experiments from '../../controller/experiments'
+import Emojis from '../emojis'
+import AnnouncementManager from '../announcement-manager'
+
+
+export default class FreeCommand extends Command {
+
+  public constructor() {
+    super({
+      name: 'free',
+      desc: '=cmd_free_desc',
+      trigger: [ 'free', 'currenlty', 'current', 'what', 'whats', 'what\'s', 'what´s', 'what`s' ]
+    })
+  }
+
+  public handle(mes: Message, _args: string[], g: GuildData, repl: ReplyFunction): boolean {
+    const cont = mes.content.toLowerCase()
+    if (cont.startsWith('what'))
+      if (!cont.match(/what.? ?i?s? +(currently)? ?free/)) return
+
+    const useProxyUrl = Experiments.runExperimentOnServer('use_proxy_url', g)
+
+    const freeLonger: string[] = []
+    const freeToday: string[] = []
+    for (const game of AnnouncementManager.getCurrentFreebies()) {
+      // g happens to be undefined here at times, investigate
+      const str = `${Emojis.store[game.store].string || ':gray_question:'} **[${game.title}](${useProxyUrl ? game.urls.default : game.urls.org})**\n${Emojis.bigSpace.string} ~~${g?.currency.id === 0 ? `${game.org_price.euro}€` : `$${game.org_price.dollar}`}~~ • ${Core.text(g, '=cmd_free_until')} ${game.until ? `<t:${game.until.getTime() / 1000}:${('_today' in game) ? 't' : 'd'}>` : 'unknown'}\n`
+      if ('_today' in game) freeToday.push(str)
+      else freeLonger.push(str)
+    }
+
+    let replyText = freeLonger.join('\n')
+    if (freeToday.length) replyText += `\n\n${Core.text(g, '=cmd_free_ends_soon')}\n\n${freeToday.join('\n')}`
+    if (!freeLonger.length && !freeToday.length) replyText = Core.text(g, '=cmd_free_no_freebies')
+    replyText += '\n\n:new: ' + Core.text(g, '=slash_command_introduction_label_long', { command: '/free' })
+    repl(Core.text(g, '=cmd_free_title'), replyText)
+    return true
+  }
+
+}

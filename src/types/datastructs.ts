@@ -1,6 +1,7 @@
 import { Long } from 'mongodb'
-import { GameAnalytics, GameInfo, Store } from 'freestuff'
+import { GameAnalytics, GameInfo } from 'freestuff'
 import { Role, TextChannel } from 'discord.js'
+import { Currency, Platform, PriceClass, Theme } from './context'
 
 
 /*
@@ -42,20 +43,25 @@ export interface DatabaseGuildData {
   channel: Long | null
   role: Long | null
   settings: number
-  price: number
+  filter: number
+  tracker: number
 }
 
 
-/** After the data is parsed to allow easier access */
+/**
+ * After the data is parsed to allow easier access
+ * @usage While this object might get updated once data changes, it is NOT guaranteed to. Treat it as a copy of the data at a specific time, not as an interface to the guild. => No caching this data manually in commands or components, no storing it for longer than needed
+ */
 export interface GuildData extends DatabaseGuildData {
   channelInstance: TextChannel
   roleInstance: Role
-  theme: number
-  currency: 'euro' | 'usd'
+  theme: Theme
+  currency: Currency
+  price: PriceClass
   react: boolean
   trashGames: boolean
   language: string
-  storesRaw: number
-  storesList: Store[]
+  platformsRaw: number
+  platformsList: Platform[]
   beta: boolean
 }

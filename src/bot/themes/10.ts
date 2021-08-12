@@ -2,19 +2,21 @@ import { MessageOptions } from 'discord.js'
 import { GameInfo } from 'freestuff'
 import Experiments from '../../controller/experiments'
 import { GuildData } from '../../types/datastructs'
-import { Theme } from '../../types/context'
+import { ThemeBuilder } from '../../types/context'
 import { Core } from '../../index'
+import DatabaseManager from '../database-manager'
 import Const from '../const'
+import LanguageManager from '../../bot/language-manager'
 
 
-export default class ThemeTen implements Theme {
+export default class ThemeTen implements ThemeBuilder {
 
   public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
     const useProxyUrl = Experiments.runExperimentOnServer('use_proxy_url', data)
     const button = content.urls.client
       ? content.store === 'steam'
-          ? `${Core.text(data, '=open_in_browser')}: [https://s.team/a/${content.urls.org.split('/app/')[1].split('/')[0]}](${useProxyUrl ? content.urls.browser : content.urls.org})\n${Core.text(data, '=open_in_steam_client')}: ${content.urls.client}`
-          : `[${Core.text(data, '=open_in_browser')}](${useProxyUrl ? content.urls.browser : content.urls.org}) • [${Core.text(data, '=open_in_epic_games_client')}](${content.urls.client})`
+        ? `${Core.text(data, '=open_in_browser')}: [https://s.team/a/${content.urls.org.split('/app/')[1].split('/')[0]}](${useProxyUrl ? content.urls.browser : content.urls.org})\n${Core.text(data, '=open_in_steam_client')}: ${content.urls.client}`
+        : `[${Core.text(data, '=open_in_browser')}](${useProxyUrl ? content.urls.browser : content.urls.org}) • [${Core.text(data, '=open_in_epic_games_client')}](${content.urls.client})`
       : `[${Core.text(data, '=open_in_browser')}](${useProxyUrl ? content.urls.default : content.urls.org})`
 
     const steamcontent = content.store === 'steam'
@@ -28,9 +30,9 @@ export default class ThemeTen implements Theme {
     const lines = [
       '```yaml',
       `  Name: ${content.title}`,
-      ` Store: ${Core.languageManager.get(data, 'platform_' + content.store)}`,
+      ` Store: ${LanguageManager.get(data, 'platform_' + content.store)}`,
       ` Price: $${content.org_price.dollar} | €${content.org_price.euro}`,
-      ` Until: ${content.until?.toLocaleDateString(Core.languageManager.get(data, 'date_format')) ?? 'unknown'}`,
+      ` Until: ${content.until?.toLocaleDateString(LanguageManager.get(data, 'date_format')) ?? 'unknown'}`,
       `  Tags: ${content.tags?.slice(0, 3).join(', ') ?? ''}`,
       `Rating: ${~~(content.rating * 100)}% positive`,
       ...steamcontent,

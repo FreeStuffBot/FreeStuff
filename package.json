@@ -4,10 +4,10 @@
   "description": "The official Discord Bot for FreeStuffBot.xyz",
   "main": "build/index.js",
   "scripts": {
-    "start": "node --icu-data-dir=node_modules\\full-icu ./build/index.js",
+    "start": "node --icu-data-dir=node_modules\\full-icu --max-old-space-size=2048 ./build/index.js",
     "build": "tsc",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "dev": "tsc && node --icu-data-dir=node_modules\\full-icu --trace-warnings ./build/index.js",
+    "dev": "tsc && node --icu-data-dir=node_modules\\full-icu --trace-warnings --inspect ./build/index.js",
     "test": "echo \"No test specified\" && exit 0"
   },
   "author": "FreeStuff Bot Team",
@@ -22,11 +22,12 @@
     "await-semaphore": "^0.1.3",
     "axios": "^0.21.1",
     "chalk": "^3.0.0",
+    "cordo": "^1.2.9",
     "cron": "^1.8.2",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "freestuff": "^1.6.2",
+    "freestuff": "^1.7.1",
     "full-icu": "^1.3.1",
     "git-last-commit": "^1.0.0",
     "mongodb": "^3.6.0",
@@ -34,7 +35,7 @@
     "redis": "^3.1.2",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.2",
-    "socket.io-client": "^4.0.1"
+    "socket.io-client": "^4.1.3"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^6.0.0",

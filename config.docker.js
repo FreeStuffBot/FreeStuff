@@ -5,7 +5,7 @@ const fs = require('fs')
 
 function secret(name) {
   try {
-    return fs.readFileSync('/run/secret/' + name)
+    return fs.readdirSync('/run/secrets/' + name).toString()
   } catch (ex) {
     return process.env[name]
   }
@@ -19,7 +19,7 @@ module.exports = {
     clientid: secret('FSB_DBOT_ID') || '672822334641537041'
   },
   mode: {
-    name: 'discovery',
+    name: 'worker',
     master: {
       host: process.env.NODE_ENV === 'production'
         ? undefined
@@ -41,9 +41,5 @@ module.exports = {
     sentry: {
       dsn: secret('FSB_SENTRY_DSN')
     }
-  },
-  admins: [
-    '137258778092503042',
-    '171675309177831424'
-  ]
+  }
 }

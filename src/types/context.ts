@@ -1,3 +1,4 @@
+import Emojis from 'bot/emojis'
 import { MessageOptions } from 'discord.js'
 import { GameInfo, Store } from 'freestuff'
 import { GuildData } from './datastructs'
@@ -9,24 +10,13 @@ import { GuildData } from './datastructs'
 
 
 export type GuildSetting = 'channel'
-  | 'roleMention' | 'theme'| 'currency'
+  | 'role' | 'theme'| 'currency'
   | 'react' | 'trash' | 'price'
-  | 'language' | 'stores' | 'beta'
+  | 'language' | 'platforms' | 'beta'
+  | 'tracker'
 
 
-export enum FilterableStore {
-  OTHER = 1 << 0,
-  STEAM = 1 << 1,
-  EPIC = 1 << 2,
-  HUMBLE = 1 << 3,
-  GOG = 1 << 4,
-  ORIGIN = 1 << 5,
-  UPLAY = 1 << 6,
-  ITCH = 1 << 7
-}
-
-
-export interface StoreData {
+export type StoreData = {
   name: string
   key: Store
   icon: string
@@ -34,6 +24,44 @@ export interface StoreData {
 }
 
 
-export interface Theme {
+export interface ThemeBuilder {
   build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions]
 }
+
+
+export type Theme = {
+  id: number
+  name: string
+  description: string
+  emoji: string
+  builder: ThemeBuilder
+  toggleCurrencies: boolean
+  usesEmbeds: boolean
+}
+
+
+export type Currency = {
+  id: number
+  name: string
+  symbol: string
+  /** whether this currency is calculated from usd/eur or is actually real data */
+  calculated: boolean
+}
+
+
+export type PriceClass = {
+  id: number
+  from: number
+  name: string
+}
+
+
+export type Platform = {
+  id: string
+  bit: number
+  name: string
+  description: string
+  emoji: Emojis
+  default: boolean
+}
+

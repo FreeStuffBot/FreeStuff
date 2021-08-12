@@ -7,12 +7,21 @@ export class Util {
   public static init() {
   }
 
-  public static belongsToShard(id: Long) {
+  public static belongsToShard(id: Long, shard?: number) {
     if (Core.options.shardCount === 1) return true
-    return id
+    const mod = id
       .shiftRight(22)
       .modulo(Long.fromNumber(Core.options.shardCount))
-      .equals(Long.fromNumber(Core.options.shards[0]))
+
+    if (shard === undefined) {
+      for (const shard of Core.options.shards as number[]) {
+        if (mod.equals(Long.fromNumber(shard)))
+          return true
+      }
+      return false
+    }
+
+    return mod.equals(Long.fromNumber(shard))
   }
 
   public static modifyBits(input: number, lshift: number, bits: number, value: number): number {
