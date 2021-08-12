@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const mongo = require('mongodb')
 const config = require('../config')
 
