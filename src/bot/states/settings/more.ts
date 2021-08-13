@@ -1,6 +1,6 @@
 import { hostname } from 'os'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag } from 'cordo'
-import { Core } from '../../..'
+import { Core, VERSION } from '../../..'
 import Manager from '../../../controller/manager'
 import Emojis from '../../emojis'
 import Tracker from '../../tracker'
@@ -10,7 +10,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_MORE')
 
   const sharder = (typeof i.guildData.sharder === 'number') ? i.guildData.sharder : i.guildData.sharder.getLowBits()
-  const debugInfo = `\n\n**Debug info:** Shard \`${sharder % Core.options.shardCount}\`, Worker \`${Manager.getSelfUUID()}\`, Container \`${hostname() || 'unknown'}\`, Guildid \`${i.guild_id}\``
+  const debugInfo = `\n\n**Debug info:** Shard \`${sharder % Core.options.shardCount}\` ─ Worker \`${Manager.getSelfUUID()}\` ─ Container \`${hostname() || 'unknown'}\` ─ Node \`${process.env.NODE_ID}\` ─ Version \`${VERSION}\` ─ Guildid \`${i.guild_id}\``
 
   return {
     title: '=settings_more_ui_1',

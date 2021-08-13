@@ -79,6 +79,8 @@ import DatabaseManager from './bot/database-manager'
 export let Core: FreeStuffBot
 // eslint-disable-next-line import/no-mutable-exports
 export let FSAPI: FreeStuffApi
+// eslint-disable-next-line import/no-mutable-exports
+export let VERSION: string
 
 async function run() {
   if (config.bot.mode === 'dev')
@@ -86,6 +88,7 @@ async function run() {
 
   SentryManager.init()
   const commit = await logVersionDetails()
+  VERSION = commit.shortHash
   Util.init()
 
   await MongoAdapter.connect(config.mongodb.url)

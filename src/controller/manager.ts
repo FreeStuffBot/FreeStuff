@@ -96,7 +96,8 @@ export default class Manager {
       query: {
         type: 'worker',
         version: gitCommit.hash,
-        server: hostname(),
+        container: hostname(),
+        node: process.env.NODE_ID,
         id: this.selfUUID
       },
       path: socketPath,

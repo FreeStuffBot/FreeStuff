@@ -3,8 +3,8 @@ import { Core } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import Logger from '../lib/logger'
 import DatabaseManager from '../bot/database-manager'
-import Database, { dbcollection } from './database'
 import Manager from '../controller/manager'
+import Database, { dbcollection } from './database'
 
 
 export class DbStats {

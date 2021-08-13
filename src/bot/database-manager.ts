@@ -273,7 +273,6 @@ export default class DatabaseManager {
   public static async changeSetting(data: GuildData, setting: GuildSetting, value: any) {
     const out = {} as any
     let bits = 0
-    const c = data.settings
 
     switch (setting) {
       case 'channel':
@@ -288,36 +287,42 @@ export default class DatabaseManager {
         break
       case 'price':
         bits = (value as PriceClass).id
-        out.settings = Util.modifyBits(c, 2, 2, bits)
+        data.filter = Util.modifyBits(data.filter, 2, 2, bits)
+        out.filter = data.filter
         data.price = value as PriceClass
         break
       case 'theme':
         if (typeof value !== 'number')
           value = (value as Theme).id
         bits = (value as number) & 0b11111
-        out.settings = Util.modifyBits(c, 0, 5, bits)
+        data.settings = Util.modifyBits(data.settings, 0, 5, bits)
+        out.settings = data.settings
         data.theme = Const.themes[value]
         break
       case 'currency':
         if (typeof value !== 'number')
           value = (value as Currency).id
         bits = (value as number) & 0b1111
-        out.settings = Util.modifyBits(c, 5, 4, bits)
+        data.settings = Util.modifyBits(data.settings, 5, 4, bits)
+        out.settings = data.settings
         data.currency = Const.currencies[value]
         break
       case 'react':
         bits = value ? 1 : 0
-        out.settings = Util.modifyBits(c, 9, 1, bits)
+        data.settings = Util.modifyBits(data.settings, 9, 1, bits)
+        out.settings = data.settings
         data.react = !!value
         break
       case 'trash':
         bits = value ? 1 : 0
-        out.filter = Util.modifyBits(c, 0, 1, bits)
+        data.filter = Util.modifyBits(data.filter, 0, 1, bits)
+        out.filter = data.filter
         data.trashGames = !!value
         break
       case 'language':
         bits = (value as number) & 0b111111
-        out.settings = Util.modifyBits(c, 10, 6, bits)
+        data.settings = Util.modifyBits(data.settings, 10, 6, bits)
+        out.settings = data.settings
         data.language = LanguageManager.languageById(value)
         break
       case 'platforms':
@@ -327,13 +332,15 @@ export default class DatabaseManager {
           for (const platform of (value as Platform[]))
             bits ^= platform.bit
         }
-        out.filter = Util.modifyBits(c, 4, 8, bits)
+        data.filter = Util.modifyBits(data.filter, 4, 8, bits)
+        out.filter = data.filter
         data.platformsRaw = bits
         data.platformsList = DatabaseManager.platformsRawToList(bits)
         break
       case 'beta':
         bits = value ? 1 : 0
-        out.settings = Util.modifyBits(c, 30, 1, bits)
+        data.settings = Util.modifyBits(data.settings, 30, 1, bits)
+        out.settings = data.settings
         data.beta = !!value
         break
       case 'tracker':
