@@ -25,6 +25,7 @@ export default class BaseTheme {
     const showRating = content.rating && settings.themeExtraInfo
     const showStore = !until || !showRating || !settings.themeImages
     const divider = settings.themeExtraInfo ? ' ᲼ ᲼ ' : ' • '
+    const title = content.title.startsWith('=') ? Core.text(data, content.title) : content.title
 
     const description = BaseTheme.generateDescription(content, data, until, priceString, showDescription, showRating, showStore, divider, button)
     const image = BaseTheme.generateImageObject(content, data, settings)
@@ -39,7 +40,7 @@ export default class BaseTheme {
       rawMessage,
       {
         embed: {
-          title: content.title,
+          title,
           description,
           image,
           footer,

@@ -42,7 +42,7 @@ export default class LanguageManager {
   }
 
   public static get(d: GuildData, key: string): string {
-    return LanguageManager.getRaw(d.language, key, true)
+    return LanguageManager.getRaw(d?.language ?? LanguageManager.list[0], key, true)
   }
 
   public static getRaw(language: string, key: string, fallback = true): string {
@@ -114,7 +114,7 @@ export default class LanguageManager {
     if (maxDepth <= 0) return
     for (const key in object) {
       if (key === '_context') continue
-      if (typeof object[key] === 'object') LanguageManager.translateObject(object[key], guildData, context, maxDepth--)
+      if (typeof object[key] === 'object') LanguageManager.translateObject(object[key], guildData, context, maxDepth - 1)
       else if (typeof object[key] === 'string') object[key] = Core.text(guildData, object[key], context)
     }
   }
