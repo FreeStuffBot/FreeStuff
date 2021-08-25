@@ -34,7 +34,6 @@ const commands = [
   }
 ]
 
-// TODO too fast, ratelimited
 async function run(remove = true, add = true, whitelist) {
   const opts = {
     headers: { Authorization: `Bot ${token}` }
@@ -49,13 +48,18 @@ async function run(remove = true, add = true, whitelist) {
     )
   }
 
+  let delay = 0
   if (add) {
     for (const command of commands) {
       if (whitelist && !whitelist.includes(command.name)) continue
-      axios
-        .post(`https://discord.com/api/v8/applications/${clientid}/guilds/517009303203479572/commands`, command, opts)
-        .catch(err => console.error(err.response.status, command.name, JSON.stringify(err.response.data, null, 2)))
+      setTimeout(() => {
+        axios
+          .post(`https://discord.com/api/v8/applications/${clientid}/guilds/517009303203479572/commands`, command, opts)
+          .catch(err => console.error(err.response.status, command.name, JSON.stringify(err.response.data, null, 2)))
+        console.log('Registered command %s', command.name)
+      }, delay += 1000)
     }
+    setTimeout(() => console.log('Done.'), delay + 100)
   }
 }
-run(false, true, [ 'settings' ])
+run(false, true)

@@ -5,7 +5,7 @@ type botMode = {
   name: 'single'
 } | {
   name: 'shard'
-  shardId: number
+  shardIds: number[]
   shardCount: number
 } | {
   name: 'worker'

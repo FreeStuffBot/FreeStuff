@@ -18,24 +18,32 @@ module.exports = {
     mode: 'regular',
     clientid: secret('FSB_DBOT_ID') || '672822334641537041'
   },
-  mode: {
-    name: 'worker',
-    master: {
-      host: process.env.NODE_ENV === 'production'
-        ? undefined
-        : 'ws://host.docker.internal'
-    }
-  },
+  mode: secret('FSB_MODE') === 'single'
+    ? { name: 'single' }
+    : secret('FSB_MODE') === 'shard'
+      ? {
+          name: shard,
+          shardIds: secret('FSB_SHARD_IDS')?.split(',').map(parseInt) ?? [],
+          shardCount: secret('FSB_SHARD_COUNT')
+        }
+      : {
+          name: 'worker',
+          master: { host: secret('FSB_WORKER_HOST') }
+        },
   mongodb: {
     url: secret('FSB_MONGO_URL'),
     dbname: 'freestuffbot'
   },
   apisettings: {
     key: secret('FSB_FSAPI_KEY'),
-    type: 'partner',
-    baseUrl: process.env.NODE_ENV === 'production'
-      ? undefined
-      : 'http://host.docker.internal/api/v1'
+    type: secret('FSB_FSAPI_TYPE') || 'partner',
+    baseUrl: secret('FSB_FSAPI_HOST'),
+    webhookSecret: secret('FSB_WEBHOOK_SECRET'),
+    server: {
+      enable: secret('FSB_WEBHOOK_ENABLE') !== 'false',
+      port: parseInt(secret('FSB_WEBHOOK_PORT')),
+      endpoint: secret('FSB_WEBHOOK_ENDPOINT')
+    }
   },
   thirdparty: {
     sentry: {

@@ -11,7 +11,7 @@ module.exports = {
   mode: {
     name: 'single', // "single" = no sharding, "shard" = sharding, "worker" = auto-sharding
     master: { }, // [only if name = "discovery"] dictates the master node to assign this worker node. see type file for more info
-    shardId: process.env.SHARD_ID || 0, // [only if name = "shard"] this shard id
+    shardId: process.env.SHARD_IDS || [ 0 ], // [only if name = "shard"] this shard id
     shardCount: process.env.SHARD_COUNT || 1 // [only if name = "shard"] total shard count
   },
   mongodb: {

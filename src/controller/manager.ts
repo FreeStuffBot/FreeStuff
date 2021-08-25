@@ -49,7 +49,7 @@ export default class Manager {
       return Promise.resolve({
         id: 'startup',
         task: {
-          ids: [ config.mode.shardId ],
+          ids: config.mode.shardIds,
           total: config.mode.shardCount
         }
       })
