@@ -166,11 +166,12 @@ export default class MessageDistributor {
     }
 
     // send the messages
-    const messages: Message[] = []
-    for (const mesCont of messageContents)
-      messages.push(await data.channelInstance.send(...mesCont) as Message)
-    if (messages.length && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
-      await messages[messages.length - 1].react('🆓')
+    // const messages: Message[] = []
+    // for (const mesCont of messageContents)
+    //   messages.push(await data.channelInstance.send(...mesCont) as Message)
+    // if (messages.length && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
+    //   await messages[messages.length - 1].react('🆓')
+
     // if (!test && (data.channelInstance as Channel).type === 'news')
     //   messages.forEach(m => m.crosspost())
     // TODO check if ratelimited
