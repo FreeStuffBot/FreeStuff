@@ -28,7 +28,7 @@ Roadmap, Todo, Suggestions, etc: https://trello.com/b/Zhw6umTy/freestuff
    * **single** — is probably what you wanna go for as it just starts one shard and you don't have to worry about anything
    * **shard** — if you need multiple shards, use this mode to specify which ones and how many you want to start
    * **worker** — unless you have a custom manager service this mode will only put the bot in limbo, making it wait forever. You don't wanna use this
-4. If you want realtime updates you wanna start the webhook server. If not subscribed through webhooks you have two options:
+4. If you want realtime updates you want to start the webhook server. Settings should be self explanatory. If you cannot publish a server for some reason, you have two alternative options:
    * Don't have real-time announcements. In this case you can only really use the /free command
    * Edit the code to poll and publish announcements through the API. Look at the next section for running the bot from source
 5. Register slash commands and init database
