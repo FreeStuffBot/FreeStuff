@@ -2,10 +2,13 @@
 const mongo = require('mongodb')
 const config = require('../config')
 
-mongo.connect(config.mongodb.url, { useNewUrlParser: true, useUnifiedTopology: true }, run)
+const url = config.mongodb.url || 'mongodb://localhost:27017/'
+const dbname = config.mongodb.dbname || 'freestuff'
+
+mongo.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, run)
 
 async function run(_, client) {
-  const db = client.db(config.mongodb.dbname)
+  const db = client.db(dbname)
 
   try {
     await db.collection('stats-usage').insertMany([

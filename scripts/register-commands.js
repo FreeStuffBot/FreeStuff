@@ -4,8 +4,8 @@ const config = require('../config.js')
 
 if (!config) throw new Error('Config not found. Please cd into /scripts')
 
-const token = config.bot.token
-const clientid = config.bot.clientid
+const token = config.bot.token || ''
+const clientid = config.bot.clientid || ''
 
 const commands = [
   {
