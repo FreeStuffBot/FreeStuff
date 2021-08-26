@@ -91,13 +91,6 @@ async function run() {
   VERSION = commit.shortHash
   Util.init()
 
-  setInterval(async () => {
-    Logger.excessive('Debug Redis Write')
-    const l = await Promise.all([ 0, 1, 2, 3, 4, 5 ].map(async n => `(${n}: ${await Redis.get(`w${n}_test`)})`))
-    console.log(`DEBUG Redis ${l.join(' - ')}`)
-    Redis.setSharded('test', Math.random().toString())
-  }, 5000)
-
   await MongoAdapter.connect(config.mongodb.url)
 
   Logger.process('Connected to Mongo')
