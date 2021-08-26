@@ -93,6 +93,7 @@ async function run() {
 
   setInterval(() => {
     Logger.excessive('Debug Redis Write')
+    console.log(`DEBUG Redis ${[ 0, 1, 2, 3, 4, 5 ].map(n => `(${n}: ${Redis.get(`w${n}_test`)})`)}`)
     Redis.setSharded('test', Math.random().toString())
   }, 5000)
 
