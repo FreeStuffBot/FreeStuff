@@ -93,8 +93,8 @@ async function run() {
 
   setInterval(async () => {
     Logger.excessive('Debug Redis Write')
-    const l = await [ 0, 1, 2, 3, 4, 5 ].map(async n => `(${n}: ${await Redis.get(`w${n}_test`)})`).join(' - ')
-    console.log(`DEBUG Redis ${l}`)
+    const l = await Promise.all([ 0, 1, 2, 3, 4, 5 ].map(async n => `(${n}: ${await Redis.get(`w${n}_test`)})`))
+    console.log(`DEBUG Redis ${l.join(' - ')}`)
     Redis.setSharded('test', Math.random().toString())
   }, 5000)
 
