@@ -13,7 +13,7 @@ const filterOutChannelRegex3 = /team|partner|suggestions/i
 const highProbChannelRegex = /announcement|new|general|computer|play|important|feed|bot|commands/i
 
 function isRecommended(i: GenericInteraction, c: GuildChannel) {
-  return recommendedChannelRegex.test(c.name) || i.channel_id === c.id || i.guildData.channel.toString() === c.id
+  return recommendedChannelRegex.test(c.name) || i.channel_id === c.id || i.guildData.channel?.toString() === c.id
 }
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {

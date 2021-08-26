@@ -74,7 +74,7 @@ export default class AnnouncementManager {
     this.setPending(gameids)
     AnnouncementManager.updateCurrentFreebies()
 
-    const numberIds = gameids.split(' ').map(id => parseInt(id, 10))
+    const numberIds = gameids.trim().split(' ').map(id => parseInt(id, 10))
     const gameInfos = await FSAPI.getGameDetails(numberIds, 'info')
     await MessageDistributor.distribute(Object.values(gameInfos))
 
