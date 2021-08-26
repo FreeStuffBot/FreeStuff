@@ -192,6 +192,7 @@ export default class Manager {
     }
 
     if (!this.assignmentPromise) {
+      Logger.process('Reassignment to different shard id, restarting')
       process.exit(0) // TODO make properly
       // if (this.assignedShardId !== task.shardId) {
       //   Logger.process('Reassignment to different shard id, restarting')

@@ -7,7 +7,7 @@ import Logger from '../lib/logger'
 export default class WebhookServer {
 
   public static start(config: FreeStuffApiServerConfig) {
-    if (!config) return
+    if (!config?.enable) return
     if (!config.port) {
       config.port = 8080
       Logger.warn('Server enabled but no port specified. Server is now trying to launch on port 8080.')
