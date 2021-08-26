@@ -91,6 +91,11 @@ async function run() {
   VERSION = commit.shortHash
   Util.init()
 
+  setInterval(() => {
+    Logger.excessive('Debug Redis Write')
+    Redis.setSharded('test', Math.random().toString())
+  }, 5000)
+
   await MongoAdapter.connect(config.mongodb.url)
 
   Logger.process('Connected to Mongo')

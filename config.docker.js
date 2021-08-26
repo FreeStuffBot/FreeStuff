@@ -45,6 +45,10 @@ module.exports = {
       endpoint: secret('FSB_WEBHOOK_ENDPOINT')
     }
   },
+  redis: {
+    host: secret('FSB_REDIS_HOST'),
+    port: secret('FSB_REDIS_PORT') || 6379
+  },
   thirdparty: {
     sentry: {
       dsn: secret('FSB_SENTRY_DSN')
