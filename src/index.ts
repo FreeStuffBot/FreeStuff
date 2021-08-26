@@ -91,9 +91,10 @@ async function run() {
   VERSION = commit.shortHash
   Util.init()
 
-  setInterval(() => {
+  setInterval(async () => {
     Logger.excessive('Debug Redis Write')
-    console.log(`DEBUG Redis ${[ 0, 1, 2, 3, 4, 5 ].map(n => `(${n}: ${Redis.get(`w${n}_test`)})`)}`)
+    const l = await [ 0, 1, 2, 3, 4, 5 ].map(async n => `(${n}: ${await Redis.get(`w${n}_test`)})`).join(' - ')
+    console.log(`DEBUG Redis ${l}`)
     Redis.setSharded('test', Math.random().toString())
   }, 5000)
 
