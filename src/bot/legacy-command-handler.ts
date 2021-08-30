@@ -3,6 +3,7 @@ import { Core, config } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import { GuildData } from '../types/datastructs'
 import { Command } from '../types/commands'
+import Logger from '../lib/logger'
 import Const from './const'
 import HelpCommand from './legacycommands/help'
 import InfoCommand from './legacycommands/info'
@@ -41,24 +42,28 @@ export default class LegacyCommandHandler {
     this.commands.push(new ResendCommand())
     this.commands.push(new BetaCommand())
 
-    bot.on('messageCreate', (m) => {
+    bot.on('messageCreate', async (m) => {
       if (m.author.bot) return
       if (!m.guild) return
       if (!m.content.replace('!', '').startsWith(bot.user.toString())
         && !m.content.toLowerCase().startsWith('@' + bot.user.username.toLowerCase())) return
-      if (!m.guild.me.permissionsIn(m.channelId).has('SEND_MESSAGES')) return
+      const self = await m.guild.members.fetch(Core.user)
+      if (!self.permissionsIn(m.channelId).has('SEND_MESSAGES')) return
 
       const args = m.content.split(/ +/)
       args.splice(0, 1)
       DatabaseManager.getGuildData(m.guild.id).then((g) => {
         this.handleCommand(args.splice(0, 1)[0] || '', args, m, g).then((success) => {
           if (!success
-            && m.guild.me.permissionsIn(m.channelId).has('ADD_REACTIONS')
-            && m.guild.me.permissionsIn(m.channelId).has('READ_MESSAGE_HISTORY'))
+            && self.permissionsIn(m.channelId).has('ADD_REACTIONS')
+            && self.permissionsIn(m.channelId).has('READ_MESSAGE_HISTORY'))
             m.react('🤔')
 
-        }).catch((_err) => { })
-      }).catch((_err) => {
+        }).catch((err) => {
+          Logger.excessive(err)
+        })
+      }).catch((err) => {
+        Logger.excessive(err)
         try {
           /** no translaton in case the above failes due to language manager issues */
           m.reply(`An error occured! Please try again later. If this error persists, try removing the bot from your server and adding it back up. For additional support visit our support server: ${Const.links.supportInvite}`)
@@ -69,8 +74,9 @@ export default class LegacyCommandHandler {
 
   // eslint-disable-next-line require-await
   public async handleCommand(command: string, args: string[], orgmes: Message, g: GuildData): Promise<boolean> {
+    const self = await orgmes.guild.members.fetch(Core.user)
     const reply = (message: string, content: string, footer?: string, color?: number, image?: string) => {
-      if (orgmes.guild.me.permissionsIn(orgmes.channelId).has('EMBED_LINKS')) {
+      if (self.permissionsIn(orgmes.channelId).has('EMBED_LINKS')) {
         orgmes.channel.send({
           embeds: [
             {

@@ -68,28 +68,28 @@ export default class ResendCommand extends Command {
       )
       return true
     }
-    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('VIEW_CHANNEL')) {
-      repl(
-        Core.text(g, '=cmd_test_nosee_1'),
-        Core.text(g, '=cmd_test_nosee_2', { channel: g.channelInstance.toString() })
-      )
-      return true
-    }
-    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('SEND_MESSAGES')) {
-      repl(
-        Core.text(g, '=cmd_test_nosend_1'),
-        Core.text(g, '=cmd_test_nosend_2', { channel: g.channelInstance.toString() })
-      )
-      return true
-    }
-    if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('EMBED_LINKS')
-        && g.theme.usesEmbeds) {
-      repl(
-        Core.text(g, '=cmd_test_noembeds_1'),
-        Core.text(g, '=cmd_test_noembeds_2', { channel: g.channelInstance.toString() })
-      )
-      return true
-    }
+    // if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('VIEW_CHANNEL')) {
+    //   repl(
+    //     Core.text(g, '=cmd_test_nosee_1'),
+    //     Core.text(g, '=cmd_test_nosee_2', { channel: g.channelInstance.toString() })
+    //   )
+    //   return true
+    // }
+    // if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('SEND_MESSAGES')) {
+    //   repl(
+    //     Core.text(g, '=cmd_test_nosend_1'),
+    //     Core.text(g, '=cmd_test_nosend_2', { channel: g.channelInstance.toString() })
+    //   )
+    //   return true
+    // }
+    // if (!g.channelInstance.guild.me.permissionsIn(g.channelInstance).has('EMBED_LINKS')
+    //     && g.theme.usesEmbeds) {
+    //   repl(
+    //     Core.text(g, '=cmd_test_noembeds_1'),
+    //     Core.text(g, '=cmd_test_noembeds_2', { channel: g.channelInstance.toString() })
+    //   )
+    //   return true
+    // }
 
     try {
       MessageDistributor.sendToGuild(g, freebies, false, false)

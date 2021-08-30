@@ -172,7 +172,7 @@ function mountBot(shardIds: number[], shardCount: number) {
       BaseGuildEmojiManager: 0,
       GuildBanManager: 0,
       GuildInviteManager: 0,
-      GuildMemberManager: 0,
+      GuildMemberManager: 2,
       GuildStickerManager: 0,
       MessageManager: 2,
       PresenceManager: 0,
