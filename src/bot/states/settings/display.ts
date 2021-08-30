@@ -26,7 +26,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     default: i.guildData.currency.id === c.id
   }))
 
-  const message = MessageDistributor.buildMessage(Const.testAnnouncementContent, i.guildData, true, false)
+  const message = MessageDistributor.buildMessage([ Const.testAnnouncementContent ], i.guildData, true)
   const embeds: MessageEmbed[] = []
   if (message[1].embed) {
     if (!PermissionStrings.containsManageServer(i.member.permissions) && message[1].embed.footer?.text)

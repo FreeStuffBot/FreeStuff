@@ -18,7 +18,6 @@ import MydataCommand from './legacycommands/mydata'
 import AdvancedCommand from './legacycommands/advanced'
 import ResendCommand from './legacycommands/resend'
 import BetaCommand from './legacycommands/beta'
-import Localisation from './localisation'
 import DatabaseManager from './database-manager'
 
 
@@ -42,20 +41,20 @@ export default class LegacyCommandHandler {
     this.commands.push(new ResendCommand())
     this.commands.push(new BetaCommand())
 
-    bot.on('message', (m) => {
+    bot.on('messageCreate', (m) => {
       if (m.author.bot) return
       if (!m.guild) return
       if (!m.content.replace('!', '').startsWith(bot.user.toString())
         && !m.content.toLowerCase().startsWith('@' + bot.user.username.toLowerCase())) return
-      if (!m.guild.me.permissionsIn(m.channel).has('SEND_MESSAGES')) return
+      if (!m.guild.me.permissionsIn(m.channelId).has('SEND_MESSAGES')) return
 
       const args = m.content.split(/ +/)
       args.splice(0, 1)
       DatabaseManager.getGuildData(m.guild.id).then((g) => {
         this.handleCommand(args.splice(0, 1)[0] || '', args, m, g).then((success) => {
           if (!success
-            && m.guild.me.permissionsIn(m.channel).has('ADD_REACTIONS')
-            && m.guild.me.permissionsIn(m.channel).has('READ_MESSAGE_HISTORY'))
+            && m.guild.me.permissionsIn(m.channelId).has('ADD_REACTIONS')
+            && m.guild.me.permissionsIn(m.channelId).has('READ_MESSAGE_HISTORY'))
             m.react('🤔')
 
         }).catch((_err) => { })
@@ -71,19 +70,21 @@ export default class LegacyCommandHandler {
   // eslint-disable-next-line require-await
   public async handleCommand(command: string, args: string[], orgmes: Message, g: GuildData): Promise<boolean> {
     const reply = (message: string, content: string, footer?: string, color?: number, image?: string) => {
-      if (orgmes.guild.me.permissionsIn(orgmes.channel).has('EMBED_LINKS')) {
+      if (orgmes.guild.me.permissionsIn(orgmes.channelId).has('EMBED_LINKS')) {
         orgmes.channel.send({
-          embed: {
-            color: color || 0x2F3136,
-            title: message,
-            description: content,
-            footer: {
-              text: `@${orgmes.author.tag}` + (footer ? ` • ${footer}` : '')
-            },
-            image: {
-              url: image
+          embeds: [
+            {
+              color: color || 0x2F3136,
+              title: message,
+              description: content,
+              footer: {
+                text: `@${orgmes.author.tag}` + (footer ? ` • ${footer}` : '')
+              },
+              image: {
+                url: image
+              }
             }
-          }
+          ]
         })
       } else {
         orgmes.channel.send(`**${message}**\n${content}`)
@@ -93,14 +94,9 @@ export default class LegacyCommandHandler {
     //
 
     if (command === '') {
-      const langNotif = g.language.startsWith('en')
-        ? (Localisation.getTranslationHint(orgmes.guild) && orgmes.member.hasPermission('MANAGE_GUILD'))
-            ? '\n\n' + Localisation.getTranslationHint(orgmes.guild)
-            : ''
-        : '\n\n' + Core.text(g, '=cmd_freestuff_2_en', { website: Const.links.website })
       reply(
         Core.text(g, '=cmd_freestuff_1', { username: orgmes.author.username }),
-        Core.text(g, '=cmd_freestuff_2', { website: Const.links.website }) + langNotif
+        Core.text(g, '=cmd_freestuff_2', { website: Const.links.website })
       )
       return true
     }
@@ -125,7 +121,7 @@ export default class LegacyCommandHandler {
     }
 
     if (handler.info.serverManagerOnly) {
-      if (!orgmes.member.hasPermission('MANAGE_GUILD') && !config.admins?.includes(orgmes.member.id)) {
+      if (!orgmes.member.permissions.has('MANAGE_GUILD') && !config.admins?.includes(orgmes.member.id)) {
         reply(
           Core.text(g, '=cmd_no_permission_1', { command: command.toLowerCase().substr(3) }),
           Core.text(g, '=cmd_no_permission_2'),

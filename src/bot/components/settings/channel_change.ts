@@ -15,7 +15,7 @@ export default async function (i: ReplyableComponentInteraction) {
     await DatabaseManager.changeSetting(i.guildData, 'channel', null)
   } else {
     const channel = await Core.channels.fetch(val)
-    if (!channel || (channel.type !== 'text' && channel.type !== 'news')) return i.ack()
+    if (!channel || (channel.type !== 'GUILD_TEXT' && channel.type !== 'GUILD_NEWS')) return i.ack()
     await DatabaseManager.changeSetting(i.guildData, 'channel', channel.id)
   }
 

@@ -1,4 +1,4 @@
-import { MessageOptions } from 'discord.js'
+import { MessageEmbed, MessageOptions } from 'discord.js'
 import { GameFlag, GameInfo } from 'freestuff'
 import { Core } from '../../index'
 import Const from '../../bot/const'
@@ -17,98 +17,100 @@ export type themeSettings = {
 
 export default class BaseTheme {
 
-  public static build(content: GameInfo, data: GuildData, settings: themeSettings): [string, MessageOptions] {
-    const priceString = Localisation.renderPriceTag(data, content)
-    const until = BaseTheme.generateUntil(content, data)
-    const button = BaseTheme.generateButton(content, data)
-    const showDescription = content.description && settings.themeExtraInfo
-    const showRating = content.rating && settings.themeExtraInfo
-    const showStore = !until || !showRating || !settings.themeImages
-    const divider = settings.themeExtraInfo ? ' ᲼ ᲼ ' : ' • '
-    const title = content.title.startsWith('=') ? Core.text(data, content.title) : content.title
+  public static build(games: GameInfo[], data: GuildData, settings: themeSettings): MessageOptions {
+    const useProxyUrl = Experiments.runExperimentOnServer('use_proxy_url', data)
+    const epicOpenInClient = Experiments.runExperimentOnServer('epic_open_in_client', data)
 
-    const description = BaseTheme.generateDescription(content, data, until, priceString, showDescription, showRating, showStore, divider, button)
-    const image = BaseTheme.generateImageObject(content, data, settings)
-    const thumbnail = BaseTheme.generateThumbnailObject(content, data, settings)
-    const footer = BaseTheme.generateFooter(content, data, settings)
+    const content = data.roleInstance ? data.roleInstance.toString() : ''
+    const embeds = games.map(game => this.buildEmbed(game, data, settings, useProxyUrl, epicOpenInClient))
 
-    const rawMessage = (data.roleInstance && !settings.disableMention)
-      ? data.roleInstance.toString()
-      : ''
-
-    return [
-      rawMessage,
-      {
-        embed: {
-          title,
-          description,
-          image,
-          footer,
-          color: Const.embedDefaultColor,
-          thumbnail
-        }
-      }
-    ]
+    return { content, embeds }
   }
 
   //
 
-  static generateUntil(content: GameInfo, data: GuildData): string {
-    if (!content.until) return ''
+  static buildEmbed(game: GameInfo, data: GuildData, settings: themeSettings, useProxyUrl: boolean, epicOpenInClient: boolean): Partial<MessageEmbed> {
+    const priceString = Localisation.renderPriceTag(data, game)
+    const until = BaseTheme.generateUntil(game, data)
+    const button = BaseTheme.generateButton(game, data, useProxyUrl, epicOpenInClient)
+    const showDescription = game.description && settings.themeExtraInfo
+    const showRating = game.rating && settings.themeExtraInfo
+    const showStore = !until || !showRating || !settings.themeImages
+    const divider = settings.themeExtraInfo ? ' ᲼ ᲼ ' : ' • '
+    const title = game.title.startsWith('=') ? Core.text(data, game.title) : game.title
+
+    const description = BaseTheme.generateDescription(game, data, until, priceString, showDescription, showRating, showStore, divider, button)
+    const image = BaseTheme.generateImageObject(game, data, settings)
+    const thumbnail = BaseTheme.generateThumbnailObject(game, data, settings)
+    const footer = BaseTheme.generateFooter(game, data, settings)
+
+    return {
+      title,
+      description,
+      image,
+      footer,
+      color: Const.embedDefaultColor,
+      thumbnail
+    }
+  }
+
+  //
+
+  static generateUntil(game: GameInfo, data: GuildData): string {
+    if (!game.until) return ''
 
     return Core.text(data, '=announcement_free_until_date', {
-      date: `<t:${content.until.getTime() / 1000}:d>`
+      date: `<t:${game.until.getTime() / 1000}:d>`
     })
   }
 
-  static generateButton(content: GameInfo, data: GuildData): string {
-    const useProxyUrl = Experiments.runExperimentOnServer('use_proxy_url', data)
+  static generateButton(game: GameInfo, data: GuildData, useProxyUrl: boolean, epicOpenInClient: boolean): string {
+    if (!game.urls.client)
+      return `**[${Core.text(data, '=announcement_button_text')}](${useProxyUrl ? game.urls.default : game.urls.org})**`
 
-    if (!content.urls.client)
-      return `**[${Core.text(data, '=announcement_button_text')}](${useProxyUrl ? content.urls.default : content.urls.org})**`
+    if (game.store === 'steam')
+      return `${Core.text(data, '=open_in_browser')}: **[https://s.team/a/${game.urls.org.split('/app/')[1].split('/')[0]}](${useProxyUrl ? game.urls.browser : game.urls.org})**\n${Core.text(data, '=open_in_steam_client')}: **${game.urls.client}**`
 
-    if (content.store === 'steam')
-      return `${Core.text(data, '=open_in_browser')}: **[https://s.team/a/${content.urls.org.split('/app/')[1].split('/')[0]}](${useProxyUrl ? content.urls.browser : content.urls.org})**\n${Core.text(data, '=open_in_steam_client')}: **${content.urls.client}**`
+    if (epicOpenInClient && game.store === 'epic')
+      return `${Core.text(data, '=open_in_browser')}: **[${game.urls.org.replace('www.', '').replace('/en-US', '')}](${useProxyUrl ? game.urls.browser : game.urls.org})**\n${Core.text(data, '=open_in_steam_client')}: **<${game.urls.client}>**`
 
-    return `**[${Core.text(data, '=open_in_browser')}](${useProxyUrl ? content.urls.browser : content.urls.org})** • **[${Core.text(data, '=open_in_epic_games_client')}](${content.urls.client})**`
+    return `**[${Core.text(data, '=open_in_browser')}](${useProxyUrl ? game.urls.browser : game.urls.org})** • **[${Core.text(data, '=open_in_epic_games_client')}](${game.urls.client})**`
   }
 
-  static generateImageObject(content: GameInfo, data: GuildData, settings: themeSettings): Object {
+  static generateImageObject(game: GameInfo, data: GuildData, settings: themeSettings): MessageEmbed['image'] {
     if (!settings.themeImages) return undefined
 
     return {
       url: !Experiments.runExperimentOnServer('announcement_tags', data)
-        ? content.thumbnail.org
+        ? game.thumbnail.org
         : settings.themeExtraInfo
-          ? content.thumbnail.full
-          : content.thumbnail.blank
+          ? game.thumbnail.full
+          : game.thumbnail.blank
     }
   }
 
-  static generateThumbnailObject(content: GameInfo, _data: GuildData, settings: themeSettings): Object {
+  static generateThumbnailObject(game: GameInfo, _data: GuildData, settings: themeSettings): MessageEmbed['thumbnail'] {
     if (!settings.themeImages) return undefined
 
     return {
-      url: (content.flags & GameFlag.THIRDPARTY)
-        ? Const.storeIconsExt[content.store]
-        : Const.storeIcons[content.store],
+      url: (game.flags & GameFlag.THIRDPARTY)
+        ? Const.storeIconsExt[game.store]
+        : Const.storeIcons[game.store],
       width: 128,
       height: 128
     }
   }
 
-  static generateDescription(content: GameInfo, data: GuildData, until: string, priceString: string, showDescription: boolean, showRating: boolean, showStore: boolean, divider: string, button: string) {
+  static generateDescription(game: GameInfo, data: GuildData, until: string, priceString: string, showDescription: boolean, showRating: boolean, showStore: boolean, divider: string, button: string) {
     return ''
-      + (showDescription ? `> ${content.description.startsWith('=') ? Core.text(data, content.description) : content.description}\n\n` : '')
+      + (showDescription ? `> ${game.description.startsWith('=') ? Core.text(data, game.description) : game.description}\n\n` : '')
       + `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until}`
-      + (showRating ? `${divider}${Math.round(content.rating * 20) / 2}/10 ★` : '')
-      + (showStore ? `${divider}${LanguageManager.get(data, 'platform_' + content.store)}` : '')
-      // + ((content.flags & GameFlag.TRASH) ? `${divider}${Core.text(data, '=game_meta_flag_trash')}` : '')
-      // + ((content.flags & GameFlag.THIRDPARTY) ? `${divider}${Core.text(data, '=game_meta_flag_thirdparty')}` : '')
+      + (showRating ? `${divider}${Math.round(game.rating * 20) / 2}/10 ★` : '')
+      + (showStore ? `${divider}${LanguageManager.get(data, 'platform_' + game.store)}` : '')
       + `\n\n${button}`
   }
 
-  static generateFooter(_content: GameInfo, data: GuildData, settings: themeSettings) {
+  static generateFooter(_game: GameInfo, data: GuildData, settings: themeSettings) {
     return {
       text: settings.test
         ? Core.text(data, '=announcement_footer_test')

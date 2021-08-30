@@ -7,13 +7,13 @@ import BaseTheme, { themeSettings } from './basetheme'
 
 export default class ThemeOne implements ThemeBuilder {
 
-  public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
+  public build(games: GameInfo[], data: GuildData, settings: { test?: boolean, disableMention?: boolean }): MessageOptions {
     const fullSettings: themeSettings = {
       ...settings,
       themeImages: true,
       themeExtraInfo: false
     }
-    return BaseTheme.build(content, data, fullSettings)
+    return BaseTheme.build(games, data, fullSettings)
   }
 
 }

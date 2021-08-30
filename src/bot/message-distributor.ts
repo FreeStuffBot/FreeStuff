@@ -1,4 +1,4 @@
-import { Message, Guild, MessageOptions } from 'discord.js'
+import { Guild, MessageOptions } from 'discord.js'
 import { Long } from 'mongodb'
 import { GameFlag, GameInfo } from 'freestuff'
 import { Core, FSAPI } from '../index'
@@ -158,19 +158,12 @@ export default class MessageDistributor {
     }
 
     // build message objects
-    let messageContents = content.map((game, index) => MessageDistributor.buildMessage(game, data, test, !!index))
-    messageContents = messageContents.filter(mes => !!mes)
-    if (!messageContents.length) {
-      Logger.excessive(`Guild ${g._id} return: no message contents length`)
-      return []
-    }
+    const messagePayload = MessageDistributor.buildMessage(content, data, test)
 
     // send the messages
-    const messages: Message[] = []
-    for (const mesCont of messageContents)
-      messages.push(await data.channelInstance.send(...mesCont) as Message)
-    if (messages.length && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
-      await messages[messages.length - 1].react('🆓')
+    const message = await data.channelInstance.send(messagePayload)
+    if (message && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
+      await message.react('🆓')
 
     // if (!test && (data.channelInstance as Channel).type === 'news')
     //   messages.forEach(m => m.crosspost())
@@ -185,9 +178,9 @@ export default class MessageDistributor {
    * Finds the used theme and lets that theme build the message
    * @returns Tupel with message.content and message.options?
    */
-  public static buildMessage(content: GameInfo, data: GuildData, test: boolean, disableMention: boolean): [ string, MessageOptions? ] {
+  public static buildMessage(content: GameInfo[], data: GuildData, test: boolean): MessageOptions {
     const theme = data.theme.builder
-    return theme.build(content, data, { test, disableMention })
+    return theme.build(content, data, { test })
   }
 
 }

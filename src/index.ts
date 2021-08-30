@@ -74,6 +74,7 @@ import RemoteConfig from './controller/remote-config'
 import { WorkerAction } from './types/controller'
 import DatabaseManager from './bot/database-manager'
 import Metrics from './lib/metrics'
+import { Options } from 'discord.js'
 
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -159,17 +160,32 @@ function mountBot(shardIds: number[], shardCount: number) {
   Logger.excessive('<index>#mountBot')
   Core = new FreeStuffBot({
     ws: {
-      intents: [
-        'GUILDS',
-        'GUILD_MESSAGES'
-      ]
     },
-    disableMentions: 'none',
-    messageSweepInterval: 2,
-    messageCacheLifetime: 0,
-    messageCacheMaxSize: 0,
-    fetchAllMembers: false,
-    messageEditHistoryMaxSize: 1,
+    intents: [
+      'GUILDS',
+      'GUILD_MESSAGES'
+    ],
+    allowedMentions: {},
+    makeCache: Options.cacheWithLimits({
+      ...Options.defaultMakeCacheSettings,
+      ApplicationCommandManager: 30,
+      BaseGuildEmojiManager: 0,
+      GuildBanManager: 0,
+      GuildInviteManager: 0,
+      GuildMemberManager: 0,
+      GuildStickerManager: 0,
+      MessageManager: 2,
+      PresenceManager: 0,
+      ReactionManager: 0,
+      ReactionUserManager: 0,
+      StageInstanceManager: 0,
+      ThreadManager: 0,
+      ThreadMemberManager: 0,
+      UserManager: 2,
+      VoiceStateManager: 0
+    }),
+    restGlobalRateLimit: 50 / Manager.getMeta().workerCount,
+    partials: [],
     shardCount,
     shards: (shardIds !== undefined) ? shardIds : undefined
   })

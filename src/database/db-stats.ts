@@ -13,7 +13,7 @@ export class DbStats {
     new CronJob('0 0 0 * * *', () => {
       setTimeout(async () => {
         const guildCount = bot.guilds.cache.size
-        const guildMemberCount = bot.guilds.cache.array().reduce((count, g) => count + g.memberCount, 0)
+        const guildMemberCount = [ ...bot.guilds.cache.values() ].reduce((count, g) => count + g.memberCount, 0)
 
         Logger.process(`Updated Stats. Guilds: ${bot.guilds.cache.size}; Members: ${guildMemberCount}; Shards ${bot.options.shards}`)
         ;(await this.usage).guilds.updateYesterday(guildCount, true)

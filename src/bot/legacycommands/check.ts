@@ -53,7 +53,7 @@ export default class CheckCommand extends Command {
     if (!g.channelInstance) {
       repl(
         Core.text(g, '=cmd_check_nochannel_1'),
-        Core.text(g, '=cmd_check_nochannel_2', { channel: `#${mes.guild.channels.cache.filter(c => c.type === 'text').random().name}` })
+        Core.text(g, '=cmd_check_nochannel_2', { channel: `#${mes.guild.channels.cache.filter(c => c.type === 'GUILD_TEXT').random().name}` })
       )
       return true
     }

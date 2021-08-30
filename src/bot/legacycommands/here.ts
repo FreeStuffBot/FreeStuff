@@ -28,18 +28,17 @@ export default class HereCommand extends Command {
 
     const guild = mes.guild
     const userPermissions = []
-    if (mes.member.hasPermission('ADMINISTRATOR')) userPermissions.push('Admin')
-    if (mes.member.hasPermission('MANAGE_GUILD')) userPermissions.push('Manage Guild')
-    if (mes.member.hasPermission('MANAGE_MESSAGES')) userPermissions.push('Manage Messages')
-    if (mes.member.hasPermission('MANAGE_CHANNELS')) userPermissions.push('Manage Channels')
+    if (mes.member.permissions.has('ADMINISTRATOR')) userPermissions.push('Admin')
+    if (mes.member.permissions.has('MANAGE_GUILD')) userPermissions.push('Manage Guild')
+    if (mes.member.permissions.has('MANAGE_MESSAGES')) userPermissions.push('Manage Messages')
+    if (mes.member.permissions.has('MANAGE_CHANNELS')) userPermissions.push('Manage Channels')
 
     const guildInfo = `
       Name: ${guild.name}
-      Region: ${guild.region}
       Members: ${guild.memberCount},
       Features: ${guild.features.join(', ')}
       User's Permissions: ${userPermissions.join(', ')}
-      User Owner?: ${guild.ownerID === mes.author.id}`
+      User Owner?: ${guild.ownerId === mes.author.id}`
 
     const permissionCheck = g?.channel
       ? (() => {
@@ -56,7 +55,7 @@ export default class HereCommand extends Command {
     const guilddata = guildDataToViewString(g, 2048, undefined, true)
 
     const webhook = new WebhookClient(webhookId, webhookToken)
-    webhook.send('', {
+    webhook.send({
       username: mes.author.tag,
       avatarURL: mes.author.avatarURL(),
       embeds: [ {
