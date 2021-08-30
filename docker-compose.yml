@@ -22,11 +22,15 @@ services:
       FSB_WORKER_HOST: "ws://manager.localhost"
 
     # Below is optional but if you would like to have real-time events you need to start the webhook server
-      FSB_WEBHOOK_ENABLE: "true"
-      FSB_WEBHOOK_PORT: "6622"
+      FSB_SERVER_ENABLE: "true"
+      FSB_SERVER_PORT: "6622"
       FSB_WEBHOOK_SECRET: "your custom webhook secret"
       FSB_WEBHOOK_ENDPOINT: "/webhooks/freestuff"
-      
+
+    # If you like to have prometheus metrics enabled use the following config. You can have both the webhook server and metrics, just delete duplicate environment variables
+      FSB_SERVER_ENABLE: "true"
+      FSB_SERVER_PORT: "6622"
+      FSB_METRICS_ENDPOINT: "/metrics"
 
   # Only if using the webhook server
     ports:
