@@ -2,8 +2,8 @@
 const mongo = require('mongodb')
 const config = require('../config')
 
-const url = config.mongodb.url || 'mongodb://localhost:27017/'
-const dbname = config.mongodb.dbname || 'freestuff'
+const url = config.mongoDB.url || 'mongodb://localhost:27017/'
+const dbname = config.mongoDB.dbname || 'freestuff'
 
 mongo.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, run)
 
