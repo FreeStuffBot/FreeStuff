@@ -104,7 +104,7 @@ export default class Manager {
       jsonp: false,
       transports: [ 'websocket' ],
       auth: {
-        key: config.mode.master.auth || config.apisettings.key
+        key: config.mode.master.auth || config.apiSettings.key
       }
     })
 

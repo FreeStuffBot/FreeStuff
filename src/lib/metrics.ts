@@ -1,4 +1,5 @@
 import { collectDefaultMetrics, Counter, Gauge, Registry } from 'prom-client'
+import { Request, Response } from 'express'
 
 
 export default class Metrics {
@@ -6,28 +7,32 @@ export default class Metrics {
   private static register = new Registry()
 
   public static init() {
-    collectDefaultMetrics({ register: this.register })
+    collectDefaultMetrics({ register: Metrics.register })
 
+    // dummy counter, replace please
     const counterRequests = new Counter({
       name: 'thumbnailer_total_requests',
       help: 'Keeps track of the total amount of incoming requests',
       labelNames: [ 'gameid', 'tracker' ]
     })
-    this.register.registerMetric(counterRequests)
+    Metrics.register.registerMetric(counterRequests)
 
+    // dummy gauge, replace please
     const gaugeCachedImages = new Gauge({
       name: 'thumbnailer_cached_images',
       help: 'Shows the current amount of cached images'
     })
-    this.register.registerMetric(gaugeCachedImages)
+    Metrics.register.registerMetric(gaugeCachedImages)
     gaugeCachedImages.reset()
   }
 
-  public static async endpoint(_req, res) {
-    res
-      .status(200)
-      .header({ 'Content-Type': 'text/plain' })
-      .send(await this.register.metrics())
+  public static endpoint() {
+    return async function (_req: Request, res: Response) {
+      res
+        .status(200)
+        .header({ 'Content-Type': 'text/plain' })
+        .send(await Metrics.register.metrics())
+    }
   }
 
 }

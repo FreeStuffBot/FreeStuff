@@ -11,13 +11,13 @@ function invalidConfig(reason: string) {
   process.exit(-1)
 }
 
-if (!config.mongodb?.url) invalidConfig('missing mongodb url')
-if (!config.mongodb?.dbname) invalidConfig('missing mongodb dbname')
+if (!config.mongoDB?.url) invalidConfig('missing mongodb url')
+if (!config.mongoDB?.dbName) invalidConfig('missing mongodb dbname')
 if (!config.mode?.name) invalidConfig('missing mode')
 if (!config.bot?.token) invalidConfig('missing bot token')
-if (!config.bot?.clientid) invalidConfig('missing bot client id')
+if (!config.bot?.clientId) invalidConfig('missing bot client id')
 if (!config.bot?.mode) invalidConfig('missing bot mode')
-if (!config.apisettings?.key) invalidConfig('missing freestuff api key')
+if (!config.apiSettings?.key) invalidConfig('missing freestuff api key')
 
 // load cmdl config overrides
 import ParseArgs from './lib/parse-args'
@@ -68,11 +68,12 @@ import Logger from './lib/logger'
 import { Util } from './lib/util'
 import Manager from './controller/manager'
 import LanguageManager from './bot/language-manager'
-import WebhookServer from './controller/webhookserver'
+import Server from './controller/server'
 import Cordo from 'cordo'
 import RemoteConfig from './controller/remote-config'
 import { WorkerAction } from './types/controller'
 import DatabaseManager from './bot/database-manager'
+import Metrics from './lib/metrics'
 
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -91,7 +92,7 @@ async function run() {
   VERSION = commit.shortHash
   Util.init()
 
-  await MongoAdapter.connect(config.mongodb.url)
+  await MongoAdapter.connect(config.mongoDB.url)
 
   Logger.process('Connected to Mongo')
 
@@ -123,9 +124,10 @@ run().catch((err) => {
 function initComponents(commit: GitCommit, action: WorkerAction) {
   Logger.excessive('<index>#initComponents')
   LanguageManager.init()
+  Metrics.init()
 
   Cordo.init({
-    botId: config.bot.clientid,
+    botId: config.bot.clientId,
     contextPath: [ __dirname, 'bot' ],
     botAdmins: (id: string) => RemoteConfig.botAdmins.includes(id),
     texts: {
@@ -144,13 +146,13 @@ function initComponents(commit: GitCommit, action: WorkerAction) {
   Cordo.setMiddlewareGuildData((guildid: string) => DatabaseManager.getGuildData(guildid))
 
   FSAPI = new FreeStuffApi({
-    ...config.apisettings as any,
+    ...config.apiSettings as any,
     version: commit.shortHash,
     sid: action.id === 'startup' ? (action.task?.ids[0] || '0') : 'err'
   })
 
-  if (config.apisettings.server?.enable)
-    WebhookServer.start(config.apisettings.server)
+  if (config.server?.enable)
+    Server.start(config.server)
 }
 
 function mountBot(shardIds: number[], shardCount: number) {

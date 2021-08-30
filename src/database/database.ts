@@ -20,7 +20,7 @@ export default class Database {
   }
 
   public static collection(collection: dbcollection): mongo.Collection | null {
-    return this.client ? this.client.db(config.mongodb.dbname).collection(collection) : null
+    return this.client ? this.client.db(config.mongoDB.dbName).collection(collection) : null
   }
 
 }

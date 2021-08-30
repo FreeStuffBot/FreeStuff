@@ -6,7 +6,7 @@ module.exports = {
   bot: {
     token: 'TOKEN', // discord token
     mode: 'regular', // either "dev", "beta" or "regular". the latter is default.
-    clientid: '123456789' // discord client id
+    clientId: '123456789' // discord client id
   },
   mode: {
     name: 'single', // "single" = no sharding, "shard" = sharding, "worker" = auto-sharding
@@ -14,17 +14,21 @@ module.exports = {
     shardId: process.env.SHARD_IDS || [ 0 ], // [only if name = "shard"] this shard id
     shardCount: process.env.SHARD_COUNT || 1 // [only if name = "shard"] total shard count
   },
-  mongodb: {
+  mongoDB: {
     url: 'URL', // url (including auth) to your mongodb database
-    dbname: 'freestuff' // name of the database used by the bot
+    dbName: 'freestuff' // name of the database used by the bot
   },
-  apisettings: {
+  apiSettings: {
     key: 'loremipsumyourapitokenherehaveagreatday', // freestuff api key
-    webhookSecret: 'mysecretsecret', // optional. webhook secret, can be removed if not using the webhook (or you don't want to use a secret (which you totally should))
-    server: { // optional. if you want to start a server so you can receive webhook events
-      enable: true, // enable the server
-      port: 6622, // pick a port you like
-      endpoint: '/webhook' // optional. remove this or change it to your own likings
+    webhookSecret: 'mysecretsecret' // optional. webhook secret, can be removed if not using the webhook (or you don't want to use a secret (which you totally should))
+  },
+  server: { // optional. if you want to start a server for either freestuff api webhooks or prometheus metrics
+    enable: true, // enable the server
+    port: 6622, // pick a port you like
+    endpoints: {
+      apiWebhook: true, // enables the endpoint to receive api events. Can also pass a string instead of true to override the endpoint url
+      metrics: true // enables the endpoint for prometheus metrics. Can also pass a string instead of true to override the endpoint url
+      // metrics: '/super-secret-endpoint-name' // example for overriding the endpoint name
     }
   },
 
@@ -33,7 +37,7 @@ module.exports = {
   redis: {
     // redis settings. can be left empty. https://www.npmjs.com/package/redis#options-object-properties
   },
-  thirdparty: {
+  thirdParty: {
     sentry: {
       dsn: 'URL' // sentry dsn. can be found in sentry dashboard
     }

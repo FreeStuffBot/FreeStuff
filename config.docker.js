@@ -16,7 +16,7 @@ module.exports = {
   bot: {
     token: secret('FSB_DBOT_TOKEN'),
     mode: 'regular',
-    clientid: secret('FSB_DBOT_ID') || '672822334641537041'
+    clientId: secret('FSB_DBOT_ID') || '672822334641537041'
   },
   mode: secret('FSB_MODE') === 'single'
     ? { name: 'single' }
@@ -30,26 +30,29 @@ module.exports = {
           name: 'worker',
           master: { host: secret('FSB_WORKER_HOST') }
         },
-  mongodb: {
+  mongoDB: {
     url: secret('FSB_MONGO_URL'),
-    dbname: 'freestuffbot'
+    dbName: 'freestuffbot'
   },
-  apisettings: {
+  apiSettings: {
     key: secret('FSB_FSAPI_KEY'),
     type: secret('FSB_FSAPI_TYPE') || 'partner',
     baseUrl: secret('FSB_FSAPI_HOST'),
-    webhookSecret: secret('FSB_WEBHOOK_SECRET'),
-    server: {
-      enable: secret('FSB_WEBHOOK_ENABLE') !== 'false',
-      port: parseInt(secret('FSB_WEBHOOK_PORT')),
-      endpoint: secret('FSB_WEBHOOK_ENDPOINT')
+    webhookSecret: secret('FSB_WEBHOOK_SECRET')
+  },
+  server: {
+    enable: secret('FSB_SERVER_ENABLE') !== 'false',
+    port: parseInt(secret('FSB_SERVER_PORT')),
+    endpoints: {
+      apiWebhook: secret('FSB_WEBHOOK_ENDPOINT') ?? false,
+      metrics: secret('FSB_METRICS_ENDPOINT') ?? false
     }
   },
   redis: {
     host: secret('FSB_REDIS_HOST'),
     port: secret('FSB_REDIS_PORT') || 6379
   },
-  thirdparty: {
+  thirdParty: {
     sentry: {
       dsn: secret('FSB_SENTRY_DSN')
     }

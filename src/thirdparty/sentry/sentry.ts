@@ -12,7 +12,7 @@ export default class SentryManager {
       return
     }
 
-    if (!config.thirdparty?.sentry?.dsn) {
+    if (!config.thirdParty?.sentry?.dsn) {
       Logger.process('Skipping Sentry initialization. Reason: no config found')
       return
     }
@@ -20,7 +20,7 @@ export default class SentryManager {
     Logger.process('Initializing Sentry ...')
 
     Sentry.init({
-      dsn: config.thirdparty.sentry.dsn,
+      dsn: config.thirdParty.sentry.dsn,
       serverName: hostname()
     })
 
