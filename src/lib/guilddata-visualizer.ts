@@ -7,7 +7,7 @@ import Logger from './logger'
 
 
 export default function guildDataToViewString(g: GuildData, maxLength = 2048, errorMessage?: string, includeMetainfo = false) {
-  const gd = JSON.parse(JSON.stringify(g))
+  const gd = { ...g } as any
   if (gd) {
     delete gd.channelInstance
     delete gd.roleInstance

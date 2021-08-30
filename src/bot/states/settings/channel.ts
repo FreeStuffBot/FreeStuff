@@ -16,12 +16,14 @@ function isRecommended(i: GenericInteraction, c: GuildChannel) {
   return recommendedChannelRegex.test(c.name) || i.channel_id === c.id || i.guildData.channel?.toString() === c.id
 }
 
-export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
+export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
   if (!i.guildData) return { title: 'An error occured' }
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
 
   let channelsFound = [ ...Core.guilds.resolve(i.guild_id).channels.cache.values() ]
     .filter(c => (c.type === 'GUILD_TEXT' || c.type === 'GUILD_NEWS')) as (TextChannel | NewsChannel)[]
+
+  const self = await Core.guilds.resolve(i.guild_id).members.fetch(Core.user.id)
 
   let youHaveTooManyChannelsStage = 0
 
@@ -31,16 +33,6 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     youHaveTooManyChannelsStage++
   }
   if (channelsFound.length > 24) {
-    const self = Core.guilds.resolve(i.guild_id).members.resolve(Core.user)
-    channelsFound.forEach(c => {
-      console.log('------------------')
-      console.log(!!Core.user)
-      console.log(c.permissionsFor(Core.user))
-      console.log(c.permissionsFor(Core.user.id))
-      console.log(!!self)
-      console.log(self.permissionsIn(c))
-      console.log(self.permissionsIn(c.id))
-    })
     channelsFound = channelsFound.filter(c => self.permissionsIn(c).has('VIEW_CHANNEL'))
     youHaveTooManyChannelsStage++
   }
@@ -74,7 +66,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     )
     .slice(0, 24)
     .map((c) => {
-      const p = c.permissionsFor(Core.user)
+      const p = c.permissionsFor(self)
       let description = '' // (c as TextChannel).topic?.substr(0, 50) || ''
       if (!p.has('VIEW_CHANNEL')) description = '⚠️ ' + Core.text(i.guildData, '=settings_channel_list_warning_missing_view_channel')
       else if (!p.has('SEND_MESSAGES')) description = '⚠️ ' + Core.text(i.guildData, '=settings_channel_list_warning_missing_send_messages')
