@@ -42,6 +42,10 @@ module.exports = {
       dsn: 'URL' // sentry dsn. can be found in sentry dashboard
     }
   },
+  /**
+   * A discord channel webhook,
+   * where debug messages are sent to whenever someone uses the "@freestuff here" command
+   */
   supportWebhook: {
     id: '123456789123456789', // "@freestuff here" webhook.
     token: 'abcdefghijklmnopqrstuvwxyz' // see above
