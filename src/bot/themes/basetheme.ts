@@ -72,9 +72,9 @@ export default class BaseTheme {
       return `${Core.text(data, '=open_in_browser')}: **[https://s.team/a/${game.urls.org.split('/app/')[1].split('/')[0]}](${useProxyUrl ? game.urls.browser : game.urls.org})**\n${Core.text(data, '=open_in_steam_client')}: **${game.urls.client}**`
 
     if (epicOpenInClient && game.store === 'epic')
-      return `${Core.text(data, '=open_in_browser')}: **[${game.urls.org.replace('www.', '').replace('/en-US', '')}](${useProxyUrl ? game.urls.browser : game.urls.org})**\n${Core.text(data, '=open_in_steam_client')}: **<${game.urls.client}>**`
+      return `${Core.text(data, '=open_in_browser')}: **[${game.urls.org.replace('www.', '').replace('/en-US', '')}](${useProxyUrl ? game.urls.browser : game.urls.org})**\n${Core.text(data, '=open_in_epic_games_client')}: **<${game.urls.client}>**`
 
-    return `**[${Core.text(data, '=open_in_browser')}](${useProxyUrl ? game.urls.browser : game.urls.org})** • **[${Core.text(data, '=open_in_epic_games_client')}](${game.urls.client})**`
+    return `**[${Core.text(data, '=announcement_button_text')}](${useProxyUrl ? game.urls.default : game.urls.org})**`
   }
 
   static generateImageObject(game: GameInfo, data: GuildData, settings: themeSettings): MessageEmbed['image'] {

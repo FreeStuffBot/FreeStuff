@@ -1,4 +1,4 @@
-import { Guild, MessageOptions } from 'discord.js'
+import { MessageOptions } from 'discord.js'
 import { Long } from 'mongodb'
 import { GameFlag, GameInfo } from 'freestuff'
 import { Core, FSAPI } from '../index'
@@ -87,10 +87,10 @@ export default class MessageDistributor {
    * @param guild guild to run the test on
    * @param content content of the test message
    */
-  public static test(guild: Guild, content: GameInfo): void {
+  public static test(guildId: string, content: GameInfo): void {
     Database
       .collection('guilds')
-      .findOne({ _id: Long.fromString(guild.id) })
+      .findOne({ _id: Long.fromString(guildId) })
       .then((g: DatabaseGuildData) => {
         if (!g) return
         MessageDistributor.sendToGuild(g, [ content ], true, true)

@@ -1,5 +1,5 @@
 import Logger from '../lib/logger'
-import { Core } from '../index'
+import { config, Core } from '../index'
 import { Experiment } from '../types/controller'
 import { GuildData } from '../types/datastructs'
 
@@ -21,6 +21,7 @@ export default class Experiments {
   }
 
   public static runExperimentOnServer(experimentName: string, guildData: GuildData): boolean {
+    if (config.bot.mode === 'dev') return true
     if (!Core) return false
     if (!guildData) return false
     if (!(experimentName in this.experiments)) return false
