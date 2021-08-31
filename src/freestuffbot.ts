@@ -68,7 +68,7 @@ export default class FreeStuffBot extends Client {
 
     // database sync
     this.on('guildCreate', (guild) => {
-      DatabaseManager.addGuild(guild)
+      DatabaseManager.addGuild(guild.id)
     })
   }
 

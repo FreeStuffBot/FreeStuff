@@ -64,7 +64,7 @@ export default class ResetCommand extends Command {
     }
 
     await DatabaseManager.removeGuild(g._id)
-    await DatabaseManager.addGuild(mes.guild)
+    await DatabaseManager.addGuild(mes.guild.id)
 
     repl(
       Core.text(g, '=cmd_reset_success_1'),

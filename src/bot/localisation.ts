@@ -1,4 +1,3 @@
-import { Guild } from 'discord.js'
 import { GameInfo } from 'freestuff'
 import { Util } from '../lib/util'
 import { GuildData } from '../types/datastructs'
@@ -45,7 +44,7 @@ export default class Localisation {
     japan: 'zh-CN'
   }
 
-  public static getDefaultSettings(_guild: Guild): number {
+  public static getDefaultSettings(): number {
     const defaultLang = 'en-GB'
 
     return 0
@@ -53,7 +52,7 @@ export default class Localisation {
       | Util.modifyBits(0, 10, 6, LanguageManager.languageToId(defaultLang))
   }
 
-  public static getDefaultFilter(_guild: Guild): number {
+  public static getDefaultFilter(): number {
     return 0
       | Util.modifyBits(0, 2, 2, Const.defaultPriceClass.id)
       | Util.modifyBits(0, 4, 8, Const.defaultPlatforms)
