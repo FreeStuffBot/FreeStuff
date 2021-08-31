@@ -29,11 +29,11 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
 
   // ah dang list is too long, let's start filtering some out
   if (channelsFound.length > 24) {
-    channelsFound = channelsFound.filter(c => !c.nsfw)
+    channelsFound = channelsFound.filter(c => !c.nsfw || isRecommended(i, c))
     youHaveTooManyChannelsStage++
   }
   if (channelsFound.length > 24) {
-    channelsFound = channelsFound.filter(c => self.permissionsIn(c).has('VIEW_CHANNEL'))
+    channelsFound = channelsFound.filter(c => self.permissionsIn(c).has('VIEW_CHANNEL') || isRecommended(i, c))
     youHaveTooManyChannelsStage++
   }
   if (channelsFound.length > 24) {
@@ -71,6 +71,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
       if (!p.has('VIEW_CHANNEL')) description = '⚠️ ' + Core.text(i.guildData, '=settings_channel_list_warning_missing_view_channel')
       else if (!p.has('SEND_MESSAGES')) description = '⚠️ ' + Core.text(i.guildData, '=settings_channel_list_warning_missing_send_messages')
       else if (!p.has('EMBED_LINKS')) description = '=settings_channel_list_warning_missing_embed_messages'
+      else if (c.name.includes('amogus') || c.name.includes('sus')) description = 'sus channel'
 
       return {
         label: (c.id === i.channel_id) && (c.name.length + hereText.length <= 25)
@@ -80,13 +81,15 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
         default: i.guildData.channel?.toString() === c.id,
         description,
         emoji: {
-          id: (c.type === 'GUILD_NEWS')
-            ? isRecommended(i, c)
-              ? Emojis.announcementChannelGreen.id
-              : Emojis.announcementChannel.id
-            : isRecommended(i, c)
-              ? Emojis.channelGreen.id
-              : Emojis.channel.id
+          id: (c.name.includes('amogus') || c.name.includes('sus'))
+            ? Emojis.amogus.id
+            : (c.type === 'GUILD_NEWS')
+                ? isRecommended(i, c)
+                  ? Emojis.announcementChannelGreen.id
+                  : Emojis.announcementChannel.id
+                : isRecommended(i, c)
+                  ? Emojis.channelGreen.id
+                  : Emojis.channel.id
         }
       }
     })
