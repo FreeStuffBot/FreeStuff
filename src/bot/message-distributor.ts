@@ -9,9 +9,9 @@ import Redis from '../database/redis'
 import { DatabaseGuildData, GuildData } from '../types/datastructs'
 import RemoteConfig from '../controller/remote-config'
 import Logger from '../lib/logger'
+import Experiments from '../controller/experiments'
 import DatabaseManager from './database-manager'
 import Const from './const'
-import Experiments from '../controller/experiments'
 
 
 export default class MessageDistributor {
@@ -163,6 +163,7 @@ export default class MessageDistributor {
 
     // build message objects
     const messagePayload = MessageDistributor.buildMessage(content, data, test, donationNotice)
+    if (!messagePayload.content) delete messagePayload.content
 
     // send the messages
     const message = await data.channelInstance.send(messagePayload)
