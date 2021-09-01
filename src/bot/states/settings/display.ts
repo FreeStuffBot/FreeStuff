@@ -30,7 +30,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   const message = MessageDistributor.buildMessage([ Const.testAnnouncementContent ], i.guildData, true, false)
   const embeds: MessageEmbed[] = []
   if (message.embeds?.length) {
-    if (!PermissionStrings.containsManageServer(i.member.permissions) && message[1].embed.footer?.text)
+    if (!PermissionStrings.containsManageServer(i.member.permissions) && message.embeds[0].footer?.text)
       message.embeds[0].footer.text += ' • ' + Core.text(i.guildData, '=settings_permission_disclaimer')
     embeds.push(...message.embeds as MessageEmbed[])
   }
