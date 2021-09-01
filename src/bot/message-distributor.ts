@@ -11,6 +11,7 @@ import RemoteConfig from '../controller/remote-config'
 import Logger from '../lib/logger'
 import DatabaseManager from './database-manager'
 import Const from './const'
+import Experiments from '../controller/experiments'
 
 
 export default class MessageDistributor {
@@ -157,8 +158,11 @@ export default class MessageDistributor {
       return []
     }
 
+    // only once per month - maybe redis entry to save last month and if unequal to current month, do this?
+    const donationNotice = Experiments.runExperimentOnServer('show_donation_notice', data)
+
     // build message objects
-    const messagePayload = MessageDistributor.buildMessage(content, data, test)
+    const messagePayload = MessageDistributor.buildMessage(content, data, test, donationNotice)
 
     // send the messages
     const message = await data.channelInstance.send(messagePayload)
@@ -178,9 +182,9 @@ export default class MessageDistributor {
    * Finds the used theme and lets that theme build the message
    * @returns Tupel with message.content and message.options?
    */
-  public static buildMessage(content: GameInfo[], data: GuildData, test: boolean): MessageOptions {
+  public static buildMessage(content: GameInfo[], data: GuildData, test: boolean, donationNotice: boolean): MessageOptions {
     const theme = data.theme.builder
-    return theme.build(content, data, { test })
+    return theme.build(content, data, { test, donationNotice })
   }
 
 }

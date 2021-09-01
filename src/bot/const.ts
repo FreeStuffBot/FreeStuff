@@ -29,7 +29,9 @@ export default class Const {
     terms: 'https://freestuffbot.xyz/terms',
     testgame: 'https://freestuffbot.xyz/testgame',
     guide: 'https://freestuffbot.xyz/guide',
-    themes: 'https://freestuffbot.xyz/themes'
+    themes: 'https://freestuffbot.xyz/themes',
+
+    donate: 'https://freestuffbot.xyz/donate'
   }
 
   public static readonly embedDefaultColor = 0x2F3136

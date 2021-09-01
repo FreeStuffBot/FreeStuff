@@ -25,7 +25,7 @@ export type StoreData = {
 
 
 export interface ThemeBuilder {
-  build(content: GameInfo[], data: GuildData, settings: { test?: boolean }): MessageOptions
+  build(content: GameInfo[], data: GuildData, settings: { test?: boolean, donationNotice?: boolean }): MessageOptions
 }
 
 

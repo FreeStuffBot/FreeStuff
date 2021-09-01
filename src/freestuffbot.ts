@@ -7,7 +7,6 @@ import LegacyCommandHandler from './bot/legacy-command-handler'
 import DatabaseManager from './bot/database-manager'
 import AnnouncementManager from './bot/announcement-manager'
 import { DbStats } from './database/db-stats'
-import Const from './bot/const'
 import { GuildData } from './types/datastructs'
 import Logger from './lib/logger'
 import Manager from './controller/manager'
@@ -83,19 +82,12 @@ export default class FreeStuffBot extends Client {
   }
 
   private startBotActvity() {
-    const updateActivity = (u) => {
-      u?.setActivity(
-        `@${u.username} help`
-          .padEnd(54, '~')
-          .split('~~').join(' ​')
-          .replace('~', '') + Const.links.website,
-        { type: 'WATCHING' }
-      )
-
-      Logger.excessive('Updating bot activity')
-    }
-    setInterval(updateActivity, 1000 * 60 * 15, this.user)
-    updateActivity(this.user)
+    setInterval(
+      u => u?.setActivity('/free', { type: 'WATCHING' }),
+      1000 * 60 * 15,
+      this.user
+    )
+    this.user?.setActivity('/free', { type: 'WATCHING' })
   }
 
   //
