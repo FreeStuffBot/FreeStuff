@@ -184,7 +184,7 @@ function mountBot(shardIds: number[], shardCount: number) {
       UserManager: 2,
       VoiceStateManager: 0
     }),
-    restGlobalRateLimit: 50 / Manager.getMeta().workerCount,
+    // restGlobalRateLimit: 50 / Manager.getMeta().workerCount,
     partials: [],
     shardCount,
     shards: (shardIds !== undefined) ? shardIds : undefined
