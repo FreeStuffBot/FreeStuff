@@ -1,6 +1,6 @@
 ##### Base #####
 
-FROM node:14-alpine as base
+FROM node:16-alpine as base
 
 # Install Git because it's needed by the bot to determine it's own version
 RUN apk add git

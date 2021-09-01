@@ -25,10 +25,10 @@ export default class BaseTheme {
 
     const content = data.roleInstance ? data.roleInstance.toString() : ''
     const embeds = games.map(game => this.buildEmbed(game, data, settings, useProxyUrl, epicOpenInClient))
-    embeds.push({
-      description: 'Did this bot save you some money? If so, consider [donating](https://freestuffbot.xyz/donate) to keep it alive. Thanks!',
-      color: Const.embedDefaultColor
-    })
+    // embeds.push({
+    //   description: 'Did this bot save you some money? If so, consider [donating](https://freestuffbot.xyz/donate) to keep it alive. Thanks!',
+    //   color: Const.embedDefaultColor
+    // })
 
     return { content, embeds }
   }
