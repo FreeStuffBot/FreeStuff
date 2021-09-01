@@ -19,8 +19,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
 
   const everyone = permissions.has('MENTION_EVERYONE')
 
-  const roles = Core.guilds.resolve(i.guild_id).roles.cache
-    .array()
+  const roles = [ ...Core.guilds.resolve(i.guild_id).roles.cache.values() ]
     .sort((a, b) =>
       (recommendedRoleRegex.test(b.name) ? 999 : 0) - (recommendedRoleRegex.test(a.name) ? 999 : 0)
       + (b.position - a.position)

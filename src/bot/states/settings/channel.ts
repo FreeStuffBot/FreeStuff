@@ -16,22 +16,24 @@ function isRecommended(i: GenericInteraction, c: GuildChannel) {
   return recommendedChannelRegex.test(c.name) || i.channel_id === c.id || i.guildData.channel?.toString() === c.id
 }
 
-export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
+export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
   if (!i.guildData) return { title: 'An error occured' }
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
 
-  let channelsFound = Core.guilds.resolve(i.guild_id).channels.cache.array()
-    .filter(c => (c.type === 'text' || c.type === 'news')) as (TextChannel | NewsChannel)[]
+  let channelsFound = [ ...Core.guilds.resolve(i.guild_id).channels.cache.values() ]
+    .filter(c => (c.type === 'GUILD_TEXT' || c.type === 'GUILD_NEWS')) as (TextChannel | NewsChannel)[]
+
+  const self = await Core.guilds.resolve(i.guild_id).members.fetch(Core.user.id)
 
   let youHaveTooManyChannelsStage = 0
 
   // ah dang list is too long, let's start filtering some out
   if (channelsFound.length > 24) {
-    channelsFound = channelsFound.filter(c => !c.nsfw)
+    channelsFound = channelsFound.filter(c => !c.nsfw || isRecommended(i, c))
     youHaveTooManyChannelsStage++
   }
   if (channelsFound.length > 24) {
-    channelsFound = channelsFound.filter(c => c.permissionsFor(Core.user).has('VIEW_CHANNEL'))
+    channelsFound = channelsFound.filter(c => self.permissionsIn(c).has('VIEW_CHANNEL') || isRecommended(i, c))
     youHaveTooManyChannelsStage++
   }
   if (channelsFound.length > 24) {
@@ -51,8 +53,6 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     youHaveTooManyChannelsStage++
   }
 
-  // TODO in some absurd szenario there might be over 25 channels but then one regex kills all of them => empty array => error
-
   const hereText = ` (${Core.text(i.guildData, '=settings_channel_list_here')})`
 
   const channels = channelsFound
@@ -64,27 +64,30 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     )
     .slice(0, 24)
     .map((c) => {
-      const p = c.permissionsFor(Core.user)
+      const p = c.permissionsFor(self)
       let description = '' // (c as TextChannel).topic?.substr(0, 50) || ''
       if (!p.has('VIEW_CHANNEL')) description = '⚠️ ' + Core.text(i.guildData, '=settings_channel_list_warning_missing_view_channel')
       else if (!p.has('SEND_MESSAGES')) description = '⚠️ ' + Core.text(i.guildData, '=settings_channel_list_warning_missing_send_messages')
       else if (!p.has('EMBED_LINKS')) description = '=settings_channel_list_warning_missing_embed_messages'
+      else if (c.name.includes('amogus') || c.name.includes('sus')) description = 'sus channel'
 
       return {
         label: (c.id === i.channel_id) && (c.name.length + hereText.length <= 25)
-          ? c.name + hereText
-          : c.name.substr(0, 25),
+          ? c.name.split('\\').join('') + hereText
+          : sanitizeChannelName(c.name, 25),
         value: c.id,
         default: i.guildData.channel?.toString() === c.id,
         description,
         emoji: {
-          id: (c.type === 'news')
-            ? isRecommended(i, c)
-              ? Emojis.announcementChannelGreen.id
-              : Emojis.announcementChannel.id
-            : isRecommended(i, c)
-              ? Emojis.channelGreen.id
-              : Emojis.channel.id
+          id: (c.name.includes('amogus') || c.name.includes('sus'))
+            ? Emojis.amogus.id
+            : (c.type === 'GUILD_NEWS')
+                ? isRecommended(i, c)
+                  ? Emojis.announcementChannelGreen.id
+                  : Emojis.announcementChannel.id
+                : isRecommended(i, c)
+                  ? Emojis.channelGreen.id
+                  : Emojis.channel.id
         }
       }
     })
@@ -126,4 +129,15 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     ],
     footer: PermissionStrings.containsManageServer(i.member.permissions) ? '' : '=settings_permission_disclaimer'
   }
+}
+
+function sanitizeChannelName(name: string, maxlength: number): string {
+  if (name.length < maxlength) return name
+
+  name = name.substr(0, maxlength)
+  if (name.split('').some(n => n.charCodeAt(0) > 0xFF))
+    // eslint-disable-next-line no-control-regex
+    name = name.replace(/((?:[\0-\x08\x0B\f\x0E-\x1F\uFFFD\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))/g, '')
+
+  return name
 }

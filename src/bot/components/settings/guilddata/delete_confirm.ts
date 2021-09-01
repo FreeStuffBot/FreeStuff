@@ -18,7 +18,7 @@ export default async function (i: ReplyableComponentInteraction) {
 
   await DatabaseManager.removeGuild(Long.fromString(i.guild_id))
   const guild = await Core.guilds.fetch(i.guild_id)
-  await DatabaseManager.addGuild(guild)
+  await DatabaseManager.addGuild(guild.id)
 
   i.edit({
     title: '=settings_guilddata_delete_success_1',

@@ -38,7 +38,11 @@ Roadmap, Todo, Suggestions, etc: https://trello.com/b/Zhw6umTy/freestuff
 
 ## Running the bot from source
 
-#### Preperation:
+#### Prerequisites
+
+This bot uses discord.js v13 which required **NodeJS v16.0.0** or up.
+
+#### Preperation
 
 Make sure to have typescript installed globally or modify the building scripts accordingly.
 

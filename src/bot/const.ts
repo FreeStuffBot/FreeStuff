@@ -29,7 +29,9 @@ export default class Const {
     terms: 'https://freestuffbot.xyz/terms',
     testgame: 'https://freestuffbot.xyz/testgame',
     guide: 'https://freestuffbot.xyz/guide',
-    themes: 'https://freestuffbot.xyz/themes'
+    themes: 'https://freestuffbot.xyz/themes',
+
+    donate: 'https://freestuffbot.xyz/donate'
   }
 
   public static readonly embedDefaultColor = 0x2F3136
@@ -180,6 +182,36 @@ export default class Const {
       name: '=currency_usd',
       symbol: '$',
       calculated: false
+    // },
+    // {
+    //   id: 2,
+    //   name: '=currency_gbp',
+    //   symbol: '£',
+    //   calculated: true
+    // },
+    // {
+    //   id: 3,
+    //   name: '=currency_brl',
+    //   symbol: 'R$',
+    //   calculated: true
+    // },
+    // {
+    //   id: 4,
+    //   name: '=currency_bgn',
+    //   symbol: 'Лв',
+    //   calculated: true
+    // },
+    // {
+    //   id: 5,
+    //   name: '=currency_pln',
+    //   symbol: 'zł',
+    //   calculated: true
+    // },
+    // {
+    //   id: 6,
+    //   name: '=currency_huf',
+    //   symbol: 'Ft',
+    //   calculated: true
     }
   ]
 

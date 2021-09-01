@@ -7,14 +7,17 @@ import Experiments from '../../controller/experiments'
 
 export default class ThemeSeven implements ThemeBuilder {
 
-  public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
+  public build(games: GameInfo[], data: GuildData, _settings: { test?: boolean }): MessageOptions {
     const useProxyUrl = Experiments.runExperimentOnServer('use_proxy_url', data)
 
-    return [
-      ((data.roleInstance && !settings.disableMention) ? data.roleInstance.toString() : '')
-      + ' ' + (useProxyUrl ? content.urls.default : content.urls.org),
-      {}
-    ]
+    const mention = (data.roleInstance ? data.roleInstance.toString() + ' ' : '')
+    const links = games.map(game => (useProxyUrl ? game.urls.default : game.urls.org))
+
+    const content = links.length > 1
+      ? `${mention}\n${links.join('\n')}`
+      : mention + links
+
+    return { content }
   }
 
 }

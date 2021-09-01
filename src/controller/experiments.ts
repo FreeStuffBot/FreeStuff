@@ -1,8 +1,7 @@
 import Logger from '../lib/logger'
-import { Core } from '../index'
+import { config, Core } from '../index'
 import { Experiment } from '../types/controller'
 import { GuildData } from '../types/datastructs'
-import Localisation from '../bot/localisation'
 
 
 export default class Experiments {
@@ -22,6 +21,7 @@ export default class Experiments {
   }
 
   public static runExperimentOnServer(experimentName: string, guildData: GuildData): boolean {
+    if (config.bot.mode === 'dev') return true
     if (!Core) return false
     if (!guildData) return false
     if (!(experimentName in this.experiments)) return false
@@ -36,8 +36,6 @@ export default class Experiments {
     switch (experiment.group) {
       case 'all': return true
       case 'beta': return guildData.beta
-      case 'europe': return Localisation.isGuildInEurope(guildData.channelInstance?.guild)
-      case 'usa': return Localisation.isGuildInAmerica(guildData.channelInstance?.guild)
     }
     return false
   }

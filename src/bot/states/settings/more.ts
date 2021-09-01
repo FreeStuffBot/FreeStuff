@@ -21,7 +21,6 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_run_test',
         label: '=settings_more_btn_test',
-        disabled: true, // TODO
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
@@ -29,7 +28,6 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_run_resend',
         label: '=settings_more_btn_resend',
-        disabled: true, // TODO
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {

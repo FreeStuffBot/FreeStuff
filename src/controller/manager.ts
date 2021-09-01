@@ -29,7 +29,13 @@ export default class Manager {
   private static shards: Map<number, Shard> = new Map()
   private static selfUUID = Manager.generateSelfUUID()
   private static socketConnectionIdleTimeout: any = null
-  private static meta: { workerIndex: number } = { workerIndex: 0 }
+  private static meta: {
+    workerIndex: number,
+    workerCount: number
+  } = {
+    workerIndex: 0,
+    workerCount: 1
+  }
 
   private static readonly IDLE_TIMEOUT = 2 * 60 * 1000 // 2 minutes
 

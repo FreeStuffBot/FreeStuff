@@ -23,15 +23,16 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   const currencyOptions: MessageComponentSelectOption[] = Const.currencies.map(c => ({
     value: c.id + '',
     label: `${c.symbol} ${Core.text(i.guildData, c.name)}`,
+    description: c.calculated ? '=price_converted' : '=price_actual',
     default: i.guildData.currency.id === c.id
   }))
 
-  const message = MessageDistributor.buildMessage(Const.testAnnouncementContent, i.guildData, true, false)
+  const message = MessageDistributor.buildMessage([ Const.testAnnouncementContent ], i.guildData, true, false)
   const embeds: MessageEmbed[] = []
-  if (message[1].embed) {
+  if (message.embeds?.length) {
     if (!PermissionStrings.containsManageServer(i.member.permissions) && message[1].embed.footer?.text)
-      message[1].embed.footer.text += ' • ' + Core.text(i.guildData, '=settings_permission_disclaimer')
-    embeds.push(message[1].embed as MessageEmbed)
+      message.embeds[0].footer.text += ' • ' + Core.text(i.guildData, '=settings_permission_disclaimer')
+    embeds.push(...message.embeds as MessageEmbed[])
   }
 
   // embeds.push({
@@ -40,7 +41,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   // } as MessageEmbed)
 
   return {
-    content: message[0],
+    content: message.content,
     embeds,
     components: [
       {

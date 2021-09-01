@@ -7,13 +7,13 @@ import BaseTheme, { themeSettings } from './basetheme'
 
 export default class ThemeFour implements ThemeBuilder {
 
-  public build(content: GameInfo, data: GuildData, settings: { test?: boolean, disableMention?: boolean }): [string, MessageOptions] {
+  public build(games: GameInfo[], data: GuildData, settings: { test?: boolean, donationNotice?: boolean }): MessageOptions {
     const fullSettings: themeSettings = {
       ...settings,
       themeImages: false,
       themeExtraInfo: true
     }
-    return BaseTheme.build(content, data, fullSettings)
+    return BaseTheme.build(games, data, fullSettings)
   }
 
 }

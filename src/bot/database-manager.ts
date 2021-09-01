@@ -29,10 +29,10 @@ export default class DatabaseManager {
 
     if (!Core) return
     for (const guild of Core.guilds.cache.values()) {
-      if (guild.shardID !== id) continue
+      if (guild.shardId !== id) continue
       if (dbGuilds.find(g => g._id.toString() === guild.id)) continue
 
-      DatabaseManager.addGuild(guild)
+      DatabaseManager.addGuild(guild.id)
     }
   }
 
@@ -117,21 +117,21 @@ export default class DatabaseManager {
 
   /**
    * Add a guild to the database
-   * @param guild guild object
+   * @param guildId guild id as string
    * @param autoSettings whether the default settings should automatically be adjusted to the server (e.g: server region -> language)
    */
-  public static async addGuild(guild: Guild) {
+  public static async addGuild(guildId: string) {
     const exists = await Database
       .collection('guilds')
-      ?.findOne({ _id: Long.fromString(guild.id) })
+      ?.findOne({ _id: Long.fromString(guildId) })
     if (exists) return
 
-    const settings = Localisation.getDefaultSettings(guild)
-    const filter = Localisation.getDefaultFilter(guild)
+    const settings = Localisation.getDefaultSettings()
+    const filter = Localisation.getDefaultFilter()
 
     const data: DatabaseGuildData = {
-      _id: Long.fromString(guild.id),
-      sharder: Long.fromString(guild.id).shiftRight(22),
+      _id: Long.fromString(guildId),
+      sharder: Long.fromString(guildId).shiftRight(22),
       channel: null,
       role: null,
       settings,
