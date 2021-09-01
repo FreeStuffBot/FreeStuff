@@ -53,8 +53,6 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     youHaveTooManyChannelsStage++
   }
 
-  // TODO in some absurd szenario there might be over 25 channels but then one regex kills all of them => empty array => error
-
   const hereText = ` (${Core.text(i.guildData, '=settings_channel_list_here')})`
 
   const channels = channelsFound
@@ -75,8 +73,8 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
 
       return {
         label: (c.id === i.channel_id) && (c.name.length + hereText.length <= 25)
-          ? c.name + hereText
-          : c.name.substr(0, 25),
+          ? c.name.split('\\').join('') + hereText
+          : sanitizeChannelName(c.name, 25),
         value: c.id,
         default: i.guildData.channel?.toString() === c.id,
         description,
@@ -131,4 +129,15 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     ],
     footer: PermissionStrings.containsManageServer(i.member.permissions) ? '' : '=settings_permission_disclaimer'
   }
+}
+
+function sanitizeChannelName(name: string, maxlength: number): string {
+  if (name.length < maxlength) return name
+
+  name = name.substr(0, maxlength)
+  if (name.split('').some(n => n.charCodeAt(0) > 0xFF))
+    // eslint-disable-next-line no-control-regex
+    name = name.replace(/((?:[\0-\x08\x0B\f\x0E-\x1F\uFFFD\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))/g, '')
+
+  return name
 }

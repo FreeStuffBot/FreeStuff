@@ -180,6 +180,36 @@ export default class Const {
       name: '=currency_usd',
       symbol: '$',
       calculated: false
+    },
+    {
+      id: 2,
+      name: '=currency_gbp',
+      symbol: '£',
+      calculated: true
+    },
+    {
+      id: 3,
+      name: '=currency_brl',
+      symbol: 'R$',
+      calculated: true
+    },
+    {
+      id: 4,
+      name: '=currency_bgn',
+      symbol: 'Лв',
+      calculated: true
+    },
+    {
+      id: 5,
+      name: '=currency_pln',
+      symbol: 'zł',
+      calculated: true
+    },
+    {
+      id: 6,
+      name: '=currency_huf',
+      symbol: 'Ft',
+      calculated: true
     }
   ]
 

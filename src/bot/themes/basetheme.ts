@@ -18,11 +18,17 @@ export type themeSettings = {
 export default class BaseTheme {
 
   public static build(games: GameInfo[], data: GuildData, settings: themeSettings): MessageOptions {
+    // only once per month - maybe redis entry to save last month and if unequal to current month, do this?
+
     const useProxyUrl = Experiments.runExperimentOnServer('use_proxy_url', data)
     const epicOpenInClient = Experiments.runExperimentOnServer('epic_open_in_client', data)
 
     const content = data.roleInstance ? data.roleInstance.toString() : ''
     const embeds = games.map(game => this.buildEmbed(game, data, settings, useProxyUrl, epicOpenInClient))
+    embeds.push({
+      description: 'Did this bot save you some money? If so, consider [donating](https://freestuffbot.xyz/donate) to keep it alive. Thanks!',
+      color: Const.embedDefaultColor
+    })
 
     return { content, embeds }
   }

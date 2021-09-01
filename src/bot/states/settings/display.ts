@@ -23,6 +23,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   const currencyOptions: MessageComponentSelectOption[] = Const.currencies.map(c => ({
     value: c.id + '',
     label: `${c.symbol} ${Core.text(i.guildData, c.name)}`,
+    description: c.calculated ? '=price_converted' : '=price_actual',
     default: i.guildData.currency.id === c.id
   }))
 
