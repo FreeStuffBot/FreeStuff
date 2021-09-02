@@ -1,3 +1,4 @@
 {
-    "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": true
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": true,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": true
 }
