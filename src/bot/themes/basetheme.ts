@@ -1,4 +1,4 @@
-import { MessageEmbed, MessageOptions } from 'discord.js'
+import { EmbedField, MessageEmbed, MessageOptions } from 'discord.js'
 import { GameFlag, GameInfo } from 'freestuff'
 import { Core } from '../../index'
 import Const from '../../bot/const'
@@ -46,7 +46,10 @@ export default class BaseTheme {
     const divider = settings.themeExtraInfo ? ' ᲼ ᲼ ' : ' • '
     const title = game.title.startsWith('=') ? Core.text(data, game.title) : game.title
 
-    const description = BaseTheme.generateDescription(game, data, until, priceString, showDescription, showRating, showStore, divider, button)
+    const btnText = button[0] === 'text' ? button[1] : undefined
+    const fields = button[0] === 'fields' ? button[1] : undefined
+
+    const description = BaseTheme.generateDescription(game, data, until, priceString, showDescription, showRating, showStore, divider, btnText)
     const image = BaseTheme.generateImageObject(game, data, settings)
     const thumbnail = BaseTheme.generateThumbnailObject(game, data, settings)
     const footer = BaseTheme.generateFooter(game, data, settings)
@@ -56,6 +59,7 @@ export default class BaseTheme {
       description,
       image,
       footer,
+      fields,
       color: Const.embedDefaultColor,
       thumbnail
     }
@@ -71,17 +75,54 @@ export default class BaseTheme {
     })
   }
 
-  static generateButton(game: GameInfo, data: GuildData, useProxyUrl: boolean, epicOpenInClient: boolean): string {
-    if (!game.urls.client)
-      return `**[${Core.text(data, '=announcement_button_text')}](${useProxyUrl ? game.urls.default : game.urls.org})**`
+  static generateButton(game: GameInfo, data: GuildData, useProxyUrl: boolean, epicOpenInClient: boolean): [ 'text', string ] | [ 'fields', EmbedField[] ] {
+    if (!game.urls.client) {
+      return [
+        'text',
+        `**[${Core.text(data, '=announcement_button_text')}](${useProxyUrl ? game.urls.default : game.urls.org})**`
+      ]
+    }
 
-    if (game.store === 'steam')
-      return `${Core.text(data, '=open_in_browser')}: **[https://s.team/a/${game.urls.org.split('/app/')[1].split('/')[0]}](${useProxyUrl ? game.urls.browser : game.urls.org})**\n${Core.text(data, '=open_in_steam_client')}: **${game.urls.client}**`
+    if (game.store === 'steam') {
+      return [
+        'fields',
+        [
+          {
+            name: Core.text(data, '=open_in_browser'),
+            value: `**[https://s.team/a/${game.urls.org.split('/app/')[1].split('/')[0]}](${useProxyUrl ? game.urls.browser : game.urls.org})**`,
+            inline: true
+          },
+          {
+            name: Core.text(data, '=open_in_steam_client'),
+            value: `**${game.urls.client}**`,
+            inline: true
+          }
+        ]
+      ]
+    }
 
-    if (epicOpenInClient && game.store === 'epic')
-      return `${Core.text(data, '=open_in_browser')}: **[${game.urls.org.replace('www.', '').replace('/en-US', '')}](${useProxyUrl ? game.urls.browser : game.urls.org})**\n${Core.text(data, '=open_in_epic_games_client')}: **<${game.urls.client}>**`
+    if (epicOpenInClient && game.store === 'epic') {
+      return [
+        'fields',
+        [
+          {
+            name: Core.text(data, '=open_in_browser'),
+            value: `**[${game.urls.org.replace('www.', '').replace('/en-US', '')}](${useProxyUrl ? game.urls.browser : game.urls.org})**`,
+            inline: true
+          },
+          {
+            name: Core.text(data, '=open_in_epic_games_client'),
+            value: `**<${game.urls.client}>**`,
+            inline: true
+          }
+        ]
+      ]
+    }
 
-    return `**[${Core.text(data, '=announcement_button_text')}](${useProxyUrl ? game.urls.default : game.urls.org})**`
+    return [
+      'text',
+      `**[${Core.text(data, '=announcement_button_text')}](${useProxyUrl ? game.urls.default : game.urls.org})**`
+    ]
   }
 
   static generateImageObject(game: GameInfo, data: GuildData, settings: themeSettings): MessageEmbed['image'] {
@@ -114,7 +155,7 @@ export default class BaseTheme {
       + `~~${priceString}~~ **${Core.text(data, '=announcement_pricetag_free')}** ${until}`
       + (showRating ? `${divider}${Math.round(game.rating * 20) / 2}/10 ★` : '')
       + (showStore ? `${divider}${LanguageManager.get(data, 'platform_' + game.store)}` : '')
-      + `\n\n${button}`
+      + (button ? `\n\n${button}` : `\n** **${Const.invisibleCharacter}`)
   }
 
   static generateFooter(_game: GameInfo, data: GuildData, settings: themeSettings) {

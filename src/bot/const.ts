@@ -36,6 +36,8 @@ export default class Const {
 
   public static readonly embedDefaultColor = 0x2F3136
 
+  public static readonly invisibleCharacter = '﻿'
+
   public static readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/830794212894572574/thumbnail_placeholder.png'
 
   public static readonly brandIcons = {
