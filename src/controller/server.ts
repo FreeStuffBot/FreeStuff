@@ -2,7 +2,7 @@ import * as express from 'express'
 import { configjs } from '../types/config'
 import { FSAPI } from '../index'
 import Logger from '../lib/logger'
-import Metrics from '../lib/metrics'
+import { middleware as metricsMiddleware } from '../lib/metrics'
 
 
 export default class Server {
@@ -41,7 +41,7 @@ export default class Server {
       let path = '/metrics'
       if (typeof config.endpoints.metrics === 'string')
         path = config.endpoints.metrics
-      app.use(path, Metrics.endpoint())
+      app.use(path, metricsMiddleware)
     }
   }
 
