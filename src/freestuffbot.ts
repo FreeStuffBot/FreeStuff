@@ -10,6 +10,7 @@ import { DbStats } from './database/db-stats'
 import { GuildData } from './types/datastructs'
 import Logger from './lib/logger'
 import Manager from './controller/manager'
+import RemoteConfig from './controller/remote-config'
 import { config, FSAPI } from './index'
 
 
@@ -83,11 +84,11 @@ export default class FreeStuffBot extends Client {
 
   private startBotActvity() {
     setInterval(
-      u => u?.setActivity('/free', { type: 'WATCHING' }),
-      1000 * 60 * 15,
+      u => u?.setActivity(RemoteConfig.botPlaytext, { type: 'WATCHING' }),
+      1000 * 60 * 5,
       this.user
     )
-    this.user?.setActivity('/free', { type: 'WATCHING' })
+    this.user?.setActivity(RemoteConfig.botPlaytext, { type: 'WATCHING' })
   }
 
   //

@@ -30,4 +30,8 @@ export default class RemoteConfig {
     return this.get().bot_admins ?? config.admins ?? []
   }
 
+  public static get botPlaytext(): string {
+    return this.get().bot_playtext ?? '/free'
+  }
+
 }
