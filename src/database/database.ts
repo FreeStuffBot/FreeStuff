@@ -3,7 +3,10 @@ import { config } from '../index'
 import MongoAdapter from './mongo-adapter'
 
 
-export type dbcollection = 'guilds' | 'stats-usage' | 'games' | 'stats-top-clients' | 'language'
+/**
+ * The database collections for the freestuff bot.
+ */
+export type FreeStuffCollection = 'guilds' | 'stats-usage' | 'games' | 'stats-top-clients' | 'language'
 
 export default class Database {
 
@@ -19,7 +22,7 @@ export default class Database {
     return this.client ? this.client.db(name) : null
   }
 
-  public static collection(collection: dbcollection): mongo.Collection | null {
+  public static collection(collection: FreeStuffCollection): mongo.Collection | null {
     return this.client ? this.client.db(config.mongoDB.dbName).collection(collection) : null
   }
 
