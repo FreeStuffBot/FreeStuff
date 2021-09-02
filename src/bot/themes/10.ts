@@ -24,7 +24,7 @@ export default class ThemeTen implements ThemeBuilder {
     const button = game.urls.client
       ? game.store === 'steam'
         ? `${Core.text(data, '=open_in_browser')}: [https://s.team/a/${game.urls.org.split('/app/')[1].split('/')[0]}](${useProxyUrl ? game.urls.browser : game.urls.org})\n${Core.text(data, '=open_in_steam_client')}: ${game.urls.client}`
-        : `[${Core.text(data, '=open_in_browser')}](${useProxyUrl ? game.urls.browser : game.urls.org}) • [${Core.text(data, '=open_in_epic_games_client')}](${game.urls.client})`
+        : `${Core.text(data, '=open_in_browser')}: [${game.urls.org}](${useProxyUrl ? game.urls.browser : game.urls.org})\n${Core.text(data, '=open_in_epic_games_client')}: <${game.urls.client}>`
       : `[${Core.text(data, '=open_in_browser')}](${useProxyUrl ? game.urls.default : game.urls.org})`
 
     const steamcontent = game.store === 'steam'
