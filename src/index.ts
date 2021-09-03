@@ -73,7 +73,6 @@ import Cordo from 'cordo'
 import RemoteConfig from './controller/remote-config'
 import { WorkerAction } from './types/controller'
 import DatabaseManager from './bot/database-manager'
-import Metrics from './lib/metrics'
 import { Options } from 'discord.js'
 
 
@@ -125,7 +124,6 @@ run().catch((err) => {
 function initComponents(commit: GitCommit, action: WorkerAction) {
   Logger.excessive('<index>#initComponents')
   LanguageManager.init()
-  Metrics.init()
 
   Cordo.init({
     botId: config.bot.clientId,

@@ -4,7 +4,7 @@ import FreeStuffBot from '../freestuffbot'
 import Logger from '../lib/logger'
 import DatabaseManager from '../bot/database-manager'
 import Manager from '../controller/manager'
-import Database, { dbcollection } from './database'
+import Database, { FreeStuffCollection } from './database'
 
 
 export class DbStats {
@@ -120,7 +120,7 @@ export class DbStatGraph {
           obj.$set[`value.${dayId}`] = 0
       }
       return Database
-        .collection(this._collectionname as dbcollection)
+        .collection(this._collectionname as FreeStuffCollection)
         ?.updateOne(this._dbquery, obj)
     } else {
       const parentExists = Object.keys(this._fullraw).length > 0
@@ -131,12 +131,12 @@ export class DbStatGraph {
       obj.value.push(value)
       if (parentExists) {
         return Database
-          .collection(this._collectionname as dbcollection)
+          .collection(this._collectionname as FreeStuffCollection)
           ?.updateOne(this._dbquery, { $set: obj })
       } else {
         this._fullraw.value = obj
         return Database
-          .collection(this._collectionname as dbcollection)
+          .collection(this._collectionname as FreeStuffCollection)
           ?.insertOne(obj)
       }
     }
