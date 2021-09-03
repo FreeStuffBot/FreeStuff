@@ -143,7 +143,7 @@ export default class MessageDistributor {
     }
 
     // check if permissions match
-    const self = data.channelInstance.guild.me
+    const self = await data.channelInstance.guild.members.fetch(Core.user.id)
     const permissions = self.permissionsIn(data.channelInstance)
     if (!permissions.has('SEND_MESSAGES')) {
       Logger.excessive(`Guild ${g._id} return: no SEND_MESSAGES`)

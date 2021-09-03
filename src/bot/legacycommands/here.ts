@@ -42,7 +42,7 @@ export default class HereCommand extends Command {
 
     const permissionCheck = g?.channel
       ? (() => {
-          const perms = guild.me.permissionsIn(guild.channels.resolve(g.channel.toString()))
+          const perms = guild.me?.permissionsIn(guild.channels.resolve(g.channel.toString()))
           if (!perms) return 'nah mate, nahh'
           const out = []
           out.push(perms.has('VIEW_CHANNEL') ? 'Can view channel' : 'CANNOT VIEW CHANNEL')
