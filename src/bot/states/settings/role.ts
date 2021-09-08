@@ -44,7 +44,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
       emoji: { id: Emojis.global.id }
     },
     ...roles.map(r => ({
-      label: r.name.substr(0, 25),
+      label: sanitizeRoleName(r.name, 25),
       value: r.id,
       default: i.guildData.role?.toString() === r.id,
       emoji: { id: recommendedRoleRegex.test(r.name) ? Emojis.mentionGreen.id : Emojis.mention.id }
@@ -80,4 +80,15 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     ],
     footer: PermissionStrings.containsManageServer(i.member.permissions) ? '' : '=settings_permission_disclaimer'
   }
+}
+
+function sanitizeRoleName(name: string, maxlength: number): string {
+  if (name.length < maxlength) return name
+
+  name = name.substr(0, maxlength)
+  if (name.split('').some(n => n.charCodeAt(0) > 0xFF))
+    // eslint-disable-next-line no-control-regex
+    name = name.replace(/((?:[\0-\x08\x0B\f\x0E-\x1F\uFFFD\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))/g, '')
+
+  return name
 }

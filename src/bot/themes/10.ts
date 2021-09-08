@@ -39,7 +39,7 @@ export default class ThemeTen implements ThemeBuilder {
       '```yaml',
       `  Name: ${game.title}`,
       ` Store: ${LanguageManager.get(data, 'platform_' + game.store)}`,
-      ` Price: $${game.org_price.dollar} | €${game.org_price.euro}`,
+      ` Price: $${game.org_price.usd} | €${game.org_price.euro}`,
       ` Until: ${game.until?.toLocaleDateString(LanguageManager.get(data, 'date_format')) ?? 'unknown'}`,
       `  Tags: ${game.tags?.slice(0, 3).join(', ') ?? ''}`,
       `Rating: ${~~(game.rating * 100)}% positive`,

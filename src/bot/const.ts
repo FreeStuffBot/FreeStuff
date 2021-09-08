@@ -175,45 +175,59 @@ export default class Const {
   public static readonly currencies: Currency[] = [
     {
       id: 0,
+      code: 'euro',
       name: '=currency_euro',
       symbol: '€',
       calculated: false
     },
     {
       id: 1,
+      code: 'usd',
       name: '=currency_usd',
       symbol: '$',
       calculated: false
-    // },
-    // {
-    //   id: 2,
-    //   name: '=currency_gbp',
-    //   symbol: '£',
-    //   calculated: true
-    // },
-    // {
-    //   id: 3,
-    //   name: '=currency_brl',
-    //   symbol: 'R$',
-    //   calculated: true
-    // },
-    // {
-    //   id: 4,
-    //   name: '=currency_bgn',
-    //   symbol: 'Лв',
-    //   calculated: true
-    // },
-    // {
-    //   id: 5,
-    //   name: '=currency_pln',
-    //   symbol: 'zł',
-    //   calculated: true
-    // },
-    // {
-    //   id: 6,
-    //   name: '=currency_huf',
-    //   symbol: 'Ft',
-    //   calculated: true
+    },
+    {
+      id: 2,
+      code: 'gbp',
+      name: '=currency_gbp',
+      symbol: '£',
+      calculated: true
+    },
+    {
+      id: 3,
+      code: 'brl',
+      name: '=currency_brl',
+      symbol: 'R$',
+      calculated: true
+    },
+    {
+      id: 4,
+      code: 'bgn',
+      name: '=currency_bgn',
+      symbol: 'Лв',
+      calculated: true
+    },
+    {
+      id: 5,
+      code: 'pln',
+      name: '=currency_pln',
+      symbol: 'zł',
+      calculated: true
+    },
+    {
+      id: 6,
+      code: 'huf',
+      name: '=currency_huf',
+      symbol: 'Ft',
+      calculated: true
+    },
+    {
+      id: 15,
+      code: 'btc',
+      name: '=currency_btc',
+      symbol: '₿',
+      calculated: true
     }
   ]
 
@@ -320,11 +334,23 @@ export default class Const {
     title: '=cmd_test_announcement_header',
     org_price: {
       euro: 19.99,
-      usd: 19.99
+      usd: 19.99,
+      gbp: 19.99,
+      brl: 19.99,
+      bgn: 19.99,
+      pln: 19.99,
+      huf: 19.99,
+      btc: 19.99
     },
     price: {
       euro: 0,
-      usd: 0
+      usd: 0,
+      gbp: 0,
+      brl: 0,
+      bgn: 0,
+      pln: 0,
+      huf: 0,
+      btc: 0
     },
     store: 'steam',
     thumbnail: {

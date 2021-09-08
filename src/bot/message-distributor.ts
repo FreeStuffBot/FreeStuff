@@ -118,7 +118,7 @@ export default class MessageDistributor {
     // forced will ignore filter settings
     if (!force) {
       content = content
-        .filter(game => data.price.from <= game.org_price.euro /* TODO */)
+        .filter(game => data.price.from <= (game.org_price[data.currency.code] || game.org_price.euro))
         .filter(game => data.trashGames || !(game.flags & GameFlag.TRASH))
         .filter(game => data.platformsList.includes(Const.platforms.find(p => p.id === game.store) || Const.platforms[0]))
 

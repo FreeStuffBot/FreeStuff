@@ -21,7 +21,6 @@ import ResendCommand from './legacycommands/resend'
 import BetaCommand from './legacycommands/beta'
 import DatabaseManager from './database-manager'
 
-import { legacyCommandsCounter, receivedMessagesCounter } from '../lib/metrics'
 
 export default class LegacyCommandHandler {
 
@@ -44,34 +43,27 @@ export default class LegacyCommandHandler {
     this.commands.push(new BetaCommand())
 
     bot.on('messageCreate', async (m) => {
-      receivedMessagesCounter.labels(m.author.bot ? 'bot' : 'user').inc()
       if (m.author.bot) return
       if (!m.guild) return
       if (!m.content.replace('!', '').startsWith(bot.user.toString())
         && !m.content.toLowerCase().startsWith('@' + bot.user.username.toLowerCase())) return
       const self = await m.guild.members.fetch(Core.user)
-      if (!self.permissionsIn(m.channelId).has('SEND_MESSAGES')) {
-        legacyCommandsCounter.labels('cant_send_messages').inc()
+      if (!self.permissionsIn(m.channelId).has('SEND_MESSAGES'))
         return
-      }
 
       const args = m.content.split(/ +/)
       args.splice(0, 1)
       DatabaseManager.getGuildData(m.guild.id).then((g) => {
         this.handleCommand(args.splice(0, 1)[0] || '', args, m, g).then((success) => {
-          legacyCommandsCounter.labels(success ? 'success' : 'failed').inc()
           if (!success
             && self.permissionsIn(m.channelId).has('ADD_REACTIONS')
             && self.permissionsIn(m.channelId).has('READ_MESSAGE_HISTORY'))
             m.react('🤔')
-
         }).catch((err) => {
           Logger.excessive(err)
-          legacyCommandsCounter.labels('errored').inc()
         })
       }).catch((err) => {
         Logger.excessive(err)
-        legacyCommandsCounter.labels('guild_data_fetch_failed').inc()
         try {
           /** no translaton in case the above failes due to language manager issues */
           m.reply(`An error occured! Please try again later. If this error persists, try removing the bot from your server and adding it back up. For additional support visit our support server: ${Const.links.supportInvite}`)

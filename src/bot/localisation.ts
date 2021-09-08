@@ -59,7 +59,7 @@ export default class Localisation {
   }
 
   public static renderPriceTag(data: GuildData, game: GameInfo) {
-    const price = game.org_price.euro // TODO
+    const price = game.org_price[data.currency.code] || game.org_price.euro
     return LanguageManager.get(data, 'currency_sign_position') === 'after'
       ? `${price}${data.currency.symbol}`
       : `${data.currency.symbol}${price}`

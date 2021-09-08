@@ -42,6 +42,7 @@ export type Theme = {
 
 export type Currency = {
   id: number
+  code: string
   name: string
   symbol: string
   /** whether this currency is calculated from usd/eur or is actually real data */
