@@ -74,6 +74,7 @@ import RemoteConfig from './controller/remote-config'
 import { WorkerAction } from './types/controller'
 import DatabaseManager from './bot/database-manager'
 import { Options } from 'discord.js'
+import Metrics from './lib/metrics'
 
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -124,6 +125,7 @@ run().catch((err) => {
 function initComponents(commit: GitCommit, action: WorkerAction) {
   Logger.excessive('<index>#initComponents')
   LanguageManager.init()
+  Metrics.init()
 
   Cordo.init({
     botId: config.bot.clientId,

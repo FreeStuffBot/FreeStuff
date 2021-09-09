@@ -7,7 +7,7 @@
     "start": "node --icu-data-dir=node_modules\\full-icu --max-old-space-size=2048 ./build/index.js",
     "build": "tsc",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "dev": "tsc && node --icu-data-dir=node_modules\\full-icu --trace-warnings --inspect ./build/index.js",
+    "dev": "tsc && ./node_modules/node/bin/node --icu-data-dir=node_modules\\full-icu --trace-warnings --inspect ./build/index.js",
     "test": "echo \"No test specified\" && exit 0"
   },
   "author": "FreeStuff Bot Team",
@@ -46,6 +46,7 @@
     "@types/mongodb": "^3.5.26",
     "@types/node": "^12.12.54",
     "@types/redis": "^2.8.26",
+    "node": "16.6.1",
     "eslint": "^7.18.0",
     "eslint-config-maanex": "^1.0.1",
     "eslint-plugin-nuxt": "^2.0.0",

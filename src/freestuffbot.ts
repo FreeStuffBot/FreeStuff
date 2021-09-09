@@ -11,6 +11,7 @@ import { GuildData } from './types/datastructs'
 import Logger from './lib/logger'
 import Manager from './controller/manager'
 import RemoteConfig from './controller/remote-config'
+import Metrics from './lib/metrics'
 import { config, FSAPI } from './index'
 
 
@@ -18,6 +19,10 @@ export default class FreeStuffBot extends Client {
 
   public commandHandler: LegacyCommandHandler
   public announcementManager: AnnouncementManager
+
+  //
+
+  private static readonly interactionTypes = [ '', 'PING', 'APPLICATION_COMMAND', 'MESSAGE_COMPONENT' ]
 
   //
 
@@ -60,10 +65,18 @@ export default class FreeStuffBot extends Client {
       })
     })
 
-    // interactions
     this.on('raw', (ev: any) => {
-      if (ev.t === 'INTERACTION_CREATE')
+      Metrics.counterGatewayEvents.labels({ type: ev.t }).inc()
+
+      // interactions
+      if (ev.t === 'INTERACTION_CREATE') {
         Cordo.emitInteraction(ev.d)
+
+        Metrics.counterInteractions.labels({
+          type: FreeStuffBot.interactionTypes[ev.d.type as number],
+          name: ev.d.data.custom_id || ev.d.data.name
+        }).inc()
+      }
     })
 
     // database sync
