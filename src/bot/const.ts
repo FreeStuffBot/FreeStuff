@@ -223,7 +223,7 @@ export default class Const {
       calculated: true
     },
     {
-      id: 15,
+      id: 7,
       code: 'btc',
       name: '=currency_btc',
       symbol: '₿',
