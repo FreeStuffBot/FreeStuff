@@ -1,7 +1,6 @@
 import Cordo from 'cordo'
 import { Client } from 'discord.js'
 import * as chalk from 'chalk'
-import { CronJob } from 'cron'
 import LanguageManager from './bot/language-manager'
 import LegacyCommandHandler from './bot/legacy-command-handler'
 import DatabaseManager from './bot/database-manager'
@@ -40,7 +39,7 @@ export default class FreeStuffBot extends Client {
     this.on('ready', () => clearTimeout(manualConnectTimer))
 
     AnnouncementManager.updateCurrentFreebies()
-    new CronJob('0 0 0 * * *', () => AnnouncementManager.updateCurrentFreebies()).start()
+    setInterval(() => AnnouncementManager.updateCurrentFreebies(), 60 * 60 * 1000) // 1h
 
     this.registerEventHandlers()
 

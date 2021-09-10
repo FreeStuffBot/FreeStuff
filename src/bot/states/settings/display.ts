@@ -6,6 +6,7 @@ import Tracker from '../../tracker'
 import MessageDistributor from '../../message-distributor'
 import { Core } from '../../..'
 import PermissionStrings from '../../../lib/permission-strings'
+import Experiments from '../../../controller/experiments'
 
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
@@ -20,12 +21,16 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     emoji: { name: t.emoji }
   }))
 
-  const currencyOptions: MessageComponentSelectOption[] = Const.currencies.map(c => ({
-    value: c.id + '',
-    label: `${c.symbol} ${Core.text(i.guildData, c.name)}`,
-    description: c.calculated ? '=price_converted' : '=price_actual',
-    default: i.guildData.currency.id === c.id
-  }))
+  const showCalculatedPriceOptions = Experiments.runExperimentOnServer('show_calculated_price_options', i.guildData)
+
+  const currencyOptions: MessageComponentSelectOption[] = Const.currencies
+    .filter(c => !c.calculated || showCalculatedPriceOptions)
+    .map(c => ({
+      value: c.id + '',
+      label: `${c.symbol} ${Core.text(i.guildData, c.name)}`,
+      description: c.calculated ? '=price_converted' : '=price_actual',
+      default: i.guildData.currency.id === c.id
+    }))
 
   const message = MessageDistributor.buildMessage([ Const.testAnnouncementContent ], i.guildData, true, false)
   const embeds: MessageEmbed[] = []
