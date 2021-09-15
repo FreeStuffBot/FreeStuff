@@ -1,4 +1,4 @@
-import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData } from 'cordo'
+import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag } from 'cordo'
 import Const from '../../const'
 import Emojis from '../../emojis'
 
@@ -14,7 +14,11 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         visible: !!i.guildData,
         custom_id: 'settings_main',
         label: '=page_settings',
-        emoji: { id: Emojis.settings.id }
+        emoji: { id: Emojis.settings.id },
+        flags: [
+          InteractionComponentFlag.ACCESS_MANAGE_SERVER,
+          InteractionComponentFlag.HIDE_IF_NOT_ALLOWED
+        ]
       },
       {
         type: ComponentType.BUTTON,
