@@ -19,6 +19,12 @@ export default class Metrics {
     labelNames: [ 'type', 'name' ]
   })
 
+  public static counterOutgoing = new Counter({
+    name: 'fsb_outgoing',
+    help: 'Keeps track of the total amount of announcement messages sent',
+    labelNames: [ 'status' ]
+  })
+
   public static gaugeGatewayPing = new Gauge({
     name: 'fsb_gateway_ping',
     help: 'Shows the current gateway ping. Updated every 10 seconds.'
@@ -56,6 +62,7 @@ export default class Metrics {
 
     Metrics.register.registerMetric(Metrics.counterGatewayEvents)
     Metrics.register.registerMetric(Metrics.counterInteractions)
+    Metrics.register.registerMetric(Metrics.counterOutgoing)
 
     Metrics.register.registerMetric(Metrics.gaugeGatewayPing)
     Metrics.register.registerMetric(Metrics.gaugeGuildCacheSize)

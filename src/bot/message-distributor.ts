@@ -10,6 +10,7 @@ import { DatabaseGuildData, GuildData } from '../types/datastructs'
 import RemoteConfig from '../controller/remote-config'
 import Logger from '../lib/logger'
 import Experiments from '../controller/experiments'
+import Metrics from '../lib/metrics'
 import DatabaseManager from './database-manager'
 import Const from './const'
 
@@ -112,6 +113,7 @@ export default class MessageDistributor {
 
     if (!data) {
       Logger.excessive(`Guild ${g._id} return: no data`)
+      Metrics.counterOutgoing.labels({ status: 'no_data' }).inc()
       return []
     }
 
@@ -124,6 +126,7 @@ export default class MessageDistributor {
 
       if (!content.length) {
         Logger.excessive(`Guild ${g._id} return: no content left`)
+        Metrics.counterOutgoing.labels({ status: 'no_content' }).inc()
         return []
       }
     }
@@ -131,14 +134,17 @@ export default class MessageDistributor {
     // check if channel is valid
     if (!data.channelInstance) {
       Logger.excessive(`Guild ${g._id} return: invalid channel`)
+      Metrics.counterOutgoing.labels({ status: 'channel_invalid' }).inc()
       return []
     }
     if (!data.channelInstance.send) {
       Logger.excessive(`Guild ${g._id} return: no send func`)
+      Metrics.counterOutgoing.labels({ status: 'no_send_func' }).inc()
       return []
     }
     if (!data.channelInstance.guild.available) {
       Logger.excessive(`Guild ${g._id} return: guild unavailable`)
+      Metrics.counterOutgoing.labels({ status: 'guild_unavailable' }).inc()
       return []
     }
 
@@ -147,14 +153,17 @@ export default class MessageDistributor {
     const permissions = self.permissionsIn(data.channelInstance)
     if (!permissions.has('SEND_MESSAGES')) {
       Logger.excessive(`Guild ${g._id} return: no SEND_MESSAGES`)
+      Metrics.counterOutgoing.labels({ status: 'noper_send' }).inc()
       return []
     }
     if (!permissions.has('VIEW_CHANNEL')) {
       Logger.excessive(`Guild ${g._id} return: no VIEW_CHANNEL`)
+      Metrics.counterOutgoing.labels({ status: 'noper_view' }).inc()
       return []
     }
     if (!permissions.has('EMBED_LINKS') && data.theme.usesEmbeds) {
       Logger.excessive(`Guild ${g._id} return: no EMBED_LINKS`)
+      Metrics.counterOutgoing.labels({ status: 'noper_embed' }).inc()
       return []
     }
 
@@ -176,6 +185,7 @@ export default class MessageDistributor {
     // TODO check if it has the "manage messages" permission. although not required to publish own messages, there needs to be a way to turn MessageDistributor off
 
     Logger.excessive(`Guild ${g._id} noret: success`)
+    Metrics.counterOutgoing.labels({ status: 'success' }).inc()
     return content.map(game => game.id)
   }
 
