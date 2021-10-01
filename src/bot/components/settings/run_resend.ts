@@ -1,4 +1,5 @@
 import { ReplyableComponentInteraction } from 'cordo'
+import { TextChannel } from 'discord.js'
 import PermissionStrings from '../../../lib/permission-strings'
 import Tracker from '../../tracker'
 import MessageDistributor from '../../message-distributor'
@@ -32,7 +33,8 @@ export default async function (i: ReplyableComponentInteraction) {
   Tracker.set(i.guildData, 'ACTION_RESEND_TRIGGERED')
 
   /* Check if permissions are set */
-  const goodToGo = await checkRequirements(i)
+  const channel = await Core.channels.fetch(i.guildData.channel.toString())
+  const goodToGo = await checkRequirements(i, channel as TextChannel)
   if (!goodToGo) return
 
   /* Load and handle list */
@@ -49,13 +51,13 @@ export default async function (i: ReplyableComponentInteraction) {
   /* Send announcement */
   try {
     MessageDistributor.sendToGuild(i.guildData, freebies, false, false)
-    if (i.guildData.channelInstance.id === i.channel_id) {
+    if (channel.id === i.channel_id) {
       i.ack()
     } else {
       i.replyPrivately({
         title: '=cmd_resend_success_1',
         description: '=cmd_resend_success_2',
-        _context: { channel: `<#${i.guildData.channelInstance.id}>` }
+        _context: { channel: `<#${channel.id}>` }
       })
     }
   } catch (ex) {
@@ -72,7 +74,7 @@ export default async function (i: ReplyableComponentInteraction) {
   }, 1000 * 10)
 }
 
-async function checkRequirements(i: ReplyableComponentInteraction) {
+async function checkRequirements(i: ReplyableComponentInteraction, channel: TextChannel) {
   if (!i.guildData) {
     DatabaseManager.addGuild(i.guild_id)
     i.replyPrivately({
@@ -83,7 +85,7 @@ async function checkRequirements(i: ReplyableComponentInteraction) {
     return false
   }
 
-  if (!i.guildData.channelInstance) {
+  if (!channel) {
     i.replyPrivately({
       title: '=cmd_test_nochannel_1',
       description: '=cmd_test_nochannel_2',
@@ -93,13 +95,13 @@ async function checkRequirements(i: ReplyableComponentInteraction) {
   }
 
   const self = await Core.guilds.resolve(i.guild_id).members.fetch(Core.user.id)
-  const permissions = self.permissionsIn(i.guildData.channelInstance)
+  const permissions = self.permissionsIn(channel)
 
   if (!permissions.has('VIEW_CHANNEL')) {
     i.replyPrivately({
       title: '=cmd_test_nosee_1',
       description: '=cmd_test_nosee_2',
-      _context: { channel: i.guildData.channelInstance.toString() }
+      _context: { channel: channel.toString() }
     })
     return false
   }
@@ -108,7 +110,7 @@ async function checkRequirements(i: ReplyableComponentInteraction) {
     i.replyPrivately({
       title: '=cmd_test_nosend_1',
       description: '=cmd_test_nosend_2',
-      _context: { channel: i.guildData.channelInstance.toString() }
+      _context: { channel: channel.toString() }
     })
     return false
   }
@@ -117,7 +119,7 @@ async function checkRequirements(i: ReplyableComponentInteraction) {
     i.replyPrivately({
       title: '=cmd_test_noembeds_1',
       description: '=cmd_test_noembeds_2',
-      _context: { channel: i.guildData.channelInstance.toString() }
+      _context: { channel: channel.toString() }
     })
     return false
   }

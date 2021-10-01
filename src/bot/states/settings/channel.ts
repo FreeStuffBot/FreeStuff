@@ -96,7 +96,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     {
       label: '=settings_channel_list_no_channel_1',
       value: '0',
-      default: !i.guildData.channel || !i.guildData.channelInstance,
+      default: !i.guildData.channel,
       description: '=settings_channel_list_no_channel_2',
       emoji: { id: Emojis.no.id }
     },

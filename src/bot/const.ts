@@ -1,16 +1,5 @@
-import { GameInfo } from 'freestuff'
-import { Currency, PriceClass, Platform, Theme } from '../types/context'
-import ThemeOne from './themes/1'
-import ThemeTwo from './themes/2'
-import ThemeThree from './themes/3'
-import ThemeFour from './themes/4'
-import ThemeFive from './themes/5'
-import ThemeSix from './themes/6'
-import ThemeSeven from './themes/7'
-import ThemeEight from './themes/8'
-import ThemeNine from './themes/9'
-import ThemeTen from './themes/10'
-import Emojis from './emojis'
+import { Currency, GameInfo, Platform, PriceClass, Theme } from '@freestuffbot/typings'
+
 
 export default class Const {
 
@@ -42,7 +31,8 @@ export default class Const {
 
   public static readonly brandIcons = {
     graySquare: 'https://cdn.discordapp.com/attachments/672907465670787083/870424590269181992/icon_trans.png',
-    regularSquare: 'https://cdn.discordapp.com/attachments/672907465670787083/870424608623448114/icon.png'
+    regularSquare: 'https://cdn.discordapp.com/attachments/672907465670787083/870424608623448114/icon.png',
+    regularRound: 'https://media.discordapp.net/attachments/672907465670787083/890319438933524521/icon_round.png'
   }
 
   public static readonly storeIcons = {
@@ -83,7 +73,6 @@ export default class Const {
       name: '=theme_one_name',
       description: '=theme_one_desc',
       emoji: '1️⃣',
-      builder: new ThemeOne(),
       toggleCurrencies: true,
       usesEmbeds: true
     },
@@ -92,7 +81,6 @@ export default class Const {
       name: '=theme_two_name',
       description: '=theme_two_desc',
       emoji: '2️⃣',
-      builder: new ThemeTwo(),
       toggleCurrencies: true,
       usesEmbeds: true
     },
@@ -101,7 +89,6 @@ export default class Const {
       name: '=theme_three_name',
       description: '=theme_three_desc',
       emoji: '3️⃣',
-      builder: new ThemeThree(),
       toggleCurrencies: true,
       usesEmbeds: true
     },
@@ -110,7 +97,6 @@ export default class Const {
       name: '=theme_four_name',
       description: '=theme_four_desc',
       emoji: '4️⃣',
-      builder: new ThemeFour(),
       toggleCurrencies: true,
       usesEmbeds: true
     },
@@ -119,7 +105,6 @@ export default class Const {
       name: '=theme_five_name',
       description: '=theme_five_desc',
       emoji: '5️⃣',
-      builder: new ThemeFive(),
       toggleCurrencies: false,
       usesEmbeds: true
     },
@@ -128,7 +113,6 @@ export default class Const {
       name: '=theme_six_name',
       description: '=theme_six_desc',
       emoji: '6️⃣',
-      builder: new ThemeSix(),
       toggleCurrencies: false,
       usesEmbeds: true
     },
@@ -137,7 +121,6 @@ export default class Const {
       name: '=theme_seven_name',
       description: '=theme_seven_desc',
       emoji: '7️⃣',
-      builder: new ThemeSeven(),
       toggleCurrencies: false,
       usesEmbeds: false
     },
@@ -146,7 +129,6 @@ export default class Const {
       name: '=theme_eight_name',
       description: '=theme_eight_desc',
       emoji: '8️⃣',
-      builder: new ThemeEight(),
       toggleCurrencies: false,
       usesEmbeds: false
     },
@@ -155,7 +137,6 @@ export default class Const {
       name: '=theme_nine_name',
       description: '=theme_nine_desc',
       emoji: '9️⃣',
-      builder: new ThemeNine(),
       toggleCurrencies: false,
       usesEmbeds: false
     },
@@ -164,7 +145,6 @@ export default class Const {
       name: '=theme_ten_name',
       description: '=theme_ten_desc',
       emoji: '🔟',
-      builder: new ThemeTen(),
       toggleCurrencies: false,
       usesEmbeds: false
     }
@@ -264,7 +244,7 @@ export default class Const {
       bit: 1 << 0,
       name: '=platform_other',
       description: 'Less popular platforms or publisher websites',
-      emoji: Emojis.store.other,
+      moderated: true,
       default: false
     },
     {
@@ -272,7 +252,7 @@ export default class Const {
       bit: 1 << 1,
       name: '=platform_steam',
       description: 'https://store.steampowered.com/',
-      emoji: Emojis.store.steam,
+      moderated: true,
       default: true
     },
     {
@@ -280,7 +260,7 @@ export default class Const {
       bit: 1 << 2,
       name: '=platform_epic',
       description: 'https://www.epicgames.com/store/',
-      emoji: Emojis.store.epic,
+      moderated: true,
       default: true
     },
     {
@@ -288,7 +268,7 @@ export default class Const {
       bit: 1 << 3,
       name: '=platform_humble',
       description: 'https://www.humblebundle.com/',
-      emoji: Emojis.store.humble,
+      moderated: true,
       default: true
     },
     {
@@ -296,7 +276,7 @@ export default class Const {
       bit: 1 << 4,
       name: '=platform_gog',
       description: 'https://www.gog.com/',
-      emoji: Emojis.store.gog,
+      moderated: true,
       default: true
     },
     {
@@ -304,7 +284,7 @@ export default class Const {
       bit: 1 << 5,
       name: '=platform_origin',
       description: 'https://www.origin.com/store',
-      emoji: Emojis.store.origin,
+      moderated: true,
       default: true
     },
     {
@@ -312,7 +292,7 @@ export default class Const {
       bit: 1 << 6,
       name: '=platform_uplay',
       description: 'https://store.ubi.com/',
-      emoji: Emojis.store.uplay,
+      moderated: true,
       default: true
     },
     {
@@ -320,7 +300,7 @@ export default class Const {
       bit: 1 << 7,
       name: '=platform_itch',
       description: 'https://itch.io/',
-      emoji: Emojis.store.itch,
+      moderated: false,
       default: true
     }
   ]

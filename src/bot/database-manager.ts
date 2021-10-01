@@ -1,14 +1,13 @@
 /* eslint-disable no-dupe-class-members */
-import { Guild, Role, TextChannel } from 'discord.js'
-import { Long } from 'mongodb'
+import { Long } from 'bson'
 import { CronJob } from 'cron'
+import { Currency, DatabaseGuildData, GuildData, Platform, PriceClass, Theme } from '@freestuffbot/typings'
 import { Core } from '../index'
 import Database from '../database/database'
-import { DatabaseGuildData, GuildData } from '../types/datastructs'
-import { Currency, GuildSetting, Platform, PriceClass, Theme } from '../types/context'
 import { Util } from '../lib/util'
 import Logger from '../lib/logger'
 import Manager from '../controller/manager'
+import { GuildSetting } from '../types/context'
 import Localisation from './localisation'
 import LanguageManager from './language-manager'
 import Const from './const'
@@ -61,7 +60,7 @@ export default class DatabaseManager {
               .then(() => {})
               .catch((_err) => {
                 if (removalQueue.find(g => g._id.equals(guild._id)))
-                  DatabaseManager.removeGuild(guild._id)
+                  DatabaseManager.removeGuild(guild._id as any)
               })
           }
         }, 1000 * 60 * 30)
@@ -130,8 +129,9 @@ export default class DatabaseManager {
     const filter = Localisation.getDefaultFilter()
 
     const data: DatabaseGuildData = {
-      _id: Long.fromString(guildId),
-      sharder: Long.fromString(guildId).shiftRight(22),
+      _id: Long.fromString(guildId) as any,
+      sharder: Long.fromString(guildId).shiftRight(22) as any,
+      webhook: null,
       channel: null,
       role: null,
       settings,
@@ -174,7 +174,7 @@ export default class DatabaseManager {
    * Get the guilds data from the database
    * @param guild guild object
    */
-  public static async getGuildData(guild: string, fetchInstances = true): Promise<GuildData> {
+  public static async getGuildData(guild: string): Promise<GuildData> {
     if (!guild) return undefined
 
     if (DatabaseManager.cacheCurrentBucket) {
@@ -193,7 +193,7 @@ export default class DatabaseManager {
 
     const obj = await DatabaseManager.getRawGuildData(guild)
     if (!obj) return undefined
-    const data = await DatabaseManager.parseGuildData(obj, fetchInstances, false)
+    const data = await DatabaseManager.parseGuildData(obj, false)
 
     if (DatabaseManager.cacheCurrentBucket)
       DatabaseManager.cacheBucketT.set(guild, data)
@@ -206,7 +206,7 @@ export default class DatabaseManager {
    * Parse a DatabaseGuildData object to a GuildData object
    * @param dbObject raw input
    */
-  public static async parseGuildData(dbObject: DatabaseGuildData, fetchInstances = true, checkCache = true): Promise<GuildData> {
+  public static parseGuildData(dbObject: DatabaseGuildData, checkCache = true): GuildData {
     if (!dbObject) return undefined
 
     if (checkCache) {
@@ -216,25 +216,8 @@ export default class DatabaseManager {
         return DatabaseManager.cacheBucketF.get(dbObject._id.toString())
     }
 
-    const responsible = (Core.options.shardCount === 1) || Util.belongsToShard(dbObject._id)
-    let guildInstance: Guild = null
-    try {
-      if (fetchInstances)
-        guildInstance = await Core.guilds.fetch(dbObject._id.toString())
-    } catch (err) {
-      return undefined
-    }
-
     return {
       ...dbObject,
-      channelInstance: guildInstance && dbObject.channel && responsible
-        ? (guildInstance.channels.resolve((dbObject.channel as Long).toString()) as TextChannel)
-        : undefined,
-      roleInstance: guildInstance && dbObject.role && responsible
-        ? dbObject.role.toString() === '1'
-          ? guildInstance.roles.everyone
-          : guildInstance.roles.resolve((dbObject.role as Long).toString())
-        : undefined,
       currency: Const.currencies[(dbObject.settings >> 5 & 0b1111)] || Const.currencies[0],
       price: Const.priceClasses[(dbObject.filter >> 2 & 0b11)] || Const.priceClasses[2],
       react: (dbObject.settings & (1 << 9)) !== 0,
@@ -263,14 +246,14 @@ export default class DatabaseManager {
    * @param setting the setting to change
    * @param value it's new value
    */
-  public static async changeSetting(data: GuildData, setting: 'channel' | 'role', value: string | null)
-  public static async changeSetting(data: GuildData, setting: 'react' | 'trash' | 'beta', value: boolean)
-  public static async changeSetting(data: GuildData, setting: 'language' | 'tracker', value: number)
-  public static async changeSetting(data: GuildData, setting: 'price', value: PriceClass)
-  public static async changeSetting(data: GuildData, setting: 'theme', value: number | Theme)
-  public static async changeSetting(data: GuildData, setting: 'currency', value: number | Currency)
-  public static async changeSetting(data: GuildData, setting: 'platforms', value: Platform[] | number)
-  public static async changeSetting(data: GuildData, setting: GuildSetting, value: any) {
+  public static changeSetting(data: GuildData, setting: 'channel' | 'role' | 'webhook', value: string | null)
+  public static changeSetting(data: GuildData, setting: 'react' | 'trash' | 'beta', value: boolean)
+  public static changeSetting(data: GuildData, setting: 'language' | 'tracker', value: number)
+  public static changeSetting(data: GuildData, setting: 'price', value: PriceClass)
+  public static changeSetting(data: GuildData, setting: 'theme', value: number | Theme)
+  public static changeSetting(data: GuildData, setting: 'currency', value: number | Currency)
+  public static changeSetting(data: GuildData, setting: 'platforms', value: Platform[] | number)
+  public static changeSetting(data: GuildData, setting: GuildSetting, value: any) {
     const out = {} as any
     let bits = 0
 
@@ -278,12 +261,10 @@ export default class DatabaseManager {
       case 'channel':
         out.channel = value ? Long.fromString(value as string) : null
         data.channel = out.channel
-        data.channelInstance = (value ? await Core.channels.fetch(value) : null) as TextChannel
         break
       case 'role':
         out.role = value ? Long.fromString(value as string) : null
         data.role = out.role
-        data.roleInstance = (value ? await (await Core.guilds.fetch(data._id.toString())).roles.fetch(value) : null) as Role
         break
       case 'price':
         bits = (value as PriceClass).id
@@ -346,6 +327,10 @@ export default class DatabaseManager {
       case 'tracker':
         out.tracker = value
         data.tracker = value
+        break
+      case 'webhook':
+        out.webhook = value
+        data.webhook = value
         break
     }
 

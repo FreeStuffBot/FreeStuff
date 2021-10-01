@@ -1,7 +1,7 @@
+import { GuildData } from '@freestuffbot/typings'
 import Logger from '../lib/logger'
 import { config, Core } from '../index'
 import { Experiment } from '../types/controller'
-import { GuildData } from '../types/datastructs'
 
 
 export default class Experiments {

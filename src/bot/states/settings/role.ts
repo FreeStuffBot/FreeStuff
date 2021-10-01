@@ -1,4 +1,4 @@
-import { Permissions } from 'discord.js'
+import { Permissions, TextChannel } from 'discord.js'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
 import Emojis from '../../emojis'
 import { Core } from '../../../index'
@@ -13,8 +13,9 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_ROLE')
 
   const member = await Core.guilds.resolve(i.guild_id).members.fetch(Core.user)
-  const permissions: Permissions = i.guildData.channelInstance
-    ? member.permissionsIn(i.guildData.channelInstance)
+  const channel = await Core.channels.fetch(i.guildData.channel.toString())
+  const permissions: Permissions = channel
+    ? member.permissionsIn(channel as TextChannel)
     : member.permissions
 
   const everyone = permissions.has('MENTION_EVERYONE')

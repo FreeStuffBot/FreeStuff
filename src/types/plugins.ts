@@ -1,4 +1,4 @@
-import { GuildData as GuildDataType } from './datastructs'
+import { GuildData as GuildDataType } from '@freestuffbot/typings'
 
 
 declare module 'cordo' {

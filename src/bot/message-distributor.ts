@@ -1,12 +1,12 @@
-import { MessageOptions } from 'discord.js'
+import { MessageOptions, TextChannel, Webhook } from 'discord.js'
 import { Long } from 'mongodb'
-import { GameFlag, GameInfo } from 'freestuff'
+import axios from 'axios'
+import { DatabaseGuildData, GameFlag, GameInfo, GuildData } from '@freestuffbot/typings'
 import { Core, FSAPI } from '../index'
 import Database from '../database/database'
 import { DbStats } from '../database/db-stats'
 import SentryManager from '../thirdparty/sentry/sentry'
 import Redis from '../database/redis'
-import { DatabaseGuildData, GuildData } from '../types/datastructs'
 import RemoteConfig from '../controller/remote-config'
 import Logger from '../lib/logger'
 import Experiments from '../controller/experiments'
@@ -131,26 +131,28 @@ export default class MessageDistributor {
       }
     }
 
+    const channel = await Core.channels.fetch(data.channel.toString()) as TextChannel
+
     // check if channel is valid
-    if (!data.channelInstance) {
+    if (!channel) {
       Logger.excessive(`Guild ${g._id} return: invalid channel`)
       Metrics.counterOutgoing.labels({ status: 'channel_invalid' }).inc()
       return []
     }
-    if (!data.channelInstance.send) {
+    if (!channel.send) {
       Logger.excessive(`Guild ${g._id} return: no send func`)
       Metrics.counterOutgoing.labels({ status: 'no_send_func' }).inc()
       return []
     }
-    if (!data.channelInstance.guild.available) {
+    if (!channel.guild.available) {
       Logger.excessive(`Guild ${g._id} return: guild unavailable`)
       Metrics.counterOutgoing.labels({ status: 'guild_unavailable' }).inc()
       return []
     }
 
     // check if permissions match
-    const self = await data.channelInstance.guild.members.fetch(Core.user.id)
-    const permissions = self.permissionsIn(data.channelInstance)
+    const self = await channel.guild.members.fetch(Core.user.id)
+    const permissions = self.permissionsIn(channel)
     if (!permissions.has('SEND_MESSAGES')) {
       Logger.excessive(`Guild ${g._id} return: no SEND_MESSAGES`)
       Metrics.counterOutgoing.labels({ status: 'noper_send' }).inc()
@@ -174,10 +176,35 @@ export default class MessageDistributor {
     const messagePayload = MessageDistributor.buildMessage(content, data, test, donationNotice)
     if (!messagePayload.content) delete messagePayload.content
 
-    // send the messages
-    const message = await data.channelInstance.send(messagePayload)
-    if (message && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
-      await message.react('🆓')
+
+    if (data.webhook) {
+      try {
+        const { status } = await axios.post(
+          `https://discordapp.com/api/webhooks/${data.webhook}`,
+          { ...messagePayload, username: Core.text(data, '=announcement_header') },
+          { validateStatus: null }
+        )
+
+        if (status < 200 || status >= 300)
+          console.log('webhook failed')
+      } catch (ex) {
+        Logger.error(ex)
+      }
+    } else {
+      const hook = await this.createWebhook(channel)
+      if (hook) {
+        DatabaseManager.changeSetting(data, 'webhook', `${hook.id}/${hook.token}`)
+        await hook.send({ ...messagePayload, username: Core.text(data, '=announcement_header') })
+      } else {
+        messagePayload.embeds?.push({ description: 'Please give me the webhook permission thanks' })
+
+        // send the messages
+        const message = await channel.send(messagePayload)
+        if (message && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
+          await message.react('🆓')
+      }
+    }
+
 
     // if (!test && (data.channelInstance as Channel).type === 'news')
     //   messages.forEach(m => m.crosspost())
@@ -196,6 +223,29 @@ export default class MessageDistributor {
   public static buildMessage(content: GameInfo[], data: GuildData, test: boolean, donationNotice: boolean): MessageOptions {
     const theme = data.theme.builder
     return theme.build(content, data, { test, donationNotice })
+  }
+
+  // #####################
+
+  /**
+   * Move elsewhere
+   */
+  public static createWebhook(channel: TextChannel): Promise<Webhook | null> {
+    const member = channel.guild.members.resolve(Core.user.id)
+    if (!channel.permissionsFor(member).has('MANAGE_WEBHOOKS'))
+      return null
+
+    try {
+      const hook = channel.createWebhook('FreeStuff Webhook', {
+        avatar: Const.brandIcons.regularRound,
+        reason: 'FreeStuff is using Webhooks to distribute announcements on a large scale.'
+      })
+
+      return hook ?? null
+    } catch (ex) {
+      Logger.error(ex)
+      return null
+    }
   }
 
 }

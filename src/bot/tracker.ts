@@ -1,4 +1,4 @@
-import { GuildData } from '../types/datastructs'
+import { GuildData } from '@freestuffbot/typings'
 import DatabaseManager from './database-manager'
 
 

@@ -1,48 +1,10 @@
-import { GameInfo } from 'freestuff'
+import { GameInfo, GuildData } from '@freestuffbot/typings'
 import { Util } from '../lib/util'
-import { GuildData } from '../types/datastructs'
 import Const from './const'
 import LanguageManager from './language-manager'
 
 
 export default class Localisation {
-
-  private static readonly EUROPEAN_REGIONS = [
-    'eu-west',
-    'eu-east',
-    'eu-central',
-    'eu-north',
-    'eu-south',
-    'frankfurt',
-    'london',
-    'russia',
-    'europe',
-    'eu',
-    'amsterdam',
-    'dubai'
-  ]
-
-  private static readonly AMERICAN_REGIONS = [
-    'us-west',
-    'us-east',
-    'us-north',
-    'us-south',
-    'us-central',
-    'us',
-    'america',
-    'eastcoast',
-    'westcoast',
-    'north-america',
-    'na',
-    'south-america',
-    'sa'
-  ]
-
-  private static readonly EXTRA_LANGUAGE_HINTS = {
-    brazil: 'pt-BR',
-    hongkong: 'zh-CN',
-    japan: 'zh-CN'
-  }
 
   public static getDefaultSettings(): number {
     const defaultLang = 'en-GB'

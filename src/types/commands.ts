@@ -1,5 +1,5 @@
+import { GuildData } from '@freestuffbot/typings'
 import { Message } from 'discord.js'
-import { GuildData } from './datastructs'
 
 
 /*

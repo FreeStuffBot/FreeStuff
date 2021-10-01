@@ -15,7 +15,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     label: p.name,
     description: p.description,
     default: (i.guildData?.platformsRaw & p.bit) !== 0,
-    emoji: p.emoji.toObject()
+    emoji: (Emojis.store[p.id] || Emojis.store.other).toObject()
   }))
 
   const priceOptions: MessageComponentSelectOption[] = Const.priceClasses.map(c => ({

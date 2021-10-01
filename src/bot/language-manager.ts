@@ -1,4 +1,4 @@
-import { GuildData } from '../types/datastructs'
+import { GuildData } from '@freestuffbot/typings'
 import Database from '../database/database'
 import { Core } from '../index'
 
