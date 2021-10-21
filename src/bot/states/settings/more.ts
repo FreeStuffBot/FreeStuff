@@ -1,5 +1,6 @@
 import { hostname } from 'os'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag } from 'cordo'
+import { Localisation } from '@freestuffbot/common'
 import { Core, VERSION } from '../../..'
 import Manager from '../../../controller/manager'
 import Emojis from '../../emojis'
@@ -14,7 +15,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
 
   return {
     title: '=settings_more_ui_1',
-    description: Core.text(i.guildData, '=settings_more_ui_2') + debugInfo,
+    description: Localisation.text(i.guildData, '=settings_more_ui_2') + debugInfo,
     components: [
       {
         type: ComponentType.BUTTON,

@@ -1,8 +1,7 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag } from 'cordo'
+import { Localisation } from '@freestuffbot/common'
 import Emojis from '../../emojis'
-import LanguageManager from '../../language-manager'
 import Tracker from '../../tracker'
-import { Core } from '../../..'
 import PermissionStrings from '../../../lib/permission-strings'
 
 
@@ -17,9 +16,9 @@ function buildDescriptionForLanguage(i: GenericInteraction, lang: { id: string, 
       return '=settings_language_list_desc_english_eu'
     }
   }
-  const out = Core.text(i.guildData, '=settings_language_list_desc_generic', {
+  const out = Localisation.text(i.guildData, '=settings_language_list_desc_generic', {
     language: name,
-    translators: LanguageManager.getRaw(lang.id, 'translators', false)
+    translators: Localisation.getRaw(lang.id, 'translators', false)
   })
   return (out.length > 50)
     ? out.substr(0, 47) + '...'
@@ -31,7 +30,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   const firstTimeOnPage = !Tracker.isTracked(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
 
-  const options = LanguageManager
+  const options = Localisation
     .getAllLanguages()
     .sort((a, b) => (b.ranking - a.ranking))
     .slice(0, 25)

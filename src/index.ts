@@ -56,6 +56,7 @@ if (process.argv) {
  */
 
 
+import { Localisation } from '@freestuffbot/common'
 import * as chalk from 'chalk'
 import { FreeStuffApi } from 'freestuff'
 import FreeStuffBot from './freestuffbot'
@@ -65,9 +66,7 @@ import MongoAdapter from './database/mongo-adapter'
 import Database from './database/database'
 import Redis from './database/redis'
 import Logger from './lib/logger'
-import { Util } from './lib/util'
 import Manager from './controller/manager'
-import LanguageManager from './bot/language-manager'
 import Server from './controller/server'
 import Cordo from 'cordo'
 import RemoteConfig from './controller/remote-config'
@@ -91,7 +90,6 @@ async function run() {
   SentryManager.init()
   const commit = await logVersionDetails()
   VERSION = commit.shortHash
-  Util.init()
 
   await MongoAdapter.connect(config.mongoDB.url)
 
@@ -124,8 +122,10 @@ run().catch((err) => {
 
 function initComponents(commit: GitCommit, action: WorkerAction) {
   Logger.excessive('<index>#initComponents')
-  LanguageManager.init()
   Metrics.init()
+
+  reloadLanguages()
+  setInterval(reloadLanguages, 1000 * 60 * 60 * 24)
 
   Cordo.init({
     botId: config.bot.clientId,
@@ -143,7 +143,7 @@ function initComponents(commit: GitCommit, action: WorkerAction) {
       interaction_failed: 'We are very sorry but an error occured while processing your command. Please try again.'
     }
   })
-  Cordo.addMiddlewareInteractionCallback((data, guild) => LanguageManager.translateObject(data, guild, data._context, 14))
+  Cordo.addMiddlewareInteractionCallback((data, guild) => Localisation.translateObject(data, guild, data._context, 14))
   Cordo.setMiddlewareGuildData((guildid: string) => DatabaseManager.getGuildData(guildid))
 
   FSAPI = new FreeStuffApi({
@@ -154,6 +154,16 @@ function initComponents(commit: GitCommit, action: WorkerAction) {
 
   if (config.server?.enable)
     Server.start(config.server)
+}
+
+// TODO place this method somewhere propper
+export function reloadLanguages() {
+  Database
+    .collection('language')
+    ?.find({ _enabled: true })
+    .sort({ _id: 1 })
+    .toArray()
+    .then(data => Localisation.load(data))
 }
 
 function mountBot(shardIds: number[], shardCount: number) {

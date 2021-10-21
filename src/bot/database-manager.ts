@@ -2,15 +2,13 @@
 import { Long } from 'bson'
 import { CronJob } from 'cron'
 import { Currency, DatabaseGuildData, GuildData, Platform, PriceClass, Theme } from '@freestuffbot/typings'
+import { Const, Localisation } from '@freestuffbot/common'
 import { Core } from '../index'
 import Database from '../database/database'
 import { Util } from '../lib/util'
 import Logger from '../lib/logger'
 import Manager from '../controller/manager'
 import { GuildSetting } from '../types/context'
-import Localisation from './localisation'
-import LanguageManager from './language-manager'
-import Const from './const'
 
 
 export default class DatabaseManager {
@@ -125,17 +123,14 @@ export default class DatabaseManager {
       ?.findOne({ _id: Long.fromString(guildId) })
     if (exists) return
 
-    const settings = Localisation.getDefaultSettings()
-    const filter = Localisation.getDefaultFilter()
-
     const data: DatabaseGuildData = {
       _id: Long.fromString(guildId) as any,
       sharder: Long.fromString(guildId).shiftRight(22) as any,
       webhook: null,
       channel: null,
       role: null,
-      settings,
-      filter,
+      settings: Const.defaultSettingsBits,
+      filter: Const.defaultFilterBits,
       tracker: 0
     }
     Database
@@ -223,7 +218,7 @@ export default class DatabaseManager {
       react: (dbObject.settings & (1 << 9)) !== 0,
       trashGames: (dbObject.filter & (1 << 0)) !== 0,
       theme: Const.themes[dbObject.settings & 0b11111] || Const.themes[0],
-      language: LanguageManager.languageById((dbObject.settings >> 10 & 0b111111)),
+      language: Localisation.languageById((dbObject.settings >> 10 & 0b111111)),
       platformsRaw: (dbObject.filter >> 4 & 0b11111111),
       platformsList: DatabaseManager.platformsRawToList(dbObject.filter >> 4 & 0b11111111),
       beta: (dbObject.settings & (1 << 30)) !== 0
@@ -304,7 +299,7 @@ export default class DatabaseManager {
         bits = (value as number) & 0b111111
         data.settings = Util.modifyBits(data.settings, 10, 6, bits)
         out.settings = data.settings
-        data.language = LanguageManager.languageById(value)
+        data.language = Localisation.languageById(value)
         break
       case 'platforms':
         if (typeof value === 'number') {

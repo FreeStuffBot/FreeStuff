@@ -5,8 +5,6 @@ import Logger from '../lib/logger'
 import Manager from '../controller/manager'
 
 
-export type dbcollection = 'guilds' | 'stats-usage' | 'games'
-
 export default class Redis {
 
   public static client: redis.RedisClient

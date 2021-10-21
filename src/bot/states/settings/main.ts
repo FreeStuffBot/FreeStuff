@@ -1,8 +1,7 @@
+import { Const, Localisation } from '@freestuffbot/common'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, InteractionType } from 'cordo'
-import { Core } from '../../../index'
 import Emojis from '../../emojis'
 import Tracker from '../../tracker'
-import Const from '../../const'
 
 
 const recentlyInSetup: string[] = []
@@ -67,7 +66,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_language',
         label: '=lang_name',
-        emoji: { name: Emojis.fromFlagName(Core.text(i.guildData, '=lang_flag_emoji')).string }
+        emoji: { name: Emojis.fromFlagName(Localisation.text(i.guildData, '=lang_flag_emoji')).string }
       },
       {
         type: ComponentType.LINE_BREAK

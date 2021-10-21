@@ -1,5 +1,5 @@
+import { Const } from '@freestuffbot/common'
 import { ReplyableCommandInteraction } from 'cordo'
-import Const from '../const'
 
 
 export default function (i: ReplyableCommandInteraction) {

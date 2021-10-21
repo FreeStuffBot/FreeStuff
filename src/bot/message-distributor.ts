@@ -1,7 +1,9 @@
-import { MessageOptions, TextChannel, Webhook } from 'discord.js'
+import { TextChannel, Webhook } from 'discord.js'
 import { Long } from 'mongodb'
 import axios from 'axios'
 import { DatabaseGuildData, GameFlag, GameInfo, GuildData } from '@freestuffbot/typings'
+import { Const, Localisation } from '@freestuffbot/common'
+import { InteractionApplicationCommandCallbackData } from 'cordo'
 import { Core, FSAPI } from '../index'
 import Database from '../database/database'
 import { DbStats } from '../database/db-stats'
@@ -12,7 +14,6 @@ import Logger from '../lib/logger'
 import Experiments from '../controller/experiments'
 import Metrics from '../lib/metrics'
 import DatabaseManager from './database-manager'
-import Const from './const'
 
 
 export default class MessageDistributor {
@@ -173,6 +174,7 @@ export default class MessageDistributor {
     const donationNotice = Experiments.runExperimentOnServer('show_donation_notice', data)
 
     // build message objects
+    // TODO BIG TODO, types dont match with messagePayload
     const messagePayload = MessageDistributor.buildMessage(content, data, test, donationNotice)
     if (!messagePayload.content) delete messagePayload.content
 
@@ -181,7 +183,7 @@ export default class MessageDistributor {
       try {
         const { status } = await axios.post(
           `https://discordapp.com/api/webhooks/${data.webhook}`,
-          { ...messagePayload, username: Core.text(data, '=announcement_header') },
+          { ...messagePayload, username: Localisation.text(data, '=announcement_header') },
           { validateStatus: null }
         )
 
@@ -194,12 +196,12 @@ export default class MessageDistributor {
       const hook = await this.createWebhook(channel)
       if (hook) {
         DatabaseManager.changeSetting(data, 'webhook', `${hook.id}/${hook.token}`)
-        await hook.send({ ...messagePayload, username: Core.text(data, '=announcement_header') })
+        await hook.send({ ...messagePayload as any, username: Localisation.text(data, '=announcement_header') })
       } else {
         messagePayload.embeds?.push({ description: 'Please give me the webhook permission thanks' })
 
         // send the messages
-        const message = await channel.send(messagePayload)
+        const message = await channel.send(messagePayload as any)
         if (message && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
           await message.react('🆓')
       }
@@ -220,9 +222,9 @@ export default class MessageDistributor {
    * Finds the used theme and lets that theme build the message
    * @returns Tupel with message.content and message.options?
    */
-  public static buildMessage(content: GameInfo[], data: GuildData, test: boolean, donationNotice: boolean): MessageOptions {
+  public static buildMessage(content: GameInfo[], data: GuildData, test: boolean, donationNotice: boolean): InteractionApplicationCommandCallbackData {
     const theme = data.theme.builder
-    return theme.build(content, data, { test, donationNotice })
+    return theme.build(content, data, { test, donationNotice }) as InteractionApplicationCommandCallbackData
   }
 
   // #####################

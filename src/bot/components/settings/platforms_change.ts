@@ -1,6 +1,6 @@
 import { ReplyableComponentInteraction } from 'cordo'
+import { Const } from '@freestuffbot/common'
 import DatabaseManager from '../../database-manager'
-import Const from '../../const'
 import PermissionStrings from '../../../lib/permission-strings'
 
 

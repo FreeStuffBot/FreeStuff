@@ -1,12 +1,10 @@
 import Cordo from 'cordo'
 import { Client } from 'discord.js'
 import * as chalk from 'chalk'
-import LanguageManager from './bot/language-manager'
 import LegacyCommandHandler from './bot/legacy-command-handler'
 import DatabaseManager from './bot/database-manager'
 import AnnouncementManager from './bot/announcement-manager'
 import { DbStats } from './database/db-stats'
-import { GuildData } from './types/datastructs'
 import Logger from './lib/logger'
 import Manager from './controller/manager'
 import RemoteConfig from './controller/remote-config'
@@ -101,19 +99,6 @@ export default class FreeStuffBot extends Client {
       this.user
     )
     this.user?.setActivity(RemoteConfig.botPlaytext, { type: 'WATCHING' })
-  }
-
-  //
-
-  public text(d: GuildData, text: string, replace?: { [varname: string]: string }): string {
-    let out = (text.startsWith('=')
-      ? LanguageManager.getRaw(d?.language, text.substr(1), true)
-      : text)
-    if (replace) {
-      for (const key in replace)
-        out = out.split(`{${key}}`).join(replace[key])
-    }
-    return out
   }
 
 }

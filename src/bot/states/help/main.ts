@@ -1,5 +1,5 @@
+import { Const } from '@freestuffbot/common'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag } from 'cordo'
-import Const from '../../const'
 import Emojis from '../../emojis'
 
 

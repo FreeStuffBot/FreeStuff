@@ -1,6 +1,5 @@
+import { Const, Localisation } from '@freestuffbot/common'
 import { ButtonStyle, ComponentType, InteractionComponentFlag, ReplyableComponentInteraction } from 'cordo'
-import { Core } from '../../../../index'
-import Const from '../../../const'
 import guildDataToViewString from '../../../../lib/guilddata-visualizer'
 import Tracker from '../../../tracker'
 
@@ -8,7 +7,7 @@ import Tracker from '../../../tracker'
 export default function (i: ReplyableComponentInteraction) {
   Tracker.set(i.guildData, 'ACTION_DATA_REQUESTED')
 
-  const errormsg = Core.text(i.guildData, '=settings_guilddata_display_error', { invite: Const.links.supportInvite })
+  const errormsg = Localisation.text(i.guildData, '=settings_guilddata_display_error', { invite: Const.links.supportInvite })
   const guilddata = guildDataToViewString(i.guildData, 2000, errormsg)
   const raw = {
     _id: i.guildData._id,

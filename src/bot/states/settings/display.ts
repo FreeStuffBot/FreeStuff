@@ -1,10 +1,9 @@
 import { MessageEmbed } from 'discord.js'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
+import { Const, Localisation } from '@freestuffbot/common'
 import Emojis from '../../emojis'
-import Const from '../../const'
 import Tracker from '../../tracker'
 import MessageDistributor from '../../message-distributor'
-import { Core } from '../../..'
 import PermissionStrings from '../../../lib/permission-strings'
 import Experiments from '../../../controller/experiments'
 
@@ -27,7 +26,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     .filter(c => !c.calculated || showCalculatedPriceOptions)
     .map(c => ({
       value: c.id + '',
-      label: `${c.symbol} ${Core.text(i.guildData, c.name)}`,
+      label: `${c.symbol} ${Localisation.text(i.guildData, c.name)}`,
       description: c.calculated ? '=price_converted' : '=price_actual',
       default: i.guildData.currency.id === c.id
     }))
@@ -36,7 +35,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   const embeds: MessageEmbed[] = []
   if (message.embeds?.length) {
     if (!PermissionStrings.containsManageServer(i.member.permissions) && message.embeds[0].footer?.text)
-      message.embeds[0].footer.text += ' • ' + Core.text(i.guildData, '=settings_permission_disclaimer')
+      message.embeds[0].footer.text += ' • ' + Localisation.text(i.guildData, '=settings_permission_disclaimer')
     embeds.push(...message.embeds as MessageEmbed[])
   }
 
