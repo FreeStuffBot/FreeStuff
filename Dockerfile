@@ -10,6 +10,11 @@ WORKDIR /app
 # Copy the package meta files
 COPY package*.json ./
 
+# Setup stuff to be able to use private packages
+ARG NODE_AUTH_TOKEN
+ENV NODE_AUTH_TOKEN=$NODE_AUTH_TOKEN
+COPY gh.npmrc .npmrc
+
 # Install production dependencies
 RUN npm install --production
 
