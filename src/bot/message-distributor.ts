@@ -2,7 +2,7 @@ import { TextChannel, Webhook } from 'discord.js'
 import { Long } from 'mongodb'
 import axios from 'axios'
 import { DatabaseGuildData, GameFlag, GameInfo, GuildData } from '@freestuffbot/typings'
-import { Const, Localisation } from '@freestuffbot/common'
+import { Const, Localisation, Themes } from '@freestuffbot/common'
 import { InteractionApplicationCommandCallbackData } from 'cordo'
 import { Core, FSAPI } from '../index'
 import Database from '../database/database'
@@ -223,8 +223,7 @@ export default class MessageDistributor {
    * @returns Tupel with message.content and message.options?
    */
   public static buildMessage(content: GameInfo[], data: GuildData, test: boolean, donationNotice: boolean): InteractionApplicationCommandCallbackData {
-    const theme = data.theme.builder
-    return theme.build(content, data, { test, donationNotice }) as InteractionApplicationCommandCallbackData
+    return Themes.build(content, data, { test, donationNotice }) as InteractionApplicationCommandCallbackData
   }
 
   // #####################
