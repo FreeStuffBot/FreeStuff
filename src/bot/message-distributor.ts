@@ -4,7 +4,7 @@ import axios from 'axios'
 import { DatabaseGuildData, GameFlag, GameInfo, GuildData } from '@freestuffbot/typings'
 import { Const, Localisation, Themes } from '@freestuffbot/common'
 import { InteractionApplicationCommandCallbackData } from 'cordo'
-import { Core, FSAPI } from '../index'
+import { config, Core, FSAPI } from '../index'
 import Database from '../database/database'
 import { DbStats } from '../database/db-stats'
 import SentryManager from '../thirdparty/sentry/sentry'
@@ -15,6 +15,11 @@ import Experiments from '../controller/experiments'
 import Metrics from '../lib/metrics'
 import DatabaseManager from './database-manager'
 
+
+type WebhookSendStatus
+  = 'success' // all good, everything worked
+  | 'invalid' // invalid webhook, create new one
+  | 'retry' // something failed, try again
 
 export default class MessageDistributor {
 
@@ -171,42 +176,62 @@ export default class MessageDistributor {
     }
 
     // only once per month - maybe redis entry to save last month and if unequal to current month, do this?
-    const donationNotice = Experiments.runExperimentOnServer('show_donation_notice', data)
+    const donationNotice = !test && Experiments.runExperimentOnServer('show_donation_notice', data)
 
     // build message objects
     // TODO BIG TODO, types dont match with messagePayload
     const messagePayload = MessageDistributor.buildMessage(content, data, test, donationNotice)
     if (!messagePayload.content) delete messagePayload.content
 
+    const useWebhooks = Experiments.runExperimentOnServer('webhook_migration', data)
+    if (useWebhooks) {
+      let createNew = false
 
-    if (data.webhook) {
-      try {
-        const { status } = await axios.post(
-          `https://discordapp.com/api/webhooks/${data.webhook}`,
-          { ...messagePayload, username: Localisation.text(data, '=announcement_header') },
-          { validateStatus: null }
-        )
+      if (data.webhook) {
+        let res = await this.sendWebhook(data, messagePayload)
 
-        if (status < 200 || status >= 300)
-          console.log('webhook failed')
-      } catch (ex) {
-        Logger.error(ex)
+        if (res === 'retry')
+          res = await this.sendWebhook(data, messagePayload)
+        if (res === 'invalid')
+          createNew = true
+      }
+
+      if (createNew) {
+        const hook = await this.createWebhook(data, channel)
+        if (hook) {
+          DatabaseManager.changeSetting(data, 'webhook', `${hook.id}/${hook.token}`)
+          await hook.send({ ...messagePayload as any, username: Localisation.text(data, '=announcement_header') })
+        } else if (test) {
+          // if it is a test message, tell them to give more permissions!
+
+          channel.send({
+            embeds: [ {
+              title: Localisation.text(data, 'webhook_migration_failed_missing_permissions_1'),
+              description: Localisation.text(data, 'webhook_migration_failed_missing_permissions_2')
+            } ]
+          })
+        } else {
+          // if it's not a test message, announce the game the old way
+
+          if (messagePayload.embeds) {
+            messagePayload.embeds.push({
+              color: Const.embedDefaultColor,
+              description: '⚠️ ' + Localisation.getLine(data, 'webhook_migration_notice')
+            })
+          } else {
+            messagePayload.content += '\n\n⚠️ ' + Localisation.getLine(data, 'webhook_migration_notice')
+          }
+
+          const message = await channel.send(messagePayload as any)
+          if (message && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
+            await message.react('🆓')
+        }
       }
     } else {
-      const hook = await this.createWebhook(channel)
-      if (hook) {
-        DatabaseManager.changeSetting(data, 'webhook', `${hook.id}/${hook.token}`)
-        await hook.send({ ...messagePayload as any, username: Localisation.text(data, '=announcement_header') })
-      } else {
-        messagePayload.embeds?.push({ description: 'Please give me the webhook permission thanks' })
-
-        // send the messages
-        const message = await channel.send(messagePayload as any)
-        if (message && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
-          await message.react('🆓')
-      }
+      const message = await channel.send(messagePayload as any)
+      if (message && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
+        await message.react('🆓')
     }
-
 
     // if (!test && (data.channelInstance as Channel).type === 'news')
     //   messages.forEach(m => m.crosspost())
@@ -228,20 +253,68 @@ export default class MessageDistributor {
 
   // #####################
 
+  public static async sendWebhook(data: GuildData, payload: InteractionApplicationCommandCallbackData): Promise<WebhookSendStatus> {
+    Localisation.translateObject(payload, data, payload._context, 14)
+    try {
+      const { status } = await axios.post(
+        `https://discordapp.com/api/webhooks/${data.webhook}`,
+        {
+          ...payload,
+          username: Localisation.text(data, '=announcement_header'),
+          avatar_url: Const.brandIcons.regularRound
+        },
+        {
+          validateStatus: null
+        }
+      )
+
+      if (status >= 200 && status < 300)
+        return 'success'
+
+      // TODO add reaction
+
+      if (status === 404)
+        return 'invalid'
+
+      return 'retry'
+    } catch (ex) {
+      Logger.error(ex)
+      return 'retry'
+    }
+  }
+
   /**
    * Move elsewhere
    */
-  public static createWebhook(channel: TextChannel): Promise<Webhook | null> {
+  public static createWebhook(data: GuildData, channel: TextChannel): Promise<Webhook | null> {
     const member = channel.guild.members.resolve(Core.user.id)
     if (!channel.permissionsFor(member).has('MANAGE_WEBHOOKS'))
       return null
 
     try {
-      const hook = channel.createWebhook('FreeStuff Webhook', {
+      const hook = channel.createWebhook('FreeStuff', {
         avatar: Const.brandIcons.regularRound,
-        reason: 'FreeStuff is using Webhooks to distribute announcements on a large scale.'
+        reason: Localisation.getLine(data, 'webhook_create_auditlog_reason')
       })
 
+      return hook ?? null
+    } catch (ex) {
+      Logger.error(ex)
+      return null
+    }
+  }
+
+  /**
+   * Move elsewhere
+   */
+  public static async findWebhook(channel: TextChannel): Promise<Webhook | null> {
+    const member = channel.guild.members.resolve(Core.user.id)
+    if (!channel.permissionsFor(member).has('MANAGE_WEBHOOKS'))
+      return null
+
+    try {
+      const hooks = await channel.fetchWebhooks()
+      const hook = hooks.find(h => h.owner.id === config.bot.clientId)
       return hook ?? null
     } catch (ex) {
       Logger.error(ex)
