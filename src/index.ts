@@ -172,8 +172,7 @@ function mountBot(shardIds: number[], shardCount: number) {
     ws: {
     },
     intents: [
-      'GUILDS',
-      'GUILD_MESSAGES'
+      'GUILDS'
     ],
     allowedMentions: {},
     makeCache: Options.cacheWithLimits({
