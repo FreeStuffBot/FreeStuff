@@ -19,7 +19,7 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "@freestuffbot/common": "^0.1.9",
+    "@freestuffbot/common": "^0.2.3",
     "@freestuffbot/typings": "^1.3.5",
     "@sentry/node": "^5.22.3",
     "await-semaphore": "^0.1.3",

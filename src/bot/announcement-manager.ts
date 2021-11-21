@@ -17,7 +17,6 @@ export default class AnnouncementManager {
     this.semaphore = new Semaphore(1)
 
     FSAPI.on('free_games', async (ids) => {
-      console.log(1, ids)
       const release = await this.semaphore.acquire()
       let pending = await Redis.getSharded('queue')
 
@@ -70,7 +69,6 @@ export default class AnnouncementManager {
   }
 
   private async announce(gameids: string) {
-    console.log(2, gameids)
     this.currentlyAnnouncing = true
 
     this.setPending(gameids)

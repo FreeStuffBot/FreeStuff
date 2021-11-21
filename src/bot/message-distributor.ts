@@ -179,7 +179,7 @@ export default class MessageDistributor {
     const donationNotice = !test && Experiments.runExperimentOnServer('show_donation_notice', data)
 
     // build message objects
-    // TODO BIG TODO, types dont match with messagePayload
+    // TODO BIG TODO, types dont match with messagePayload - SCHEINT EGAL ZU SEIN LETSGOOOOOOOooooooooo........
     const messagePayload = MessageDistributor.buildMessage(content, data, test, donationNotice)
     if (!messagePayload.content) delete messagePayload.content
 
@@ -254,7 +254,6 @@ export default class MessageDistributor {
   // #####################
 
   public static async sendWebhook(data: GuildData, payload: InteractionApplicationCommandCallbackData): Promise<WebhookSendStatus> {
-    Localisation.translateObject(payload, data, payload._context, 14)
     try {
       const { status } = await axios.post(
         `https://discordapp.com/api/webhooks/${data.webhook}`,

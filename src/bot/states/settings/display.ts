@@ -5,7 +5,6 @@ import Emojis from '../../emojis'
 import Tracker from '../../tracker'
 import MessageDistributor from '../../message-distributor'
 import PermissionStrings from '../../../lib/permission-strings'
-import Experiments from '../../../controller/experiments'
 
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
@@ -20,10 +19,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     emoji: { name: t.emoji }
   }))
 
-  const showCalculatedPriceOptions = Experiments.runExperimentOnServer('show_calculated_price_options', i.guildData)
-
   const currencyOptions: MessageComponentSelectOption[] = Const.currencies
-    .filter(c => !c.calculated || showCalculatedPriceOptions)
     .map(c => ({
       value: c.id + '',
       label: `${c.symbol} ${Localisation.text(i.guildData, c.name)}`,
