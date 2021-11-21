@@ -1,5 +1,5 @@
 import { Semaphore } from 'await-semaphore'
-import { GameInfo } from 'freestuff'
+import { GameInfo } from '@freestuffbot/typings'
 import { config, FSAPI } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import Redis from '../database/redis'

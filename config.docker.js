@@ -22,7 +22,7 @@ module.exports = {
     ? { name: 'single' }
     : secret('FSB_MODE') === 'shard'
       ? {
-          name: shard,
+          name: 'shard',
           shardIds: secret('FSB_SHARD_IDS')?.split(',').map(parseInt) ?? [],
           shardCount: secret('FSB_SHARD_COUNT')
         }

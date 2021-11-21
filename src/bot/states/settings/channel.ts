@@ -1,5 +1,6 @@
 import { GuildChannel, NewsChannel, TextChannel } from 'discord.js'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
+import { Localisation } from '@freestuffbot/common'
 import { Core } from '../../../index'
 import Emojis from '../../emojis'
 import Tracker from '../../tracker'
@@ -16,7 +17,12 @@ function isRecommended(i: GenericInteraction, c: GuildChannel) {
   return recommendedChannelRegex.test(c.name) || i.channel_id === c.id || i.guildData.channel?.toString() === c.id
 }
 
-export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
+type Options = {
+  missingPermissions?: string,
+  changedTo?: string
+}
+
+export default async function (i: GenericInteraction, args: [ Options ]): Promise<InteractionApplicationCommandCallbackData> {
   if (!i.guildData) return { title: 'An error occured' }
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
 
@@ -53,7 +59,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     youHaveTooManyChannelsStage++
   }
 
-  const hereText = ` (${Core.text(i.guildData, '=settings_channel_list_here')})`
+  const hereText = ` (${Localisation.text(i.guildData, '=settings_channel_list_here')})`
 
   const channels = channelsFound
     .sort((a, b) =>
@@ -66,8 +72,9 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     .map((c) => {
       const p = c.permissionsFor(self)
       let description = '' // (c as TextChannel).topic?.substr(0, 50) || ''
-      if (!p.has('VIEW_CHANNEL')) description = '⚠️ ' + Core.text(i.guildData, '=settings_channel_list_warning_missing_view_channel')
-      else if (!p.has('SEND_MESSAGES')) description = '⚠️ ' + Core.text(i.guildData, '=settings_channel_list_warning_missing_send_messages')
+      if (!p.has('VIEW_CHANNEL')) description = '⚠️ ' + Localisation.text(i.guildData, '=settings_channel_list_warning_missing_view_channel')
+      else if (!p.has('MANAGE_WEBHOOKS')) description = '⚠️ ' + Localisation.text(i.guildData, '=settings_channel_list_warning_missing_manage_webhooks')
+      else if (!p.has('SEND_MESSAGES')) description = '=settings_channel_list_warning_missing_send_messages'
       else if (!p.has('EMBED_LINKS')) description = '=settings_channel_list_warning_missing_embed_messages'
       else if (c.name.includes('amogus') || c.name.includes('sus')) description = 'sus channel'
 
@@ -96,18 +103,22 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     {
       label: '=settings_channel_list_no_channel_1',
       value: '0',
-      default: !i.guildData.channel || !i.guildData.channelInstance,
+      default: !i.guildData.channel,
       description: '=settings_channel_list_no_channel_2',
       emoji: { id: Emojis.no.id }
     },
     ...channels
   ]
 
-  let description = '=settings_channel_ui_2_regular'
+  const opts = args[0]
+
+  let description = Localisation.text(i.guildData, '=settings_channel_ui_2_regular')
   if (youHaveTooManyChannelsStage > 2)
-    description = Core.text(i.guildData, '=settings_channel_ui_2_way_too_many') + '\n\n*' + Core.text(i.guildData, '=settings_channel_ui_too_many_channels_tip') + '*'
+    description = Localisation.text(i.guildData, '=settings_channel_ui_2_way_too_many') + '\n\n*' + Localisation.text(i.guildData, '=settings_channel_ui_too_many_channels_tip') + '*'
   else if (youHaveTooManyChannelsStage > 0)
-    description = Core.text(i.guildData, '=settings_channel_ui_2_too_many') + '\n\n*' + Core.text(i.guildData, '=settings_channel_ui_too_many_channels_tip') + '*'
+    description = Localisation.text(i.guildData, '=settings_channel_ui_2_too_many') + '\n\n*' + Localisation.text(i.guildData, '=settings_channel_ui_too_many_channels_tip') + '*'
+  if (opts?.missingPermissions)
+    description += `\n\n⚠️ **${Localisation.text(i.guildData, '=settings_channel_ui_missing_permissions', { channel: opts?.changedTo, permissions: opts?.missingPermissions })}**`
 
   return {
     title: '=settings_channel_ui_1',

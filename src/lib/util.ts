@@ -4,9 +4,6 @@ import { Core } from '../index'
 
 export class Util {
 
-  public static init() {
-  }
-
   public static belongsToShard(id: Long, shard?: number) {
     if (Core.options.shardCount === 1) return true
     const mod = id
@@ -24,10 +21,12 @@ export class Util {
     return mod.equals(Long.fromNumber(shard))
   }
 
+  /** @deprecated use fsb/common util */
   public static modifyBits(input: number, lshift: number, bits: number, value: number): number {
     return (input & ~((2 ** bits - 1) << lshift)) | (value << lshift)
   }
 
+  /** @deprecated use fsb/common util */
   public static generateWord(alphabet: string, length: number): string {
     let out = ''
     while (length-- > 0)

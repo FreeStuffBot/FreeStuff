@@ -1,15 +1,14 @@
 import { hostname } from 'os'
 import { io, Socket } from 'socket.io-client'
 import { Long } from 'mongodb'
-import { config, FSAPI } from '../index'
+import { config, FSAPI, reloadLanguages } from '../index'
 import Logger from '../lib/logger'
 import { Experiment, WorkerCommand, ShardStatus, WorkerTask, WorkerAction, Shard } from '../types/controller'
 import { getGitCommit } from '../lib/git-parser'
-import { Util } from '../lib/util'
 import MessageDistributor from '../bot/message-distributor'
-import LanguageManager from '../bot/language-manager'
 import AnnouncementManager from '../bot/announcement-manager'
 import DatabaseManager from '../bot/database-manager'
+import { Util } from '../lib/util'
 import Experiments from './experiments'
 import RemoteConfig from './remote-config'
 
@@ -226,7 +225,7 @@ export default class Manager {
 
       case 'reload_lang':
         Logger.manager('Reload language cache.')
-        LanguageManager.load()
+        reloadLanguages()
         break
 
       case 'resend_to_guild':

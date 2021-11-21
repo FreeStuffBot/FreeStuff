@@ -1,5 +1,6 @@
-import { Permissions } from 'discord.js'
+import { Permissions, TextChannel } from 'discord.js'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
+import { Localisation } from '@freestuffbot/common'
 import Emojis from '../../emojis'
 import { Core } from '../../../index'
 import Tracker from '../../tracker'
@@ -13,8 +14,9 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_ROLE')
 
   const member = await Core.guilds.resolve(i.guild_id).members.fetch(Core.user)
-  const permissions: Permissions = i.guildData.channelInstance
-    ? member.permissionsIn(i.guildData.channelInstance)
+  const channel = await Core.channels.fetch(i.guildData.channel.toString())
+  const permissions: Permissions = channel
+    ? member.permissionsIn(channel as TextChannel)
     : member.permissions
 
   const everyone = permissions.has('MENTION_EVERYONE')
@@ -53,9 +55,9 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
 
   let text = '=settings_role_ui_2'
   if (!everyone || overflow) {
-    text = Core.text(i.guildData, text)
+    text = Localisation.text(i.guildData, text)
       + '\n\n'
-      + Core.text(i.guildData, everyone
+      + Localisation.text(i.guildData, everyone
         ? '=settings_role_list_hidden_overflow_disclaimer'
         : '=settings_role_list_hidden_permissions_disclaimer')
   }

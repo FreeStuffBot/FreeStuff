@@ -1,5 +1,5 @@
 import { hostname } from 'os'
-import { GuildData } from '../types/datastructs'
+import { GuildData } from '@freestuffbot/typings'
 import Tracker from '../bot/tracker'
 import Manager from '../controller/manager'
 import { Core } from '..'

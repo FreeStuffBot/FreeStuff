@@ -29,6 +29,7 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -55,6 +56,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
+          build-args: |
+            NODE_AUTH_TOKEN=${{secrets.GITHUB_TOKEN}}
 
       - name: Image digest
         run: echo ${{ steps.docker_bot_build.outputs.digest }}

@@ -1,19 +1,25 @@
-import { MessageOptions } from 'discord.js'
+import { TextChannel, Webhook } from 'discord.js'
 import { Long } from 'mongodb'
-import { GameFlag, GameInfo } from 'freestuff'
-import { Core, FSAPI } from '../index'
+import axios from 'axios'
+import { DatabaseGuildData, GameFlag, GameInfo, GuildData } from '@freestuffbot/typings'
+import { Const, Localisation, Themes } from '@freestuffbot/common'
+import { InteractionApplicationCommandCallbackData } from 'cordo'
+import { config, Core, FSAPI } from '../index'
 import Database from '../database/database'
 import { DbStats } from '../database/db-stats'
 import SentryManager from '../thirdparty/sentry/sentry'
 import Redis from '../database/redis'
-import { DatabaseGuildData, GuildData } from '../types/datastructs'
 import RemoteConfig from '../controller/remote-config'
 import Logger from '../lib/logger'
 import Experiments from '../controller/experiments'
 import Metrics from '../lib/metrics'
 import DatabaseManager from './database-manager'
-import Const from './const'
 
+
+type WebhookSendStatus
+  = 'success' // all good, everything worked
+  | 'invalid' // invalid webhook, create new one
+  | 'retry' // something failed, try again
 
 export default class MessageDistributor {
 
@@ -131,26 +137,28 @@ export default class MessageDistributor {
       }
     }
 
+    const channel = await Core.channels.fetch(data.channel.toString()) as TextChannel
+
     // check if channel is valid
-    if (!data.channelInstance) {
+    if (!channel) {
       Logger.excessive(`Guild ${g._id} return: invalid channel`)
       Metrics.counterOutgoing.labels({ status: 'channel_invalid' }).inc()
       return []
     }
-    if (!data.channelInstance.send) {
+    if (!channel.send) {
       Logger.excessive(`Guild ${g._id} return: no send func`)
       Metrics.counterOutgoing.labels({ status: 'no_send_func' }).inc()
       return []
     }
-    if (!data.channelInstance.guild.available) {
+    if (!channel.guild.available) {
       Logger.excessive(`Guild ${g._id} return: guild unavailable`)
       Metrics.counterOutgoing.labels({ status: 'guild_unavailable' }).inc()
       return []
     }
 
     // check if permissions match
-    const self = await data.channelInstance.guild.members.fetch(Core.user.id)
-    const permissions = self.permissionsIn(data.channelInstance)
+    const self = await channel.guild.members.fetch(Core.user.id)
+    const permissions = self.permissionsIn(channel)
     if (!permissions.has('SEND_MESSAGES')) {
       Logger.excessive(`Guild ${g._id} return: no SEND_MESSAGES`)
       Metrics.counterOutgoing.labels({ status: 'noper_send' }).inc()
@@ -168,16 +176,62 @@ export default class MessageDistributor {
     }
 
     // only once per month - maybe redis entry to save last month and if unequal to current month, do this?
-    const donationNotice = Experiments.runExperimentOnServer('show_donation_notice', data)
+    const donationNotice = !test && Experiments.runExperimentOnServer('show_donation_notice', data)
 
     // build message objects
+    // TODO BIG TODO, types dont match with messagePayload - SCHEINT EGAL ZU SEIN LETSGOOOOOOOooooooooo........
     const messagePayload = MessageDistributor.buildMessage(content, data, test, donationNotice)
     if (!messagePayload.content) delete messagePayload.content
 
-    // send the messages
-    const message = await data.channelInstance.send(messagePayload)
-    if (message && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
-      await message.react('🆓')
+    const useWebhooks = Experiments.runExperimentOnServer('webhook_migration', data) && false
+    if (useWebhooks) {
+      let createNew = false
+
+      if (data.webhook) {
+        let res = await this.sendWebhook(data, messagePayload)
+
+        if (res === 'retry')
+          res = await this.sendWebhook(data, messagePayload)
+        if (res === 'invalid')
+          createNew = true
+      }
+
+      if (createNew) {
+        const hook = await this.createWebhook(data, channel)
+        if (hook) {
+          DatabaseManager.changeSetting(data, 'webhook', `${hook.id}/${hook.token}`)
+          await hook.send({ ...messagePayload as any, username: Localisation.text(data, '=announcement_header') })
+        } else if (test) {
+          // if it is a test message, tell them to give more permissions!
+
+          channel.send({
+            embeds: [ {
+              title: Localisation.text(data, 'webhook_migration_failed_missing_permissions_1'),
+              description: Localisation.text(data, 'webhook_migration_failed_missing_permissions_2')
+            } ]
+          })
+        } else {
+          // if it's not a test message, announce the game the old way
+
+          if (messagePayload.embeds) {
+            messagePayload.embeds.push({
+              color: Const.embedDefaultColor,
+              description: '⚠️ ' + Localisation.getLine(data, 'webhook_migration_notice')
+            })
+          } else {
+            messagePayload.content += '\n\n⚠️ ' + Localisation.getLine(data, 'webhook_migration_notice')
+          }
+
+          const message = await channel.send(messagePayload as any)
+          if (message && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
+            await message.react('🆓')
+        }
+      }
+    } else {
+      const message = await channel.send(messagePayload as any)
+      if (message && data.react && permissions.has('ADD_REACTIONS') && permissions.has('READ_MESSAGE_HISTORY'))
+        await message.react('🆓')
+    }
 
     // if (!test && (data.channelInstance as Channel).type === 'news')
     //   messages.forEach(m => m.crosspost())
@@ -193,9 +247,78 @@ export default class MessageDistributor {
    * Finds the used theme and lets that theme build the message
    * @returns Tupel with message.content and message.options?
    */
-  public static buildMessage(content: GameInfo[], data: GuildData, test: boolean, donationNotice: boolean): MessageOptions {
-    const theme = data.theme.builder
-    return theme.build(content, data, { test, donationNotice })
+  public static buildMessage(content: GameInfo[], data: GuildData, test: boolean, donationNotice: boolean): InteractionApplicationCommandCallbackData {
+    return Themes.build(content, data, { test, donationNotice }) as InteractionApplicationCommandCallbackData
+  }
+
+  // #####################
+
+  public static async sendWebhook(data: GuildData, payload: InteractionApplicationCommandCallbackData): Promise<WebhookSendStatus> {
+    try {
+      const { status } = await axios.post(
+        `https://discordapp.com/api/webhooks/${data.webhook}`,
+        {
+          ...payload,
+          username: Localisation.text(data, '=announcement_header'),
+          avatar_url: Const.brandIcons.regularRound
+        },
+        {
+          validateStatus: null
+        }
+      )
+
+      if (status >= 200 && status < 300)
+        return 'success'
+
+      // TODO add reaction
+
+      if (status === 404)
+        return 'invalid'
+
+      return 'retry'
+    } catch (ex) {
+      Logger.error(ex)
+      return 'retry'
+    }
+  }
+
+  /**
+   * Move elsewhere
+   */
+  public static createWebhook(data: GuildData, channel: TextChannel): Promise<Webhook | null> {
+    const member = channel.guild.members.resolve(Core.user.id)
+    if (!channel.permissionsFor(member).has('MANAGE_WEBHOOKS'))
+      return null
+
+    try {
+      const hook = channel.createWebhook('FreeStuff', {
+        avatar: Const.brandIcons.regularRound,
+        reason: Localisation.getLine(data, 'webhook_create_auditlog_reason')
+      })
+
+      return hook ?? null
+    } catch (ex) {
+      Logger.error(ex)
+      return null
+    }
+  }
+
+  /**
+   * Move elsewhere
+   */
+  public static async findWebhook(channel: TextChannel): Promise<Webhook | null> {
+    const member = channel.guild.members.resolve(Core.user.id)
+    if (!channel.permissionsFor(member).has('MANAGE_WEBHOOKS'))
+      return null
+
+    try {
+      const hooks = await channel.fetchWebhooks()
+      const hook = hooks.find(h => h.owner.id === config.bot.clientId)
+      return hook ?? null
+    } catch (ex) {
+      Logger.error(ex)
+      return null
+    }
   }
 
 }

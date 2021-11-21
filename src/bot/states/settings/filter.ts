@@ -1,7 +1,6 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
+import { Const, Localisation } from '@freestuffbot/common'
 import Emojis from '../../emojis'
-import Const from '../../const'
-import { Core } from '../../../index'
 import Tracker from '../../tracker'
 import PermissionStrings from '../../../lib/permission-strings'
 
@@ -15,19 +14,19 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     label: p.name,
     description: p.description,
     default: (i.guildData?.platformsRaw & p.bit) !== 0,
-    emoji: p.emoji.toObject()
+    emoji: (Emojis.store[p.id] || Emojis.store.other).toObject()
   }))
 
   const priceOptions: MessageComponentSelectOption[] = Const.priceClasses.map(c => ({
     value: c.id + '',
     label: c.name,
-    description: Core.text(
+    description: Localisation.text(
       i.guildData,
       c.from === 0
         ? '=settings_filter_price_class_desc_everything'
         : '=settings_filter_price_class_desc_generic',
       {
-        price: (Core.text(i.guildData, '=currency_sign_position') === 'before')
+        price: (Localisation.text(i.guildData, '=currency_sign_position') === 'before')
           ? `${i.guildData.currency.symbol}${c.from}`
           : `${c.from}${i.guildData.currency.symbol}`
       }

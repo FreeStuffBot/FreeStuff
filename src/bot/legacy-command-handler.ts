@@ -1,8 +1,8 @@
+import { Const, Localisation } from '@freestuffbot/common'
 import { Core } from '../index'
 import FreeStuffBot from '../freestuffbot'
 import Logger from '../lib/logger'
 import Metrics from '../lib/metrics'
-import Const from './const'
 import DatabaseManager from './database-manager'
 
 
@@ -89,8 +89,8 @@ export default class LegacyCommandHandler {
         Metrics.counterLegacyCommands.labels({ name: cmd }).inc()
         const replaceWith = this.replacements.get(cmd)
         reply(
-          Core.text(g, '=slash_command_introduction_info_short'),
-          Core.text(g, '=slash_command_introduction_label_short', { command: replaceWith })
+          Localisation.text(g, '=slash_command_introduction_info_short'),
+          Localisation.text(g, '=slash_command_introduction_label_short', { command: replaceWith })
         )
       }).catch((err) => {
         Logger.excessive(err)

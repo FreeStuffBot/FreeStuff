@@ -1,8 +1,7 @@
+import { Const, Localisation } from '@freestuffbot/common'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, InteractionType } from 'cordo'
-import { Core } from '../../../index'
 import Emojis from '../../emojis'
 import Tracker from '../../tracker'
-import Const from '../../const'
 
 
 const recentlyInSetup: string[] = []
@@ -12,7 +11,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   const firstTimeOnPage = !Tracker.isTracked(i.guildData, 'PAGE_DISCOVERED_SETTINGS_MAIN')
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_MAIN')
 
-  const hintChannel = !i.guildData.channelInstance
+  const hintChannel = !i.guildData.channel
   const hintRole = !hintChannel && Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_ROLE')
   const hintFilter = !hintChannel && !hintRole && Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_FILTER')
   const hintDisplay = !hintChannel && !hintRole && !hintFilter && Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_DISPLAY')
@@ -52,14 +51,14 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         type: ComponentType.BUTTON,
         style: hintChannel ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_channel',
-        label: i.guildData?.channelInstance ? '=settings_main_btn_channel_change' : '=settings_main_btn_channel_set',
+        label: i.guildData?.channel ? '=settings_main_btn_channel_change' : '=settings_main_btn_channel_set',
         emoji: { id: Emojis.channel.id }
       },
       {
         type: ComponentType.BUTTON,
         style: hintRole ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_role',
-        label: i.guildData?.roleInstance ? '=settings_main_btn_role_change' : '=settings_main_btn_role_set',
+        label: i.guildData?.role ? '=settings_main_btn_role_change' : '=settings_main_btn_role_set',
         emoji: { id: Emojis.mention.id }
       },
       {
@@ -67,7 +66,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_language',
         label: '=lang_name',
-        emoji: { name: Emojis.fromFlagName(Core.text(i.guildData, '=lang_flag_emoji')).string }
+        emoji: { name: Emojis.fromFlagName(Localisation.text(i.guildData, '=lang_flag_emoji')).string }
       },
       {
         type: ComponentType.LINE_BREAK

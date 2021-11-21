@@ -39,7 +39,7 @@ export class DbStats {
       size: g.memberCount,
       icon: g.iconURL(),
       features: g.features,
-      setup: !!((await DatabaseManager.getGuildData(g.id))?.channelInstance)
+      setup: !!((await DatabaseManager.getGuildData(g.id))?.channel)
     }))
 
     await Promise.all(out).then((out) => {
