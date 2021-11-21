@@ -1,7 +1,6 @@
 import Cordo from 'cordo'
 import { Client } from 'discord.js'
 import * as chalk from 'chalk'
-import LegacyCommandHandler from './bot/legacy-command-handler'
 import DatabaseManager from './bot/database-manager'
 import AnnouncementManager from './bot/announcement-manager'
 import { DbStats } from './database/db-stats'
@@ -14,7 +13,6 @@ import { config, FSAPI } from './index'
 
 export default class FreeStuffBot extends Client {
 
-  public commandHandler: LegacyCommandHandler
   public announcementManager: AnnouncementManager
 
   //
@@ -27,7 +25,6 @@ export default class FreeStuffBot extends Client {
     if (this.readyAt) return // bot is already started
     Manager.status(null, 'startup')
 
-    this.commandHandler = new LegacyCommandHandler(this)
     this.announcementManager = new AnnouncementManager(this)
 
     DbStats.startMonitoring(this)

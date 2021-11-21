@@ -144,7 +144,8 @@ function initComponents(commit: GitCommit, action: WorkerAction) {
     }
   })
   Cordo.addMiddlewareInteractionCallback((data, guild) => Localisation.translateObject(data, guild, data._context, 14))
-  Cordo.setMiddlewareGuildData((guildid: string) => DatabaseManager.getGuildData(guildid))
+  Cordo.setMiddlewareGuildData(guildid => DatabaseManager.getGuildData(guildid))
+  Cordo.setMiddlewareApiResponseHandler(res => Metrics.counterApiResponses.labels({ status: res.status }).inc())
 
   FSAPI = new FreeStuffApi({
     ...config.apiSettings as any,
