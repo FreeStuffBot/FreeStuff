@@ -183,7 +183,7 @@ export default class MessageDistributor {
     const messagePayload = MessageDistributor.buildMessage(content, data, test, donationNotice)
     if (!messagePayload.content) delete messagePayload.content
 
-    const useWebhooks = Experiments.runExperimentOnServer('webhook_migration', data)
+    const useWebhooks = Experiments.runExperimentOnServer('webhook_migration', data) && false
     if (useWebhooks) {
       let createNew = false
 
