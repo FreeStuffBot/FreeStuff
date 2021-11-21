@@ -1,5 +1,4 @@
-import { MessageEmbed } from 'discord.js'
-import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
+import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption, MessageEmbed } from 'cordo'
 import { Const, Localisation } from '@freestuffbot/common'
 import Emojis from '../../emojis'
 import Tracker from '../../tracker'
