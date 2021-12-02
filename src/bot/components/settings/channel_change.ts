@@ -28,7 +28,7 @@ export default async function (i: ReplyableComponentInteraction) {
       return i.ack()
 
     const member = channel.guild.members.resolve(Core.user.id)
-    if (!channel.permissionsFor(member).has('VIEW_CHANNEL')) {
+    if (!channel.permissionsFor(member)?.has('VIEW_CHANNEL')) {
       i.state('settings_channel', {
         missingPermissions: Localisation.getLine(i.guildData, 'permission_view_channel'),
         changedTo: `<#${val}>`

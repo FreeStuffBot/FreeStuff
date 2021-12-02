@@ -14,7 +14,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_ROLE')
 
   const member = await Core.guilds.resolve(i.guild_id).members.fetch(Core.user)
-  const channel = await Core.channels.fetch(i.guildData.channel.toString())
+  const channel = i.guildData.channel ? await Core.channels.fetch(i.guildData.channel.toString()) : null
   const permissions: Permissions = channel
     ? member.permissionsIn(channel as TextChannel)
     : member.permissions

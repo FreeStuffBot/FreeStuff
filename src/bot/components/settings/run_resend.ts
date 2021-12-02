@@ -33,7 +33,7 @@ export default async function (i: ReplyableComponentInteraction) {
   Tracker.set(i.guildData, 'ACTION_RESEND_TRIGGERED')
 
   /* Check if permissions are set */
-  const channel = await Core.channels.fetch(i.guildData.channel.toString())
+  const channel = i.guildData.channel ? await Core.channels.fetch(i.guildData.channel.toString()) : null
   const goodToGo = await checkRequirements(i, channel as TextChannel)
   if (!goodToGo) return
 

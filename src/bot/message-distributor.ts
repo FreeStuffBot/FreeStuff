@@ -194,6 +194,8 @@ export default class MessageDistributor {
           res = await this.sendWebhook(data, messagePayload)
         if (res === 'invalid')
           createNew = true
+      } else {
+        createNew = true
       }
 
       if (createNew) {
