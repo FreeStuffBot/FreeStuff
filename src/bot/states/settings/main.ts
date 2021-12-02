@@ -1,5 +1,9 @@
 import { Const, Localisation } from '@freestuffbot/common'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, InteractionType } from 'cordo'
+import { TextChannel } from 'discord.js'
+import { Core } from '../../..'
+import Experiments from '../../../controller/experiments'
+import FreeStuffBot from '../../../freestuffbot'
 import Emojis from '../../emojis'
 import Tracker from '../../tracker'
 
@@ -19,6 +23,13 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   if ((hintChannel || hintRole || hintFilter || hintDisplay) && !recentlyInSetup.includes(i.guild_id)) {
     recentlyInSetup.push(i.guild_id)
     setTimeout(() => recentlyInSetup.splice(0, 1), 1000 * 60 * 5)
+  }
+
+  const webhookMigrationNotice = showWebhookMigrationNotice(i)
+  let image: string | undefined
+  if (webhookMigrationNotice) {
+    image = FreeStuffBot.webhookMigrationImages[i.guildData.language]
+      || FreeStuffBot.webhookMigrationImages.default
   }
 
   const delayed = !firstTimeOnPage && i.type === InteractionType.COMMAND
@@ -46,6 +57,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   return {
     title: '=settings_main_ui_1',
     description,
+    image,
     components: [
       {
         type: ComponentType.BUTTON,
@@ -105,4 +117,23 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       guide: Const.links.guide
     }
   }
+}
+
+function showWebhookMigrationNotice(i: GenericInteraction): boolean {
+  if (!Experiments.runExperimentOnServer('webhook_migration', i.guildData))
+    return false
+
+  if (!i.channel_id)
+    return false
+
+  const channel = Core.channels.resolve(i.channel_id) as TextChannel
+  if (!channel) return false
+
+  const guild = Core.guilds.resolve(i.guild_id)
+  if (!guild) return false
+
+  const member = guild.members.resolve(Core.user.id)
+  if (!member) return false
+
+  return !channel.permissionsFor(member)?.has('MANAGE_WEBHOOKS')
 }
