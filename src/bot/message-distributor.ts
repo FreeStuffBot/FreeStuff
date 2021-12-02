@@ -207,7 +207,8 @@ export default class MessageDistributor {
           channel.send({
             embeds: [ {
               title: Localisation.text(data, 'webhook_migration_failed_missing_permissions_1'),
-              description: Localisation.text(data, 'webhook_migration_failed_missing_permissions_2')
+              description: Localisation.text(data, 'webhook_migration_failed_missing_permissions_2'),
+              color: Const.embedDefaultColor
             } ]
           })
         } else {
