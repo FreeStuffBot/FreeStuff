@@ -20,10 +20,10 @@ export default class FreeStuffBot extends Client {
   private static readonly interactionTypes = [ '', 'PING', 'APPLICATION_COMMAND', 'MESSAGE_COMPONENT' ]
 
   public static readonly webhookMigrationImages = {
-    default: 'https://media.discordapp.net/attachments/672907465670787083/915928114964602920/webhook_migration_warning_en.png',
-    'es-ES': 'https://media.discordapp.net/attachments/672907465670787083/915928114964602920/webhook_migration_warning_en.png',
-    'pt-BR': 'https://media.discordapp.net/attachments/672907465670787083/915928114964602920/webhook_migration_warning_en.png',
-    'de-DE': 'https://media.discordapp.net/attachments/672907465670787083/915934684293242920/webhook_migration_warning_de.png'
+    default: 'https://media.discordapp.net/attachments/672907465670787083/916666894533144606/webhook_migration_warning_en.png',
+    'es-ES': 'https://media.discordapp.net/attachments/672907465670787083/916666894755450880/webhook_migration_warning_es.png',
+    'pt-BR': 'https://media.discordapp.net/attachments/672907465670787083/916666894336004106/webhook_migration_warning_pt.png',
+    'de-DE': 'https://media.discordapp.net/attachments/672907465670787083/916666894138900491/webhook_migration_warning_de.png'
   }
 
   //
