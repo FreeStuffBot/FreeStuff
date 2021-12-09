@@ -193,7 +193,7 @@ export default class DatabaseManager {
       if (data) return data
     }
 
-    const obj = await DatabaseManager.getRawGuildData(guild)
+    const obj = await DatabaseManager.getRawGuildData(guild, true)
     if (!obj) return undefined
     const data = await DatabaseManager.parseGuildData(obj, false)
 
