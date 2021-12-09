@@ -18,19 +18,19 @@ export default class DatabaseManager {
   private static cacheCurrentBucket: boolean = false
 
   public static init() {
-    DatabaseManager.startGarbageCollector()
+    // DatabaseManager.startGarbageCollector()
   }
 
   public static async onShardReady(id: number) {
-    const dbGuilds = await DatabaseManager.getAssignedGuilds(id)
+    // const dbGuilds = await DatabaseManager.getAssignedGuilds(id)
 
-    if (!Core) return
-    for (const guild of Core.guilds.cache.values()) {
-      if (guild.shardId !== id) continue
-      if (dbGuilds.find(g => g._id.toString() === guild.id)) continue
+    // if (!Core) return
+    // for (const guild of Core.guilds.cache.values()) {
+    //   if (guild.shardId !== id) continue
+    //   if (dbGuilds.find(g => g._id.toString() === guild.id)) continue
 
-      DatabaseManager.addGuild(guild.id)
-    }
+    //   DatabaseManager.addGuild(guild.id)
+    // }
   }
 
   /**
@@ -156,12 +156,19 @@ export default class DatabaseManager {
    * Get the raw / unparsed guilds data from the database
    * @param guild guild object
    */
-  public static async getRawGuildData(guild: string): Promise<DatabaseGuildData> {
+  public static async getRawGuildData(guild: string, addIfNotExists: boolean): Promise<DatabaseGuildData> {
     const obj = await Database
       .collection('guilds')
       ?.findOne({ _id: Long.fromString(guild) })
       .catch(Logger.error)
-    if (!obj) return undefined
+    if (!obj) {
+      if (addIfNotExists) {
+        await this.addGuild(guild)
+        return this.getRawGuildData(guild, false)
+      } else {
+        return undefined
+      }
+    }
     return obj
   }
 

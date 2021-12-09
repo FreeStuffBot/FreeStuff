@@ -80,16 +80,16 @@ export default class Metrics {
 
   private static startCollectors() {
     setInterval(() => {
-      const ping = Core?.ws?.ping || -1
+      const ping = Core?.ws?.ping ?? -1
       Metrics.gaugeGatewayPing.set(ping)
 
-      const guilds = Core?.guilds?.cache?.size
+      const guilds = Core?.guilds?.cache?.size ?? 0
       Metrics.gaugeGuildCacheSize.set(guilds)
 
-      const users = Core?.users?.cache?.size
+      const users = Core?.users?.cache?.size ?? 0
       Metrics.gaugeUserCacheSize.set(users)
 
-      const channels = Core?.channels?.cache?.size
+      const channels = Core?.channels?.cache?.size ?? 0
       Metrics.gaugeChannelCacheSize.set(channels)
 
       // const activeInteractionReplyContexts = CordoReplies.activeInteractionReplyContexts.length

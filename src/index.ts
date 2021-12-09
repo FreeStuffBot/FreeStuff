@@ -115,7 +115,7 @@ async function run() {
 
 run().catch((err) => {
   Logger.error('Error in main:')
-  Logger.error(err)
+  console.trace(err)
 })
 
 //
@@ -150,7 +150,7 @@ function initComponents(commit: GitCommit, action: WorkerAction) {
   FSAPI = new FreeStuffApi({
     ...config.apiSettings as any,
     version: commit.shortHash,
-    sid: action.id === 'startup' ? (action.task?.ids[0] || '0') : 'err'
+    sid: action.id === 'startup' ? (action.task?.ids?.[0] || '0') : 'err'
   })
 
   if (config.server?.enable)
