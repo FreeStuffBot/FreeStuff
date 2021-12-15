@@ -18,7 +18,7 @@ export default class DatabaseManager {
   private static cacheCurrentBucket: boolean = false
 
   public static init() {
-    // DatabaseManager.startGarbageCollector()
+    DatabaseManager.startGarbageCollector()
   }
 
   public static async onShardReady(id: number) {
@@ -41,29 +41,29 @@ export default class DatabaseManager {
    * @param bot bot instance
    */
   private static startGarbageCollector(): void {
-    new CronJob('0 0 0 * * *', async () => {
-      for (const shard of Manager.getTask()?.ids ?? [ 0 ]) {
-        const dbGuilds = await DatabaseManager.getAssignedGuilds(shard)
-        const removalQueue: DatabaseGuildData[] = []
-        for (const guild of dbGuilds) {
-          Core?.guilds.fetch(guild._id.toString())
-            .then(() => {})
-            .catch(_err => removalQueue.push(guild))
-        }
+    // new CronJob('0 0 0 * * *', async () => {
+    //   for (const shard of Manager.getTask()?.ids ?? [ 0 ]) {
+    //     const dbGuilds = await DatabaseManager.getAssignedGuilds(shard)
+    //     const removalQueue: DatabaseGuildData[] = []
+    //     for (const guild of dbGuilds) {
+    //       Core?.guilds.fetch(guild._id.toString())
+    //         .then(() => {})
+    //         .catch(_err => removalQueue.push(guild))
+    //     }
 
-        setTimeout(async () => {
-          const dbGuilds = await DatabaseManager.getAssignedGuilds(shard)
-          for (const guild of dbGuilds) {
-            Core?.guilds.fetch(guild._id.toString())
-              .then(() => {})
-              .catch((_err) => {
-                if (removalQueue.find(g => g._id.equals(guild._id)))
-                  DatabaseManager.removeGuild(guild._id as any)
-              })
-          }
-        }, 1000 * 60 * 30)
-      }
-    }).start()
+    //     setTimeout(async () => {
+    //       const dbGuilds = await DatabaseManager.getAssignedGuilds(shard)
+    //       for (const guild of dbGuilds) {
+    //         Core?.guilds.fetch(guild._id.toString())
+    //           .then(() => {})
+    //           .catch((_err) => {
+    //             if (removalQueue.find(g => g._id.equals(guild._id)))
+    //               DatabaseManager.removeGuild(guild._id as any)
+    //           })
+    //       }
+    //     }, 1000 * 60 * 30)
+    //   }
+    // }).start()
 
     setInterval(() => {
 
