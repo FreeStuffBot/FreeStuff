@@ -13,13 +13,13 @@ export default async function (i: ReplyableComponentInteraction) {
 
   const guild = await Core.guilds.fetch(i.guild_id)
   if (val === '0') {
-    await DatabaseManager.changeSetting(i.guildData, 'role', null)
+    DatabaseManager.changeSetting(i.guildData, 'role', null)
   } else if (val === '1') {
-    await DatabaseManager.changeSetting(i.guildData, 'role', '1')
+    DatabaseManager.changeSetting(i.guildData, 'role', '1')
   } else {
     const role = await guild.roles.fetch(val)
     if (!role) return i.ack()
-    await DatabaseManager.changeSetting(i.guildData, 'role', role.id)
+    DatabaseManager.changeSetting(i.guildData, 'role', role.id)
   }
 
   i.state('settings_role')

@@ -115,7 +115,7 @@ export default class MessageDistributor {
    * @returns Array of guild ids that were actually announced (and not filtered out by guild settings)
    */
   public static async sendToGuild(g: DatabaseGuildData, content: GameInfo[], test: boolean, force: boolean): Promise<number[]> {
-    const data = await DatabaseManager.parseGuildData(g)
+    const data = DatabaseManager.parseGuildData(g)
 
     if (!data) {
       Logger.excessive(`Guild ${g._id} return: no data`)
@@ -202,14 +202,14 @@ export default class MessageDistributor {
         const hook = await this.createWebhook(data, channel)
         if (hook) {
           DatabaseManager.changeSetting(data, 'webhook', `${hook.id}/${hook.token}`)
-          await hook.send({ ...messagePayload as any, username: Localisation.text(data, '=announcement_header') })
+          await hook.send({ ...messagePayload as any, username: Localisation.getLine(data, 'announcement_header') })
         } else if (test) {
           // if it is a test message, tell them to give more permissions!
 
           channel.send({
             embeds: [ {
-              title: Localisation.text(data, 'webhook_migration_failed_missing_permissions_1'),
-              description: Localisation.text(data, 'webhook_migration_failed_missing_permissions_2'),
+              title: Localisation.getLine(data, 'webhook_migration_failed_missing_permissions_1'),
+              description: Localisation.getLine(data, 'webhook_migration_failed_missing_permissions_2'),
               color: Const.embedDefaultColor
             } ]
           })

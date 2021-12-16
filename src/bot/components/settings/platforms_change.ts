@@ -4,7 +4,7 @@ import DatabaseManager from '../../database-manager'
 import PermissionStrings from '../../../lib/permission-strings'
 
 
-export default async function (i: ReplyableComponentInteraction) {
+export default function (i: ReplyableComponentInteraction) {
   if (i.member && !PermissionStrings.containsManageServer(i.member.permissions))
     return i.ack()
 
@@ -15,6 +15,6 @@ export default async function (i: ReplyableComponentInteraction) {
     .map(v => Const.platforms.find(p => p.id === v))
     .filter(p => !!p)
 
-  await DatabaseManager.changeSetting(i.guildData, 'platforms', platforms)
+  DatabaseManager.changeSetting(i.guildData, 'platforms', platforms)
   i.state('settings_filter')
 }

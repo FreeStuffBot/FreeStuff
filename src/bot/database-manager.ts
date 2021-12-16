@@ -1,9 +1,7 @@
 /* eslint-disable no-dupe-class-members */
 import { Long } from 'bson'
-import { CronJob } from 'cron'
 import { Currency, DatabaseGuildData, GuildData, Platform, PriceClass, Theme } from '@freestuffbot/typings'
 import { Const, Localisation } from '@freestuffbot/common'
-import { Core } from '../index'
 import Database from '../database/database'
 import { Util } from '../lib/util'
 import Logger from '../lib/logger'
@@ -21,7 +19,7 @@ export default class DatabaseManager {
     DatabaseManager.startGarbageCollector()
   }
 
-  public static async onShardReady(id: number) {
+  public static async onShardReady(_id: number) {
     // const dbGuilds = await DatabaseManager.getAssignedGuilds(id)
 
     // if (!Core) return
@@ -129,11 +127,11 @@ export default class DatabaseManager {
       webhook: null,
       channel: null,
       role: null,
-      settings: Const.defaultSettingsBits,
-      filter: Const.defaultFilterBits,
+      settings: Const.getDefaultSettingsBits(),
+      filter: Const.getDefaultFilterBits(),
       tracker: 0
     }
-    Database
+    await Database
       .collection('guilds')
       ?.insertOne(data)
   }
@@ -195,7 +193,7 @@ export default class DatabaseManager {
 
     const obj = await DatabaseManager.getRawGuildData(guild, true)
     if (!obj) return undefined
-    const data = await DatabaseManager.parseGuildData(obj, false)
+    const data = DatabaseManager.parseGuildData(obj, false)
 
     if (DatabaseManager.cacheCurrentBucket)
       DatabaseManager.cacheBucketT.set(guild, data)

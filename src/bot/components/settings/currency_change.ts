@@ -4,7 +4,7 @@ import DatabaseManager from '../../database-manager'
 import PermissionStrings from '../../../lib/permission-strings'
 
 
-export default async function (i: ReplyableComponentInteraction) {
+export default function (i: ReplyableComponentInteraction) {
   if (i.member && !PermissionStrings.containsManageServer(i.member.permissions))
     return i.ack()
 
@@ -13,6 +13,6 @@ export default async function (i: ReplyableComponentInteraction) {
 
   const currency = Const.currencies[parseInt(val, 10) || 0]
 
-  await DatabaseManager.changeSetting(i.guildData, 'currency', currency)
+  DatabaseManager.changeSetting(i.guildData, 'currency', currency)
   i.state('settings_display')
 }

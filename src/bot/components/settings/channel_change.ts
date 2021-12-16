@@ -18,10 +18,8 @@ export default async function (i: ReplyableComponentInteraction) {
   const useWebhooks = Experiments.runExperimentOnServer('webhook_migration', i.guildData)
 
   if (val === '0') {
-    await Promise.all([
-      DatabaseManager.changeSetting(i.guildData, 'channel', null),
-      DatabaseManager.changeSetting(i.guildData, 'webhook', '')
-    ])
+    DatabaseManager.changeSetting(i.guildData, 'channel', null)
+    DatabaseManager.changeSetting(i.guildData, 'webhook', '')
   } else {
     const channel = await Core.channels.fetch(val) as GuildChannel
     if (!channel || (channel.type !== 'GUILD_TEXT' && channel.type !== 'GUILD_NEWS'))
@@ -47,7 +45,7 @@ export default async function (i: ReplyableComponentInteraction) {
       }
     }
 
-    await DatabaseManager.changeSetting(i.guildData, 'channel', channel.id)
+    DatabaseManager.changeSetting(i.guildData, 'channel', channel.id)
   }
 
   i.state('settings_channel')
@@ -56,13 +54,13 @@ export default async function (i: ReplyableComponentInteraction) {
 async function updateWebhook(guildData: GuildData, channel: TextChannel): Promise<boolean> {
   let webhook = await MessageDistributor.findWebhook(channel)
   if (webhook) {
-    await DatabaseManager.changeSetting(guildData, 'webhook', `${webhook.id}/${webhook.token}`)
+    DatabaseManager.changeSetting(guildData, 'webhook', `${webhook.id}/${webhook.token}`)
     return true
   }
 
   webhook = await MessageDistributor.createWebhook(guildData, channel)
   if (webhook) {
-    await DatabaseManager.changeSetting(guildData, 'webhook', `${webhook.id}/${webhook.token}`)
+    DatabaseManager.changeSetting(guildData, 'webhook', `${webhook.id}/${webhook.token}`)
     return true
   }
 
