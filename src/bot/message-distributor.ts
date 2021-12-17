@@ -137,7 +137,7 @@ export default class MessageDistributor {
       }
     }
 
-    const channel = await Core.channels.fetch(data.channel.toString()) as TextChannel
+    const channel = await MessageDistributor.getChannel(data.channel.toString())
 
     // check if channel is valid
     if (!channel) {
@@ -282,6 +282,14 @@ export default class MessageDistributor {
     } catch (ex) {
       Logger.error(ex)
       return 'retry'
+    }
+  }
+
+  private static getChannel(id: string): Promise<TextChannel | null> {
+    try {
+      return Core.channels.fetch(id) as Promise<TextChannel>
+    } catch (ex) {
+      return null
     }
   }
 
