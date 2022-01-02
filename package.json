@@ -1,7 +1,41 @@
 {
-  "name": "freestuffbot-discord",
+  "name": "freestuff-mono",
+  "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "discord-interactions"
-  ]
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint"
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  },
+  "turbo": {
+    "pipeline": {
+      "build": {
+        "dependsOn": [ "^build" ],
+        "outputs": [ "dist/**" ]
+      },
+      "lint": {
+        "outputs": []
+      },
+      "test": {
+        "dependsOn": [ "build" ]
+      },
+      "deploy": {
+        "dependsOn": [ "build", "test", "lint" ]
+      },
+      "dev": {
+        "cache": false
+      }
+    }
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=14.0.0"
+  }
 }

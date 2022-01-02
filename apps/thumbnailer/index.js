@@ -1,16 +1,16 @@
 const express = require('express')
-const { config: loadDotenv } = require('dotenv')
-const isDocker = require('is-docker')
 
 // Setup
 
-if (!isDocker()) loadDotenv()
+let port = 5051
+
+if (process.argv.includes('--dev')) {
+  port = require('config/dev-config').services.thumbnailer.port
+}
 
 const { generateImage } = require('./generator.js')
 
 const app = express()
-const port = process.env.PORT || 5051
-// app.use(require('morgan')('tiny'))
 app.use(require('helmet')())
 app.use(express.json())
 app.listen(port, () => console.log(`Server listening on port ${port}`))

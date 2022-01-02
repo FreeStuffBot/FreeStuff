@@ -4,21 +4,23 @@
   "description": "A thumbnail generator microservice",
   "main": "index.js",
   "scripts": {
-    "start": "node ."
+    "start": "node .",
+    "dev": "node . --dev"
   },
   "author": "Andreas May (@maanex)",
   "license": "MIT",
   "dependencies": {
     "canny-edge-detector": "^1.0.0",
     "colorthief": "^2.3.2",
-    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "helmet": "^4.4.1",
     "image-js": "^0.31.4",
-    "is-docker": "^2.1.1",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "prom-client": "^13.1.0",
     "skia-canvas": "^0.9.27"
+  },
+  "devDependencies": {
+    "config": "*"
   }
 }

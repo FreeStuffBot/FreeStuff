@@ -13,7 +13,11 @@ This is a monorepo that hosts all of FreeStuff's **public** services and modules
 
 Websites are in seperate repos. Internal tooling is closed source.
 
-All packages can be found in the `@FreeStuffBot` folder.
+All packages can be found in the `packages` folder.
+
+All apps can be found in the `apps` folder.
+
+Legacy code can be found in the `legacy` folder.
 
 
 ## Git branches

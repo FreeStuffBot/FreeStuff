@@ -1,14 +1,14 @@
 module.exports = {
   root: true,
+  parser: '@typescript-eslint/parser',
   env: {
-    browser: true,
     node: true
   },
   extends: [
-    '@nuxtjs/eslint-config-typescript',
-    'plugin:nuxt/recommended'
+    'maanex'
   ],
   plugins: [
+    '@typescript-eslint',
   ],
   rules: {
     'no-multiple-empty-lines': [ 'warn', { max: 2, maxEOF: 1 } ],
