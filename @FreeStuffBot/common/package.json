@@ -1,0 +1,32 @@
+{
+  "name": "@freestuffbot/common",
+  "version": "0.2.10",
+  "description": "A set of common funcionality shared across different freestuff microservices",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint --ext .ts --ignore-path .gitignore src/**/*.ts",
+    "dev": "tsc && node --trace-warnings ./build/index.js",
+    "test": "echo \"Error: no tests specified\" && exit 0",
+    "prepub": "npm run lint && npm run build && npm run test && npm pub"
+  },
+  "publishConfig": {
+    "@freestuffbot:registry": "https://npm.pkg.github.com"
+  },
+  "author": "FreeStuff Team",
+  "devDependencies": {
+    "@types/mongodb": "^4.0.7",
+    "@types/node": "^16.9.6",
+    "@typescript-eslint/eslint-plugin": "^4.31.2",
+    "@typescript-eslint/parser": "^4.31.2",
+    "eslint": "^7.32.0",
+    "eslint-config-maanex": "^1.1.2",
+    "reflect-metadata": "^0.1.13",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "@freestuffbot/typings": "^1.3.5",
+    "cordo": "^1.8.4"
+  }
+}

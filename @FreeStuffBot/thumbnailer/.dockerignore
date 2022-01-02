@@ -1,0 +1,10 @@
+
+/node_modules
+
+private.key
+.env
+
+.git
+
+*.md
+*.MD

@@ -1,5 +1,5 @@
-The FreeStuff Bot for Discord is licensed under the GNU General Public License.
-Copyright (c) 2020 Andreas May
+The FreeStuff Bot is licensed under the GNU General Public License.
+Copyright (c) 2020-2022 Andreas May
 
 
                     GNU GENERAL PUBLIC LICENSE
