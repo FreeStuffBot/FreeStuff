@@ -18,9 +18,7 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "prom-client": "^13.1.0",
-    "skia-canvas": "^0.9.27"
-  },
-  "devDependencies": {
+    "skia-canvas": "^0.9.27",
     "config": "*"
   }
 }

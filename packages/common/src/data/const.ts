@@ -1,6 +1,6 @@
 import { Currency, GameInfo, Platform, PriceClass, Theme } from '@freestuffbot/typings'
-import Util from './lib/util'
-import Localisation from './lib/localisation'
+import Util from '../lib/util'
+import Localisation from '../lib/localisation'
 
 
 export default class Const {

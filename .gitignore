@@ -4,8 +4,11 @@ files/
 build/
 dist/
 
-config.js
+config.private.js
 
 private.key
 .env
+.turbo
+
+dev-*.js
 

@@ -1,6 +1,30 @@
 {
   "name": "discord-interactions",
   "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT"
+  "main": "build/index.js",
+  "scripts": {
+    "start": "node --icu-data-dir=node_modules\\full-icu ./dist/index.js",
+    "build": "tsc",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "dev": "tsc && node --icu-data-dir=node_modules\\full-icu --trace-warnings ./dist/index.js",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "license": "ISC",
+  "author": "FreeStuff Bot Team",
+  "contributors": [
+    "Andreas May (https://github.com/Maanex)",
+    "Rami Sabbagh (https://github.com/Rami-Sabbagh)",
+    "Seyhan Halil (https://github.com/EasyThe)",
+    "Bartosz Król (https://github.com/badosz0)"
+  ],
+  "dependencies": {
+    "@freestuffbot/common": "*",
+    "cordo": "^1.9.5",
+    "express": "^4.17.2",
+    "typescript": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "config": "*"
+  }
 }

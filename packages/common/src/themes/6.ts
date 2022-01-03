@@ -1,6 +1,6 @@
 import { GameInfo, GuildData, ThemeBuilder } from "@freestuffbot/typings"
 import { InteractionApplicationCommandCallbackData } from "cordo"
-import Const from "../const"
+import Const from "../data/const"
 import { roleIdToMention } from "./themeutils"
 
 

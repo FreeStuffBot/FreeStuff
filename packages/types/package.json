@@ -5,7 +5,6 @@
   "main": "index.js",
   "types": "types/index.d.ts",
   "scripts": {
-    "build": "tsc",
     "lint": "eslint --ext .ts --ignore-path .gitignore types/*.d.ts",
     "test": "echo \"Error: no tests specified\" && exit 0",
     "prepub": "npm run lint && npm run build && npm run test && npm pub"

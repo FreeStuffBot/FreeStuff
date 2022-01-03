@@ -1,14 +1,8 @@
 const express = require('express')
-
-// Setup
-
-let port = 5051
-
-if (process.argv.includes('--dev')) {
-  port = require('config/dev-config').services.thumbnailer.port
-}
-
+const config = require('./config.js')
 const { generateImage } = require('./generator.js')
+
+const port = config.port || 5051
 
 const app = express()
 app.use(require('helmet')())
