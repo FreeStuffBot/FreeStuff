@@ -1,8 +1,9 @@
 
 
 export type configjs = {
-  port: number,
-  discordClientId: string,
-  discordPublicKey: string,
-  admins: string[]
+  port: number
+  apiToken: string
+  baseUrl: string
+  globalRateLimit: number
+  cacheTtlChannels: number
 }

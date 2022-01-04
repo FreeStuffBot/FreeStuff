@@ -2,6 +2,7 @@ import { Localisation, Logger } from "@freestuffbot/common"
 import Cordo from "cordo"
 import { config } from "."
 import * as express from 'express'
+import { getChannels } from "./router/channels"
 
 
 export default class Modules {
@@ -10,7 +11,9 @@ export default class Modules {
     const app = express()
     app.set('trust proxy', 1)
 
-    app.use('/', Cordo.useWithExpress(config.discordPublicKey))
+    app.get('/channels/:guild', getChannels)
+
+    app.all('*', (_, res) => res.status(400).end())
 
     app.listen(config.port, undefined, () => {
       Logger.process(`Server launched at port ${config.port}`)
