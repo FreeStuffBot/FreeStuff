@@ -24,7 +24,7 @@ export default class RestGateway {
 
   public static startLoop() {
     // this is so badly solved, please someone implement this entire class properly thanks
-    const frequency = 2
+    const frequency = 5
     const bucketsBlocked = new Set()
     let blocked = false
     let remaining = 0
@@ -41,8 +41,9 @@ export default class RestGateway {
       remaining = ~~(config.globalRateLimit / frequency)
       offset = 0
 
-      while (remaining > 0 && RestGateway.outgoingQueue.length) {
+      while (remaining > 0 && RestGateway.outgoingQueue.length > offset) {
         item = RestGateway.outgoingQueue[offset]
+
         if (item.bucket && bucketsBlocked.has(item.bucket)) {
           offset++
           continue

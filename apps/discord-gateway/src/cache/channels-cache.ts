@@ -10,9 +10,9 @@ export default class ChannelsCache {
   /**
    * @returns data on success, null on cache hit but empty data, undefined on non cache hit
    */
-  public static get(guild: string): DataChannel[] | null | undefined {
+  public static get(guild: string, softcache = false): DataChannel[] | null | undefined {
     if (!ChannelsCache.cacheData.has(guild)) return undefined
-    if (Date.now() - ChannelsCache.cacheAge.get(guild) > config.cacheTtlChannels) return undefined
+    if (Date.now() - ChannelsCache.cacheAge.get(guild) > (softcache ? config.cacheTtlChannelsMin : config.cacheTtlChannelsMax)) return undefined
     return ChannelsCache.cacheData.get(guild)
   }
 
@@ -23,7 +23,7 @@ export default class ChannelsCache {
 
   public static purge() {
     for (const guild of ChannelsCache.cacheAge.keys()) {
-      if (Date.now() - ChannelsCache.cacheAge.get(guild) < config.cacheTtlChannels) return
+      if (Date.now() - ChannelsCache.cacheAge.get(guild) < config.cacheTtlChannelsMax) return
 
       ChannelsCache.cacheData.delete(guild)
       ChannelsCache.cacheAge.delete(guild)

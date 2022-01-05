@@ -1,8 +1,9 @@
-import { Localisation, Logger } from "@freestuffbot/common"
-import Cordo from "cordo"
+import { Logger } from "@freestuffbot/common"
 import { config } from "."
 import * as express from 'express'
 import { getChannels } from "./router/channels"
+import { getGuild } from "./router/guild"
+import { getMember } from "./router/member"
 
 
 export default class Modules {
@@ -12,6 +13,8 @@ export default class Modules {
     app.set('trust proxy', 1)
 
     app.get('/channels/:guild', getChannels)
+    app.get('/guild/:guild', getGuild)
+    app.get('/member/:guild', getMember)
 
     app.all('*', (_, res) => res.status(400).end())
 

@@ -1,11 +1,12 @@
 import ChannelsData from "../data/channels-data"
+import { MagicNumber } from "../lib/magic-number"
 import { DataChannel } from "../types/data"
 import RestGateway from "./rest-gateway"
 
 
-export default class ChannelsAPI {
+export default class ChannelsApi {
 
-  public static async fetchChannels(guild: string, retry = true): Promise<DataChannel[] | null> {
+  public static async fetchChannels(guild: string, directives: string[], retry = true): Promise<DataChannel[] | null | MagicNumber> {
     const res = await RestGateway.queue({
       method: 'GET',
       bucket: guild,
@@ -16,10 +17,10 @@ export default class ChannelsAPI {
       return null
 
     if (res.status >= 200 && res.status < 300)
-      return ChannelsData.parseRaw(res.data)
+      return ChannelsData.parseRaw(res.data, guild, directives)
 
     if (retry)
-      return this.fetchChannels(guild, false)
+      return await this.fetchChannels(guild, directives, false)
 
     return undefined
   }
