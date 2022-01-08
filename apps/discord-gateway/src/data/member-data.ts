@@ -1,7 +1,7 @@
 import MemberApi from "../api/member-api"
 import MemberCache from "../cache/member-cache"
 import { MagicNumber, MAGICNUMBER_BAD_GATEWAY } from "../lib/magic-number"
-import { DataMember } from "../types/data"
+import { DataMember } from "@freestuffbot/typings/types/internal/gateway-discord"
 
 
 export default class MemberData {

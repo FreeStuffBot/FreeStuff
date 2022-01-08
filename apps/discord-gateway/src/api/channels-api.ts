@@ -1,6 +1,6 @@
 import ChannelsData from "../data/channels-data"
 import { MagicNumber } from "../lib/magic-number"
-import { DataChannel } from "../types/data"
+import { DataChannel } from "@freestuffbot/typings/types/internal/gateway-discord"
 import RestGateway from "./rest-gateway"
 
 

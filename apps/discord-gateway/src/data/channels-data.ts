@@ -2,7 +2,7 @@ import ChannelsApi from "../api/channels-api"
 import ChannelsCache from "../cache/channels-cache"
 import { calculatePermissionsForMemberInChannel, containerToBitfield } from "../lib/discord-permissions"
 import { MagicNumber, MAGICNUMBER_BAD_GATEWAY } from "../lib/magic-number"
-import { DataChannel, DataGuild, DataMember } from "../types/data"
+import { DataChannel, DataGuild, DataMember } from "@freestuffbot/typings/types/internal/gateway-discord"
 import GuildData from "./guild-data"
 import MemberData from "./member-data"
 

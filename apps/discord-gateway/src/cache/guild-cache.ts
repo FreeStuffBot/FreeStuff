@@ -1,5 +1,5 @@
 import { config } from ".."
-import { DataGuild } from "../types/data"
+import { DataGuild } from "@freestuffbot/typings/types/internal/gateway-discord"
 
 
 export default class GuildCache {

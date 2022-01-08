@@ -1,6 +1,6 @@
 import { config } from ".."
 import MemberData from "../data/member-data"
-import { DataMember } from "../types/data"
+import { DataMember } from "@freestuffbot/typings/types/internal/gateway-discord"
 import RestGateway from "./rest-gateway"
 
 

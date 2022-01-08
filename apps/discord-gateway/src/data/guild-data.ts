@@ -1,7 +1,7 @@
 import GuildApi from "../api/guild-api"
 import GuildCache from "../cache/guild-cache"
 import { MagicNumber, MAGICNUMBER_BAD_GATEWAY } from "../lib/magic-number"
-import { DataGuild } from "../types/data"
+import { DataGuild } from "@freestuffbot/typings/types/internal/gateway-discord"
 
 
 export default class GuildData {

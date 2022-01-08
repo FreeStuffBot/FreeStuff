@@ -1,5 +1,5 @@
 import { config } from ".."
-import { DataChannel } from "../types/data"
+import { DataChannel } from "@freestuffbot/typings/types/internal/gateway-discord"
 
 
 export default class ChannelsCache {

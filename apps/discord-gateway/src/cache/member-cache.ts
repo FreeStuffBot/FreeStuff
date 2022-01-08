@@ -1,5 +1,5 @@
 import { config } from ".."
-import { DataMember } from "../types/data"
+import { DataMember } from "@freestuffbot/typings/types/internal/gateway-discord"
 
 
 export default class MemberCache {

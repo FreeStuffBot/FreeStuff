@@ -1,4 +1,4 @@
-import { DataChannel, DataGuild, DataMember } from "../types/data"
+import { DataChannel, DataGuild, DataMember } from "@freestuffbot/typings/types/internal/gateway-discord"
 
 
 type ChannelPermissionOverrides = {
@@ -109,8 +109,6 @@ export async function calculatePermissionsForMemberInChannel(member: DataMember,
         permissionsOverrides.useExternalEmojis = false
     }
   }
-  
-  
 
   return {
     sendMessages: permissionsOverrides.sendMessages ?? permissionsBase.sendMessages,
