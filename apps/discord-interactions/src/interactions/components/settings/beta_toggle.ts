@@ -1,7 +1,6 @@
 import { ReplyableComponentInteraction } from 'cordo'
-import DatabaseManager from '../../database-manager'
-import PermissionStrings from '../../../lib/permission-strings'
-import Tracker from '../../tracker'
+import PermissionStrings from 'cordo/dist/lib/permission-strings'
+import Tracker from '../../../lib/tracker'
 
 
 export default function (i: ReplyableComponentInteraction) {
@@ -10,6 +9,6 @@ export default function (i: ReplyableComponentInteraction) {
 
   Tracker.set(i.guildData, 'ACTION_BETA_ENABLED_PREVIOUSLY')
 
-  DatabaseManager.changeSetting(i.guildData, 'beta', !i.guildData.beta)
+  i.guildData.changeSetting('beta', !i.guildData.beta)
   i.state('settings_more')
 }

@@ -3,6 +3,7 @@ export { default as Themes } from './lib/themes'
 export { default as Tracking } from './lib/tracking'
 export { default as Util } from './lib/util'
 export { default as Logger } from './lib/logger'
+export { default as CustomPermissions } from './lib/custom-permissions'
 
 export { default as ThemeOne } from './themes/1'
 export { default as ThemeTwo } from './themes/2'
@@ -18,3 +19,5 @@ export { default as BaseTheme } from './themes/basetheme'
 
 export { default as Const } from './data/const'
 export { default as Emojis } from './data/emojis'
+
+export * from './struct/fragile'

@@ -1,7 +1,6 @@
 import { ReplyableComponentInteraction } from 'cordo'
 import { Const } from '@freestuffbot/common'
-import DatabaseManager from '../../database-manager'
-import PermissionStrings from '../../../lib/permission-strings'
+import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
 export default function (i: ReplyableComponentInteraction) {
@@ -13,6 +12,6 @@ export default function (i: ReplyableComponentInteraction) {
 
   const price = Const.priceClasses[parseInt(val, 10) || 0]
 
-  DatabaseManager.changeSetting(i.guildData, 'price', price)
+  i.guildData.changeSetting('price', price)
   i.state('settings_filter')
 }

@@ -1,7 +1,9 @@
 import { Localisation, Logger } from "@freestuffbot/common"
-import Cordo from "cordo"
+import Cordo, { GenericInteraction, GuildData } from "cordo"
 import { config } from "."
 import * as express from 'express'
+import RemoteConfig from "./lib/remote-config"
+import DatabaseGateway from "./services/database-gateway"
 
 
 export default class Modules {
@@ -10,9 +12,8 @@ export default class Modules {
     Cordo.init({
       botId: config.discordClientId,
       contextPath: [ __dirname, '..', 'interactions' ],
-      // TODO
-      // botAdmins: (id: string) => RemoteConfig.botAdmins.includes(id),
-      botAdmins: (id: string) => config.admins.includes(id),
+      botAdmins: (id: string) => RemoteConfig.botAdmins.includes(id),
+      immediateDefer: (_) => true,
       texts: {
         interaction_not_owned_title: '=interaction_not_owned_1',
         interaction_not_owned_description: '=interaction_not_owned_2',
@@ -26,7 +27,15 @@ export default class Modules {
       }
     })
     Cordo.addMiddlewareInteractionCallback((data, guild) => Localisation.translateObject(data, guild, data._context, 14))
-    // Cordo.setMiddlewareGuildData(guildid => DatabaseManager.getGuildData(guildid))
+    Cordo.setMiddlewareGuildData(async (guildid) => {
+      const [ error, data ] = await DatabaseGateway.fetchGuildData(guildid)
+      if (error) return null
+
+      return {
+        ...data,
+        changeSetting: (key, value) => DatabaseGateway.pushChange(data.id, key, value)
+      }
+    })
     // Cordo.setMiddlewareApiResponseHandler(res => Metrics.counterApiResponses.labels({ status: res.status }).inc())
   }
 

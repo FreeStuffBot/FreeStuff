@@ -1,7 +1,6 @@
 import { ReplyableComponentInteraction } from 'cordo'
 import { Localisation } from '@freestuffbot/common'
-import DatabaseManager from '../../database-manager'
-import PermissionStrings from '../../../lib/permission-strings'
+import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
 export default function (i: ReplyableComponentInteraction) {
@@ -14,6 +13,6 @@ export default function (i: ReplyableComponentInteraction) {
   const id = Localisation.languageToId(val)
   if (id === -1) return i.ack()
 
-  DatabaseManager.changeSetting(i.guildData, 'language', id)
+  i.guildData.changeSetting('language', id)
   i.state('settings_language')
 }

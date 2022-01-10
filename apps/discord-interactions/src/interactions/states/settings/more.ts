@@ -1,17 +1,14 @@
 import { hostname } from 'os'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag } from 'cordo'
-import { Localisation } from '@freestuffbot/common'
-import { Core, VERSION } from '../../..'
-import Manager from '../../../controller/manager'
-import Emojis from '../../emojis'
-import Tracker from '../../tracker'
+import { Emojis, Localisation } from '@freestuffbot/common'
+import Tracker from '../../../lib/tracker'
 
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_MORE')
 
-  const sharder = (typeof i.guildData.sharder === 'number') ? i.guildData.sharder : i.guildData.sharder.getLowBits()
-  const debugInfo = `\n\n**Debug info:** Shard \`${sharder % Core.options.shardCount}\` ─ Worker \`${Manager.getSelfUUID()}\` ─ Container \`${hostname() || 'unknown'}\` ─ Node \`${process.env.NODE_ID}\` ─ Version \`${VERSION}\` ─ Guildid \`${i.guild_id}\` ─ Migrated \`${!!i.guildData?.webhook}\``
+  // const debugInfo = `\n\n**Debug info:** Container \`${hostname() || 'unknown'}\` ─ Node \`${process.env.NODE_ID}\` ─ Version \`${VERSION}\` ─ Guildid \`${i.guild_id}\``
+  const debugInfo = 'TODO' // TODO
 
   return {
     title: '=settings_more_ui_1',
@@ -39,7 +36,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_main',
         label: '=generic_back',
-        emoji: { id: Emojis.caretLeft.id }
+        emoji: Emojis.caretLeft.toObject()
       },
       {
         type: ComponentType.BUTTON,

@@ -16,6 +16,7 @@ type PermissionsContainer = {
   manageWebhooks: boolean
   addReactions: boolean
   useExternalEmojis: boolean
+  embedLinks: boolean
 }
 
 export async function calculatePermissionsForMemberInChannel(member: DataMember, channel: DataChannel & ChannelPermissionOverrides, guild: DataGuild): Promise<PermissionsContainer> {
@@ -37,7 +38,8 @@ export async function calculatePermissionsForMemberInChannel(member: DataMember,
     viewChannel: false,
     manageWebhooks: false,
     addReactions: false,
-    useExternalEmojis: false
+    useExternalEmojis: false,
+    embedLinks: false
   }
 
   for (const role of roles) {
@@ -51,6 +53,8 @@ export async function calculatePermissionsForMemberInChannel(member: DataMember,
       permissionsBase.addReactions = true
     if (!permissionsBase.useExternalEmojis && hasBit(role.permissionsInt, BIT_USE_EXTERNAL_EMOJIS))
       permissionsBase.useExternalEmojis = true
+    if (!permissionsBase.embedLinks && hasBit(role.permissionsInt, BIT_EMBED_LINKS))
+      permissionsBase.embedLinks = true
   }
 
   const overridesToCheck = [ member.id, ...roles.reverse().map(r => r.id) ]
@@ -65,7 +69,8 @@ export async function calculatePermissionsForMemberInChannel(member: DataMember,
     viewChannel: null as boolean,
     manageWebhooks: null as boolean,
     addReactions: null as boolean,
-    useExternalEmojis: null as boolean
+    useExternalEmojis: null as boolean,
+    embedLinks: null as boolean
   }
 
   let allow: bigint
@@ -108,6 +113,13 @@ export async function calculatePermissionsForMemberInChannel(member: DataMember,
       else if (hasBit(deny, BIT_USE_EXTERNAL_EMOJIS))
         permissionsOverrides.useExternalEmojis = false
     }
+
+    if (permissionsOverrides.embedLinks === null) {
+      if (hasBit(allow, BIT_EMBED_LINKS))
+        permissionsOverrides.embedLinks = true
+      else if (hasBit(deny, BIT_EMBED_LINKS))
+        permissionsOverrides.embedLinks = false
+    }
   }
 
   return {
@@ -115,7 +127,8 @@ export async function calculatePermissionsForMemberInChannel(member: DataMember,
     viewChannel: permissionsOverrides.viewChannel ?? permissionsBase.viewChannel,
     manageWebhooks: permissionsOverrides.manageWebhooks ?? permissionsBase.manageWebhooks,
     addReactions: permissionsOverrides.addReactions ?? permissionsBase.addReactions,
-    useExternalEmojis: permissionsOverrides.useExternalEmojis ?? permissionsBase.useExternalEmojis
+    useExternalEmojis: permissionsOverrides.useExternalEmojis ?? permissionsBase.useExternalEmojis,
+    embedLinks: permissionsOverrides.embedLinks ?? permissionsBase.embedLinks
   }
 }
 
@@ -126,6 +139,7 @@ export function containerToBitfield(permissions: PermissionsContainer) {
   if (permissions.manageWebhooks) out |= (1 << 2)
   if (permissions.addReactions) out |= (1 << 3)
   if (permissions.useExternalEmojis) out |= (1 << 4)
+  if (permissions.embedLinks) out |= (1 << 5)
   return out
 }
 
@@ -135,7 +149,8 @@ function containerAllPermissions(): PermissionsContainer {
     viewChannel: true,
     manageWebhooks: true,
     addReactions: true,
-    useExternalEmojis: true
+    useExternalEmojis: true,
+    embedLinks: true
   }
 }
 
@@ -143,6 +158,7 @@ const BIT_ADMINISTRATOR = 1n << 3n
 const BIT_ADD_REACTIONS = 1n << 6n
 const BIT_VIEW_CHANNEL = 1n << 10n
 const BIT_SEND_MESSAGES = 1n << 11n
+const BIT_EMBED_LINKS = 1n << 14n
 const BIT_USE_EXTERNAL_EMOJIS = 1n << 18n
 const BIT_MANAGE_WEBHOOKS = 1n << 29n
 

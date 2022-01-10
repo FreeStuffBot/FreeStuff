@@ -1,17 +1,15 @@
-import { Const, Localisation } from '@freestuffbot/common'
+import { Const, Emojis, Localisation } from '@freestuffbot/common'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, InteractionType } from 'cordo'
-import { TextChannel } from 'discord.js'
-import { Core } from '../../..'
-import Experiments from '../../../controller/experiments'
-import FreeStuffBot from '../../../freestuffbot'
-import Emojis from '../../emojis'
-import Tracker from '../../tracker'
+import Errors from '../../../lib/errors'
+import Tracker from '../../../lib/tracker'
+
 
 
 const recentlyInSetup: string[] = []
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
-  if (!i.guildData) return { title: 'An error occured' }
+  if (!i.guildData) return Errors.handleError(Errors.createStderrNoGuilddata())
+
   const firstTimeOnPage = !Tracker.isTracked(i.guildData, 'PAGE_DISCOVERED_SETTINGS_MAIN')
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_MAIN')
 
@@ -23,13 +21,6 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   if ((hintChannel || hintRole || hintFilter || hintDisplay) && !recentlyInSetup.includes(i.guild_id)) {
     recentlyInSetup.push(i.guild_id)
     setTimeout(() => recentlyInSetup.splice(0, 1), 1000 * 60 * 5)
-  }
-
-  const webhookMigrationNotice = showWebhookMigrationNotice(i)
-  let image: string | undefined
-  if (webhookMigrationNotice) {
-    image = FreeStuffBot.webhookMigrationImages[i.guildData.language]
-      || FreeStuffBot.webhookMigrationImages.default
   }
 
   const delayed = !firstTimeOnPage && i.type === InteractionType.COMMAND
@@ -57,28 +48,27 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
   return {
     title: '=settings_main_ui_1',
     description,
-    image,
     components: [
       {
         type: ComponentType.BUTTON,
         style: hintChannel ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_channel',
-        label: i.guildData?.channel ? '=settings_main_btn_channel_change' : '=settings_main_btn_channel_set',
-        emoji: { id: Emojis.channel.id }
+        label: i.guildData.channel ? '=settings_main_btn_channel_change' : '=settings_main_btn_channel_set',
+        emoji: Emojis.channel.toObject()
       },
       {
         type: ComponentType.BUTTON,
         style: hintRole ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_role',
-        label: i.guildData?.role ? '=settings_main_btn_role_change' : '=settings_main_btn_role_set',
-        emoji: { id: Emojis.mention.id }
+        label: i.guildData.role ? '=settings_main_btn_role_change' : '=settings_main_btn_role_set',
+        emoji: Emojis.mention.toObject()
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_language',
         label: '=lang_name',
-        emoji: { name: Emojis.fromFlagName(Localisation.text(i.guildData, '=lang_flag_emoji')).string }
+        emoji: Emojis.fromFlagName(Localisation.text(i.guildData, '=lang_flag_emoji')).toObject()
       },
       {
         type: ComponentType.LINE_BREAK
@@ -117,23 +107,4 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       guide: Const.links.guide
     }
   }
-}
-
-function showWebhookMigrationNotice(i: GenericInteraction): boolean {
-  if (!Experiments.runExperimentOnServer('webhook_migration', i.guildData))
-    return false
-
-  if (!i.channel_id)
-    return false
-
-  const channel = Core.channels.resolve(i.channel_id) as TextChannel
-  if (!channel) return false
-
-  const guild = Core.guilds.resolve(i.guild_id)
-  if (!guild) return false
-
-  const member = guild.members.resolve(Core.user.id)
-  if (!member) return false
-
-  return !channel.permissionsFor(member)?.has('MANAGE_WEBHOOKS')
 }

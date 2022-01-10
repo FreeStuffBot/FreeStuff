@@ -1,6 +1,11 @@
-import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
-import { Localisation, Emojis } from '@freestuffbot/common'
+import { ButtonStyle, ChannelType, ComponentType, GenericInteraction, GuildData, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
+import { Localisation, Emojis, CustomPermissions } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
+import Tracker from '../../../lib/tracker'
+import DiscordGateway from '../../../services/discord-gateway'
+import Errors from '../../../lib/errors'
+import { DataChannel } from '@freestuffbot/typings'
+import { CustomChannelPermissions } from '@freestuffbot/common/dist/lib/custom-permissions'
 
 
 const recommendedChannelRegex = /free|game|gaming|deal/i
@@ -8,9 +13,10 @@ const filterOutChannelRegex1 = /rules|meme|support/i
 const filterOutChannelRegex2 = /log|help|selfies/i
 const filterOutChannelRegex3 = /team|partner|suggestions/i
 const highProbChannelRegex = /announcement|new|general|computer|play|important|feed|bot|commands/i
+const sussyRegex = /(^|-|_)(sus(sy)?|amon?g-?_?us)($|-|_)|/i
 
-function isRecommended(i: GenericInteraction, c: GuildChannel) {
-  return recommendedChannelRegex.test(c.name) || i.channel_id === c.id || i.guildData.channel?.toString() === c.id
+function isRecommended(i: GenericInteraction, c: DataChannel) {
+  return recommendedChannelRegex.test(c.name) || i.channel_id === c.id
 }
 
 type Options = {
@@ -19,15 +25,16 @@ type Options = {
 }
 
 export default async function (i: GenericInteraction, args: [ Options ]): Promise<InteractionApplicationCommandCallbackData> {
-  if (!i.guildData) return { title: 'An error occured' }
+  if (!i.guildData) return Errors.handleError(Errors.createStderrNoGuilddata())
+
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
 
-  let channelsFound = [ ...Core.guilds.resolve(i.guild_id).channels.cache.values() ]
-    .filter(c => (c.type === 'GUILD_TEXT' || c.type === 'GUILD_NEWS')) as (TextChannel | NewsChannel)[]
-
-  const self = await Core.guilds.resolve(i.guild_id).members.fetch(Core.user.id)
+  const [ error, allChannels ] = await DiscordGateway.fetchChannels(i.guild_id)
+  if (error) return Errors.handleError(error)
 
   let youHaveTooManyChannelsStage = 0
+  let channelsFound = allChannels
+    .filter(c => (c.type === ChannelType.GUILD_TEXT || c.type === ChannelType.GUILD_NEWS))
 
   // ah dang list is too long, let's start filtering some out
   if (channelsFound.length > 24) {
@@ -35,7 +42,7 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
     youHaveTooManyChannelsStage++
   }
   if (channelsFound.length > 24) {
-    channelsFound = channelsFound.filter(c => self.permissionsIn(c).has('VIEW_CHANNEL') || isRecommended(i, c))
+    channelsFound = channelsFound.filter(c => CustomPermissions.parseChannel(c.permissions).viewChannel || isRecommended(i, c))
     youHaveTooManyChannelsStage++
   }
   if (channelsFound.length > 24) {
@@ -57,43 +64,17 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
 
   const hereText = ` (${Localisation.text(i.guildData, '=settings_channel_list_here')})`
 
-  const channels = channelsFound
-    .sort((a, b) =>
-      (isRecommended(i, a) ? -1000 : 0)
-      - (isRecommended(i, b) ? -1000 : 0)
-      + (a.position + (a.parent?.position || 0) * 100)
-      - (b.position + (b.parent?.position || 0) * 100)
-    )
-    .slice(0, 24)
-    .map((c) => {
-      const p = c.permissionsFor(self)
-      let description = '' // (c as TextChannel).topic?.substr(0, 50) || ''
-      if (!p.has('VIEW_CHANNEL')) description = '⚠️ ' + Localisation.text(i.guildData, '=settings_channel_list_warning_missing_view_channel')
-      else if (!p.has('MANAGE_WEBHOOKS')) description = '⚠️ ' + Localisation.text(i.guildData, '=settings_channel_list_warning_missing_manage_webhooks')
-      else if (!p.has('SEND_MESSAGES')) description = '=settings_channel_list_warning_missing_send_messages'
-      else if (!p.has('EMBED_LINKS')) description = '=settings_channel_list_warning_missing_embed_messages'
-      else if (c.name.includes('amogus') || c.name.includes('sus')) description = 'sus channel'
+  const parentOrder = new Map()
+  parentOrder.set(null, 0)
+  for (const channel of allChannels) {
+    if (channel.type === ChannelType.GUILD_CATEGORY)
+      parentOrder.set(channel.id, channel.position)
+  }
 
-      return {
-        label: (c.id === i.channel_id) && (c.name.length + hereText.length <= 25)
-          ? c.name.split('\\').join('') + hereText
-          : sanitizeChannelName(c.name, 25),
-        value: c.id,
-        default: i.guildData.channel?.toString() === c.id,
-        description,
-        emoji: {
-          id: (c.name.includes('amogus') || c.name.includes('sus'))
-            ? Emojis.amogus.id
-            : (c.type === 'GUILD_NEWS')
-                ? isRecommended(i, c)
-                  ? Emojis.announcementChannelGreen.id
-                  : Emojis.announcementChannel.id
-                : isRecommended(i, c)
-                  ? Emojis.channelGreen.id
-                  : Emojis.channel.id
-        }
-      }
-    })
+  const channels = channelsFound
+    .sort((a, b) => sortChannels(a, b, i, parentOrder))
+    .slice(0, 24)
+    .map((c) => channelToDropdownOption(c, i, hereText))
 
   const options: MessageComponentSelectOption[] = [
     {
@@ -101,7 +82,7 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
       value: '0',
       default: !i.guildData.channel,
       description: '=settings_channel_list_no_channel_2',
-      emoji: { id: Emojis.no.id }
+      emoji: Emojis.no.toObject()
     },
     ...channels
   ]
@@ -131,17 +112,96 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_main',
         label: '=generic_back',
-        emoji: { id: Emojis.caretLeft.id }
+        emoji: Emojis.caretLeft.toObject()
       }
     ],
     footer: PermissionStrings.containsManageServer(i.member.permissions) ? '' : '=settings_permission_disclaimer'
   }
 }
 
+
+/**
+ * Compares two channels for their order in discord
+ */
+function sortChannels(a: DataChannel, b: DataChannel, i: GenericInteraction, parentOrder: Map<string, number>): number {
+  return (isRecommended(i, a) ? -1000 : 0)
+    - (isRecommended(i, b) ? -1000 : 0)
+    + (a.position + (parentOrder.get(a.parentId) ?? 0) * 100)
+    - (b.position + (parentOrder.get(b.parentId) ?? 0) * 100)
+}
+
+
+/**
+ * Converts a channel object to a dropdown option
+ */
+function channelToDropdownOption(c: DataChannel, i: GenericInteraction, hereText: string): MessageComponentSelectOption {
+  const permissions = CustomPermissions.parseChannel(c.permissions)
+  const sussy = sussyRegex.test(c.name)
+  const recommended = isRecommended(i, c)
+
+  const description = getDescriptionForChannel(i.guildData, permissions, sussy)
+
+  const label = (c.id === i.channel_id) && (c.name.length + hereText.length <= 25)
+    ? c.name.split('\\').join('') + hereText
+    : sanitizeChannelName(c.name, 25)
+
+  const emoji = getEmojiForChannel(recommended, c.type, sussy)
+
+  return {
+    label,
+    value: c.id,
+    default: i.guildData.channel?.toString() === c.id,
+    description,
+    emoji
+  }
+}
+
+
+/**
+ * Finds the right description to use for a channel
+ */
+function getDescriptionForChannel(guildData: GuildData, permissions: CustomChannelPermissions, sussy: boolean): string {
+  if (!permissions.viewChannel)
+    return '⚠️ ' + Localisation.text(guildData, '=settings_channel_list_warning_missing_view_channel')
+
+  if (!permissions.manageWebhooks)
+    return '⚠️ ' + Localisation.text(guildData, '=settings_channel_list_warning_missing_manage_webhooks')
+
+  if (!permissions.sendMessages)
+    return '=settings_channel_list_warning_missing_send_messages'
+
+  if (!permissions.embedLinks)
+    return '=settings_channel_list_warning_missing_embed_messages'
+
+  if (sussy)
+    return 'sussy'
+
+  return ''
+}
+
+
+/**
+ * Finds the right emoji to use for a channel
+ */
+function getEmojiForChannel(recommended: boolean, type: number, sussy: boolean): ({ name: string } | { id: string }) {
+  if (sussy) return Emojis.amogus.toObject()
+  return (type === ChannelType.GUILD_NEWS)
+      ? recommended
+        ? Emojis.announcementChannelGreen.toObject()
+        : Emojis.announcementChannel.toObject()
+      : recommended
+        ? Emojis.channelGreen.toObject()
+        : Emojis.channel.toObject()
+}
+
+
+/**
+ * Trims the name to maxlength and removes invalid characters
+ */
 function sanitizeChannelName(name: string, maxlength: number): string {
   if (name.length < maxlength) return name
 
-  name = name.substr(0, maxlength)
+  name = name.substring(0, maxlength)
   if (name.split('').some(n => n.charCodeAt(0) > 0xFF))
     // eslint-disable-next-line no-control-regex
     name = name.replace(/((?:[\0-\x08\x0B\f\x0E-\x1F\uFFFD\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))/g, '')

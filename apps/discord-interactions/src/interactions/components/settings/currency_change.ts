@@ -1,7 +1,6 @@
 import { ReplyableComponentInteraction } from 'cordo'
 import { Const } from '@freestuffbot/common'
-import DatabaseManager from '../../database-manager'
-import PermissionStrings from '../../../lib/permission-strings'
+import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
 export default function (i: ReplyableComponentInteraction) {
@@ -13,6 +12,6 @@ export default function (i: ReplyableComponentInteraction) {
 
   const currency = Const.currencies[parseInt(val, 10) || 0]
 
-  DatabaseManager.changeSetting(i.guildData, 'currency', currency)
+  i.guildData.changeSetting('currency', currency)
   i.state('settings_display')
 }

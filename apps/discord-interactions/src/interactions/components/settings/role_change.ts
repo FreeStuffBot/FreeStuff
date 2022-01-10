@@ -1,7 +1,5 @@
 import { ReplyableComponentInteraction } from 'cordo'
-import { Core } from '../../../index'
-import DatabaseManager from '../../database-manager'
-import PermissionStrings from '../../../lib/permission-strings'
+import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
 export default async function (i: ReplyableComponentInteraction) {
@@ -11,15 +9,16 @@ export default async function (i: ReplyableComponentInteraction) {
   const val = i.data.values[0]
   if (!val) return i.ack()
 
-  const guild = await Core.guilds.fetch(i.guild_id)
   if (val === '0') {
-    DatabaseManager.changeSetting(i.guildData, 'role', null)
+    i.guildData.changeSetting('role', null)
   } else if (val === '1') {
-    DatabaseManager.changeSetting(i.guildData, 'role', '1')
+    i.guildData.changeSetting('role', '1')
   } else {
-    const role = await guild.roles.fetch(val)
-    if (!role) return i.ack()
-    DatabaseManager.changeSetting(i.guildData, 'role', role.id)
+    // TODO validate role id
+    // const role = await guild.roles.fetch(val)
+    // if (!role) return i.ack()
+    // i.guildData.changeSetting('role', role.id)
+    i.guildData.changeSetting('role', val)
   }
 
   i.state('settings_role')

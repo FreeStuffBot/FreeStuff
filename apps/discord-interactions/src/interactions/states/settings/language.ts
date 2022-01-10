@@ -1,32 +1,13 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag } from 'cordo'
-import { Localisation } from '@freestuffbot/common'
-import Emojis from '../../emojis'
-import Tracker from '../../tracker'
-import PermissionStrings from '../../../lib/permission-strings'
+import { Emojis, Localisation } from '@freestuffbot/common'
+import Errors from '../../../lib/errors'
+import Tracker from '../../../lib/tracker'
+import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
-
-function buildDescriptionForLanguage(i: GenericInteraction, lang: { id: string, nameEn: string }, allowEastereggs: boolean): string {
-  const name = lang.nameEn[0].toUpperCase() + lang.nameEn.substr(1).toLowerCase()
-  if (lang.id.startsWith('en')) {
-    if (lang.id.endsWith('US')) {
-      return allowEastereggs
-        ? '=settings_language_list_desc_english_us_easteregg'
-        : '=settings_language_list_desc_english_us'
-    } else {
-      return '=settings_language_list_desc_english_eu'
-    }
-  }
-  const out = Localisation.text(i.guildData, '=settings_language_list_desc_generic', {
-    language: name,
-    translators: Localisation.getRaw(lang.id, 'translators', false)
-  })
-  return (out.length > 50)
-    ? out.substr(0, 47) + '...'
-    : out
-}
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
-  if (!i.guildData) return { title: 'An error occured' }
+  if (!i.guildData) return Errors.handleError(Errors.createStderrNoGuilddata())
+
   const firstTimeOnPage = !Tracker.isTracked(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
 
@@ -63,4 +44,25 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     ],
     footer: PermissionStrings.containsManageServer(i.member.permissions) ? '' : '=settings_permission_disclaimer'
   }
+}
+
+function buildDescriptionForLanguage(i: GenericInteraction, lang: { id: string, nameEn: string }, allowEastereggs: boolean): string {
+  const name = lang.nameEn[0].toUpperCase() + lang.nameEn.substring(1).toLowerCase()
+  if (lang.id.startsWith('en')) {
+    if (!lang.id.endsWith('US'))
+      return '=settings_language_list_desc_english_eu'
+
+    return allowEastereggs
+      ? '=settings_language_list_desc_english_us_easteregg'
+      : '=settings_language_list_desc_english_us'
+  }
+
+  const out = Localisation.text(i.guildData, '=settings_language_list_desc_generic', {
+    language: name,
+    translators: Localisation.getRaw(lang.id, 'translators', false)
+  })
+
+  return (out.length > 50)
+    ? out.substring(0, 47) + '...'
+    : out
 }

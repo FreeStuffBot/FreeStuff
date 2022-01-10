@@ -1,11 +1,7 @@
 import { GuildData, ReplyableComponentInteraction } from 'cordo'
-import { GuildChannel, TextChannel } from 'discord.js'
 import { Localisation } from '@freestuffbot/common'
-import { Core } from '../../../index'
-import DatabaseManager from '../../database-manager'
-import PermissionStrings from '../../../lib/permission-strings'
-import MessageDistributor from '../../message-distributor'
-import Experiments from '../../../controller/experiments'
+import Experiments from '../../../lib/experiments'
+import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
 export default async function (i: ReplyableComponentInteraction) {
@@ -18,8 +14,8 @@ export default async function (i: ReplyableComponentInteraction) {
   const useWebhooks = Experiments.runExperimentOnServer('webhook_migration', i.guildData)
 
   if (val === '0') {
-    DatabaseManager.changeSetting(i.guildData, 'channel', null)
-    DatabaseManager.changeSetting(i.guildData, 'webhook', '')
+    i.guildData.changeSetting('channel', null)
+    i.guildData.changeSetting('webhook', '')
   } else {
     const channel = await Core.channels.fetch(val) as GuildChannel
     if (!channel || (channel.type !== 'GUILD_TEXT' && channel.type !== 'GUILD_NEWS'))
@@ -45,7 +41,7 @@ export default async function (i: ReplyableComponentInteraction) {
       }
     }
 
-    DatabaseManager.changeSetting(i.guildData, 'channel', channel.id)
+    i.guildData.changeSetting('channel', channel.id)
   }
 
   i.state('settings_channel')

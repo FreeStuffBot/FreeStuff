@@ -1,12 +1,13 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
-import { Const, Localisation } from '@freestuffbot/common'
-import Emojis from '../../emojis'
-import Tracker from '../../tracker'
-import PermissionStrings from '../../../lib/permission-strings'
+import { Const, Emojis, Localisation } from '@freestuffbot/common'
+import Errors from '../../../lib/errors'
+import Tracker from '../../../lib/tracker'
+import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
-  if (!i.guildData) return { title: 'An error occured' }
+  if (!i.guildData) return Errors.handleError(Errors.createStderrNoGuilddata())
+
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_FILTER')
 
   const platformOptions: MessageComponentSelectOption[] = Const.platforms.map(p => ({
@@ -31,7 +32,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
           : `${c.from}${i.guildData.currency.symbol}`
       }
     ),
-    default: i.guildData?.price.id === c.id
+    default: i.guildData.price.id === c.id
   }))
 
   return {
@@ -58,13 +59,17 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_main',
         label: '=generic_back',
-        emoji: { id: Emojis.caretLeft.id }
+        emoji: Emojis.caretLeft.toObject()
       },
       {
         type: ComponentType.BUTTON,
-        style: i.guildData?.trashGames ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
+        style: i.guildData.trashGames
+          ? ButtonStyle.SUCCESS
+          : ButtonStyle.SECONDARY,
         custom_id: 'settings_trash_toggle',
-        label: i.guildData?.trashGames ? '=settings_filter_trash_on_state' : '=settings_filter_trash_on_prompt',
+        label: i.guildData.trashGames
+          ? '=settings_filter_trash_on_state'
+          : '=settings_filter_trash_on_prompt',
         emoji: { name: '🗑️' },
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },

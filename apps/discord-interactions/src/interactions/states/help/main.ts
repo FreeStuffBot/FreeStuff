@@ -13,7 +13,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         visible: !!i.guildData,
         custom_id: 'settings_main',
         label: '=page_settings',
-        emoji: { id: Emojis.settings.id },
+        emoji: Emojis.settings.toObject(),
         flags: [
           InteractionComponentFlag.ACCESS_MANAGE_SERVER,
           InteractionComponentFlag.HIDE_IF_NOT_ALLOWED
@@ -24,7 +24,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: ButtonStyle.SECONDARY,
         custom_id: 'about_main',
         label: '=page_about',
-        emoji: { id: Emojis.bot.id }
+        emoji: Emojis.bot.toObject()
       },
       {
         type: ComponentType.BUTTON,

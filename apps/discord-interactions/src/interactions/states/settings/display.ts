@@ -1,13 +1,13 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption, MessageEmbed } from 'cordo'
-import { Const, Localisation } from '@freestuffbot/common'
-import Emojis from '../../emojis'
-import Tracker from '../../tracker'
-import MessageDistributor from '../../message-distributor'
-import PermissionStrings from '../../../lib/permission-strings'
+import { Const, Emojis, Localisation, Themes } from '@freestuffbot/common'
+import Tracker from '../../../lib/tracker'
+import Errors from '../../../lib/errors'
+import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
 export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
-  if (!i.guildData) return { title: 'An error occured' }
+  if (!i.guildData) return Errors.handleError(Errors.createStderrNoGuilddata())
+
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_DISPLAY')
 
   const themeOptions: MessageComponentSelectOption[] = Const.themes.map(t => ({
@@ -26,18 +26,13 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       default: i.guildData.currency.id === c.id
     }))
 
-  const message = MessageDistributor.buildMessage([ Const.testAnnouncementContent ], i.guildData, true, false)
+  const message = Themes.build([ Const.testAnnouncementContent ], i.guildData, { test: true, donationNotice: false })
   const embeds: MessageEmbed[] = []
   if (message.embeds?.length) {
     if (!PermissionStrings.containsManageServer(i.member.permissions) && message.embeds[0].footer?.text)
       message.embeds[0].footer.text += ' • ' + Localisation.text(i.guildData, '=settings_permission_disclaimer')
     embeds.push(...message.embeds as MessageEmbed[])
   }
-
-  // embeds.push({
-  //   description: 'hiii',
-  //   color: Const.embedDefaultColor
-  // } as MessageEmbed)
 
   return {
     content: message.content,
@@ -61,7 +56,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_main',
         label: '=generic_back',
-        emoji: { id: Emojis.caretLeft.id }
+        emoji: Emojis.caretLeft.toObject()
       },
       {
         type: ComponentType.BUTTON,

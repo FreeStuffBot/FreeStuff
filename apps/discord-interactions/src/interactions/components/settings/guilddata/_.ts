@@ -1,7 +1,7 @@
 import { Const, Localisation } from '@freestuffbot/common'
 import { ButtonStyle, ComponentType, InteractionComponentFlag, ReplyableComponentInteraction } from 'cordo'
 import guildDataToViewString from '../../../../lib/guilddata-visualizer'
-import Tracker from '../../../tracker'
+import Tracker from '../../../../lib/tracker'
 
 
 export default function (i: ReplyableComponentInteraction) {

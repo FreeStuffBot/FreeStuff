@@ -1,7 +1,6 @@
 import { ReplyableComponentInteraction } from 'cordo'
 import { Const } from '@freestuffbot/common'
-import DatabaseManager from '../../database-manager'
-import PermissionStrings from '../../../lib/permission-strings'
+import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
 export default function (i: ReplyableComponentInteraction) {
@@ -15,6 +14,6 @@ export default function (i: ReplyableComponentInteraction) {
     .map(v => Const.platforms.find(p => p.id === v))
     .filter(p => !!p)
 
-  DatabaseManager.changeSetting(i.guildData, 'platforms', platforms)
+    i.guildData.changeSetting('platforms', platforms)
   i.state('settings_filter')
 }

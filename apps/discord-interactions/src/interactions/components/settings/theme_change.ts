@@ -1,7 +1,6 @@
 import { ReplyableComponentInteraction } from 'cordo'
 import { Const } from '@freestuffbot/common'
-import DatabaseManager from '../../database-manager'
-import PermissionStrings from '../../../lib/permission-strings'
+import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
 export default function (i: ReplyableComponentInteraction) {
@@ -13,6 +12,6 @@ export default function (i: ReplyableComponentInteraction) {
 
   const theme = Const.themes[parseInt(val, 10) || 0]
 
-  DatabaseManager.changeSetting(i.guildData, 'theme', theme)
+  i.guildData.changeSetting('theme', theme)
   i.state('settings_display')
 }

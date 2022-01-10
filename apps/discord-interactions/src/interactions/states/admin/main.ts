@@ -38,7 +38,7 @@ export default function (_i: GenericInteraction, args: [ boolean ]): Interaction
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_main',
         label: '=generic_back',
-        emoji: { id: Emojis.caretLeft.id }
+        emoji: Emojis.caretLeft.toObject()
       }
     ]
   }

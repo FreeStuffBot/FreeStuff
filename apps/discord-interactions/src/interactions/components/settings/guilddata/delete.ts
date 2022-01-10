@@ -1,6 +1,6 @@
+import { Emojis } from '@freestuffbot/common'
 import { ButtonStyle, ComponentType, InteractionComponentFlag, ReplyableComponentInteraction } from 'cordo'
-import PermissionStrings from '../../../../lib/permission-strings'
-import Emojis from '../../../emojis'
+import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
 export const onGuildDataDeleteCooldown: string[] = []
@@ -26,7 +26,7 @@ export default function (i: ReplyableComponentInteraction) {
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_guilddata_delete_cancel',
         label: '=generic_cancel',
-        emoji: { id: Emojis.caretLeft.id },
+        emoji: Emojis.caretLeft.toObject(),
         flags: [ InteractionComponentFlag.ACCESS_EVERYONE ]
       },
       {

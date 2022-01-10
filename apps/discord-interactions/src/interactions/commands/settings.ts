@@ -1,6 +1,6 @@
 import { ReplyableCommandInteraction } from 'cordo'
-import RemoteConfig from '../../controller/remote-config'
-import PermissionStrings from '../../lib/permission-strings'
+import PermissionStrings from 'cordo/dist/lib/permission-strings'
+import RemoteConfig from '../../lib/remote-config'
 
 
 /** This entire file could be ommitted but I decided to add this for transparency as it could easily be too confusing where the settings command gets handled */
