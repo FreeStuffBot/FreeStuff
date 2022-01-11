@@ -1,5 +1,5 @@
 import { Localisation, Logger } from "@freestuffbot/common"
-import Cordo, { GenericInteraction, GuildData } from "cordo"
+import Cordo from "cordo"
 import { config } from "."
 import * as express from 'express'
 import RemoteConfig from "./lib/remote-config"
@@ -11,7 +11,7 @@ export default class Modules {
   public static initCordo() {
     Cordo.init({
       botId: config.discordClientId,
-      contextPath: [ __dirname, '..', 'interactions' ],
+      contextPath: [ __dirname, 'interactions' ],
       botAdmins: (id: string) => RemoteConfig.botAdmins.includes(id),
       immediateDefer: (_) => true,
       texts: {
