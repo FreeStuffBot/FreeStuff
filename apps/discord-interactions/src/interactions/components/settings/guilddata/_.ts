@@ -1,22 +1,26 @@
 import { Const, Localisation } from '@freestuffbot/common'
 import { ButtonStyle, ComponentType, InteractionComponentFlag, ReplyableComponentInteraction } from 'cordo'
+import Errors from '../../../../lib/errors'
 import guildDataToViewString from '../../../../lib/guilddata-visualizer'
 import Tracker from '../../../../lib/tracker'
 
 
-export default function (i: ReplyableComponentInteraction) {
-  Tracker.set(i.guildData, 'ACTION_DATA_REQUESTED')
+export default async function (i: ReplyableComponentInteraction) {
+  const [ err, guildData ] = await i.guildData.fetch()
+  if (err) return Errors.handleErrorAndCommunicate(err)
 
-  const errormsg = Localisation.text(i.guildData, '=settings_guilddata_display_error', { invite: Const.links.supportInvite })
-  const guilddata = guildDataToViewString(i.guildData, 2000, errormsg)
+  Tracker.set(guildData, 'ACTION_DATA_REQUESTED')
+
+  const errormsg = Localisation.text(guildData, '=settings_guilddata_display_error', { invite: Const.links.supportInvite })
+  const guilddata = guildDataToViewString(guildData, 2000, errormsg)
   const raw = {
-    _id: i.guildData._id,
-    sharder: i.guildData.sharder,
-    channel: i.guildData.channel,
-    role: i.guildData.role,
-    filter: i.guildData.filter,
-    settings: i.guildData.settings,
-    tracker: i.guildData.tracker
+    _id: guildData._id,
+    sharder: guildData.sharder,
+    channel: guildData.channel,
+    role: guildData.role,
+    filter: guildData.filter,
+    settings: guildData.settings,
+    tracker: guildData.tracker
   }
 
   i.replyPrivately({

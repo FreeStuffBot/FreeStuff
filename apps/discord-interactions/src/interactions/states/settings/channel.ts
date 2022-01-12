@@ -4,7 +4,7 @@ import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import Tracker from '../../../lib/tracker'
 import DiscordGateway from '../../../services/discord-gateway'
 import Errors from '../../../lib/errors'
-import { DataChannel } from '@freestuffbot/typings'
+import { DataChannel, GuildData as GuildDataResolved } from '@freestuffbot/typings'
 import { CustomChannelPermissions } from '@freestuffbot/common/dist/lib/custom-permissions'
 
 
@@ -25,12 +25,13 @@ type Options = {
 }
 
 export default async function (i: GenericInteraction, args: [ Options ]): Promise<InteractionApplicationCommandCallbackData> {
-  if (!i.guildData) return Errors.handleError(Errors.createStderrNoGuilddata())
+  const [ err, guildData ] = await i.guildData.fetch()
+  if (err) return Errors.handleErrorAndCommunicate(err)
 
-  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
+  Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
 
   const [ error, allChannels ] = await DiscordGateway.fetchChannels(i.guild_id)
-  if (error) return Errors.handleError(error)
+  if (error) return Errors.handleErrorAndCommunicate(error)
 
   let youHaveTooManyChannelsStage = 0
   let channelsFound = allChannels
@@ -62,7 +63,7 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
     youHaveTooManyChannelsStage++
   }
 
-  const hereText = ` (${Localisation.text(i.guildData, '=settings_channel_list_here')})`
+  const hereText = ` (${Localisation.text(guildData, '=settings_channel_list_here')})`
 
   const parentOrder = new Map()
   parentOrder.set(null, 0)
@@ -74,13 +75,13 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
   const channels = channelsFound
     .sort((a, b) => sortChannels(a, b, i, parentOrder))
     .slice(0, 24)
-    .map((c) => channelToDropdownOption(c, i, hereText))
+    .map((c) => channelToDropdownOption(c, i, guildData, hereText))
 
   const options: MessageComponentSelectOption[] = [
     {
       label: '=settings_channel_list_no_channel_1',
       value: '0',
-      default: !i.guildData.channel,
+      default: !guildData.channel,
       description: '=settings_channel_list_no_channel_2',
       emoji: Emojis.no.toObject()
     },
@@ -89,13 +90,13 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
 
   const opts = args[0]
 
-  let description = Localisation.text(i.guildData, '=settings_channel_ui_2_regular')
+  let description = Localisation.text(guildData, '=settings_channel_ui_2_regular')
   if (youHaveTooManyChannelsStage > 2)
-    description = Localisation.text(i.guildData, '=settings_channel_ui_2_way_too_many') + '\n\n*' + Localisation.text(i.guildData, '=settings_channel_ui_too_many_channels_tip') + '*'
+    description = Localisation.text(guildData, '=settings_channel_ui_2_way_too_many') + '\n\n*' + Localisation.text(guildData, '=settings_channel_ui_too_many_channels_tip') + '*'
   else if (youHaveTooManyChannelsStage > 0)
-    description = Localisation.text(i.guildData, '=settings_channel_ui_2_too_many') + '\n\n*' + Localisation.text(i.guildData, '=settings_channel_ui_too_many_channels_tip') + '*'
+    description = Localisation.text(guildData, '=settings_channel_ui_2_too_many') + '\n\n*' + Localisation.text(guildData, '=settings_channel_ui_too_many_channels_tip') + '*'
   if (opts?.missingPermissions)
-    description += `\n\n⚠️ **${Localisation.text(i.guildData, '=settings_channel_ui_missing_permissions', { channel: opts?.changedTo, permissions: opts?.missingPermissions })}**`
+    description += `\n\n⚠️ **${Localisation.text(guildData, '=settings_channel_ui_missing_permissions', { channel: opts?.changedTo, permissions: opts?.missingPermissions })}**`
 
   return {
     title: '=settings_channel_ui_1',
@@ -134,12 +135,12 @@ function sortChannels(a: DataChannel, b: DataChannel, i: GenericInteraction, par
 /**
  * Converts a channel object to a dropdown option
  */
-function channelToDropdownOption(c: DataChannel, i: GenericInteraction, hereText: string): MessageComponentSelectOption {
+function channelToDropdownOption(c: DataChannel, i: GenericInteraction, guildData: GuildDataResolved, hereText: string): MessageComponentSelectOption {
   const permissions = CustomPermissions.parseChannel(c.permissions)
   const sussy = sussyRegex.test(c.name)
   const recommended = isRecommended(i, c)
 
-  const description = getDescriptionForChannel(i.guildData, permissions, sussy)
+  const description = getDescriptionForChannel(guildData, permissions, sussy)
 
   const label = (c.id === i.channel_id) && (c.name.length + hereText.length <= 25)
     ? c.name.split('\\').join('') + hereText
@@ -150,7 +151,7 @@ function channelToDropdownOption(c: DataChannel, i: GenericInteraction, hereText
   return {
     label,
     value: c.id,
-    default: i.guildData.channel?.toString() === c.id,
+    default: guildData.channel?.toString() === c.id,
     description,
     emoji
   }
@@ -160,7 +161,7 @@ function channelToDropdownOption(c: DataChannel, i: GenericInteraction, hereText
 /**
  * Finds the right description to use for a channel
  */
-function getDescriptionForChannel(guildData: GuildData, permissions: CustomChannelPermissions, sussy: boolean): string {
+function getDescriptionForChannel(guildData: GuildDataResolved, permissions: CustomChannelPermissions, sussy: boolean): string {
   if (!permissions.viewChannel)
     return '⚠️ ' + Localisation.text(guildData, '=settings_channel_list_warning_missing_view_channel')
 

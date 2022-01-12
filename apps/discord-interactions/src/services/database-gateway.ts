@@ -8,10 +8,16 @@ export default class DatabaseGateway {
   public static async fetchGuildData(guildid: string): Promise<Fragile<GuildData>> {
     // TODO fetch from proxy
     // TODO parse raw data
-    return [ Errors.createStderrNoGuilddata(), null ]
+    return Errors.throwStderrNoGuilddata()
+  }
+  
+  public static pushGuildDataChange(guildid: string, key: string, value: any) {
   }
 
-  public static pushChange(guildid: string, key: string, value: any) {
+  public static async fetchLanguageData(): Promise<Fragile<Record<string, Record<string, string>>>> {
+    // TODO fetch from proxy
+    // TODO parse raw data
+    return Errors.throwStderrNotInitialized()
   }
 
 }

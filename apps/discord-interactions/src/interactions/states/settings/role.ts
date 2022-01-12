@@ -12,12 +12,13 @@ type DataRole = DataGuild['roles'][number]
 const recommendedRoleRegex = /free|game|deal|ping|notification/i
 
 export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
-  if (!i.guildData) return Errors.handleError(Errors.createStderrNoGuilddata())
+  const [ err, guildData ] = await i.guildData.fetch()
+  if (err) return Errors.handleErrorAndCommunicate(err)
 
-  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_ROLE')
+  Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_ROLE')
 
   const [ error, guild ] = await DiscordGateway.fetchGuild(i.guild_id)
-  if (error) return Errors.handleError(error)
+  if (error) return Errors.handleErrorAndCommunicate(error)
 
   const roles = guild.roles
     .map(r => [ r, recommendedRoleRegex.test(r.name) ] as [ DataRole, boolean ])
@@ -34,21 +35,21 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     {
       label: '=settings_role_list_no_mention_1',
       value: '0',
-      default: !i.guildData.role || i.guildData.role?.toString() === '0',
+      default: !guildData.role || guildData.role?.toString() === '0',
       description: '=settings_role_list_no_mention_2',
       emoji: Emojis.no.toObject()
     },
     {
       label: '=settings_role_list_everyone_1',
       value: '1',
-      default: i.guildData.role?.toString() === '1',
+      default: guildData.role?.toString() === '1',
       description: '=settings_role_list_everyone_2',
       emoji: Emojis.global.toObject()
     },
     ...roles.map(([r]) => ({
       label: sanitizeRoleName(r.name, 25),
       value: r.id,
-      default: i.guildData.role?.toString() === r.id,
+      default: guildData.role?.toString() === r.id,
       emoji: recommendedRoleRegex.test(r.name)
         ? Emojis.mentionGreen.toObject()
         : Emojis.mention.toObject()
@@ -57,11 +58,11 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
 
   let text = '=settings_role_ui_2'
   if (overflow) {
-    text = Localisation.text(i.guildData, text)
+    text = Localisation.text(guildData, text)
       + '\n\n'
-      + Localisation.text(i.guildData, '=settings_role_list_hidden_permissions_disclaimer')
+      + Localisation.text(guildData, '=settings_role_list_hidden_permissions_disclaimer')
 
-      // + Localisation.text(i.guildData, everyone
+      // + Localisation.text(guildData, everyone
       //     ? '=settings_role_list_hidden_overflow_disclaimer'
       //     : '=settings_role_list_hidden_permissions_disclaimer'
       //   )

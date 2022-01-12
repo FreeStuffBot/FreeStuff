@@ -6,7 +6,7 @@ import Errors from "../lib/errors"
 export default class FreestuffData {
   
   private static readonly TWELVE_HOURS = 1000 * 60 * 60 * 12
-  private static current: Fragile<GameInfo[]> = [ Errors.createStderrNotInitialized(), null ]
+  private static current: Fragile<GameInfo[]> = Errors.throwStderrNotInitialized()
 
   public static async updateCurrentFreebies() {
     Logger.excessive('Updating current freebie list')

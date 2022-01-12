@@ -5,11 +5,12 @@ import Tracker from '../../../lib/tracker'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
-export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
-  if (!i.guildData) return Errors.handleError(Errors.createStderrNoGuilddata())
+export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
+  const [ err, guildData ] = await i.guildData.fetch()
+  if (err) return Errors.handleErrorAndCommunicate(err)
 
-  const firstTimeOnPage = !Tracker.isTracked(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
-  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
+  const firstTimeOnPage = !Tracker.syncIsTracked(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
+  Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_LANGUAGE')
 
   const options = Localisation
     .getAllLanguages()
@@ -19,7 +20,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     .map(l => ({
       label: l.name,
       value: l.id,
-      default: i.guildData.language === l.id,
+      default: guildData.language === l.id,
       description: buildDescriptionForLanguage(i, l, !firstTimeOnPage),
       emoji: { name: Emojis.fromFlagName(l.flag).string }
     }))
@@ -57,7 +58,7 @@ function buildDescriptionForLanguage(i: GenericInteraction, lang: { id: string, 
       : '=settings_language_list_desc_english_us'
   }
 
-  const out = Localisation.text(i.guildData, '=settings_language_list_desc_generic', {
+  const out = Localisation.text(i, '=settings_language_list_desc_generic', {
     language: name,
     translators: Localisation.getRaw(lang.id, 'translators', false)
   })

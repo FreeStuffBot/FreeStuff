@@ -7,16 +7,17 @@ import Tracker from '../../../lib/tracker'
 
 const recentlyInSetup: string[] = []
 
-export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
-  if (!i.guildData) return Errors.handleError(Errors.createStderrNoGuilddata())
+export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
+  const [ err, guildData ] = await i.guildData.fetch()
+  if (err) return Errors.handleErrorAndCommunicate(err)
 
-  const firstTimeOnPage = !Tracker.isTracked(i.guildData, 'PAGE_DISCOVERED_SETTINGS_MAIN')
-  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_MAIN')
+  const firstTimeOnPage = !Tracker.syncIsTracked(guildData, 'PAGE_DISCOVERED_SETTINGS_MAIN')
+  Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_MAIN')
 
-  const hintChannel = !i.guildData.channel
-  const hintRole = !hintChannel && Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_ROLE')
-  const hintFilter = !hintChannel && !hintRole && Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_FILTER')
-  const hintDisplay = !hintChannel && !hintRole && !hintFilter && Tracker.showHint(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_DISPLAY')
+  const hintChannel = !guildData.channel
+  const hintRole = !hintChannel && Tracker.syncShowHint(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_ROLE')
+  const hintFilter = !hintChannel && !hintRole && Tracker.syncShowHint(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_FILTER')
+  const hintDisplay = !hintChannel && !hintRole && !hintFilter && Tracker.syncShowHint(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_DISPLAY')
 
   if ((hintChannel || hintRole || hintFilter || hintDisplay) && !recentlyInSetup.includes(i.guild_id)) {
     recentlyInSetup.push(i.guild_id)
@@ -53,14 +54,14 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         type: ComponentType.BUTTON,
         style: hintChannel ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_channel',
-        label: i.guildData.channel ? '=settings_main_btn_channel_change' : '=settings_main_btn_channel_set',
+        label: guildData.channel ? '=settings_main_btn_channel_change' : '=settings_main_btn_channel_set',
         emoji: Emojis.channel.toObject()
       },
       {
         type: ComponentType.BUTTON,
         style: hintRole ? ButtonStyle.PRIMARY : ButtonStyle.SECONDARY,
         custom_id: 'settings_role',
-        label: i.guildData.role ? '=settings_main_btn_role_change' : '=settings_main_btn_role_set',
+        label: guildData.role ? '=settings_main_btn_role_change' : '=settings_main_btn_role_set',
         emoji: Emojis.mention.toObject()
       },
       {
@@ -68,7 +69,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_language',
         label: '=lang_name',
-        emoji: Emojis.fromFlagName(Localisation.text(i.guildData, '=lang_flag_emoji')).toObject()
+        emoji: Emojis.fromFlagName(Localisation.text(guildData, '=lang_flag_emoji')).toObject()
       },
       {
         type: ComponentType.LINE_BREAK

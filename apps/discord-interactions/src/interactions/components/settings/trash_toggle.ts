@@ -1,11 +1,15 @@
 import { ReplyableComponentInteraction } from 'cordo'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
+import Errors from '../../../lib/errors'
 
 
-export default function (i: ReplyableComponentInteraction) {
+export default async function (i: ReplyableComponentInteraction) {
   if (i.member && !PermissionStrings.containsManageServer(i.member.permissions))
     return i.ack()
 
-  i.guildData.changeSetting('trash', !i.guildData.trashGames)
+  const [ err, guildData ] = await i.guildData.fetch()
+  if (err) return i.replyPrivately(Errors.handleErrorAndCommunicate(err))
+
+  i.guildData.changeSetting('trash', !guildData.trashGames)
   i.state('settings_filter')
 }

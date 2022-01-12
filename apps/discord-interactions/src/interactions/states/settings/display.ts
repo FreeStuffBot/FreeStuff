@@ -5,32 +5,33 @@ import Errors from '../../../lib/errors'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
-export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
-  if (!i.guildData) return Errors.handleError(Errors.createStderrNoGuilddata())
+export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
+  const [ err, guildData ] = await i.guildData.fetch()
+  if (err) return Errors.handleErrorAndCommunicate(err)
 
-  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_DISPLAY')
+  Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_DISPLAY')
 
   const themeOptions: MessageComponentSelectOption[] = Const.themes.map(t => ({
     value: t.id + '',
     label: t.name,
     description: t.description,
-    default: i.guildData.theme.id === t.id,
+    default: guildData.theme.id === t.id,
     emoji: { name: t.emoji }
   }))
 
   const currencyOptions: MessageComponentSelectOption[] = Const.currencies
     .map(c => ({
       value: c.id + '',
-      label: `${c.symbol} ${Localisation.text(i.guildData, c.name)}`,
+      label: `${c.symbol} ${Localisation.text(guildData, c.name)}`,
       description: c.calculated ? '=price_converted' : '=price_actual',
-      default: i.guildData.currency.id === c.id
+      default: guildData.currency.id === c.id
     }))
 
-  const message = Themes.build([ Const.testAnnouncementContent ], i.guildData, { test: true, donationNotice: false })
+  const message = Themes.build([ Const.testAnnouncementContent ], guildData, { test: true, donationNotice: false })
   const embeds: MessageEmbed[] = []
   if (message.embeds?.length) {
     if (!PermissionStrings.containsManageServer(i.member.permissions) && message.embeds[0].footer?.text)
-      message.embeds[0].footer.text += ' • ' + Localisation.text(i.guildData, '=settings_permission_disclaimer')
+      message.embeds[0].footer.text += ' • ' + Localisation.text(guildData, '=settings_permission_disclaimer')
     embeds.push(...message.embeds as MessageEmbed[])
   }
 
@@ -48,7 +49,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
         type: ComponentType.SELECT,
         custom_id: 'settings_currency_change',
         options: currencyOptions,
-        disabled: !i.guildData.theme.toggleCurrencies,
+        disabled: !guildData.theme.toggleCurrencies,
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
@@ -60,9 +61,9 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       },
       {
         type: ComponentType.BUTTON,
-        style: i.guildData.react ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
+        style: guildData.react ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
         custom_id: 'settings_reaction_toggle',
-        label: i.guildData.react ? '=settings_display_reactions_on_state' : '=settings_display_reactions_on_prompt',
+        label: guildData.react ? '=settings_display_reactions_on_state' : '=settings_display_reactions_on_prompt',
         emoji: { name: '🆓' },
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },

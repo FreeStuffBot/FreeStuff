@@ -26,15 +26,21 @@ export default class Modules {
         interaction_failed: 'We are very sorry but an error occured while processing your command. Please try again.'
       }
     })
-    Cordo.addMiddlewareInteractionCallback((data, guild) => Localisation.translateObject(data, guild, data._context, 14))
+    Cordo.addMiddlewareInteractionCallback((data, i) => Localisation.translateObject(data, i, data._context, 14))
     Cordo.setMiddlewareGuildData(async (guildid) => {
-      const [ error, data ] = await DatabaseGateway.fetchGuildData(guildid)
-      if (error) return null
+      const out = {
+        changeSetting: (key, value) => DatabaseGateway.pushGuildDataChange(guildid, key, value),
+        _cache: null
+      } as any
 
-      return {
-        ...data,
-        changeSetting: (key, value) => DatabaseGateway.pushChange(data.id, key, value)
+      out.fetch = async () => {
+        if (out._cache) return out._cache
+        const item = await DatabaseGateway.fetchGuildData(guildid)
+        out._cache = item
+        return item
       }
+
+      return out
     })
     // Cordo.setMiddlewareApiResponseHandler(res => Metrics.counterApiResponses.labels({ status: res.status }).inc())
   }

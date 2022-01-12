@@ -1,13 +1,18 @@
 import { Const, Localisation } from '@freestuffbot/common'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag } from 'cordo'
 import { Emojis } from '@freestuffbot/common'
+import Errors from '../../../lib/errors'
 
 
-export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
-  const guild = i.guildData
-  const translationCredits = (!guild || guild.language.startsWith('en'))
-    ? ''
-    : `\n\n${Localisation.text(guild, '=translation_by')}\n${Localisation.getRaw(guild.language, 'translators').split(', ').map(n => `• ${n}`).join('\n')}`
+export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
+  // const [ err, guildData ] = await i.guildData.fetch()
+  // if (err) return Errors.handleError(err)
+
+  // TODO find out if translation bla bla this that cool thanks bye
+  // const translationCredits = (!guild || guild.language.startsWith('en'))
+  //   ? ''
+  //   : `\n\n${Localisation.text(guildData, '=translation_by')}\n${Localisation.getRaw(guild.language, 'translators').split(', ').map(n => `• ${n}`).join('\n')}`
+  const translationCredits = 'TODO'
 
   return {
     embeds: [
@@ -17,7 +22,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
           // @ts-ignore
           icon_url: Const.brandIcons.regularSquare
         },
-        description: Localisation.text(guild, '=cmd_info_2') + translationCredits,
+        description: Localisation.text(i, '=cmd_info_2') + translationCredits,
         footer: {
           text: 'Copyright © 2020-2021 FreeStuff'
         }
@@ -27,7 +32,7 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
-        visible: !!guild,
+        visible: !!i.member,
         custom_id: 'settings_main',
         label: '=page_settings',
         emoji: Emojis.settings.toObject(),

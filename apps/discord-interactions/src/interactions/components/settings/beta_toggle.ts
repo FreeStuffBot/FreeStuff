@@ -1,14 +1,18 @@
 import { ReplyableComponentInteraction } from 'cordo'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
+import Errors from '../../../lib/errors'
 import Tracker from '../../../lib/tracker'
 
 
-export default function (i: ReplyableComponentInteraction) {
+export default async function (i: ReplyableComponentInteraction) {
   if (i.member && !PermissionStrings.containsManageServer(i.member.permissions))
     return i.ack()
 
-  Tracker.set(i.guildData, 'ACTION_BETA_ENABLED_PREVIOUSLY')
+  const [ err, guildData ] = await i.guildData.fetch()
+  if (err) return i.replyPrivately(Errors.handleErrorAndCommunicate(err))
 
-  i.guildData.changeSetting('beta', !i.guildData.beta)
+  Tracker.set(guildData, 'ACTION_BETA_ENABLED_PREVIOUSLY')
+
+  i.guildData.changeSetting('beta', !guildData.beta)
   i.state('settings_more')
 }

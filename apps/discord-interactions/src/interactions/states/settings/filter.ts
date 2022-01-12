@@ -5,16 +5,17 @@ import Tracker from '../../../lib/tracker'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
-export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
-  if (!i.guildData) return Errors.handleError(Errors.createStderrNoGuilddata())
+export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
+  const [ err, guildData ] = await i.guildData.fetch()
+  if (err) return Errors.handleErrorAndCommunicate(err)
 
-  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_FILTER')
+  Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_FILTER')
 
   const platformOptions: MessageComponentSelectOption[] = Const.platforms.map(p => ({
     value: p.id + '',
     label: p.name,
     description: p.description,
-    default: (i.guildData?.platformsRaw & p.bit) !== 0,
+    default: (guildData.platformsRaw & p.bit) !== 0,
     emoji: (Emojis.store[p.id] || Emojis.store.other).toObject()
   }))
 
@@ -22,17 +23,17 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
     value: c.id + '',
     label: c.name,
     description: Localisation.text(
-      i.guildData,
+      guildData,
       c.from === 0
         ? '=settings_filter_price_class_desc_everything'
         : '=settings_filter_price_class_desc_generic',
       {
-        price: (Localisation.text(i.guildData, '=currency_sign_position') === 'before')
-          ? `${i.guildData.currency.symbol}${c.from}`
-          : `${c.from}${i.guildData.currency.symbol}`
+        price: (Localisation.text(guildData, '=currency_sign_position') === 'before')
+          ? `${guildData.currency.symbol}${c.from}`
+          : `${c.from}${guildData.currency.symbol}`
       }
     ),
-    default: i.guildData.price.id === c.id
+    default: guildData.price.id === c.id
   }))
 
   return {
@@ -63,11 +64,11 @@ export default function (i: GenericInteraction): InteractionApplicationCommandCa
       },
       {
         type: ComponentType.BUTTON,
-        style: i.guildData.trashGames
+        style: guildData.trashGames
           ? ButtonStyle.SUCCESS
           : ButtonStyle.SECONDARY,
         custom_id: 'settings_trash_toggle',
-        label: i.guildData.trashGames
+        label: guildData.trashGames
           ? '=settings_filter_trash_on_state'
           : '=settings_filter_trash_on_prompt',
         emoji: { name: '🗑️' },
