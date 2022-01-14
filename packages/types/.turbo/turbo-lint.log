@@ -1,3 +1,0 @@
-[32m@freestuffbot/typings:lint: [0mcache hit, replaying output [2m7c771cfde3bcd659[0m
-[32m@freestuffbot/typings:lint: [0mwarning package.json: No license field
-[32m@freestuffbot/typings:lint: [0m$ eslint --ext .ts --ignore-path .gitignore types/*.d.ts

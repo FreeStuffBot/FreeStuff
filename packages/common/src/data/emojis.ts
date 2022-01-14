@@ -1,4 +1,4 @@
-import { Store } from '@freestuffbot/typings'
+import { Store } from 'types'
 
 export default class Emojis {
 

@@ -1,4 +1,4 @@
-import { Currency, GameInfo, Platform, PriceClass, Theme } from '@freestuffbot/typings'
+import { Currency, GameInfo, Platform, PriceClass, Theme } from 'types'
 import Util from '../lib/util'
 import Localisation from '../lib/localisation'
 

@@ -1,4 +1,4 @@
-import { GameInfo, GuildData } from '@freestuffbot/typings'
+import { GameInfo, GuildData } from 'types'
 import { GenericInteraction } from 'cordo'
 import { GenericMongodbObject } from '../types'
 

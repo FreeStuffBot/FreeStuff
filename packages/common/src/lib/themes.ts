@@ -1,5 +1,5 @@
 import { InteractionApplicationCommandCallbackData } from "cordo"
-import { GameInfo, GuildData, ThemeBuilder } from "@freestuffbot/typings"
+import { GameInfo, GuildData, ThemeBuilder } from "types"
 import ThemeOne from "../themes/1"
 import ThemeTwo from "../themes/2"
 import ThemeThree from "../themes/3"

@@ -1,4 +1,4 @@
-import { GameFlag, GameInfo, GuildData } from "@freestuffbot/typings"
+import { GameFlag, GameInfo, GuildData } from "types"
 import { InteractionApplicationCommandCallbackData } from "cordo"
 import Const from "../data/const"
 import Localisation from "../lib/localisation"
