@@ -45,7 +45,7 @@ export default class BaseTheme {
     const showDescription = game.description && settings.themeExtraInfo
     const showRating = game.rating && settings.themeExtraInfo
     const showStore = !until || !showRating || !settings.themeImages
-    const divider = settings.themeExtraInfo ? ' ᲼ ᲼ ' : ' • '
+    const divider = settings.themeExtraInfo ? ' ** ** ** ** ' : ' • '
     const title = game.title
 
     const btnText = button[0] === 'text' ? button[1] : undefined

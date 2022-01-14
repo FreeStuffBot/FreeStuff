@@ -1,36 +1,53 @@
 
 export enum GameFlag {
-  TRASH = 1 << 0, // Low quality game
-  THIRDPARTY = 1 << 1, // Third party key provider
+  /** Low quality game */
+  TRASH = 1 << 0,
+
+  /** Third party key provider */
+  THIRDPARTY = 1 << 1,
+
+  /** Permanent monetization model change, only for well known titles */
+  PERMANENT = 1 << 2,
+
+  /** Purely cosmetic flag given out by the team for titles that deserve extra attention */
+  STAFF_PICK = 1 << 3,
 }
 
 /** @see GameFlag */
-export type GameFlags = number
+export type ProductFlags = number
 
 
-export type Store
-  = 'steam'
-  | 'epic'
-  | 'humble'
-  | 'gog'
-  | 'origin'
-  | 'uplay'
-  | 'twitch'
-  | 'itch'
-  | 'discord'
-  | 'apple'
-  | 'google'
-  | 'switch'
-  | 'ps'
-  | 'xbox'
-  | 'other'
+// export type Platform
+//   = 'steam'
+//   | 'epic'
+//   | 'humble'
+//   | 'gog'
+//   | 'origin'
+//   | 'uplay'
+//   | 'itch'
+//   | 'twitch_prime'
+//   | 'apple_appstore'
+//   | 'google_play'
+//   | 'ps'
+//   | 'ps_plus'
+//   | 'xbox'
+//   | 'xbox_gold'
+//   | 'xbox_gamepass'
+//   | 'nintendo_eshop'
+//   | 'stadia'
+//   | 'other'
 
-export type GameApprovalStatus
+export type AnnouncementApprovalStatus
   = 'pending'
   | 'declined'
-  | 'approved'
+  | 'published'
 
-export type AnnouncementType
+export type ProductApprovalStatus
+  = 'pending' // approval pending
+  | 'issues' // system has detected issues
+  | 'approved' // product has been approved
+
+export type DiscountType
   = 'free'
   | 'weekend'
   | 'discount'
@@ -46,161 +63,175 @@ export type ProductKind
   | 'book'
   | 'other'
 
+// export type CurrencyName
+//   = 'eur'
+//   | 'usd'
+//   | 'gbp'
+//   | 'brl'
+//   | 'bgn'
+//   | 'pln'
+//   | 'huf'
+//   | 'btc'
+
+// export type AnnouncementChannel
+//   = 'keep' // free to keep games
+//   | 'weekend' // free for a weekend games
+//   | 'model_change' // payment model changed to something else
+//   | 'ps_plus' // free for subscribers
+//   | 'twitch_prime' // free for subscribers
+//   | 'xbox_gamepass' // free for subscribers
+//   | 'stadia' // free for subscribers
+
 
 /** When the scraper found a game but has not fetched the details yet */
-export interface GameSource {
-  store: Store
+export type ProductSource = {
+  platform: string
   url: string
   id: string
 }
 
 
-/** The data that can be found by the web scrapers */
-export interface ScrapeableGameInfo {
-  title: string // Game's title
-  org_price: { // Price before the discount
-    euro: number
-    usd: number
-  }
-  price: { // Price after the discount
-    euro: number
-    usd: number
-  }
-  kind: ProductKind
-  tags: string[]
-  thumbnail: string // Url to the thumbnail image
-  description: string
-  rating?: number // from 0 - 1
-  until: number // UNIX Timestamp in seconds of when the sale is going to end
-  type?: AnnouncementType // Type of annoucement
-  store_meta?: {
-    steam_subids?: string // For steam games, subids with a space between, for other stores just an empty string
-  }
+export type PlatformMeta = {
+  steamSubids: string
 }
 
 
-/**
- * An object with all the data needed to generate all types of announcements
- * For the API post-proccessed version @see GameInfo
- */
-export interface DatabaseGameInfo extends ScrapeableGameInfo {
-  org_url: string // The direct link to the store page
-  store: Store // Game's store
-  flags: GameFlags // Flags
-  type: AnnouncementType // Type of annoucement
-  notice?: string
-  store_meta: {
-    steam_subids: string
-  } // Now required
-  proxy_url?: string // Firebase proxy url
+/** Container object for a price */
+export type Prices = Record<string, number>
+
+
+export type Thumbnails = {
+  org: string
+  blank: string
+  full: string
+  tags: string
+}
+
+
+export type Urls = {
+  default: string
+  browser: string
+  client?: string
+  org: string
 }
 
 
 /**
  * Some analytical data
  */
-export interface GameAnalytics {
+export type ProductAnalytics = {
   discord: {
     reach: number
   }
 }
 
 
+export type Announcement = {
+  /** UNIX Timestamp in seconds - markes the last time the approval status has changed */
+  published: number
+  /** Current status of the announcement */
+  status: AnnouncementApprovalStatus
+  /** User id of the moderator, responsible for checking the info and publishing the announcement */
+  responsible: string
+  /** UNIX Timestamp in second of the last time changes have been made to this announcement */
+  changed: string
+  /** the products in this announcement */
+  items: number[]
+  /** the channel to publish this announcement on */
+  channel: string
+}
+
+
 /**
  * This is the object that gets stored long term
  */
-export interface GameData {
+export type DatabaseProduct = {
   /** a unique number to identify the game - used by the proxy */
   _id: number
   /** internal uuid - used for checking if a game was already announced */
   uuid: string
-  /** UNIX Timestamp in seconds - markes the last time the approval status has changed */
-  published: number
+  /** Current status of the product */
+  status: ProductApprovalStatus
   /** User id of the moderator, responsible for checking the info and publishing the announcement */
   responsible: string
-  /** Current status of the game */
-  status: GameApprovalStatus
-  /** Info about the game */
-  info: DatabaseGameInfo
+  /** UNIX Timestamp in second of the last time changes have been made to this product */
+  changed: string
+  /** Info about the product */
+  data: Product
   /** Analytics */
-  analytics: GameAnalytics
+  analytics: ProductAnalytics
 }
 
 
 /**
  * The object containing all localized information about an announcement
  */
-export interface LocalizedGameInfo {
-  lang_name: string,
-  lang_name_en: string,
-  lang_flag_emoji: string,
-  platform: string,
-  claim_long: string,
-  claim_short: string,
-  free: string,
-  header: string,
-  footer: string,
-  org_price_eur: string,
-  org_price_usd: string,
-  until: string,
-  until_alt: string,
+export type LocalizedProductDetails = {
+  langName: string
+  langNameEn: string
+  langFlagEmoji: string
+  platform: string
+  claimLong: string
+  claimShort: string
+  free: string
+  header: string
+  footer: string
+  orgPriceEur: string
+  orgPriceUsd: string
+  until: string
   flags: string[]
 }
 
 
 /**
- * This is the post-proccessed version of the GameInfo object that gets served out by the API.
- * For the data present in the database @see DatabaseGameInfo
+ * An object with all the data needed to generate all types of announcements
+ * For the API post-proccessed version @see OutgoingProduct
  */
-export interface GameInfo {
+ export type Product = {
+  /** product's uuid */
   id: number
-  urls: {
-    default: string,
-    browser: string,
-    client?: string,
-    org: string
-  }
+  /** product's title */
   title: string
-  org_price: {
-    euro: number
-    usd: number
-    gbp: number
-    brl: number
-    bgn: number
-    pln: number
-    huf: number
-    btc: number
-  }
-  price: {
-    euro: number
-    usd: number
-    gbp: number
-    brl: number
-    bgn: number
-    pln: number
-    huf: number
-    btc: number
-  }
-  thumbnail: {
-    org: string
-    blank: string
-    full: string
-    tags: string
-  }
+  /** old price before the discount */
+  oldPrice: Partial<Prices>
+  /** new discounted price */
+  newPrice: Partial<Prices>
+  /** what kind of product is this? */
   kind: ProductKind
+  /** tags that further describe the product */
   tags: string[]
+  /** thumbnails for the product */
+  thumbnails: Thumbnails
+  /** a description of the game */
   description: string
+  /** rating from 0-1 */
   rating?: number
+  /** timestamp of how long this offer is valid */
+  until: number
+  /** type of discount */
+  type: DiscountType
+  /** urls to the product */
+  urls: Urls
+  /** the platform the product is hosted on */
+  platform: string
+  /** flags */
+  flags: ProductFlags
+  /** optional notice given out by the team */
   notice?: string
-  until: Date
-  store: Store
-  flags: GameFlags
-  type: AnnouncementType
-  store_meta: {
-    steam_subids: string
-  },
+  /** metadata about the game's platform */
+  platformMeta: PlatformMeta
+  /** wheather this product was manually checked and approved by a staff member */
+  staffApproved: boolean
+}
+
+
+/**
+ * This is the proccessed version of the GameData object that gets served out by the API.
+ * For the data present in the database @see DatabaseProduct
+ */
+export type OutgoingProduct = {
   localized?: {
-    'en-US': LocalizedGameInfo
-    [key: string]: LocalizedGameInfo
-  }
+    'en-US': LocalizedProductDetails
+    [key: string]: LocalizedProductDetails
+  }  
 }

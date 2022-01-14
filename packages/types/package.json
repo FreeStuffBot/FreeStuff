@@ -16,14 +16,15 @@
   "devDependencies": {
     "@types/node": "^16.3.2",
     "config": "*",
-    "tsconfig": "*",
     "eslint": "^7.30.0",
     "reflect-metadata": "^0.1.13",
+    "tsconfig": "*",
     "typescript": "^4.3.5"
   },
   "dependencies": {
     "@types/bson": "^4.2.0",
     "cordo": "^1.7.0",
-    "freestuff": "^1.8.0"
+    "freestuff": "^1.8.0",
+    "mongoose": "^6.1.6"
   }
 }

@@ -1,6 +1,9 @@
 import { GameInfo, GuildData } from '@freestuffbot/typings'
+import { GenericInteraction } from 'cordo'
 import { GenericMongodbObject } from '../types'
 
+
+export type LocaleContainer = GuildData | GenericInteraction
 
 export default class Localisation {
 
@@ -32,8 +35,8 @@ export default class Localisation {
     }
   }
 
-  public static getLine(d: GuildData, key: string): string {
-    return Localisation.getRaw(d?.language ?? Localisation.list[0], key, true)
+  public static getLine(d: LocaleContainer, key: string): string {
+    return Localisation.getRaw(Localisation.getLocaleFromContainer(d), key, true)
   }
 
   public static getRaw(language: string, key: string, fallback = true): string {
@@ -92,7 +95,7 @@ export default class Localisation {
   /**
    * Recursively traverses the given object until maxDepth, translating every string value found
    */
-  public static translateObject<T extends Object>(object: T, guildData: GuildData | undefined, context: any, maxDepth: number): T {
+  public static translateObject<T extends Object>(object: T, guildData: LocaleContainer | undefined, context: any, maxDepth: number): T {
     if (maxDepth <= 0) return null
     for (const key in object) {
       if (key === '_context') continue
@@ -109,9 +112,9 @@ export default class Localisation {
    * @param context The translation context with variables
    * @returns The processed text
    */
-  public static text(d: GuildData, text: string, context?: { [varname: string]: string }): string {
+  public static text(d: LocaleContainer, text: string, context?: { [varname: string]: string }): string {
     let out = (text.startsWith('=')
-      ? Localisation.getRaw(d?.language, text.substr(1), true)
+      ? Localisation.getRaw(Localisation.getLocaleFromContainer(d), text.substring(1), true)
       : text)
     if (context) {
       for (const key in context)
@@ -123,11 +126,20 @@ export default class Localisation {
   /**
    * Renders a price tag properly
    */
-  public static renderPriceTag(data: GuildData, game: GameInfo) {
-    const price = game.org_price[data.currency.code] || game.org_price.euro
-    return Localisation.getLine(data, 'currency_sign_position') === 'after'
-      ? `${price}${data.currency.symbol}`
-      : `${data.currency.symbol}${price}`
+  public static renderPriceTag(cont: LocaleContainer, game: GameInfo) {
+    // TODO have currency connected to language
+    // const price = game.org_price[data.currency.code] || game.org_price.euro
+    // return Localisation.getLine(data, 'currency_sign_position') === 'after'
+    //   ? `${price}${data.currency.symbol}`
+    //   : `${data.currency.symbol}${price}`
+    return 'TODO'
+  }
+
+  private static getLocaleFromContainer(cont: LocaleContainer): string {
+    if (!cont) return Localisation.list[0]
+    return (cont as GuildData).language
+      ?? (cont as GenericInteraction).locale
+      ?? Localisation.list[0]
   }
 
 }

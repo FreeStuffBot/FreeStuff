@@ -10,7 +10,7 @@ export default function (i: ReplyableCommandInteraction) {
   const freeToday: string[] = []
 
   const [ err, games ] = FreestuffData.getCurrentFreebies()
-  if (err) return Errors.handleErrorWithoutCommunicate(err, i)
+  if (err) return void Errors.handleErrorAndCommunicate(err, i)
 
   for (const game of games) {
     // g happens to be undefined here at times, investigate
