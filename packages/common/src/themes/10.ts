@@ -1,41 +1,41 @@
-import { GameInfo, GuildData, ThemeBuilder } from "types"
 import { InteractionApplicationCommandCallbackData } from "cordo"
-import { BaseTheme, Localisation } from ".."
+import { BaseTheme, Localisation, SanitizedGuildType, SanitizedProductType, ThemeBuilderClass } from ".."
+import Timestamps from "../lib/timestamps"
 import { roleIdToMention } from "./themeutils"
 
 
-export default class ThemeTen implements ThemeBuilder {
+export default class ThemeTen implements ThemeBuilderClass {
 
-  public build(games: GameInfo[], data: GuildData, settings: { test?: boolean }): InteractionApplicationCommandCallbackData {
-    const content = roleIdToMention(data.role)
-    const embeds = games.map(game => this.buildEmbed(game, data, settings.test))
+  public build(products: SanitizedProductType[], guild: SanitizedGuildType, settings: { test?: boolean }): InteractionApplicationCommandCallbackData {
+    const content = roleIdToMention(guild.role)
+    const embeds = products.map(game => this.buildEmbed(game, guild, settings.test))
 
     return { content, embeds, _context: BaseTheme.defaultStaticContext }
   }
 
-  private buildEmbed(game: GameInfo, data: GuildData, test: boolean): Partial<InteractionApplicationCommandCallbackData["embeds"][number]> {
-    const button = game.urls.client
-      ? game.store === 'steam'
-        ? `${Localisation.text(data, '=open_in_browser')}: [https://s.team/a/${game.urls.org.split('/app/')[1].split('/')[0]}](${game.urls.browser})\n${Localisation.text(data, '=open_in_steam_client')}: ${game.urls.client}`
-        : `${Localisation.text(data, '=open_in_browser')}: [${game.urls.org}](${game.urls.browser})\n${Localisation.text(data, '=open_in_epic_games_client')}: <${game.urls.client}>`
-      : `[${Localisation.text(data, '=open_in_browser')}](${game.urls.default})`
+  private buildEmbed(product: SanitizedProductType, guild: SanitizedGuildType, test: boolean): Partial<InteractionApplicationCommandCallbackData["embeds"][number]> {
+    const button = product.urls.client
+      ? product.platform === 'steam'
+        ? `${Localisation.text(guild, '=open_in_browser')}: [https://s.team/a/${product.urls.org.split('/app/')[1].split('/')[0]}](${product.urls.browser})\n${Localisation.text(guild, '=open_in_steam_client')}: ${product.urls.client}`
+        : `${Localisation.text(guild, '=open_in_browser')}: [${product.urls.org}](${product.urls.browser})\n${Localisation.text(guild, '=open_in_epic_games_client')}: <${product.urls.client}>`
+      : `[${Localisation.text(guild, '=open_in_browser')}](${product.urls.default})`
 
-    const steamcontent = game.store === 'steam'
+    const steamcontent = product.platform === 'steam'
       ? [
-        `Subids: ${game.store_meta.steam_subids}`,
+        `Subids: ${product.platformMeta.steamSubids}`,
         '',
-        `addlicense asf ${game.store_meta.steam_subids.split(' ').map(id => `s/${id}`).join(', ')}`
+        `addlicense asf ${product.platformMeta.steamSubids.split(' ').map(id => `s/${id}`).join(', ')}`
         ]
       : []
 
     const lines = [
       '```yaml',
-      `  Name: ${game.title}`,
-      ` Store: ${Localisation.text(data, '=platform_' + game.store)}`,
-      ` Price: $${game.org_price.usd} | €${game.org_price.euro}`,
-      ` Until: ${game.until?.toLocaleDateString('en-GB') ?? 'unknown'}`,
-      `  Tags: ${game.tags?.slice(0, 3).join(', ') ?? ''}`,
-      `Rating: ${~~(game.rating * 100)}% positive`,
+      `  Name: ${product.title}`,
+      ` Store: ${Localisation.text(guild, '=platform_' + product.platform)}`,
+      ` Price: $${product.oldPrices.find(p => p.currency === 'usd').value} | €${product.oldPrices.find(p => p.currency === 'usd').value}`,
+      ` Until: ${product.until ? Timestamps.parse(product.until).toLocaleDateString('en-GB') : 'unknown'}`,
+      `  Tags: ${product.tags?.slice(0, 3).join(', ') ?? ''}`,
+      `Rating: ${~~(product.rating * 100)}% positive`,
       ...steamcontent,
       '```',
       button

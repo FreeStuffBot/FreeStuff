@@ -20,13 +20,14 @@
     "@typescript-eslint/eslint-plugin": "^4.31.2",
     "@typescript-eslint/parser": "^4.31.2",
     "config": "*",
-    "tsconfig": "*",
     "eslint": "^7.32.0",
     "reflect-metadata": "^0.1.13",
+    "tsconfig": "*",
     "typescript": "^4.4.3"
   },
   "dependencies": {
-    "@freestuffbot/typings": "^1.3.5",
-    "cordo": "^1.8.4"
+    "@types/mongoose": "^5.11.97",
+    "cordo": "^1.8.4",
+    "mongoose": "^6.1.6"
   }
 }

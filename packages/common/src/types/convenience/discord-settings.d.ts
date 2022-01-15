@@ -1,7 +1,7 @@
 
 
-export type Theme = {
-  id: number
+export type SettingTheme<ID extends string> = {
+  id: ID
   name: string
   description: string
   emoji: string
@@ -10,8 +10,8 @@ export type Theme = {
 }
 
 
-export type Currency = {
-  id: number
+export type SettingCurrency<ID extends string> = {
+  id: ID
   code: string
   name: string
   symbol: string
@@ -20,15 +20,15 @@ export type Currency = {
 }
 
 
-export type PriceClass = {
-  id: number
+export type SettingPriceClass<ID extends string> = {
+  id: ID
   from: number
   name: string
 }
 
 
-export type Platform = {
-  id: string
+export type SettingPlatform<ID extends string> = {
+  id: ID
   bit: number
   name: string
   description: string

@@ -1,5 +1,4 @@
 import { InteractionApplicationCommandCallbackData } from "cordo"
-import { GameInfo, GuildData, ThemeBuilder } from "types"
 import ThemeOne from "../themes/1"
 import ThemeTwo from "../themes/2"
 import ThemeThree from "../themes/3"
@@ -10,12 +9,12 @@ import ThemeSeven from "../themes/7"
 import ThemeEight from "../themes/8"
 import ThemeNine from "../themes/9"
 import ThemeTen from "../themes/10"
-import { Localisation } from ".."
+import { Localisation, SanitizedGuildType, SanitizedProductType, ThemeBuilderClass } from ".."
 
 
 export default class Themes {
 
-  public static readonly builders: ThemeBuilder[] = [
+  public static readonly builders: ThemeBuilderClass[] = [
     new ThemeOne(),
     new ThemeTwo(),
     new ThemeThree(),
@@ -30,7 +29,7 @@ export default class Themes {
 
   //
 
-  public static build(content: GameInfo[], data: GuildData, settings: { test?: boolean, donationNotice?: boolean }): InteractionApplicationCommandCallbackData {
+  public static build(content: SanitizedProductType[], data: SanitizedGuildType, settings: { test?: boolean, donationNotice?: boolean }): InteractionApplicationCommandCallbackData {
     const payload = Themes.builders[data.theme.id].build(content, data, settings)
     Localisation.translateObject(payload, data, payload._context, 14)
     return payload

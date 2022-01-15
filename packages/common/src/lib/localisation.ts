@@ -1,9 +1,8 @@
-import { GameInfo, GuildData } from 'types'
 import { GenericInteraction } from 'cordo'
-import { GenericMongodbObject } from '../types'
+import { SanitizedGuildType, SanitizedProductType } from '..'
 
 
-export type LocaleContainer = GuildData | GenericInteraction
+export type LocaleContainer = SanitizedGuildType | GenericInteraction
 
 export default class Localisation {
 
@@ -11,7 +10,7 @@ export default class Localisation {
   private static idmap: Record<string, string> = {}
   private static texts: Record<string, Record<string, string>> = {}
 
-  public static load(languages: GenericMongodbObject<string>[]) {
+  public static load(languages: Record<string, any>[]) {
     const all = languages.sort((a, b) => a._id.startsWith('en')
       ? -1
       : b._id.startsWith('en')
@@ -126,7 +125,7 @@ export default class Localisation {
   /**
    * Renders a price tag properly
    */
-  public static renderPriceTag(cont: LocaleContainer, game: GameInfo) {
+  public static renderPriceTag(_cont: LocaleContainer, _game: SanitizedProductType) {
     // TODO have currency connected to language
     // const price = game.org_price[data.currency.code] || game.org_price.euro
     // return Localisation.getLine(data, 'currency_sign_position') === 'after'
@@ -137,7 +136,7 @@ export default class Localisation {
 
   private static getLocaleFromContainer(cont: LocaleContainer): string {
     if (!cont) return Localisation.list[0]
-    return (cont as GuildData).language
+    return (cont as SanitizedGuildType).language
       ?? (cont as GenericInteraction).locale
       ?? Localisation.list[0]
   }

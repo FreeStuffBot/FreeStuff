@@ -22,6 +22,8 @@ type PlatformAssets = {
 export type PlatformDataType = {
   _id: string // epic
   name: string // Epic Games Store
+  url: string // https://epicgames.com
+  description: string // ?
   assets: PlatformAssets
 }
 
@@ -32,15 +34,19 @@ export type PlatformType = PlatformDataType & MongooseDocument<any, {}>
 export type SanitizedPlatformType = {
   id: string
   name: string
+  url: string
+  description: string
   assets: PlatformAssets
 }
 
 
 // ===== MONGO SCHEMA ===== //
 
-export default new Schema({
+export const PlatformSchema = new Schema({
   _id: String,
   name: String,
+  url: String,
+  description: String,
   assets: {
     icon: String
   }

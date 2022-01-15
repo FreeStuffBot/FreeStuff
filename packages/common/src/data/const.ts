@@ -1,6 +1,6 @@
-import { Currency, GameInfo, Platform, PriceClass, Theme } from 'types'
 import Util from '../lib/util'
 import Localisation from '../lib/localisation'
+import { SanitizedProductType, SettingCurrency, SettingPlatform, SettingPriceClass, SettingTheme } from '..'
 
 
 export default class Const {
@@ -37,7 +37,7 @@ export default class Const {
     regularRound: 'https://media.discordapp.net/attachments/672907465670787083/890319438933524521/icon_round.png'
   }
 
-  public static readonly storeIcons = {
+  public static readonly platformIcons = {
     steam: 'https://media.discordapp.net/attachments/672907465670787083/820258285566820402/steam.png',
     epic: 'https://cdn.discordapp.com/attachments/672907465670787083/820258283293638676/epic.png',
     humble: 'https://cdn.discordapp.com/attachments/672907465670787083/820258291862601728/humble.png',
@@ -55,8 +55,8 @@ export default class Const {
     other: ''
   }
 
-  public static readonly storeIconsExt = {
-    ...Const.storeIcons,
+  public static readonly platformIconsExt = {
+    ...Const.platformIcons,
     steam: 'https://media.discordapp.net/attachments/672907465670787083/833646821611798538/steam_ext.png',
     epic: 'https://media.discordapp.net/attachments/672907465670787083/833646813172465734/epic_ext.png',
     humble: 'https://media.discordapp.net/attachments/672907465670787083/833652544252674068/humble_ext.png',
@@ -69,7 +69,7 @@ export default class Const {
     switch: 'https://media.discordapp.net/attachments/672907465670787083/833652535356817418/switch_ext.png'
   }
 
-  public static readonly themes: Theme[] = [
+  public static readonly themes: SettingTheme<any>[] = [
     {
       id: 0,
       name: '=theme_one_name',
@@ -154,7 +154,7 @@ export default class Const {
 
   public static readonly defaultTheme = Const.themes[0]
 
-  public static readonly currencies: Currency[] = [
+  public static readonly currencies: SettingCurrency<any>[] = [
     {
       id: 0,
       code: 'euro',
@@ -215,7 +215,7 @@ export default class Const {
 
   public static readonly defaultCurrency = Const.currencies[0]
 
-  public static readonly priceClasses: PriceClass[] = [
+  public static readonly priceClasses: SettingPriceClass<any>[] = [
     {
       id: 0,
       from: 0,
@@ -240,7 +240,7 @@ export default class Const {
 
   public static readonly defaultPriceClass = Const.priceClasses[2]
 
-  public static readonly platforms: Platform[] = [
+  public static readonly platforms: SettingPlatform<any>[] = [
     {
       id: 'other',
       bit: 1 << 0,
@@ -311,31 +311,13 @@ export default class Const {
     .filter(p => p.default)
     .reduce((val, p) => (val ^= p.bit), 0)
 
-  public static readonly testAnnouncementContent: GameInfo = {
+  public static readonly testAnnouncementContent: SanitizedProductType = {
     id: 0,
     title: '=cmd_test_announcement_header',
-    org_price: {
-      euro: 19.99,
-      usd: 19.99,
-      gbp: 19.99,
-      brl: 19.99,
-      bgn: 19.99,
-      pln: 19.99,
-      huf: 19.99,
-      btc: 19.99
-    },
-    price: {
-      euro: 0,
-      usd: 0,
-      gbp: 0,
-      brl: 0,
-      bgn: 0,
-      pln: 0,
-      huf: 0,
-      btc: 0
-    },
-    store: 'steam',
-    thumbnail: {
+    oldPrices: [ 'usd', 'eur', 'gbp', 'brl', 'bgn', 'pln', 'huf', 'btc' ].map(currency => ({ currency, value: 19.99, converted: false })),
+    newPrices: [ 'usd', 'eur', 'gbp', 'brl', 'bgn', 'pln', 'huf', 'btc' ].map(currency => ({ currency, value: 0, converted: false })),
+    platform: 'steam',
+    thumbnails: {
       blank: Const.placeholderThumbnail,
       full: Const.placeholderThumbnail,
       org: Const.placeholderThumbnail,
@@ -353,8 +335,9 @@ export default class Const {
     flags: 0,
     until: null,
     type: 'free',
-    store_meta: {
-      steam_subids: '12345 98760'
+    staffApproved: true,
+    platformMeta: {
+      steamSubids: '12345 98760'
     }
   }
 

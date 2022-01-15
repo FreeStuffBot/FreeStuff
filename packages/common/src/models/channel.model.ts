@@ -34,7 +34,7 @@ export type SanitizedChannelType = {
 
 // ===== MONGO SCHEMA ===== //
 
-export default new Schema({
+export const ChannelSchema = new Schema({
   _id: String,
   name: String,
   description: String,

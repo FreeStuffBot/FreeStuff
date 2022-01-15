@@ -1,7 +1,9 @@
-import { GameFlag, GameInfo, GuildData } from "types"
 import { InteractionApplicationCommandCallbackData } from "cordo"
 import Const from "../data/const"
 import Localisation from "../lib/localisation"
+import { SanitizedGuildType } from "../models/guild.model"
+import { SanitizedProductType } from "../models/product.model"
+import { ProductFlag } from "../types/global/product-flag"
 import { roleIdToMention } from "./themeutils"
 
 
@@ -22,13 +24,13 @@ export default class BaseTheme {
 
   //
 
-  public static build(games: GameInfo[], data: GuildData, settings: themeSettings): InteractionApplicationCommandCallbackData {
-    const content = roleIdToMention(data.role)
-    const embeds = games.map(game => this.buildEmbed(game, data, settings))
+  public static build(product: SanitizedProductType[], guild: SanitizedGuildType, settings: themeSettings): InteractionApplicationCommandCallbackData {
+    const content = roleIdToMention(guild.role)
+    const embeds = product.map(game => this.buildEmbed(game, guild, settings))
 
     if (settings.donationNotice) {
       embeds.push({
-        description: Localisation.text(data, '=donation_notice', { url: Const.links.donate }),
+        description: Localisation.text(guild, '=donation_notice', { url: Const.links.donate }),
         color: Const.embedDefaultColor
       })
     }
@@ -38,23 +40,23 @@ export default class BaseTheme {
 
   //
 
-  static buildEmbed(game: GameInfo, data: GuildData, settings: themeSettings): Partial<MessageEmbed> {
-    const priceString = Localisation.renderPriceTag(data, game)
-    const until = BaseTheme.generateUntil(game, data)
-    const button = BaseTheme.generateButton(game, data)
-    const showDescription = game.description && settings.themeExtraInfo
-    const showRating = game.rating && settings.themeExtraInfo
+  static buildEmbed(product: SanitizedProductType, guild: SanitizedGuildType, settings: themeSettings): Partial<MessageEmbed> {
+    const priceString = Localisation.renderPriceTag(guild, product)
+    const until = BaseTheme.generateUntil(product, guild)
+    const button = BaseTheme.generateButton(product, guild)
+    const showDescription = product.description && settings.themeExtraInfo
+    const showRating = product.rating && settings.themeExtraInfo
     const showStore = !until || !showRating || !settings.themeImages
     const divider = settings.themeExtraInfo ? ' ** ** ** ** ' : ' • '
-    const title = game.title
+    const title = product.title
 
     const btnText = button[0] === 'text' ? button[1] : undefined
     const fields = button[0] === 'fields' ? button[1] : undefined
 
-    const description = BaseTheme.generateDescription(game, data, until, priceString, showDescription, showRating, showStore, divider, btnText)
-    const image = BaseTheme.generateImageObject(game, data, settings)
-    const thumbnail = BaseTheme.generateThumbnailObject(game, data, settings)
-    const footer = BaseTheme.generateFooter(game, data, settings)
+    const description = BaseTheme.generateDescription(product, guild, until, priceString, showDescription, showRating, showStore, divider, btnText)
+    const image = BaseTheme.generateImageObject(product, guild, settings)
+    const thumbnail = BaseTheme.generateThumbnailObject(product, guild, settings)
+    const footer = BaseTheme.generateFooter(product, guild, settings)
 
     return {
       title,
@@ -69,52 +71,52 @@ export default class BaseTheme {
 
   //
 
-  static generateUntil(game: GameInfo, data: GuildData): string {
-    if (!game.until) return ''
+  static generateUntil(product: SanitizedProductType, guild: SanitizedGuildType): string {
+    if (!product.until) return ''
 
-    return Localisation.text(data, '=announcement_free_until_date', {
-      date: `<t:${game.until.getTime() / 1000}:d>`
+    return Localisation.text(guild, '=announcement_free_until_date', {
+      date: `<t:${product.until}:d>`
     })
   }
 
-  static generateButton(game: GameInfo, data: GuildData): [ 'text', string ] | [ 'fields', MessageEmbed["fields"] ] {
-    if (!game.urls.client) {
+  static generateButton(product: SanitizedProductType, guild: SanitizedGuildType): [ 'text', string ] | [ 'fields', MessageEmbed["fields"] ] {
+    if (!product.urls.client) {
       return [
         'text',
-        `**[${Localisation.text(data, '=announcement_button_text')}](${game.urls.default})**`
+        `**[${Localisation.text(guild, '=announcement_button_text')}](${product.urls.default})**`
       ]
     }
 
-    if (game.store === 'steam') {
+    if (product.platform === 'steam') {
       return [
         'fields',
         [
           {
             name: '=open_in_browser',
-            value: `**[https://s.team/a/${game.urls.org.split('/app/')[1].split('/')[0]}](${game.urls.browser})**`,
+            value: `**[https://s.team/a/${product.urls.org.split('/app/')[1].split('/')[0]}](${product.urls.browser})**`,
             inline: true
           },
           {
             name: '=open_in_steam_client',
-            value: `**${game.urls.client}**`,
+            value: `**${product.urls.client}**`,
             inline: true
           }
         ]
       ]
     }
 
-    if (game.store === 'epic') {
+    if (product.platform === 'epic') {
       return [
         'fields',
         [
           {
             name: '=open_in_browser',
-            value: `**[${game.urls.org.replace('www.', '').replace('/en-US', '')}](${game.urls.browser})**`,
+            value: `**[${product.urls.org.replace('www.', '').replace('/en-US', '')}](${product.urls.browser})**`,
             inline: true
           },
           {
             name: '=open_in_epic_games_client',
-            value: `**<${game.urls.client}>**`,
+            value: `**<${product.urls.client}>**`,
             inline: true
           }
         ]
@@ -123,42 +125,42 @@ export default class BaseTheme {
 
     return [
       'text',
-      `**[${Localisation.text(data, '=announcement_button_text')}](${game.urls.default})**`
+      `**[${Localisation.text(guild, '=announcement_button_text')}](${product.urls.default})**`
     ]
   }
 
-  static generateImageObject(game: GameInfo, _data: GuildData, settings: themeSettings): MessageEmbed['image'] {
+  static generateImageObject(product: SanitizedProductType, _guild: SanitizedGuildType, settings: themeSettings): MessageEmbed['image'] {
     if (!settings.themeImages) return undefined
 
     return {
       url: settings.themeExtraInfo
-        ? game.thumbnail.full
-        : game.thumbnail.blank
+        ? product.thumbnails.full
+        : product.thumbnails.blank
     }
   }
 
-  static generateThumbnailObject(game: GameInfo, _data: GuildData, settings: themeSettings): MessageEmbed['thumbnail'] {
+  static generateThumbnailObject(product: SanitizedProductType, _guild: SanitizedGuildType, settings: themeSettings): MessageEmbed['thumbnail'] {
     if (!settings.themeImages) return undefined
 
     return {
-      url: (game.flags & GameFlag.THIRDPARTY)
-        ? Const.storeIconsExt[game.store]
-        : Const.storeIcons[game.store],
+      url: (product.flags & ProductFlag.THIRDPARTY)
+        ? Const.platformIconsExt[product.platform]
+        : Const.platformIcons[product.platform],
       width: 128,
       height: 128
     }
   }
 
-  static generateDescription(game: GameInfo, data: GuildData, until: string, priceString: string, showDescription: boolean, showRating: boolean, showStore: boolean, divider: string, button: string) {
+  static generateDescription(product: SanitizedProductType, guild: SanitizedGuildType, until: string, priceString: string, showDescription: boolean, showRating: boolean, showStore: boolean, divider: string, button: string) {
     return ''
-      + (showDescription ? `> ${game.description.startsWith('=') ? Localisation.text(data, game.description) : game.description}\n\n` : '')
-      + `~~${priceString}~~ **${Localisation.text(data, '=announcement_pricetag_free')}** ${until}`
-      + (showRating ? `${divider}${Math.round(game.rating * 20) / 2}/10 ★` : '')
-      + (showStore ? `${divider}${Localisation.getLine(data, 'platform_' + game.store)}` : '')
+      + (showDescription ? `> ${product.description.startsWith('=') ? Localisation.text(guild, product.description) : product.description}\n\n` : '')
+      + `~~${priceString}~~ **${Localisation.text(guild, '=announcement_pricetag_free')}** ${until}`
+      + (showRating ? `${divider}${Math.round(product.rating * 20) / 2}/10 ★` : '')
+      + (showStore ? `${divider}${Localisation.getLine(guild, 'platform_' + product.platform)}` : '')
       + (button ? `\n\n${button}` : `\n** **${Const.invisibleCharacter}`)
   }
 
-  static generateFooter(_game: GameInfo, _data: GuildData, settings: themeSettings) {
+  static generateFooter(_product: SanitizedProductType, _guild: SanitizedGuildType, settings: themeSettings) {
     return {
       text: settings.test
         ? '=announcement_footer_test'

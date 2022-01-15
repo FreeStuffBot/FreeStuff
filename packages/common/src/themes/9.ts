@@ -1,15 +1,15 @@
-import { GameInfo, GuildData, ThemeBuilder } from "types"
 import { InteractionApplicationCommandCallbackData } from "cordo"
+import { SanitizedGuildType, SanitizedProductType, ThemeBuilderClass } from ".."
 import Localisation from "../lib/localisation"
 import { roleIdToMention } from "./themeutils"
 
 
-export default class ThemeNine implements ThemeBuilder {
+export default class ThemeNine implements ThemeBuilderClass {
 
-  public build(games: GameInfo[], data: GuildData, _settings: { test?: boolean }): InteractionApplicationCommandCallbackData {
-    const mention = roleIdToMention(data.role)
-    const links = games.map(game => Localisation.text(data, '=announcement_theme9', {
-      name: (game.title.startsWith('=') ? Localisation.text(data, game.title) : game.title),
+  public build(products: SanitizedProductType[], guild: SanitizedGuildType, _settings: { test?: boolean }): InteractionApplicationCommandCallbackData {
+    const mention = roleIdToMention(guild.role)
+    const links = products.map(game => Localisation.text(guild, '=announcement_theme9', {
+      name: (game.title.startsWith('=') ? Localisation.text(guild, game.title) : game.title),
       url: game.urls.default
     }))
 

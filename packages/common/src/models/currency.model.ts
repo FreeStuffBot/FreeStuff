@@ -30,7 +30,7 @@ export type SanitizedCurrencyType = {
 
 // ===== MONGO SCHEMA ===== //
 
-export default new Schema({
+export const CurrencySchema = new Schema({
   _id: String,
   name: String,
   symbol: String,

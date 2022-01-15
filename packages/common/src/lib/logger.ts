@@ -96,7 +96,7 @@ export default class Logger {
    * Gets prefixed with a magenta `#` and a timestamp.
    * @param text The message to log.
    */
-  public static excessive(...text: string[]) {
+  public static excessive(..._text: string[]) {
     // TODO
     // if (!RemoteConfig.excessiveLogging) return
     // const out = text.join(chalk.gray(', '))

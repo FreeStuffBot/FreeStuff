@@ -1,14 +1,14 @@
-import { GameInfo, GuildData, ThemeBuilder } from 'types'
 import { InteractionApplicationCommandCallbackData } from 'cordo'
+import { SanitizedGuildType, SanitizedProductType, ThemeBuilderClass } from ".."
 import Const from '../data/const'
 import { roleIdToMention } from './themeutils'
 
 
-export default class ThemeFive implements ThemeBuilder {
+export default class ThemeFive implements ThemeBuilderClass {
 
-  public build(games: GameInfo[], data: GuildData, settings: { test?: boolean, donationNotice?: boolean }): InteractionApplicationCommandCallbackData {
-    const content = roleIdToMention(data.role)
-    const embeds = games.map(game => ({
+  public build(products: SanitizedProductType[], guild: SanitizedGuildType, settings: { test?: boolean, donationNotice?: boolean }): InteractionApplicationCommandCallbackData {
+    const content = roleIdToMention(guild.role)
+    const embeds = products.map(game => ({
       author: {
         name: '=announcement_header'
       },
