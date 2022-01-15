@@ -3,7 +3,7 @@ import Const from "../data/const"
 import Localisation from "../lib/localisation"
 import { SanitizedGuildType } from "../models/guild.model"
 import { SanitizedProductType } from "../models/product.model"
-import { ProductFlag } from "../types/global/product-flag"
+import { ProductFlag } from "../types/other/product-flag"
 import { roleIdToMention } from "./themeutils"
 
 

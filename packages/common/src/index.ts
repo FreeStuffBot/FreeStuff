@@ -21,7 +21,7 @@ export { default as Const } from './data/const'
 export { default as Emojis } from './data/emojis'
 
 
-export * from './models/announcement.mode'
+export * from './models/announcement.model'
 export * from './models/app.model'
 export * from './models/channel.model'
 export * from './models/currency.model'

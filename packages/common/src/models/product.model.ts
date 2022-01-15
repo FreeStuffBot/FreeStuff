@@ -1,8 +1,7 @@
 /* eslint-disable spaced-comment */
 import { Schema, Document as MongooseDocument } from 'mongoose'
-import { LocalizedProductDetails, LocalizedProductDetailsSchema } from '../types/global/localized-product-details'
-import { ProductAnalytics } from '../types/global/product-analytics'
-import { ProductFlags } from '../types/global/product-flag'
+import { ProductFlags } from '../types/other/product-flag'
+import { LocalizedProductDetailsSchema, SanitizedLocalizedProductDetails } from './localized-product-details.model'
 
 
 // ===== ARRAY CONSTANTS ===== //
@@ -53,6 +52,12 @@ export type ProductPrice = {
   value: number
   /** whether this was converted from another currency or not */
   converted: boolean
+}
+
+export type ProductAnalytics = {
+  discord: {
+    reach: number
+  }
 }
 
 
@@ -116,7 +121,7 @@ export type SanitizedProductType = {
   /** wheather this product was manually checked and approved by a staff member */
   staffApproved: boolean
   /** only served out by the api, not used internally */
-  localized?: LocalizedProductDetails[]
+  localized?: SanitizedLocalizedProductDetails[]
 }
 
 

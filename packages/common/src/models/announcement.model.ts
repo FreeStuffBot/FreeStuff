@@ -1,10 +1,13 @@
 /* eslint-disable spaced-comment */
 import { Long } from 'mongodb'
 import { Schema, Document as MongooseDocument } from 'mongoose'
-import { AnnouncementApprovalStatus } from '../types/global/announcement-approval-status'
 
 
 // ===== ARRAY CONSTANTS ===== //
+
+export const AnnouncementApprovalStatus = [ 'pending', 'declined', 'published' ] as const
+export const AnnouncementApprovalStatusArray = AnnouncementApprovalStatus as readonly string[]
+export type AnnouncementApprovalStatusType = typeof AnnouncementApprovalStatus[number]
 
 
 // ===== HELPER TYPES ===== //
@@ -18,7 +21,7 @@ export type AnnouncementDataType = {
   /** UNIX Timestamp in seconds - markes the last time the approval status has changed */
   published: number
   /** Current status of the announcement */
-  status: AnnouncementApprovalStatus
+  status: AnnouncementApprovalStatusType
   /** User id of the moderator, responsible for checking the info and publishing the announcement */
   responsible: string
   /** UNIX Timestamp in second of the last time changes have been made to this announcement */
@@ -36,7 +39,7 @@ export type AnnouncementType = AnnouncementDataType & MongooseDocument<any, {}>
 export type SanitizedAnnouncementType = {
   id: Long
   published: number
-  status: AnnouncementApprovalStatus
+  status: AnnouncementApprovalStatusType
   responsible: string
   changed: number
   items: number[]
@@ -49,7 +52,10 @@ export type SanitizedAnnouncementType = {
 export const AnnouncementSchema = new Schema({
   _id: Long,
   published: Number,
-  status: String,
+  status: {
+    type: String,
+    enum: AnnouncementApprovalStatusArray
+  },
   responsible: String,
   changed: Number,
   items: [ Number ],
