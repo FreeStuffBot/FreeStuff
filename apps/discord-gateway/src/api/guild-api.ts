@@ -1,5 +1,5 @@
+import { DataGuild } from "@freestuffbot/common"
 import GuildData from "../data/guild-data"
-import { DataGuild } from "@freestuffbot/typings/types/internal/gateway-discord"
 import RestGateway from "./rest-gateway"
 
 

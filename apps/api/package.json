@@ -1,5 +1,5 @@
 {
-  "name": "database-gateway",
+  "name": "api",
   "version": "1.0.0",
   "main": "build/index.js",
   "scripts": {
@@ -18,9 +18,12 @@
     "Bartosz Król (https://github.com/badosz0)"
   ],
   "dependencies": {
-    "@freestuffbot/common": "^0.2.10",
+    "@types/redis": "^4.0.11",
     "axios": "^0.24.0",
+    "cors": "^2.8.5",
     "express": "^4.17.2",
+    "express-rate-limit": "^6.1.0",
+    "redis": "^4.0.2",
     "typescript": "^4.5.4"
   },
   "devDependencies": {

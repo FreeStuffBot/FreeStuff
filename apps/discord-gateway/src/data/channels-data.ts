@@ -1,8 +1,8 @@
+import { DataChannel, DataGuild, DataMember } from "@freestuffbot/common"
 import ChannelsApi from "../api/channels-api"
 import ChannelsCache from "../cache/channels-cache"
 import { calculatePermissionsForMemberInChannel, containerToBitfield } from "../lib/discord-permissions"
 import { MagicNumber, MAGICNUMBER_BAD_GATEWAY } from "../lib/magic-number"
-import { DataChannel, DataGuild, DataMember } from "@freestuffbot/typings/types/internal/gateway-discord"
 import GuildData from "./guild-data"
 import MemberData from "./member-data"
 
@@ -45,16 +45,16 @@ export default class ChannelsData {
    */
 
   public static async findChannels(guild: string, directives: string[]): Promise<DataChannel[] | MagicNumber | null> {
-    if (!directives.includes('nocache')) {
-      const cache = ChannelsCache.get(guild, directives.includes('softcache'))
-      if (cache !== undefined) return cache
-    }
+    // if (!directives.includes('nocache')) {
+    //   const cache = ChannelsCache.get(guild, directives.includes('softcache'))
+    //   if (cache !== undefined) return cache
+    // }
 
     const fresh = await ChannelsApi.fetchChannels(guild, directives)
     if (fresh === undefined) return MAGICNUMBER_BAD_GATEWAY
     if (typeof fresh === 'number') return fresh as MagicNumber
 
-    ChannelsCache.set(guild, fresh)
+    // ChannelsCache.set(guild, fresh)
     return fresh
   }
 

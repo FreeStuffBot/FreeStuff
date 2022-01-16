@@ -1,7 +1,7 @@
+import { DataGuild } from "@freestuffbot/common"
 import GuildApi from "../api/guild-api"
 import GuildCache from "../cache/guild-cache"
 import { MagicNumber, MAGICNUMBER_BAD_GATEWAY } from "../lib/magic-number"
-import { DataGuild } from "@freestuffbot/typings/types/internal/gateway-discord"
 
 
 export default class GuildData {
@@ -36,15 +36,15 @@ export default class GuildData {
    */
 
   public static async findGuild(guild: string, directives: string[]): Promise<DataGuild | MagicNumber | null> {
-    if (!directives.includes('nocache')) {
-      const cache = GuildCache.get(guild, directives.includes('softcache'))
-      if (cache !== undefined) return cache
-    }
+    // if (!directives.includes('nocache')) {
+    //   const cache = GuildCache.get(guild, directives.includes('softcache'))
+    //   if (cache !== undefined) return cache
+    // }
 
     const fresh = await GuildApi.fetchData(guild)
     if (fresh === undefined) return MAGICNUMBER_BAD_GATEWAY
 
-    GuildCache.set(guild, fresh)
+    // GuildCache.set(guild, fresh)
     return fresh
   }
 

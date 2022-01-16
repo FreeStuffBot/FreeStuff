@@ -1,7 +1,7 @@
-import { Fragile } from "@freestuffbot/common"
-import { DataChannel, DataGuild } from "@freestuffbot/typings"
+import { Fragile, DataGuild, DataChannel } from "@freestuffbot/common"
 import axios from "axios"
 import { config } from ".."
+import Errors from "../lib/errors"
 
 
 export default class DiscordGateway {
@@ -13,18 +13,15 @@ export default class DiscordGateway {
     })
 
     if (status === 200)
-      return [ null, data ]
+      return Errors.success(data)
     
-    return [
-      {
-        status,
-        name: status === 404
-          ? 'not found'
-          : 'bad gateway',
-        source: 'discord-interactions::discord-gateway'
-      },
-      null
-    ]
+    return Errors.throw({
+      status,
+      name: status === 404
+        ? 'not found'
+        : 'bad gateway',
+      source: 'discord-interactions::discord-gateway'
+    })
   }
 
   public static async fetchChannels(guildid: string): Promise<Fragile<DataChannel[]>> {
@@ -33,20 +30,16 @@ export default class DiscordGateway {
       validateStatus: null
     })
 
-
     if (status === 200)
-      return [ null, data ]
+      return Errors.success(data)
     
-    return [
-      {
-        status,
-        name: status === 404
-          ? 'not found'
-          : 'bad gateway',
-        source: 'discord-interactions::discord-gateway'
-      },
-      null
-    ]
+    return Errors.throw({
+      status,
+      name: status === 404
+        ? 'not found'
+        : 'bad gateway',
+      source: 'discord-interactions::discord-gateway'
+    })
   }
 
 }

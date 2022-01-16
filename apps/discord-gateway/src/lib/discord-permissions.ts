@@ -1,4 +1,4 @@
-import { DataChannel, DataGuild, DataMember } from "@freestuffbot/typings/types/internal/gateway-discord"
+import { DataChannel, DataGuild, DataMember } from "@freestuffbot/common"
 
 
 type ChannelPermissionOverrides = {
