@@ -14,13 +14,14 @@ export default async function (i: ReplyableComponentInteraction) {
   const errormsg = Localisation.text(guildData, '=settings_guilddata_display_error', { invite: Const.links.supportInvite })
   const guilddata = guildDataToViewString(guildData, 2000, errormsg)
   const raw = {
-    _id: guildData._id,
+    id: guildData.id,
     sharder: guildData.sharder,
     channel: guildData.channel,
     role: guildData.role,
     filter: guildData.filter,
     settings: guildData.settings,
-    tracker: guildData.tracker
+    tracker: guildData.tracker,
+    webhook: guildData.webhook
   }
 
   i.replyPrivately({

@@ -1,10 +1,9 @@
 import { ButtonStyle, ChannelType, ComponentType, GenericInteraction, GuildData, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
-import { Localisation, Emojis, CustomPermissions } from '@freestuffbot/common'
+import { Localisation, Emojis, CustomPermissions, DataChannel, SanitizedGuildType } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import Tracker from '../../../lib/tracker'
 import DiscordGateway from '../../../services/discord-gateway'
 import Errors from '../../../lib/errors'
-import { DataChannel, GuildData as GuildDataResolved } from '@freestuffbot/typings'
 import { CustomChannelPermissions } from '@freestuffbot/common/dist/lib/custom-permissions'
 
 
@@ -30,7 +29,7 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
 
   Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
 
-  const [ error, allChannels ] = await DiscordGateway.fetchChannels(i.guild_id)
+  const [ error, allChannels ] = await DiscordGateway.getChannels(i.guild_id)
   if (error) return Errors.handleErrorAndCommunicate(error)
 
   let youHaveTooManyChannelsStage = 0
@@ -135,7 +134,7 @@ function sortChannels(a: DataChannel, b: DataChannel, i: GenericInteraction, par
 /**
  * Converts a channel object to a dropdown option
  */
-function channelToDropdownOption(c: DataChannel, i: GenericInteraction, guildData: GuildDataResolved, hereText: string): MessageComponentSelectOption {
+function channelToDropdownOption(c: DataChannel, i: GenericInteraction, guildData: SanitizedGuildType, hereText: string): MessageComponentSelectOption {
   const permissions = CustomPermissions.parseChannel(c.permissions)
   const sussy = sussyRegex.test(c.name)
   const recommended = isRecommended(i, c)
@@ -161,7 +160,7 @@ function channelToDropdownOption(c: DataChannel, i: GenericInteraction, guildDat
 /**
  * Finds the right description to use for a channel
  */
-function getDescriptionForChannel(guildData: GuildDataResolved, permissions: CustomChannelPermissions, sussy: boolean): string {
+function getDescriptionForChannel(guildData: SanitizedGuildType, permissions: CustomChannelPermissions, sussy: boolean): string {
   if (!permissions.viewChannel)
     return '⚠️ ' + Localisation.text(guildData, '=settings_channel_list_warning_missing_view_channel')
 

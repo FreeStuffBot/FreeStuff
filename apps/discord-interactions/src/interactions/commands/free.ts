@@ -14,7 +14,7 @@ export default function (i: ReplyableCommandInteraction) {
 
   for (const game of games) {
     // g happens to be undefined here at times, investigate
-    const str = `${Emojis.store[game.store] || ':gray_question:'} **[${game.title}](${game.urls.default})**\n${Emojis.bigSpace.string} ~~${Localisation.renderPriceTag(i, game)}~~ • ${Localisation.text(i, '=cmd_free_until')} ${game.until ? `<t:${game.until.getTime() / 1000}:${('_today' in game) ? 't' : 'd'}>` : 'unknown'}\n`
+    const str = `${Emojis.store[game.platform] || ':gray_question:'} **[${game.title}](${game.urls.default})**\n${Emojis.bigSpace.string} ~~${Localisation.renderPriceTag(i, game)}~~ • ${Localisation.text(i, '=cmd_free_until')} ${game.until ? `<t:${game.until / 1000}:${('_today' in game) ? 't' : 'd'}>` : 'unknown'}\n`
     if ('_today' in game) freeToday.push(str)
     else freeLonger.push(str)
   }

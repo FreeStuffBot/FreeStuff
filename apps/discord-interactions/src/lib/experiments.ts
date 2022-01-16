@@ -1,5 +1,4 @@
-import { Logger } from '@freestuffbot/common'
-import { GuildData } from '@freestuffbot/typings'
+import { Logger, SanitizedGuildType } from '@freestuffbot/common'
 
 
 export type Experiment = {
@@ -24,7 +23,7 @@ export default class Experiments {
     return this.experiments
   }
 
-  public static runExperimentOnServer(experimentName: string, guildData: GuildData): boolean {
+  public static runExperimentOnServer(experimentName: string, guildData: SanitizedGuildType): boolean {
     if (!guildData) return false
     if (!(experimentName in this.experiments)) return false
 

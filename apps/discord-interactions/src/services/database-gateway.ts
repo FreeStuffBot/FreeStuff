@@ -1,5 +1,5 @@
 import { Fragile } from "@freestuffbot/common"
-import { GuildData } from "@freestuffbot/typings"
+import { GuildData } from "cordo"
 import Errors from "../lib/errors"
 
 

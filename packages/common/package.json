@@ -14,6 +14,10 @@
     "@freestuffbot:registry": "https://npm.pkg.github.com"
   },
   "author": "FreeStuff Team",
+  "dependencies": {
+    "cordo": "^1.8.4",
+    "mongoose": "^6.1.6"
+  },
   "devDependencies": {
     "@types/mongodb": "^4.0.7",
     "@types/node": "^16.9.6",
@@ -24,10 +28,5 @@
     "reflect-metadata": "^0.1.13",
     "tsconfig": "*",
     "typescript": "^4.4.3"
-  },
-  "dependencies": {
-    "@types/mongoose": "^5.11.97",
-    "cordo": "^1.8.4",
-    "mongoose": "^6.1.6"
   }
 }

@@ -45,15 +45,6 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@freestuffbot/typings@^1.3.5":
-  version "1.3.5"
-  resolved "https://npm.pkg.github.com/download/@freestuffbot/typings/1.3.5/7a2730b8faf7a53129b87a7766e4e340b870949f73cb69f752957795d624dc6e#b17f8a04f7ba1f8569ec85bf2110999b03d61510"
-  integrity sha512-1/7hAblVol+GApTVXmKt04UwVEPLI1pJ1gDL7KG6xiJNG5q1gM+GvBkhsQUJoqVDn3JCwpTqpvEYF0sH8pPEPQ==
-  dependencies:
-    "@types/bson" "^4.2.0"
-    cordo "^1.7.0"
-    freestuff "^1.8.0"
-
 "@humanwhocodes/config-array@^0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.5.0.tgz#1407967d4c6eecd7388f83acf1eaf4d0c6e58ef9"
@@ -156,13 +147,6 @@
     "@types/connect" "*"
     "@types/node" "*"
 
-"@types/bson@^4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@types/bson/-/bson-4.2.0.tgz#a2f71e933ff54b2c3bf267b67fa221e295a33337"
-  integrity sha512-ELCPqAdroMdcuxqwMgUpifQyRoTpyYCNr1V9xKyF40VsBobsj+BbWNRvwGchMgBPGqkw655ypkjj2MEF5ywVwg==
-  dependencies:
-    bson "*"
-
 "@types/connect@*":
   version "3.4.35"
   resolved "https://registry.yarnpkg.com/@types/connect/-/connect-3.4.35.tgz#5fcf6ae445e4021d1fc2219a4873cc73a3bb2ad1"
@@ -210,13 +194,6 @@
   integrity sha512-lPUYPpzA43baXqnd36cZ9xxorprybxXDzteVKCPAdp14ppHtFJHnXYvNpmBvtMUTb5fKXVv6sVbzo1LHkWhJlw==
   dependencies:
     mongodb "*"
-
-"@types/mongoose@^5.11.97":
-  version "5.11.97"
-  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.11.97.tgz#80b0357f3de6807eb597262f52e49c3e13ee14d8"
-  integrity sha512-cqwOVYT3qXyLiGw7ueU2kX9noE8DPGRY6z8eUxudhXY8NZ7DMKYAxyZkLSevGfhCX3dO/AoX5/SO9lAzfjon0Q==
-  dependencies:
-    mongoose "*"
 
 "@types/node@*", "@types/node@^17.0.6":
   version "17.0.8"
@@ -593,7 +570,7 @@ braces@^3.0.1:
   dependencies:
     fill-range "^7.0.1"
 
-bson@*, bson@^4.2.2, bson@^4.6.0, bson@^4.6.1:
+bson@^4.2.2, bson@^4.6.0, bson@^4.6.1:
   version "4.6.1"
   resolved "https://registry.yarnpkg.com/bson/-/bson-4.6.1.tgz#2b5da517539bb0f7f3ffb54ac70a384ca899641c"
   integrity sha512-I1LQ7Hz5zgwR4QquilLNZwbhPw0Apx7i7X9kGMBTsqPdml/03Q9NBtD9nt/19ahjlphktQImrnderxqpzeVDjw==
@@ -748,16 +725,6 @@ cordo@^1.10.0, cordo@^1.8.4:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/cordo/-/cordo-1.10.0.tgz#fa0810b4f43fd75c5fb5558c9fa77bf82b6b37b9"
   integrity sha512-AFih3ekWrJGQVP0hBNV3khWCMOeMcit6AVPLZDhVwarZX/UQH7H4wOXnSAXt6/ky/xK42uNqRFslpIDOrAl2DA==
-  dependencies:
-    "@types/express" "^4.17.13"
-    axios "^0.21.4"
-    discord-interactions "^2.4.1"
-    express "^4.17.2"
-
-cordo@^1.7.0:
-  version "1.10.3"
-  resolved "https://registry.yarnpkg.com/cordo/-/cordo-1.10.3.tgz#4360744d74a516ec7bf382d02e053e5176779680"
-  integrity sha512-KGS01AnE8BsYufH2cKjO44/9+ExjohR1d690mOJo/M1YMGeoQQnCDf+Fk/izYDZ9blXKD/1h9tZPEkLc4T0NAw==
   dependencies:
     "@types/express" "^4.17.13"
     axios "^0.21.4"
@@ -1368,13 +1335,6 @@ forwarded@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.2.0.tgz#2269936428aad4c15c7ebe9779a84bf0b2a81811"
   integrity sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==
-
-freestuff@^1.8.0:
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/freestuff/-/freestuff-1.8.2.tgz#af53d3804f770a82769dded5a2c4a59fee159be7"
-  integrity sha512-vntyGSz+9QQIuR91wngjpCATfGKcRUuy4oJqHSE1M3zo0lD+06p/kvY1SP0+7gcryVqLbyBnxwolF1xkbfDxJA==
-  dependencies:
-    axios "^0.21.1"
 
 fresh@0.5.2:
   version "0.5.2"
@@ -2354,7 +2314,7 @@ mongodb@4.2.2:
   optionalDependencies:
     saslprep "^1.0.3"
 
-mongoose@*, mongoose@^6.1.6:
+mongoose@^6.1.6:
   version "6.1.6"
   resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-6.1.6.tgz#47903ef821b63fc5ef80a259c2331cabf994c957"
   integrity sha512-wvNRJ547x/Bn3EMhwbVInNsEp2OdlMxk4Q/vfgAkw8OI+giZQ72S90ZH0H6VzzIhs4lCU9SwXHYa2O0sPicnEQ==

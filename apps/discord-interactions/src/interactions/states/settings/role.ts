@@ -1,10 +1,9 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
-import { Emojis, Localisation } from '@freestuffbot/common'
+import { DataGuild, Emojis, Localisation } from '@freestuffbot/common'
 import Tracker from '../../../lib/tracker'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import Errors from '../../../lib/errors'
 import DiscordGateway from '../../../services/discord-gateway'
-import { DataGuild } from '@freestuffbot/typings'
 
 
 type DataRole = DataGuild['roles'][number]
@@ -17,7 +16,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
 
   Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_ROLE')
 
-  const [ error, guild ] = await DiscordGateway.fetchGuild(i.guild_id)
+  const [ error, guild ] = await DiscordGateway.getGuild(i.guild_id)
   if (error) return Errors.handleErrorAndCommunicate(error)
 
   const roles = guild.roles

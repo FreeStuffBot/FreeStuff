@@ -1,12 +1,11 @@
-import { Fragile, Logger } from "@freestuffbot/common"
-import { GameInfo } from "@freestuffbot/typings"
+import { Fragile, Logger, SanitizedProductType } from "@freestuffbot/common"
 import Errors from "../lib/errors"
 
 
 export default class FreestuffData {
   
   private static readonly TWELVE_HOURS = 1000 * 60 * 60 * 12
-  private static current: Fragile<GameInfo[]> = Errors.throwStderrNotInitialized()
+  private static current: Fragile<SanitizedProductType[]> = Errors.throwStderrNotInitialized()
 
   public static async updateCurrentFreebies() {
     Logger.excessive('Updating current freebie list')
@@ -30,7 +29,7 @@ export default class FreestuffData {
     this.current = [ null, games ]
   }
 
-  public static getCurrentFreebies(): Fragile<GameInfo[]> {
+  public static getCurrentFreebies(): Fragile<SanitizedProductType[]> {
     return this.current
   }
 

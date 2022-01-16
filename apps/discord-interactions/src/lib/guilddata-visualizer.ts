@@ -1,10 +1,9 @@
 import { hostname } from 'os'
-import { GuildData } from '@freestuffbot/typings'
 import Tracker from './tracker'
-import { Logger } from '@freestuffbot/common'
+import { Logger, SanitizedGuildType } from '@freestuffbot/common'
 
 
-export default function guildDataToViewString(g: GuildData, maxLength = 2048, errorMessage?: string, includeMetainfo = false) {
+export default function guildDataToViewString(g: SanitizedGuildType, maxLength = 2048, errorMessage?: string, includeMetainfo = false) {
   const gd = { ...g } as any
   if (gd) {
     delete gd.channelInstance

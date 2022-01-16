@@ -1,25 +1,24 @@
-import { Fragile, Tracking } from '@freestuffbot/common'
-import { GuildData } from '@freestuffbot/typings'
-import { GuildData as GuildDataPending, GenericInteraction } from 'cordo'
+import { Fragile, SanitizedGuildType, Tracking } from '@freestuffbot/common'
+import { GuildData as GuildDataPending } from 'cordo'
 import Errors from './errors'
 
 
-export type GuildDataResolveable = GuildData | Promise<GuildData> | GuildDataPending
+export type GuildDataResolveable = SanitizedGuildType | Promise<SanitizedGuildType> | GuildDataPending
 
 export default class Tracker {
 
   public static readonly TRACKING_POINT = Tracking.DISCORD_POINTS
 
-  private static resolveGuildData(g: GuildDataResolveable): Promise<Fragile<Readonly<GuildData>>> {
-    if ((g as GuildData).tracker)
-      return Promise.resolve([ null, g as GuildData ])
+  private static resolveGuildData(g: GuildDataResolveable): Promise<Fragile<Readonly<SanitizedGuildType>>> {
+    if ((g as SanitizedGuildType).tracker)
+      return Promise.resolve([ null, g as SanitizedGuildType ])
 
     if ((g as GuildDataPending).fetch)
       return (g as GuildDataPending).fetch()
 
-    if ((g as Promise<GuildData>).then) {
+    if ((g as Promise<SanitizedGuildType>).then) {
       return new Promise((res) => {
-        (g as Promise<GuildData>)
+        (g as Promise<SanitizedGuildType>)
           .then(d => res([ null, d ]))
           .catch(err => res(Errors.throwStderrGeneric('discord-interactions::tracker', err + '')))
       })
@@ -37,7 +36,7 @@ export default class Tracker {
     return Tracker.syncShowHint(g, hint)
   }
 
-  public static syncShowHint(guild: GuildData, hint: keyof typeof Tracker.TRACKING_POINT): boolean {
+  public static syncShowHint(guild: SanitizedGuildType, hint: keyof typeof Tracker.TRACKING_POINT): boolean {
     return !this.syncIsTracked(guild, hint)
   }
 
@@ -50,7 +49,7 @@ export default class Tracker {
     return Tracker.syncIsTracked(g, hint)
   }
 
-  public static syncIsTracked(g: GuildData, hint: keyof typeof Tracker.TRACKING_POINT): boolean {
+  public static syncIsTracked(g: SanitizedGuildType, hint: keyof typeof Tracker.TRACKING_POINT): boolean {
     return g && (g.tracker & Tracker.TRACKING_POINT[hint]) !== 0
   }
 
@@ -63,7 +62,7 @@ export default class Tracker {
     return Tracker.syncSet(g, hint, value)
   }
 
-  public static syncSet(g: GuildData, hint: keyof typeof Tracker.TRACKING_POINT, value = true): void {
+  public static syncSet(g: SanitizedGuildType, hint: keyof typeof Tracker.TRACKING_POINT, value = true): void {
     if (!g) return
     const state = this.syncIsTracked(g, hint)
     if (state === value) return // no change
