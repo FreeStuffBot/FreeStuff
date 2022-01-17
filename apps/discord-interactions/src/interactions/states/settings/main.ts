@@ -64,13 +64,13 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
         label: guildData.role ? '=settings_main_btn_role_change' : '=settings_main_btn_role_set',
         emoji: Emojis.mention.toObject()
       },
-      {
-        type: ComponentType.BUTTON,
-        style: ButtonStyle.SECONDARY,
-        custom_id: 'settings_language',
-        label: '=settings_main_btn_language',
-        emoji: { name: Emojis.fromFlagName(Localisation.getLine(guildData, 'lang_flag_emoji')).string }
-      },
+      // {
+      //   type: ComponentType.BUTTON,
+      //   style: ButtonStyle.SECONDARY,
+      //   custom_id: 'settings_language',
+      //   label: '=settings_main_btn_language',
+      //   emoji: { name: Emojis.fromFlagName(Localisation.getLine(guildData, 'lang_flag_emoji')).string }
+      // },
       {
         type: ComponentType.LINE_BREAK
       },

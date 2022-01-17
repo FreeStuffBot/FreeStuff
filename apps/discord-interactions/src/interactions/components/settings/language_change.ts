@@ -14,5 +14,5 @@ export default function (i: ReplyableComponentInteraction) {
   if (id === -1) return i.ack()
 
   i.guildData.changeSetting('language', id)
-  i.state('settings_language')
+  i.state('settings_display')
 }

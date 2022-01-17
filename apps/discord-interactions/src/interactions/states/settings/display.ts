@@ -19,6 +19,19 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     emoji: { name: t.emoji }
   }))
 
+  const languageOptions = Localisation
+    .getAllLanguages()
+    .sort((a, b) => (b.ranking - a.ranking))
+    .slice(0, 25)
+    .sort((a, b) => (a.id < b.id ? -1 : (a.id > b.id ? 1 : 0)))
+    .map(l => ({
+      label: l.name,
+      value: l.id,
+      default: guildData.language === l.id,
+      description: buildDescriptionForLanguage(i, l),
+      emoji: { name: Emojis.fromFlagName(l.flag).string }
+    }))
+
   const currencyOptions: MessageComponentSelectOption[] = Const.currencies
     .map(c => ({
       value: c.id + '',
@@ -43,6 +56,12 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
         type: ComponentType.SELECT,
         custom_id: 'settings_theme_change',
         options: themeOptions,
+        flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
+      },
+      {
+        type: ComponentType.SELECT,
+        custom_id: 'settings_language_change',
+        options: languageOptions,
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
@@ -78,4 +97,25 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
       parse: []
     }
   }
+}
+
+function buildDescriptionForLanguage(i: GenericInteraction, lang: { id: string, nameEn: string }): string {
+  const name = lang.nameEn[0].toUpperCase() + lang.nameEn.substring(1).toLowerCase()
+  if (lang.id.startsWith('en')) {
+    if (!lang.id.endsWith('US'))
+      return '=settings_language_list_desc_english_eu'
+
+    return Math.random() < 0.2
+      ? '=settings_language_list_desc_english_us_easteregg'
+      : '=settings_language_list_desc_english_us'
+  }
+
+  const out = Localisation.text(i, '=settings_language_list_desc_generic', {
+    language: name,
+    translators: Localisation.getRaw(lang.id, 'translators', false)
+  })
+
+  return (out.length > 50)
+    ? out.substring(0, 47) + '...'
+    : out
 }
