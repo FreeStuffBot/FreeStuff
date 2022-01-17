@@ -9,7 +9,6 @@
     "dev": "tsc && node --icu-data-dir=node_modules\\full-icu --trace-warnings ./dist/index.js",
     "test": "echo \"No test specified\" && exit 0"
   },
-  "license": "ISC",
   "author": "FreeStuff Bot Team",
   "contributors": [
     "Andreas May (https://github.com/Maanex)",
