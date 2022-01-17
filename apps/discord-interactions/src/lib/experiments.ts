@@ -30,7 +30,6 @@ export default class Experiments {
     const experiment = this.experiments[experimentName]
     const chance = Math.sin(typeof guildData.sharder === 'number'
       ? guildData.sharder
-      // TODO
       : (guildData.sharder as any).getLowBits()) / 2 + 0.5
     if (chance > experiment.amount) return false
 

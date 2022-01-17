@@ -1,5 +1,6 @@
 /* eslint-disable spaced-comment */
 import { Schema, Document as MongooseDocument } from 'mongoose'
+import { Long } from 'bson'
 import { SettingCurrency, SettingPlatform, SettingPriceClass, SettingTheme } from '..'
 
 
@@ -13,11 +14,11 @@ import { SettingCurrency, SettingPlatform, SettingPriceClass, SettingTheme } fro
 
 /** A reduced type to use internally */
 export type GuildDataType = {
-  _id: Schema.Types.Long
-  sharder: Schema.Types.Long
-  channel: Schema.Types.Long | null
+  _id: Long
+  sharder: Long
+  channel: Long | null
   webhook: string | null
-  role: Schema.Types.Long | null
+  role: Long | null
   settings: number
   filter: number
   tracker: number
@@ -28,11 +29,11 @@ export type GuildType = GuildDataType & MongooseDocument<any, {}>
 
 /** The sanitized version of the data, gets served out by the api */
 export type SanitizedGuildType = {
-  id: Schema.Types.Long
-  sharder: Schema.Types.Long
-  channel: Schema.Types.Long | null
+  id: Long
+  sharder: Long
+  channel: Long | null
   webhook: string | null
-  role: Schema.Types.Long | null
+  role: Long | null
   settings: number
   filter: number
   tracker: number

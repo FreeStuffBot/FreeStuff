@@ -63,7 +63,7 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
     youHaveTooManyChannelsStage++
   }
 
-  const hereText = ` (${Localisation.text(guildData, '=settings_channel_list_here')})`
+  const hereText = ` (${Localisation.text(i, '=settings_channel_list_here')})`
 
   const parentOrder = new Map()
   parentOrder.set(null, 0)
@@ -90,13 +90,13 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
 
   const opts = args[0]
 
-  let description = Localisation.text(guildData, '=settings_channel_ui_2_regular')
+  let description = Localisation.text(i, '=settings_channel_ui_2_regular')
   if (youHaveTooManyChannelsStage > 2)
-    description = Localisation.text(guildData, '=settings_channel_ui_2_way_too_many') + '\n\n*' + Localisation.text(guildData, '=settings_channel_ui_too_many_channels_tip') + '*'
+    description = Localisation.text(i, '=settings_channel_ui_2_way_too_many') + '\n\n*' + Localisation.text(i, '=settings_channel_ui_too_many_channels_tip') + '*'
   else if (youHaveTooManyChannelsStage > 0)
-    description = Localisation.text(guildData, '=settings_channel_ui_2_too_many') + '\n\n*' + Localisation.text(guildData, '=settings_channel_ui_too_many_channels_tip') + '*'
+    description = Localisation.text(i, '=settings_channel_ui_2_too_many') + '\n\n*' + Localisation.text(i, '=settings_channel_ui_too_many_channels_tip') + '*'
   if (opts?.missingPermissions)
-    description += `\n\n⚠️ **${Localisation.text(guildData, '=settings_channel_ui_missing_permissions', { channel: opts?.changedTo, permissions: opts?.missingPermissions })}**`
+    description += `\n\n⚠️ **${Localisation.text(i, '=settings_channel_ui_missing_permissions', { channel: opts?.changedTo, permissions: opts?.missingPermissions })}**`
 
   return {
     title: '=settings_channel_ui_1',
@@ -148,7 +148,7 @@ function channelToDropdownOption(c: DataChannel, i: GenericInteraction, guildDat
   const sussy = sussyRegex.test(c.name)
   const recommended = isRecommended(i, c)
 
-  const description = getDescriptionForChannel(guildData, permissions, sussy)
+  const description = getDescriptionForChannel(i, permissions, sussy)
 
   const label = (c.id === i.channel_id) && (c.name.length + hereText.length <= 25)
     ? c.name.split('\\').join('') + hereText
@@ -169,12 +169,12 @@ function channelToDropdownOption(c: DataChannel, i: GenericInteraction, guildDat
 /**
  * Finds the right description to use for a channel
  */
-function getDescriptionForChannel(guildData: SanitizedGuildType, permissions: CustomChannelPermissions, sussy: boolean): string {
+function getDescriptionForChannel(i: GenericInteraction, permissions: CustomChannelPermissions, sussy: boolean): string {
   if (!permissions.viewChannel)
-    return '⚠️ ' + Localisation.text(guildData, '=settings_channel_list_warning_missing_view_channel')
+    return '⚠️ ' + Localisation.text(i, '=settings_channel_list_warning_missing_view_channel')
 
   if (!permissions.manageWebhooks)
-    return '⚠️ ' + Localisation.text(guildData, '=settings_channel_list_warning_missing_manage_webhooks')
+    return '⚠️ ' + Localisation.text(i, '=settings_channel_list_warning_missing_manage_webhooks')
 
   if (!permissions.sendMessages)
     return '=settings_channel_list_warning_missing_send_messages'

@@ -22,7 +22,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
   const currencyOptions: MessageComponentSelectOption[] = Const.currencies
     .map(c => ({
       value: c.id + '',
-      label: `${c.symbol} ${Localisation.text(guildData, c.name)}`,
+      label: `${c.symbol} ${Localisation.text(i, c.name)}`,
       description: c.calculated ? '=price_converted' : '=price_actual',
       default: guildData.currency.id === c.id
     }))
@@ -31,7 +31,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
   const embeds: MessageEmbed[] = []
   if (message.embeds?.length) {
     if (!PermissionStrings.containsManageServer(i.member.permissions) && message.embeds[0].footer?.text)
-      message.embeds[0].footer.text += ' • ' + Localisation.text(guildData, '=settings_permission_disclaimer')
+      message.embeds[0].footer.text += ' • ' + Localisation.text(i, '=settings_permission_disclaimer')
     embeds.push(...message.embeds as MessageEmbed[])
   }
 

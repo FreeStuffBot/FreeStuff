@@ -1,10 +1,10 @@
-import { Schema } from "mongoose"
+import { Long } from 'bson'
 
 
-export function roleIdToMention(id: Schema.Types.Long): string {
+export function roleIdToMention(id: Long): string {
   return id
-    ? ((id + '') === '1')
+    ? (id.toString() === '1')
       ? '@everyone'
-      : `<@&${id}>`
+      : `<@&${id.toString()}>`
     : ''
 }

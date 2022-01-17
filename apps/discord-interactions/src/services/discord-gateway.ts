@@ -34,13 +34,17 @@ export default class DiscordGateway {
         name: status === 404
           ? 'not found'
           : 'bad gateway',
-        source: 'discord-interactions::discord-gateway'
+        source: 'discord-interactions::discord-gateway',
+        description: 'An issue occured while trying to load your discord server.',
+        fix: 'Please try again in a bit or contact support if the issue persists.'
       })
     } catch (ex) {
       return Errors.throw({
         status: Errors.STATUS_ERRNO,
         name: ex.code ?? 'unknown',
-        source: 'discord-interactions::discord-gateway'
+        source: 'discord-interactions::discord-gateway',
+        description: 'An issue occured while trying to load your discord server.',
+        fix: 'Please try again in a bit or contact support if the issue persists.'
       })
     }
   }

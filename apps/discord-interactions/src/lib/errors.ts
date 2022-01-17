@@ -51,21 +51,21 @@ export default class Errors {
     })
   }
 
-  public static throwStderrNotInitialized(): Fragile<any> {
+  public static throwStderrNotInitialized(source: string = 'stderr'): Fragile<any> {
     return Errors.throw({
       status: Errors.STATUS_NOT_INITIALIZED,
       name: 'not initialized',
-      source: 'stderr',
+      source,
       description: 'The data has not been loaded yet.',
       fix: 'Please try again in a few seconds.'
     })
   }
 
-  public static throwStderrNoGuilddata(): Fragile<any> {
+  public static throwStderrNoGuilddata(source: string = 'stderr'): Fragile<any> {
     return Errors.throw({
       status: Errors.STATUS_NO_GUILDDATA,
       name: 'no guilddata',
-      source: 'stderr',
+      source,
       description: 'The data for your guild could not be loaded.',
       fix: 'Please try again.'
     })

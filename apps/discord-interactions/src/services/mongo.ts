@@ -1,36 +1,52 @@
-import { ChannelSchema, CurrencySchema, GuildSchema, LanguageSchema, Logger, PlatformSchema, ProductSchema } from '@freestuffbot/common'
-import * as mongoose from 'mongoose'
+import { GuildDataType, LanguageDataType, Logger } from '@freestuffbot/common'
+import * as mongo from 'mongodb'
 
+
+
+export type Collection
+  = 'language'
+  | 'guilds'
+
+type Query = mongo.Filter<mongo.Document>
 
 export default class Mongo {
 
-  public static connection: mongoose.Connection;
-
-  public static Guild = mongoose.model('Guild', GuildSchema)
-  public static Product = mongoose.model('Product', ProductSchema)
-  public static Currency = mongoose.model('Currency', CurrencySchema)
-  public static Channel = mongoose.model('Channel', ChannelSchema)
-  public static Platform = mongoose.model('Platform', PlatformSchema)
-  public static Language = mongoose.model('Language', LanguageSchema)
+  public static client: mongo.MongoClient
+  private static dbName: string
 
   //
 
-  public static connect(url?: string): Promise<mongoose.Connection> {
+  public static async connect(url: string): Promise<mongo.MongoClient> {
     Logger.info('Connecting to Mongo...')
 
-    return new Promise<mongoose.Connection>((resolve, reject) => {
-      this.connection = mongoose.connection
-      mongoose.connect(url)
-      this.connection.on('error', reject)
-      this.connection.on('open', () => {
-        Logger.process('Mongo connection estabished')
-        resolve(this.connection)
-      })
-    })
+    Mongo.dbName = url.split('?')[0].split('/').slice(-1)[0]
+    Mongo.client = new mongo.MongoClient(url)
+
+    await Mongo.client.connect()
+    Logger.process('Mongo connection estabished')
+    return Mongo.client
   }
 
   public static disconnect(): void {
-    this.connection.close()
+    Mongo.client.close()
+  }
+
+  public static collection(name: Collection): mongo.Collection {
+    return Mongo.client.db(Mongo.dbName).collection(name)
+  }
+
+  //
+
+  public static findById(collection: 'language', id: any): Promise<LanguageDataType>
+  public static findById(collection: 'guilds', id: any): Promise<GuildDataType>
+  public static findById(collection: Collection, id: any): Promise<any> {
+    return Mongo.collection(collection).findOne({ _id: id })
+  }
+
+  public static findMultiple(collection: 'language', query: Query): Promise<LanguageDataType[]>
+  public static findMultiple(collection: 'guilds', query: Query): Promise<GuildDataType[]>
+  public static findMultiple(collection: Collection, query: Query): Promise<any[]> {
+    return Mongo.collection(collection).find(query).toArray()
   }
 
 }

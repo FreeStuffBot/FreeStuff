@@ -23,12 +23,12 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     value: c.id + '',
     label: c.name,
     description: Localisation.text(
-      guildData,
+      i,
       c.from === 0
         ? '=settings_filter_price_class_desc_everything'
         : '=settings_filter_price_class_desc_generic',
       {
-        price: (Localisation.text(guildData, '=currency_sign_position') === 'before')
+        price: (Localisation.text(i, '=currency_sign_position') === 'before')
           ? `${guildData.currency.symbol}${c.from}`
           : `${c.from}${guildData.currency.symbol}`
       }

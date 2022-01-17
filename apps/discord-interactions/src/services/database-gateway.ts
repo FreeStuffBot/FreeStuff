@@ -1,4 +1,5 @@
-import { FlipflopCache, Fragile, GuildType, SanitizedGuildType, GuildSanitizer } from "@freestuffbot/common"
+import { FlipflopCache, Fragile, GuildType, SanitizedGuildType, GuildSanitizer, GuildDataType } from "@freestuffbot/common"
+import { Long } from "bson"
 import { config } from ".."
 import Errors from "../lib/errors"
 import Mongo from "./mongo"
@@ -20,9 +21,10 @@ export default class DatabaseGateway {
   }
 
   public static async fetchGuild(guildid: string): Promise<Fragile<SanitizedGuildType>> {
-    const raw: GuildType = await Mongo.Guild.findById(guildid)
-    // TODO, what if nothing found?
-    // return Errors.throwStderrNoGuilddata()
+    const raw = await Mongo.findById('guilds', Long.fromString(guildid))
+
+    if (!raw)
+      return Errors.throwStderrNoGuilddata('discord-interactions::database-gateway')
 
     const sanitized = GuildSanitizer.sanitize(raw)
     return Errors.success(sanitized)

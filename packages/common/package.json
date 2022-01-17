@@ -15,6 +15,7 @@
   },
   "author": "FreeStuff Team",
   "dependencies": {
+    "bson": "^4.6.1",
     "cordo": "^1.8.4",
     "mongoose": "^6.1.6",
     "mongoose-long": "^0.5.1"

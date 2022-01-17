@@ -62,10 +62,10 @@ export default class Modules {
   }
 
   public static async loadLanguageFiles() {
-    const lang = await Mongo.Language
-      .find({})
-      .lean()
-      .exec() as LanguageDataType[]
+    const lang = await Mongo
+      .collection('language')
+      .find({ _index: { $gte: 0 } })
+      .toArray() as LanguageDataType[]
     Localisation.load(lang)
     Logger.process('Language files loaded')
   }

@@ -68,8 +68,8 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_language',
-        label: '=lang_name',
-        emoji: { name: Emojis.fromFlagName(Localisation.text(guildData, '=lang_flag_emoji')).string }
+        label: '=settings_main_btn_language',
+        emoji: { name: Emojis.fromFlagName(Localisation.getLine(guildData, 'lang_flag_emoji')).string }
       },
       {
         type: ComponentType.LINE_BREAK

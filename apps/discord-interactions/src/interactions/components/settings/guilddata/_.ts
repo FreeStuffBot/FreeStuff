@@ -11,13 +11,13 @@ export default async function (i: ReplyableComponentInteraction) {
 
   Tracker.set(guildData, 'ACTION_DATA_REQUESTED')
 
-  const errormsg = Localisation.text(guildData, '=settings_guilddata_display_error', { invite: Const.links.supportInvite })
+  const errormsg = Localisation.text(i, '=settings_guilddata_display_error', { invite: Const.links.supportInvite })
   const guilddata = guildDataToViewString(guildData, 2000, errormsg)
   const raw = {
-    id: guildData.id,
+    id: guildData.id.toString(),
     sharder: guildData.sharder,
-    channel: guildData.channel,
-    role: guildData.role,
+    channel: guildData.channel?.toString(),
+    role: guildData.role?.toString(),
     filter: guildData.filter,
     settings: guildData.settings,
     tracker: guildData.tracker,

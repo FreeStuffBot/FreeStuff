@@ -57,11 +57,11 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
 
   let text = '=settings_role_ui_2'
   if (overflow) {
-    text = Localisation.text(guildData, text)
+    text = Localisation.text(i, text)
       + '\n\n'
-      + Localisation.text(guildData, '=settings_role_list_hidden_permissions_disclaimer')
+      + Localisation.text(i, '=settings_role_list_hidden_permissions_disclaimer')
 
-      // + Localisation.text(guildData, everyone
+      // + Localisation.text(i, everyone
       //     ? '=settings_role_list_hidden_overflow_disclaimer'
       //     : '=settings_role_list_hidden_permissions_disclaimer'
       //   )

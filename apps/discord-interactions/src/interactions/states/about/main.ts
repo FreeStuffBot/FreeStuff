@@ -1,18 +1,13 @@
 import { Const, Localisation } from '@freestuffbot/common'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag } from 'cordo'
 import { Emojis } from '@freestuffbot/common'
-import Errors from '../../../lib/errors'
 
 
 export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
-  // const [ err, guildData ] = await i.guildData.fetch()
-  // if (err) return Errors.handleError(err)
-
-  // TODO find out if translation bla bla this that cool thanks bye
-  // const translationCredits = (!guild || guild.language.startsWith('en'))
-  //   ? ''
-  //   : `\n\n${Localisation.text(guildData, '=translation_by')}\n${Localisation.getRaw(guild.language, 'translators').split(', ').map(n => `• ${n}`).join('\n')}`
-  const translationCredits = 'TODO'
+  const lang = Localisation.findClosestLanguageMatch(i.locale)
+  const translationCredits = lang.startsWith('en')
+    ? ''
+    : `\n\n${Localisation.text(i, '=translation_by')}\n${Localisation.getRaw(lang, 'translators').split(', ').map(n => `• ${n}`).join('\n')}`
 
   return {
     embeds: [
@@ -23,8 +18,9 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
           icon_url: Const.brandIcons.regularSquare
         },
         description: Localisation.text(i, '=cmd_info_2') + translationCredits,
+        color: Const.embedDefaultColor,
         footer: {
-          text: 'Copyright © 2020-2021 FreeStuff'
+          text: 'Copyright © 2020-2022 FreeStuff'
         }
       }
     ],
