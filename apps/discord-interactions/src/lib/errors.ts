@@ -5,8 +5,9 @@ import { InteractionApplicationCommandCallbackData, ReplyableCommandInteraction,
 export default class Errors {
 
   public static readonly STATUS_GENERIC = 10_000
-  public static readonly STATUS_NOT_INITIALIZED = 10_001
-  public static readonly STATUS_NO_GUILDDATA = 10_002
+  public static readonly STATUS_ERRNO = 10_001
+  public static readonly STATUS_NOT_INITIALIZED = 10_010
+  public static readonly STATUS_NO_GUILDDATA = 10_011
 
   //
 

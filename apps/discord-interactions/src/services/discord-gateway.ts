@@ -20,21 +20,29 @@ export default class DiscordGateway {
   }
 
   private static async fetchGuild(guildid: string): Promise<Fragile<DataGuild>> {
-    const { data, status } = await axios.get(`/guild/${guildid}`, {
-      baseURL: config.network.discordGateway,
-      validateStatus: null
-    })
+    try {
+      const { data, status } = await axios.get(`/guild/${guildid}`, {
+        baseURL: config.network.discordGateway,
+        validateStatus: null
+      })
 
-    if (status === 200)
-      return Errors.success(data)
-    
-    return Errors.throw({
-      status,
-      name: status === 404
-        ? 'not found'
-        : 'bad gateway',
-      source: 'discord-interactions::discord-gateway'
-    })
+      if (status === 200)
+        return Errors.success(data)
+      
+      return Errors.throw({
+        status,
+        name: status === 404
+          ? 'not found'
+          : 'bad gateway',
+        source: 'discord-interactions::discord-gateway'
+      })
+    } catch (ex) {
+      return Errors.throw({
+        status: Errors.STATUS_ERRNO,
+        name: ex.code ?? 'unknown',
+        source: 'discord-interactions::discord-gateway'
+      })
+    }
   }
 
   //
@@ -53,21 +61,29 @@ export default class DiscordGateway {
   }
 
   private static async fetchChannels(guildid: string): Promise<Fragile<DataChannel[]>> {
-    const { data, status } = await axios.get(`/channels/${guildid}`, {
-      baseURL: config.network.discordGateway,
-      validateStatus: null
-    })
+    try {
+      const { data, status } = await axios.get(`/channels/${guildid}`, {
+        baseURL: config.network.discordGateway,
+        validateStatus: null
+      })
+  
+      if (status === 200)
+        return Errors.success(data)
 
-    if (status === 200)
-      return Errors.success(data)
-
-    return Errors.throw({
-      status,
-      name: status === 404
-        ? 'not found'
-        : 'bad gateway',
-      source: 'discord-interactions::discord-gateway'
-    })
+      return Errors.throw({
+        status,
+        name: status === 404
+          ? 'not found'
+          : 'bad gateway',
+        source: 'discord-interactions::discord-gateway'
+      })
+    } catch (ex) {
+      return Errors.throw({
+        status: Errors.STATUS_ERRNO,
+        name: ex.code ?? 'unknown',
+        source: 'discord-interactions::discord-gateway'
+      })
+    }
   }
 
 }

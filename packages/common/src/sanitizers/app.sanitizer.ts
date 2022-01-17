@@ -1,7 +1,7 @@
 import { AppDataType, SanitizedAppType } from ".."
 
 
-export default class AppSanitizer {
+export class AppSanitizer {
 
   public static sanitize(data: AppDataType): SanitizedAppType {
     if (!data) return null

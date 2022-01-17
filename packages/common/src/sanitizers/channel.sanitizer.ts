@@ -1,7 +1,7 @@
 import { ChannelDataType, SanitizedChannelType } from ".."
 
 
-export default class ChannelSanitizer {
+export class ChannelSanitizer {
 
   public static sanitize(data: ChannelDataType): SanitizedChannelType {
     if (!data) return null

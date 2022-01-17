@@ -16,7 +16,8 @@
   "author": "FreeStuff Team",
   "dependencies": {
     "cordo": "^1.8.4",
-    "mongoose": "^6.1.6"
+    "mongoose": "^6.1.6",
+    "mongoose-long": "^0.5.1"
   },
   "devDependencies": {
     "@types/mongodb": "^4.0.7",

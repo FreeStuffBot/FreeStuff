@@ -52,4 +52,4 @@ export const AppSchema = new Schema({
   lcKey: Number,
   lcWebhookUrl: Number,
   lcWebhookVersion: Number
-})
+}, { collection: 'apps' })

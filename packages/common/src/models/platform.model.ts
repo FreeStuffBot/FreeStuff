@@ -50,4 +50,4 @@ export const PlatformSchema = new Schema({
   assets: {
     icon: String
   }
-})
+}, { collection: 'platforms' })

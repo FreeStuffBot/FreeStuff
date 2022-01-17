@@ -1,5 +1,4 @@
 /* eslint-disable spaced-comment */
-import { Long } from 'mongodb'
 import { Schema, Document as MongooseDocument } from 'mongoose'
 
 
@@ -17,7 +16,7 @@ export type AnnouncementApprovalStatusType = typeof AnnouncementApprovalStatus[n
 
 /** A reduced type to use internally */
 export type AnnouncementDataType = {
-  _id: Long
+  _id: Schema.Types.Long
   /** UNIX Timestamp in seconds - markes the last time the approval status has changed */
   published: number
   /** Current status of the announcement */
@@ -37,7 +36,7 @@ export type AnnouncementType = AnnouncementDataType & MongooseDocument<any, {}>
 
 /** The sanitized version of the data, gets served out by the api */
 export type SanitizedAnnouncementType = {
-  id: Long
+  id: Schema.Types.Long
   published: number
   status: AnnouncementApprovalStatusType
   responsible: string
@@ -50,7 +49,7 @@ export type SanitizedAnnouncementType = {
 // ===== MONGO SCHEMA ===== //
 
 export const AnnouncementSchema = new Schema({
-  _id: Long,
+  _id: Schema.Types.Long,
   published: Number,
   status: {
     type: String,
@@ -60,4 +59,4 @@ export const AnnouncementSchema = new Schema({
   changed: Number,
   items: [ Number ],
   channel: String
-})
+}, { collection: 'announcements' })

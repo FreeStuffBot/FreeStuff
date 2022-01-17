@@ -1,3 +1,11 @@
+import mongoose from 'mongoose'
+import mongooseLong from 'mongoose-long'
+mongooseLong(mongoose)
+
+/*
+ *
+ */
+
 export { default as Localisation } from './lib/localisation'
 export { default as Themes } from './lib/themes'
 export { default as Tracking } from './lib/tracking'
@@ -27,6 +35,8 @@ export * from './models/app.model'
 export * from './models/channel.model'
 export * from './models/currency.model'
 export * from './models/guild.model'
+export * from './models/language.model'
+export * from './models/localized-product-details.model'
 export * from './models/platform.model'
 export * from './models/product.model'
 

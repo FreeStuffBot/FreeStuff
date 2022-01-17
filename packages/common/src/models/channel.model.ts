@@ -40,4 +40,4 @@ export const ChannelSchema = new Schema({
   description: String,
   premium: String,
   default: String,
-})
+}, { collection: 'channels' })

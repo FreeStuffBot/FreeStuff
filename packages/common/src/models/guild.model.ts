@@ -1,5 +1,4 @@
 /* eslint-disable spaced-comment */
-import { Long } from 'mongodb'
 import { Schema, Document as MongooseDocument } from 'mongoose'
 import { SettingCurrency, SettingPlatform, SettingPriceClass, SettingTheme } from '..'
 
@@ -14,11 +13,11 @@ import { SettingCurrency, SettingPlatform, SettingPriceClass, SettingTheme } fro
 
 /** A reduced type to use internally */
 export type GuildDataType = {
-  _id: Long
-  sharder: Long
-  channel: Long | null
+  _id: Schema.Types.Long
+  sharder: Schema.Types.Long
+  channel: Schema.Types.Long | null
   webhook: string | null
-  role: Long | null
+  role: Schema.Types.Long | null
   settings: number
   filter: number
   tracker: number
@@ -29,11 +28,11 @@ export type GuildType = GuildDataType & MongooseDocument<any, {}>
 
 /** The sanitized version of the data, gets served out by the api */
 export type SanitizedGuildType = {
-  id: Long
-  sharder: Long
-  channel: Long | null
+  id: Schema.Types.Long
+  sharder: Schema.Types.Long
+  channel: Schema.Types.Long | null
   webhook: string | null
-  role: Long | null
+  role: Schema.Types.Long | null
   settings: number
   filter: number
   tracker: number
@@ -53,12 +52,12 @@ export type SanitizedGuildType = {
 // ===== MONGO SCHEMA ===== //
 
 export const GuildSchema = new Schema({
-  _id: Long,
-  sharder: Long,
-  channel: Long, // nullable
+  _id: Schema.Types.Long,
+  sharder: Schema.Types.Long,
+  channel: Schema.Types.Long, // nullable
   webhook: String, // nullable
-  role: Long, // nullable
+  role: Schema.Types.Long, // nullable
   settings: Number,
   filter: Number,
   tracker: Number
-})
+}, { collection: 'guilds' })

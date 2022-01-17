@@ -7,20 +7,21 @@ import Errors from '../../../lib/errors'
 import { CustomChannelPermissions } from '@freestuffbot/common/dist/lib/custom-permissions'
 
 
+type Options = {
+  missingPermissions?: string,
+  changedTo?: string
+}
+
+
 const recommendedChannelRegex = /free|game|gaming|deal/i
 const filterOutChannelRegex1 = /rules|meme|support/i
 const filterOutChannelRegex2 = /log|help|selfies/i
 const filterOutChannelRegex3 = /team|partner|suggestions/i
 const highProbChannelRegex = /announcement|new|general|computer|play|important|feed|bot|commands/i
-const sussyRegex = /(^|-|_)(sus(sy)?|amon?g-?_?us)($|-|_)|/i
+const sussyRegex = /(^|-|_)(sus(sy)?|amon?g-?_?us)($|-|_)/i
 
 function isRecommended(i: GenericInteraction, c: DataChannel) {
   return recommendedChannelRegex.test(c.name) || i.channel_id === c.id
-}
-
-type Options = {
-  missingPermissions?: string,
-  changedTo?: string
 }
 
 export default async function (i: GenericInteraction, args: [ Options ]): Promise<InteractionApplicationCommandCallbackData> {
@@ -113,6 +114,14 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
         custom_id: 'settings_main',
         label: '=generic_back',
         emoji: Emojis.caretLeft.toObject()
+      },
+      {
+        type: ComponentType.BUTTON,
+        style: ButtonStyle.SECONDARY,
+        custom_id: 'meta_refresh_channels',
+        // TODO
+        // label: '=refresh_list?????'
+        label: 'Reload List'
       }
     ],
     footer: PermissionStrings.containsManageServer(i.member.permissions) ? '' : '=settings_permission_disclaimer'

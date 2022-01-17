@@ -192,4 +192,4 @@ export const ProductSchema = new Schema({
   changed: String,
   data: ProductDataSchema,
   analytics: ProductAnalyticsSchema
-})
+}, { collection: 'products' })

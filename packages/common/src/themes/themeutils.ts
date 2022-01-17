@@ -1,7 +1,7 @@
-import { Long } from 'mongodb'
+import { Schema } from "mongoose"
 
 
-export function roleIdToMention(id: Long): string {
+export function roleIdToMention(id: Schema.Types.Long): string {
   return id
     ? ((id + '') === '1')
       ? '@everyone'

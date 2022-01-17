@@ -34,4 +34,4 @@ export const CurrencySchema = new Schema({
   _id: String,
   name: String,
   symbol: String,
-})
+}, { collection: 'currencies' })

@@ -2,7 +2,7 @@ import { Const, Localisation, SettingPlatform } from ".."
 import { GuildDataType, SanitizedGuildType } from "../models/guild.model"
 
 
-export default class GuildSanitizer {
+export class GuildSanitizer {
 
   // SETTINGS
   public static readonly BITS_CURRENCY_OFFSET = 5

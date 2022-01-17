@@ -1,7 +1,7 @@
 import { PlatformDataType, SanitizedPlatformType } from ".."
 
 
-export default class PlatformSanitizer {
+export class PlatformSanitizer {
 
   public static sanitize(data: PlatformDataType): SanitizedPlatformType {
     if (!data) return null

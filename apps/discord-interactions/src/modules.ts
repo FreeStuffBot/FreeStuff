@@ -1,9 +1,10 @@
-import { Localisation, Logger } from "@freestuffbot/common"
+import { LanguageDataType, LanguageType, Localisation, Logger } from "@freestuffbot/common"
 import Cordo from "cordo"
 import { config } from "."
 import * as express from 'express'
 import RemoteConfig from "./lib/remote-config"
 import DatabaseGateway from "./services/database-gateway"
+import Mongo from "./services/mongo"
 
 
 export default class Modules {
@@ -35,7 +36,7 @@ export default class Modules {
 
       out.fetch = async () => {
         if (out._cache) return out._cache
-        const item = await DatabaseGateway.fetchGuildData(guildid)
+        const item = await DatabaseGateway.getGuild(guildid)
         out._cache = item
         return item
       }
@@ -54,6 +55,19 @@ export default class Modules {
     app.listen(config.port, undefined, () => {
       Logger.process(`Server launched at port ${config.port}`)
     })
+  }
+
+  public static connectDatabases(): Promise<any> {
+    return Mongo.connect(config.mongoUrl)
+  }
+
+  public static async loadLanguageFiles() {
+    const lang = await Mongo.Language
+      .find({})
+      .lean()
+      .exec() as LanguageDataType[]
+    Localisation.load(lang)
+    Logger.process('Language files loaded')
   }
 
 }
