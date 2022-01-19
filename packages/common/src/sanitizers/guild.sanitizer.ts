@@ -13,7 +13,7 @@ export class GuildSanitizer {
   public static readonly BITS_LANGUAGE_MASK = 0b111111
   public static readonly BIT_REACT_OFFSET = 9
   public static readonly BIT_BETA_OFFSET = 30
-  
+
   // FILTER
   public static readonly BITS_PRICE_OFFSET = 2
   public static readonly BITS_PRICE_MASK = 0b11

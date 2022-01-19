@@ -12,4 +12,6 @@ export type configjs = {
   cacheTtlGuildMax: number
   cacheTtlMemberMin: number
   cacheTtlMemberMax: number
+  webhookDefaultName: string
+  webhookDefaultAvatar: string
 }

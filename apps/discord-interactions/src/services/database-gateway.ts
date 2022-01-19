@@ -29,7 +29,7 @@ export default class DatabaseGateway {
     const sanitized = GuildSanitizer.sanitize(raw)
     return Errors.success(sanitized)
   }
-  
+
   public static pushGuildDataChange(guildid: string, key: string, value: any) {
   }
 

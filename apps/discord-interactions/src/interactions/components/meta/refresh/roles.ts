@@ -2,8 +2,5 @@ import { ReplyableComponentInteraction } from 'cordo'
 
 
 export default function (i: ReplyableComponentInteraction) {
-  const dest = i.params.destination
-  if (!dest) i.ack()
-  // TODO
-  i.state(dest.replace(/-/g, '_'))
+  i.state('settings_role', { ignoreCache: true })
 }

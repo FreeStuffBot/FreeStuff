@@ -20,7 +20,7 @@ export default class Localisation {
         ? 1
         : 0
     )
-    
+
     Localisation.list = new Set()
     Localisation.idmap = new Map()
     Localisation.texts = new Map()

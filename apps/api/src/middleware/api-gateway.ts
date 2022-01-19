@@ -48,10 +48,10 @@ export function apiGateway(subset: ApiSubset): (req: Request, res: Response, nex
     const token = await validateToken(req.headers.authorization, res.locals)
     if (!token)
       return ReqError.invalidAuth(res, 'Authorization token invalid')
-  
+
     Redis.set(`apiapp_${res.locals.appid}_last_used`, Date.now().toString())
     Redis.inc(`apiapp_${res.locals.appid}_total_requests`)
-  
+
     res.header({ 'X-Server-Time': Date.now() })
     next()
   }

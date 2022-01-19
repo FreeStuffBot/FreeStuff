@@ -9,14 +9,16 @@ import { CustomChannelPermissions } from '@freestuffbot/common/dist/lib/custom-p
 
 type Options = {
   missingPermissions?: string,
-  changedTo?: string
+  changedTo?: string,
+  ignoreCache?: boolean
 }
 
+//
 
 const recommendedChannelRegex = /free|game|gaming|deal/i
-const filterOutChannelRegex1 = /rules|meme|support/i
+const filterOutChannelRegex1 = /rule|meme|support/i
 const filterOutChannelRegex2 = /log|help|selfies/i
-const filterOutChannelRegex3 = /team|partner|suggestions/i
+const filterOutChannelRegex3 = /team|partner|suggestion/i
 const highProbChannelRegex = /announcement|new|general|computer|play|important|feed|bot|commands/i
 const sussyRegex = /(^|-|_)(sus(sy)?|amon?g-?_?us)($|-|_)/i
 
@@ -24,13 +26,13 @@ function isRecommended(i: GenericInteraction, c: DataChannel) {
   return recommendedChannelRegex.test(c.name) || i.channel_id === c.id
 }
 
-export default async function (i: GenericInteraction, args: [ Options ]): Promise<InteractionApplicationCommandCallbackData> {
+export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Promise<InteractionApplicationCommandCallbackData> {
   const [ err, guildData ] = await i.guildData.fetch()
   if (err) return Errors.handleErrorAndCommunicate(err)
 
   Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
 
-  const [ error, allChannels ] = await DiscordGateway.getChannels(i.guild_id)
+  const [ error, allChannels ] = await DiscordGateway.getChannels(i.guild_id, !!opts?.ignoreCache)
   if (error) return Errors.handleErrorAndCommunicate(error)
 
   let youHaveTooManyChannelsStage = 0
@@ -88,8 +90,6 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
     ...channels
   ]
 
-  const opts = args[0]
-
   let description = Localisation.text(i, '=settings_channel_ui_2_regular')
   if (youHaveTooManyChannelsStage > 2)
     description = Localisation.text(i, '=settings_channel_ui_2_way_too_many') + '\n\n*' + Localisation.text(i, '=settings_channel_ui_too_many_channels_tip') + '*'
@@ -119,9 +119,7 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'meta_refresh_channels',
-        // TODO
-        // label: '=refresh_list?????'
-        label: 'Reload List'
+        label: '=refresh_channel_list'
       }
     ],
     footer: PermissionStrings.containsManageServer(i.member.permissions) ? '' : '=settings_permission_disclaimer'

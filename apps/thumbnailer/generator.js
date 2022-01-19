@@ -13,7 +13,7 @@ const WATERMARK_PADDING = 6
 exports.generateImage = async (body) => {
   if (!body)
     throw { status: 400, message: 'invalid body' }
-    
+
   const data = body.data || {}
   const options = body.options || {}
 
@@ -72,7 +72,7 @@ function drawTags(ctx, props, data, options) {
   const FONT_HEIGHT = TAG_HEIGHT - ELEMENT_MARGIN * 3
   const INNER_MARGIN = (TAG_HEIGHT - FONT_HEIGHT) / 2
   ctx.font = `${FONT_HEIGHT}px defaultFont`
-  
+
   let tag = (name) => {
     const { width } = ctx.measureText(name)
     const tagBackground = [ cursor, 0, width + INNER_MARGIN * 2 + ELEMENT_MARGIN + CIRCLE_RAD, TAG_HEIGHT ]
@@ -81,7 +81,7 @@ function drawTags(ctx, props, data, options) {
     roundedPath(ctx, ...tagBackground, IMG_BORDER_RADIUS)
     ctx.fillStyle = '#202225'
     ctx.fill()
-    
+
     ctx.beginPath()
     ctx.arc(cursor + INNER_MARGIN + CIRCLE_RAD / 2, TAG_HEIGHT / 2, CIRCLE_RAD / 2, 0, 2 * Math.PI, false)
     ctx.closePath()
@@ -100,7 +100,7 @@ async function drawWatermark(ctx, props, data, options) {
   const buff = await loadImage('./res/watermark.png')
   const height = 16
   const width = buff.width * (height / buff.height)
-  
+
   let x = props.imgdimensions[0]
   let y = props.imgdimensions[1]
 

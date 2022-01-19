@@ -17,7 +17,7 @@ type themeSettings = {
 type MessageEmbed = InteractionApplicationCommandCallbackData["embeds"][number]
 
 export default class BaseTheme {
-  
+
   public static readonly defaultStaticContext = {
     website: Const.links.websiteClean
   }

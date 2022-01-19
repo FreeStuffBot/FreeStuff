@@ -39,3 +39,10 @@ export type DataMember = {
   id: string
   roles: string[]
 }
+
+export type DataWebhook = {
+  id: string
+  name: string
+  avatar: string
+  token: string
+}

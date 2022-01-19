@@ -6,17 +6,23 @@ import Errors from '../../../lib/errors'
 import DiscordGateway from '../../../services/discord-gateway'
 
 
+type Options = {
+  ignoreCache?: boolean
+}
+
 type DataRole = DataGuild['roles'][number]
+
+//
 
 const recommendedRoleRegex = /free|game|deal|ping|notification/i
 
-export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
+export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Promise<InteractionApplicationCommandCallbackData> {
   const [ err, guildData ] = await i.guildData.fetch()
   if (err) return Errors.handleErrorAndCommunicate(err)
 
   Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_ROLE')
 
-  const [ error, guild ] = await DiscordGateway.getGuild(i.guild_id)
+  const [ error, guild ] = await DiscordGateway.getGuild(i.guild_id, !!opts?.ignoreCache)
   if (error) return Errors.handleErrorAndCommunicate(error)
 
   const roles = guild.roles
@@ -83,6 +89,12 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
         custom_id: 'settings_main',
         label: '=generic_back',
         emoji: Emojis.caretLeft.toObject()
+      },
+      {
+        type: ComponentType.BUTTON,
+        style: ButtonStyle.SECONDARY,
+        custom_id: 'meta_refresh_roles',
+        label: '=refresh_role_list'
       }
     ],
     footer: PermissionStrings.containsManageServer(i.member.permissions) ? '' : '=settings_permission_disclaimer'

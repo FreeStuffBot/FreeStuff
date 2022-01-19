@@ -3,7 +3,7 @@ import Errors from "../lib/errors"
 
 
 export default class FreestuffData {
-  
+
   private static readonly TWELVE_HOURS = 1000 * 60 * 60 * 12
   private static current: Fragile<SanitizedProductType[]> = Errors.throwStderrNotInitialized()
 

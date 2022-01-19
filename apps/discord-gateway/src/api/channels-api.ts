@@ -13,6 +13,8 @@ export default class ChannelsApi {
       endpoint: `/guilds/${guild}/channels`
     })
 
+    // TODO metrics
+
     if (res.status >= 400 && res.status < 500)
       return null
 

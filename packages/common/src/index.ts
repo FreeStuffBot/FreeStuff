@@ -51,7 +51,6 @@ export * from './sanitizers/platform.sanitizer'
 export * from './struct/fragile.struct'
 
 export * from './types/communication/gateway-discord'
-export * from './types/communication/gateway-database'
 
 export * from './types/convenience/discord-settings'
 export * from './types/other/theme-builder-class'

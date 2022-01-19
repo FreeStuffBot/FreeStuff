@@ -11,7 +11,7 @@ declare module 'cordo' {
     changeSetting(setting: 'theme', value: number | SettingTheme<any>)
     changeSetting(setting: 'currency', value: number | SettingCurrency<any>)
     changeSetting(setting: 'platforms', value: SettingPlatform<any>[] | number)
-    
+
     fetch(): Promise<Fragile<Readonly<SanitizedGuildType>>>
 
     _cache?: Fragile<Readonly<SanitizedGuildType>>

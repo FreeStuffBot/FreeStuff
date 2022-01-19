@@ -7,6 +7,7 @@ export type configjs = {
   mongoUrl: string
   discordGuildCacheInterval: number
   discordChannelsCacheInterval: number
+  discordWebhooksCacheInterval: number
   dataGuildCacheInterval: number
   network: {
     discordGateway: string

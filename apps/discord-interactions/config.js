@@ -8,6 +8,7 @@ module.exports = {
   mongoUrl: loadArg('DISCORD_INTERACTIONS_MONGO_URL'),
   discordGuildCacheInterval: 60_000,
   discordChannelsCacheInterval: 60_000,
+  discordWebhooksCacheInterval: 60_000,
   dataGuildCacheInterval: 20_000,
   network: {
     discordGateway: loadArg('NETWORK_DISCORD_GATEWAY')

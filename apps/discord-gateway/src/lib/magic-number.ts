@@ -1,5 +1,8 @@
 
 
 export const MAGICNUMBER_BAD_GATEWAY = 0xFF00_01
+export const MAGICNUMBER_MISSING_PERMISSIONS = 0xFF00_02
 
-export type MagicNumber = typeof MAGICNUMBER_BAD_GATEWAY
+export type MagicNumber
+  = typeof MAGICNUMBER_BAD_GATEWAY
+  | typeof MAGICNUMBER_MISSING_PERMISSIONS
