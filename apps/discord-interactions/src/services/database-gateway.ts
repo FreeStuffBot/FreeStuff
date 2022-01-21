@@ -83,7 +83,7 @@ export default class DatabaseGateway {
 
       if (!lang?.length)
         return Errors.throwInternal('database-gateway::fetch-language-data')
-      
+
       return Errors.success(lang)
     } catch (ex) {
       return Errors.throwInternal('database-gateway::fetch-language-data')

@@ -9,6 +9,10 @@ export type configjs = {
   discordChannelsCacheInterval: number
   discordWebhooksCacheInterval: number
   dataGuildCacheInterval: number
+  userLimits: {
+    refreshChannelsInterval: number
+    refreshRolesInterval: number
+  }
   network: {
     discordGateway: string
   }

@@ -10,6 +10,10 @@ module.exports = {
   discordChannelsCacheInterval: 60_000,
   discordWebhooksCacheInterval: 60_000,
   dataGuildCacheInterval: 20_000,
+  userLimits: {
+    refreshChannelsInterval: 10_000,
+    refreshRolesInterval: 10_000,
+  },
   network: {
     discordGateway: loadArg('NETWORK_DISCORD_GATEWAY')
   }
