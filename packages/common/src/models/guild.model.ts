@@ -49,6 +49,11 @@ export type SanitizedGuildType = {
   beta: boolean
 }
 
+/** Sanitized version of the data but with changes -> internally */
+export type SanitizedGuildWithChangesType = SanitizedGuildType & {
+  _changes: Partial<GuildDataType>
+}
+
 
 // ===== MONGO SCHEMA ===== //
 

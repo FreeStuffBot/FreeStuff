@@ -43,6 +43,14 @@ export default class Errors {
 
   //
 
+  public static throwInternal(source: string = 'stderr'): Fragile<any> {
+    return Errors.throw({
+      status: Errors.STATUS_GENERIC,
+      name: 'internal',
+      source
+    })
+  }
+
   public static throwStderrGeneric(source: string = 'stderr', description?: string, fix?: string): Fragile<any> {
     return Errors.throw({
       status: Errors.STATUS_NOT_INITIALIZED,

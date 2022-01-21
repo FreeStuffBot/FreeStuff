@@ -21,3 +21,8 @@ Returns the bot user's guild member entity.
 
 Returns all bot owned webhooks in that channel.
 
+
+**POST** `/webhooks/:channel`
+
+Creates a new webhook in that channel and returns it's data.
+

@@ -11,6 +11,7 @@ export default function (i: ReplyableComponentInteraction) {
   if (!val) return i.ack()
 
   const currency = Const.currencies[parseInt(val, 10) || 0]
+  if (!currency) return i.ack()
 
   i.guildData.changeSetting('currency', currency)
   i.state('settings_display')

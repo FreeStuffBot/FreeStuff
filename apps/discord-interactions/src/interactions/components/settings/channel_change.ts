@@ -5,6 +5,7 @@ import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import DiscordGateway from '../../../services/discord-gateway'
 import Errors from '../../../lib/errors'
 import Webhooks from '../../../lib/webhooks'
+import { Long } from 'bson'
 
 
 export default async function (i: ReplyableComponentInteraction) {
@@ -48,6 +49,7 @@ export default async function (i: ReplyableComponentInteraction) {
         missingPermissions: Localisation.getLine(i, 'permission_manage_webhooks'),
         changedTo: `<#${val}>`
       })
+      return
     }
 
     i.state('settings_channel')
@@ -57,7 +59,7 @@ export default async function (i: ReplyableComponentInteraction) {
 
   // success!
   i.guildData.changeSetting('webhook', `${webhook.id}/${webhook.token}`)
-  i.guildData.changeSetting('channel', channel.id)
+  i.guildData.changeSetting('channel', Long.fromString(channel.id))
   i.state('settings_channel')
 }
 

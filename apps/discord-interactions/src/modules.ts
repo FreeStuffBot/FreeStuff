@@ -1,5 +1,5 @@
 import { LanguageDataType, LanguageType, Localisation, Logger } from "@freestuffbot/common"
-import Cordo from "cordo"
+import Cordo, { GuildData } from "cordo"
 import { config } from "."
 import * as express from 'express'
 import RemoteConfig from "./lib/remote-config"
@@ -24,15 +24,18 @@ export default class Modules {
         interaction_not_permitted_description_guild_admin: '=interaction_not_permitted_2_admin',
         interaction_not_permitted_description_manage_server: '=interaction_not_permitted_2_manage_server',
         interaction_not_permitted_description_manage_messages: '=interaction_not_permitted_2_manage_messages',
-        interaction_failed: 'We are very sorry but an error occured while processing your command. Please try again.'
+        interaction_failed: 'We are very sorry but an error occured while processing your command. Please try again.',
+        interaction_invalid_description: 'Huh',
+        interaction_invalid_title: 'That is odd. You should not be able to run this command...'
       }
     })
     Cordo.addMiddlewareInteractionCallback((data, i) => Localisation.translateObject(data, i, data._context, 14))
     Cordo.setMiddlewareGuildData(async (guildid) => {
-      const out = {
-        changeSetting: (key, value) => DatabaseGateway.pushGuildDataChange(guildid, key, value),
-        _cache: null
-      } as any
+      const out = { _cache: null } as Partial<GuildData>
+
+      out.changeSetting = (key, value) => {
+        DatabaseGateway.pushGuildDataChange(guildid, key, value)
+      }
 
       out.fetch = async () => {
         if (out._cache) return out._cache
@@ -41,7 +44,7 @@ export default class Modules {
         return item
       }
 
-      return out
+      return out as GuildData
     })
     // Cordo.setMiddlewareApiResponseHandler(res => Metrics.counterApiResponses.labels({ status: res.status }).inc())
   }
@@ -62,13 +65,13 @@ export default class Modules {
   }
 
   public static async loadLanguageFiles() {
-    const lang = await Mongo
-      .collection('language')
-      .find({
-        _index: { $gte: 0 },
-        _enabled: true
-      })
-      .toArray() as LanguageDataType[]
+    const [ err, lang ] = await DatabaseGateway.fetchLanguageData()
+    if (err) {
+      Logger.warn(`Loading language files failed.`)
+      Logger.warn(JSON.stringify(err))
+      return
+    }
+
     Localisation.load(lang)
     Logger.process('Language files loaded')
   }

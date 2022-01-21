@@ -10,10 +10,10 @@ export default function (i: ReplyableComponentInteraction) {
   const vals = i.data.values
   if (!vals) return i.ack()
 
-  const platforms = vals
-    .map(v => Const.platforms.find(p => p.id === v))
-    .filter(p => !!p)
+  const platforms = Const
+    .platforms
+    .filter(p => vals.includes(p.id))
 
-    i.guildData.changeSetting('platforms', platforms)
+  i.guildData.changeSetting('platforms', platforms)
   i.state('settings_filter')
 }

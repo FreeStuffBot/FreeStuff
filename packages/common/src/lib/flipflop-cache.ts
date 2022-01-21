@@ -85,14 +85,16 @@ export default class FlipflopCache<T> {
       let data = this.cacheBucketT.get(key) // not using .has because buckets might swap in between the .has and the .get call
       if (data !== undefined) return data
       data = this.cacheBucketF.get(key)
+      if (data === undefined) return undefined
       this.cacheBucketT.set(key, data) // take data from older bucket into newer bucket
-      if (data) return data
+      return data
     } else {
       let data = this.cacheBucketF.get(key)
       if (data !== undefined) return data
       data = this.cacheBucketT.get(key)
+      if (data === undefined) return undefined
       this.cacheBucketF.set(key, data)
-      if (data) return data
+      return data
     }
   }
 

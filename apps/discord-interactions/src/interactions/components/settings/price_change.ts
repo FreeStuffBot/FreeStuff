@@ -11,6 +11,7 @@ export default function (i: ReplyableComponentInteraction) {
   if (!val) return i.ack()
 
   const price = Const.priceClasses[parseInt(val, 10) || 0]
+  if (!price) return i.ack()
 
   i.guildData.changeSetting('price', price)
   i.state('settings_filter')

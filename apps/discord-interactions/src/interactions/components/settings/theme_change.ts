@@ -11,6 +11,7 @@ export default function (i: ReplyableComponentInteraction) {
   if (!val) return i.ack()
 
   const theme = Const.themes[parseInt(val, 10) || 0]
+  if (!theme) return i.ack()
 
   i.guildData.changeSetting('theme', theme)
   i.state('settings_display')

@@ -6,8 +6,7 @@ import { Logger, SanitizedGuildType } from '@freestuffbot/common'
 export default function guildDataToViewString(g: SanitizedGuildType, maxLength = 2048, errorMessage?: string, includeMetainfo = false) {
   const gd = { ...g } as any || { error: 'Guild Data Error' }
   if (!gd.error) {
-    delete gd.channelInstance
-    delete gd.roleInstance
+    delete gd._changes
     if (includeMetainfo) {
       gd.host = hostname()
       // TODO
