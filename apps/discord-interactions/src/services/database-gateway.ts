@@ -43,10 +43,7 @@ export default class DatabaseGateway {
 
   public static async pushGuildDataChange<T extends keyof DatabaseActions>(guildid: string, key: T, value: DatabaseActions[T]) {
     const [ err, data ] = await DatabaseGateway.getGuild(guildid) as [ FragileError, SanitizedGuildWithChangesType ]
-    if (err) {
-      Errors.handleErrorWithoutCommunicate(err)
-      return
-    }
+    if (err) return Errors.handleErrorWithoutCommunicate(err)
 
     const flat = DatabaseGateway.flattener[key]
     if (!flat) return
@@ -60,8 +57,6 @@ export default class DatabaseGateway {
 
     const changes = guild._changes
     delete guild._changes
-
-    console.log(guild.id.toString(), changes)
 
     Mongo
       .collection('guilds')
