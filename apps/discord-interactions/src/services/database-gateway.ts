@@ -17,7 +17,7 @@ export default class DatabaseGateway {
     if (DatabaseGateway.guildCache.has(guildid))
       return Errors.success(DatabaseGateway.guildCache.get(guildid))
     if (DatabaseGateway.pendingGuilds.has(guildid))
-      return await DatabaseGateway.pendingGuilds.get(guildid)
+      return DatabaseGateway.pendingGuilds.get(guildid)
 
     const prom = this.fetchGuild(guildid)
     DatabaseGateway.pendingGuilds.set(guildid, prom)
