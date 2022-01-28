@@ -6,33 +6,36 @@
 import { readFileSync } from 'fs'
 import jwtlib from 'jsonwebtoken'
 import { config } from '..'
-import { UserAuthPayload } from '../types/application'
-import { SigninTokenPayload } from './loginlinks'
+import { UserAuthPayload } from './userauth'
 
 
 export default class JWT {
 
-  private static readonly privateKey = readFileSync('./vault/jwt.private.key')
-  private static readonly publicKey = readFileSync('./vault/jwt.public.key')
+  private static privateKey = (() => {
+    try {
+      return readFileSync(config.keys.privateKeyUri).toString()
+    } catch (ex) {
+      console.info('JWT is missing a private key.')
+      return 'undefined'
+    }
+  })()
+
+  //
 
   public static signRaw(payload: object, options: jwtlib.SignOptions = {}): Promise<string> {
-    return new Promise(res => jwtlib.sign(payload, this.privateKey, options, (_err, token) => res(token)))
+    return new Promise(res => jwtlib.sign(payload, JWT.privateKey, options, (_, token) => res(token)))
   }
 
   public static decodeRaw(token: string, allowUnsigned = false): Promise<Record<string, any> | undefined> {
     if (allowUnsigned)
       return new Promise(res => res(jwtlib.decode(token, { json: true })))
-    return new Promise(res => jwtlib.verify(token, this.privateKey, {}, (_err, decoded) => res(decoded)))
+    return new Promise(res => jwtlib.verify(token, JWT.privateKey, {}, (_, decoded) => res(decoded)))
   }
 
   //
 
   public static signAuth(user: UserAuthPayload): Promise<string> {
-    return this.signRaw(user, { expiresIn: config.security.tokenValidFor })
-  }
-
-  public static signSigninToken(token: SigninTokenPayload): Promise<string> {
-    return this.signRaw(token, { expiresIn: config.security.emailLinkValidFor })
+    return JWT.signRaw(user, { expiresIn: '14d' })
   }
 
 }

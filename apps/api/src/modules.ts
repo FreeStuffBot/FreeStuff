@@ -1,6 +1,7 @@
 import { Logger } from "@freestuffbot/common"
 import { config } from "."
 import * as express from 'express'
+import DashRouter from "./routes/dash/_router"
 
 
 export default class Modules {
@@ -9,7 +10,8 @@ export default class Modules {
     const app = express()
     app.set('trust proxy', 1)
 
-    app.use('/internal', )
+    app.use('/dash', DashRouter.init())
+    // app.use('/internal', )
 
     app.all('*', (_, res) => res.status(400).end())
 

@@ -1,13 +1,15 @@
+import { AppSchema, LanguageSchema, UserSchema } from '@freestuffbot/common'
 import * as chalk from 'chalk'
-import mongoose from 'mongoose'
-import appModel from 
+import * as mongoose from 'mongoose'
 
 
 export default class Mongo {
 
   public static connection: mongoose.Connection;
 
-  public static User = mongoose.model('App', appModel)
+  public static App = mongoose.model('App', AppSchema)
+  public static User = mongoose.model('User', UserSchema)
+  public static Language = mongoose.model('Language', LanguageSchema)
 
   //
 

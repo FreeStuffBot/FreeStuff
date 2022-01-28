@@ -1,12 +1,13 @@
 // cors({ origin: process.env.NODE_ENV !== 'development' ? 'https://dashboard.freestuffbot.xyz' : 'http://localhost:5522' })
 
 
+import { AppType } from '@freestuffbot/common'
 import { Request, Response, NextFunction } from 'express'
-import * as rateLimit from 'express-rate-limit'
-import Database from '../../database/database'
+import Mongo from '../database/mongo'
 import Redis from '../database/redis'
 import ReqError from '../lib/reqerror'
 
+//
 
 export type ApiSubset
   = 'dash'
@@ -14,8 +15,9 @@ export type ApiSubset
   | 'v1'
   | 'v2'
 
+//
 
-export const validateToken = async (auth: string, locals: any) => {
+export async function validateToken(auth: string, locals: Response['locals']) {
   const [ method, key, suid ] = auth.split(' ')
   if (method === 'Basic') {
     if (suid !== undefined) return false
@@ -26,28 +28,32 @@ export const validateToken = async (auth: string, locals: any) => {
     return false
   }
 
-  const app = await Database
-    .collection('api')
-    ?.findOne({ key })
+  const app = await Mongo.App.findOne({ key }) as AppType
 
   if (!app) return false
   if (app.type !== method.toLowerCase()) return false
 
   locals.access = method.toLowerCase()
   locals.appid = app._id
-  locals.appowner = app.owner
 
   return true
 }
 
 export function apiGateway(subset: ApiSubset): (req: Request, res: Response, next: NextFunction) => any {
   return async (req: Request, res: Response, next: NextFunction) => {
+    if (subset === 'dash')
+      return next()
+
+    //
+
     if (!req.headers.authorization)
       return ReqError.invalidAuth(res, 'Authorization header missing')
 
     const token = await validateToken(req.headers.authorization, res.locals)
     if (!token)
       return ReqError.invalidAuth(res, 'Authorization token invalid')
+
+    //
 
     Redis.set(`apiapp_${res.locals.appid}_last_used`, Date.now().toString())
     Redis.inc(`apiapp_${res.locals.appid}_total_requests`)
@@ -56,15 +62,3 @@ export function apiGateway(subset: ApiSubset): (req: Request, res: Response, nex
     next()
   }
 }
-
-export const rateLimiter = (max: number, window: number) => rateLimit({
-  windowMs: window * 1000 * 60,
-  max,
-  headers: true,
-  keyGenerator(req: Request) {
-    return req.headers.authorization || req.ip
-  },
-  handler(_, res: Response) {
-    ReqError.rateLimited(res)
-  }
-})

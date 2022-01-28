@@ -3,17 +3,17 @@
  * @copyright 2020 File Authors
  */
 
-import { UserAuthPayload } from '../types/application'
+import { UserType } from '@freestuffbot/common'
+import { Request, Response } from 'express'
 import Mongo from '../database/mongo'
+import IPApi from './ipapi'
 import JWT from './jwt'
-import { UserType } from '../database/models/user.model'
-import Passwords from './passwords'
-import Timestamps from './timestamps'
-import InputValidator from './inputvalidator'
-import { isValidObjectId, Types } from 'mongoose'
-import DBUsers from '../database/interface/db-users'
-import LoginLinks from './loginlinks'
+import { OauthDiscordUserObject } from './oauthstrat'
 
+
+export type UserAuthPayload = {
+  id: string
+}
 
 export default class UserAuth {
 
@@ -26,75 +26,45 @@ export default class UserAuth {
     }
   }
 
-  /**
-   * Logs a user in. Takes a unique user identifier (like email) and a password
-   * @returns tupel with JWT, user object and boolean whether setup is required or not
-   */
-  public static async loginUser(user: string, password: string): Promise<[string, any, boolean]> {
-    if (!user || !password) return null
+  public static async loginOrRegisterUser(req: Request, user: OauthDiscordUserObject): Promise<[string, any, boolean]> {
+    const found: UserType | undefined = await Mongo.User.findById(user.id)
 
-    const User = Mongo.User
-    let found: UserType | null = null
+    if (found) {
+      found.data = user
+      await UserAuth.registerNewLogin(req, found)
 
-    if (user.includes('@')) {
-      found = await User.findOne({ email: user })
-    } else if (InputValidator.PHONE_NUMBER_REGEX.test(user)) {
-      found = await User.findOne({ phoneNumber: user })
-    } else {
-      // invalid user
-      return null
+      return [ await JWT.signAuth({ id: found._id }), found, false ]
     }
 
-    if (!found)
-      return null
+    const duser: UserType = new Mongo.User({
+      _id: user.id,
+      display: user.username,
+      scope: [],
+      logins: []
+    })
 
-    const correctPassword = Passwords.check(password, found.password)
-
-    if (!correctPassword)
-      return null
-
-    const loggedInPreviously = !!found.lastLogin
-
-    found.lastLogin = Timestamps.now()
-    found.save()
-
-    return [ await JWT.signAuth({ id: found._id }), found, !loggedInPreviously ]
+    await duser.save()
+    return [ await JWT.signAuth({ id: user.id }), duser, true ]
   }
 
-  /**
-   * Logs a user in. Takes a signinToken
-   * @returns tupel with JWT, user object and boolean whether setup is required or not
-   */
-  public static async signinUser(signinToken: string): Promise<[string, any, boolean]> {
-    const res = await JWT.decodeRaw(signinToken)
-    if (!res)
-      return null
+  private static reportTimeout: Set<string> = new Set()
 
-    const { key, uid } = res
-    if (!isValidObjectId(uid))
-      return null
-    const user = new Types.ObjectId(uid)
+  public static async registerNewLogin(req: Request, user: UserType) {
+    if (!user.scope?.length) return
+    if (this.reportTimeout.has(user.data.id)) return
+    this.reportTimeout.add(user.data.id)
+    setTimeout((id: string) => this.reportTimeout.delete(id), 1000 * 60 * 60 * 6, user.data.id)
 
-    const entry = await Mongo.SigninKey.findOne({ key, user })
-    if (!entry)
-      return null
+    const trueIp = (req.headers['cf-connecting-ip'] as string) || req.ip
+    const geoloc = await IPApi.lookup(trueIp)
 
-    const found = await DBUsers.fetch(user)
-    if (!found)
-      return null
-
-    /** only users can login with a token */
-    if (found.role !== 'user')
-      return null
-
-    const loggedInPreviously = !!found.lastLogin
-
-    found.lastLogin = Timestamps.now()
-    found.save()
-
-    LoginLinks.invalidateKey(key, user)
-
-    return [ await JWT.signAuth({ id: uid }), found, !loggedInPreviously ]
+    user.logins.push({
+      t: Date.now(),
+      i: trueIp,
+      la: geoloc?.latitude ?? 0,
+      lo: geoloc?.longitude ?? 0
+    })
+    user.save()
   }
 
 }
