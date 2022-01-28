@@ -39,6 +39,7 @@ export * from './models/language.model'
 export * from './models/localized-product-details.model'
 export * from './models/platform.model'
 export * from './models/product.model'
+export * from './models/user.model'
 
 // export * from './sanitizers/announcement.sanitizer'
 export * from './sanitizers/app.sanitizer'

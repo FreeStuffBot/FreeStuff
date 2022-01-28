@@ -3,6 +3,7 @@ node_modules/
 files/
 build/
 dist/
+vault/
 
 config.private.js
 

@@ -18,6 +18,9 @@ export type LanguageDataType = {
   _meta_progress: number
   _meta_last_edit: number
   _meta_last_editor: string
+
+  // speical records that are referenced in code
+  lang_name_en: string
 } | Record<string, string>
 
 /** The user mongoose object, muteable and saveable */
