@@ -52,6 +52,10 @@ export default async function (i: ReplyableComponentInteraction) {
 }
 
 async function updateWebhook(guildData: GuildData, channel: TextChannel): Promise<boolean> {
+  const member = channel.guild.members.resolve(Core.user.id)
+  if (!channel.permissionsFor(member).has('MANAGE_WEBHOOKS'))
+    return false
+
   let webhook = await MessageDistributor.findWebhook(channel)
   if (webhook) {
     DatabaseManager.changeSetting(guildData, 'webhook', `${webhook.id}/${webhook.token}`)

@@ -318,13 +318,9 @@ export default class MessageDistributor {
    * Move elsewhere
    */
   public static async findWebhook(channel: TextChannel): Promise<Webhook | null> {
-    const member = channel.guild.members.resolve(Core.user.id)
-    if (!channel.permissionsFor(member).has('MANAGE_WEBHOOKS'))
-      return null
-
     try {
       const hooks = await channel.fetchWebhooks()
-      const hook = hooks.find(h => h.owner.id === config.bot.clientId)
+      const hook = hooks.find(h => h.owner?.id === config.bot.clientId)
       return hook ?? null
     } catch (ex) {
       Logger.error(ex)
