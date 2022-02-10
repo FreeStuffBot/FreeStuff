@@ -22,8 +22,8 @@ export default class SentryManager {
     Sentry.init({
       dsn: config.thirdParty.sentry.dsn,
       serverName: hostname(),
-      beforeSend: (event) => {
-        Logger.warn(`${event.message} - ${event.breadcrumbs.join('>')}`)
+      beforeSend: (event, hint) => {
+        Logger.warn(hint.originalException?.toString() || hint.syntheticException.message)
         return event
       }
     })
