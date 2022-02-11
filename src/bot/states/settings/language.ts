@@ -9,11 +9,11 @@ function buildDescriptionForLanguage(i: GenericInteraction, lang: { id: string, 
   const name = lang.nameEn[0].toUpperCase() + lang.nameEn.substr(1).toLowerCase()
   if (lang.id.startsWith('en')) {
     if (lang.id.endsWith('US')) {
-      return allowEastereggs
+      return Localisation.getLine(i.guildData, allowEastereggs
         ? '=settings_language_list_desc_english_us_easteregg'
-        : '=settings_language_list_desc_english_us'
+        : '=settings_language_list_desc_english_us')
     } else {
-      return '=settings_language_list_desc_english_eu'
+      return Localisation.getLine(i.guildData, 'settings_language_list_desc_english_eu')
     }
   }
   const out = Localisation.text(i.guildData, '=settings_language_list_desc_generic', {
@@ -21,7 +21,7 @@ function buildDescriptionForLanguage(i: GenericInteraction, lang: { id: string, 
     translators: Localisation.getRaw(lang.id, 'translators', false)
   })
   return (out.length > 50)
-    ? out.substr(0, 47) + '...'
+    ? out.substring(0, 47) + '...'
     : out
 }
 

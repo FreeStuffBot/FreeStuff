@@ -26,10 +26,13 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
   if (!i.guildData) return { title: 'An error occured' }
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
 
-  let channelsFound = [ ...Core.guilds.resolve(i.guild_id).channels.cache.values() ]
+  const guild = Core.guilds.resolve(i.guild_id)
+  if (!guild) return { title: 'An error occured. Your guild could not be loaded. Please try again.' }
+
+  let channelsFound = [ ...guild.channels.cache.values() ]
     .filter(c => (c.type === 'GUILD_TEXT' || c.type === 'GUILD_NEWS')) as (TextChannel | NewsChannel)[]
 
-  const self = await Core.guilds.resolve(i.guild_id).members.fetch(Core.user.id)
+  const self = await guild.members.fetch(Core.user.id)
 
   let youHaveTooManyChannelsStage = 0
 
