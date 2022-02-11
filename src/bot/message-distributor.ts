@@ -199,7 +199,7 @@ export default class MessageDistributor {
       }
 
       if (createNew) {
-        const hook = await this.createWebhook(data, channel)
+        const hook = await this.createWebhook(data, channel, true)
         if (hook) {
           DatabaseManager.changeSetting(data, 'webhook', `${hook.id}/${hook.token}`)
           await hook.send({ ...messagePayload as any, username: Localisation.getLine(data, 'announcement_header') })
@@ -208,8 +208,8 @@ export default class MessageDistributor {
 
           channel.send({
             embeds: [ {
-              title: Localisation.getLine(data, 'webhook_migration_failed_missing_permissions_1'),
-              description: Localisation.getLine(data, 'webhook_migration_failed_missing_permissions_2'),
+              title: Localisation.getLine(data, hook === false ? 'webhook_migration_failed_too_many_hooks_1' : 'webhook_migration_failed_missing_permissions_1'),
+              description: Localisation.getLine(data, hook === false ? 'webhook_migration_failed_too_many_hooks_2' : 'webhook_migration_failed_missing_permissions_2'),
               color: Const.embedDefaultColor
             } ]
           })
@@ -278,6 +278,8 @@ export default class MessageDistributor {
       if (status === 404)
         return 'invalid'
 
+      Logger.warn(`Webhook send failed with status ${status}`)
+
       return 'retry'
     } catch (ex) {
       Logger.error(ex)
@@ -296,13 +298,18 @@ export default class MessageDistributor {
   /**
    * Move elsewhere
    */
-  public static createWebhook(data: GuildData, channel: TextChannel): Promise<Webhook | null> {
+  public static async createWebhook(data: GuildData, channel: TextChannel, tryFetchExisting = true): Promise<Webhook | null | false> {
+    if (tryFetchExisting) {
+      const hook = await MessageDistributor.findWebhook(channel)
+      if (hook) return hook
+    }
+
     const member = channel.guild.members.resolve(Core.user.id)
     if (!channel.permissionsFor(member).has('MANAGE_WEBHOOKS'))
       return null
 
     try {
-      const hook = channel.createWebhook('FreeStuff', {
+      const hook = await channel.createWebhook('FreeStuff', {
         avatar: Const.brandIcons.regularRound,
         reason: Localisation.getLine(data, 'webhook_create_auditlog_reason')
       })
@@ -310,6 +317,8 @@ export default class MessageDistributor {
       return hook ?? null
     } catch (ex) {
       Logger.error(ex)
+      if (ex.code === 30007)
+        return false
       return null
     }
   }

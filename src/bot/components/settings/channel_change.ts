@@ -62,7 +62,7 @@ async function updateWebhook(guildData: GuildData, channel: TextChannel): Promis
     return true
   }
 
-  webhook = await MessageDistributor.createWebhook(guildData, channel)
+  webhook = await MessageDistributor.createWebhook(guildData, channel, false)
   if (webhook) {
     DatabaseManager.changeSetting(guildData, 'webhook', `${webhook.id}/${webhook.token}`)
     return true
