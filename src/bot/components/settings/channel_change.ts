@@ -1,5 +1,5 @@
 import { GuildData, ReplyableComponentInteraction } from 'cordo'
-import { GuildChannel, TextChannel } from 'discord.js'
+import { GuildChannel, TextChannel, Webhook } from 'discord.js'
 import { Localisation } from '@freestuffbot/common'
 import { Core } from '../../../index'
 import DatabaseManager from '../../database-manager'
@@ -62,7 +62,7 @@ async function updateWebhook(guildData: GuildData, channel: TextChannel): Promis
     return true
   }
 
-  webhook = await MessageDistributor.createWebhook(guildData, channel, false)
+  webhook = <Webhook> (await MessageDistributor.createWebhook(guildData, channel, false)) ?? null
   if (webhook) {
     DatabaseManager.changeSetting(guildData, 'webhook', `${webhook.id}/${webhook.token}`)
     return true
