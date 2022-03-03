@@ -33,9 +33,7 @@ export interface OauthDiscordUserObject {
 export default class OAuthStrat {
 
   public static DISCORD_SCOPE = 'identify guilds'
-  public static DISCORD_REDIRECT = process.env.NODE_ENV === 'production'
-    ? 'https://dashboard.freestuffbot.xyz/oauth/callback/discord'
-    : `http://localhost:${config.port}/oauth/callback/discord`
+  public static DISCORD_REDIRECT = `${config.dashboardOauthCallbackUrl}/discord`
   public static DISCORD_URL = 'https://discord.com/oauth2/authorize?' + encode({
     response_type: 'code',
     client_id: config.oauth.discord.appId,

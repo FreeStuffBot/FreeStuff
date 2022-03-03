@@ -44,6 +44,10 @@ export default class ReqError {
     return res.status(501).json({ success: false, error: 'Not Implemented', message: 'This option is not currently availabe' })
   }
 
+  public static badGateway(res: Response, message?: string): Response<any> {
+    return res.status(502).json({ success: false, error: 'Bad Gateway', message: message || 'Connection to an internal service (like a database) failed. Try again in a moment.' })
+  }
+
   public static other(res: Response, status: number, error?: string, message?: string): Response<any> {
     return res.status(status).json({ success: false, error: error || 'An error occured', message: message || 'An error occured, please try again' })
   }

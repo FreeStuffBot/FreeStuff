@@ -10,7 +10,7 @@ export const ProductKind = [ 'game', 'dlc', 'software', 'art', 'ost', 'book', 'o
 export const ProductKindArray = ProductKind as readonly string[]
 export type ProductKindType = typeof ProductKind[number]
 
-export const ProductApprovalStatus = [ 'pending', 'issues', 'approved' ] as const
+export const ProductApprovalStatus = [ 'pending', 'issues', 'approved', 'processing' ] as const
 export const ProductApprovalStatusArray = ProductApprovalStatus as readonly string[]
 export type ProductApprovalStatusType = typeof ProductApprovalStatus[number]
 
@@ -28,7 +28,7 @@ export type ProductSource = {
 }
 
 export type ProductPlatformMeta = {
-  steamSubids: string
+  steamSubids?: string
 }
 
 export type ProductThumbnails = {
@@ -73,10 +73,10 @@ export type ProductDataType = {
   status: ProductApprovalStatusType
   /** User id of the moderator, responsible for checking the info and publishing the announcement */
   responsible: string
-  /** UNIX Timestamp in second of the last time changes have been made to this product */
-  changed: string
+  /** UNIX Timestamp of the last time changes have been made to this product */
+  changed: number
   /** Info about the product */
-  data: SanitizedProductType
+  data: Omit<SanitizedProductType, 'localized'>
   /** Analytics */
   analytics: ProductAnalytics
 }
@@ -167,7 +167,7 @@ const ProductDataSchema = new Schema({
   until: Number,
   type: {
     type: String,
-    enum: ProductKindArray
+    enum: ProductDiscountTypeArray
   },
   urls: ProductUrlsSchema,
   platform: String,
@@ -189,7 +189,51 @@ export const ProductSchema = new Schema({
   uuid: String,
   status: String,
   responsible: String,
-  changed: String,
+  changed: Number,
   data: ProductDataSchema,
   analytics: ProductAnalyticsSchema
 }, { collection: 'products' })
+
+
+// ===== UTILITY FUNCTIONS ===== //
+
+export function createNewProduct(): ProductDataType {
+  return {
+    _id: 0,
+    analytics: {
+      discord: {
+        reach: 0
+      }
+    },
+    data: {
+      description: '',
+      flags: 0,
+      id: 0,
+      kind: 'other',
+      newPrices: [],
+      oldPrices: [],
+      platform: '',
+      staffApproved: false,
+      tags: [],
+      thumbnails: {
+        blank: '',
+        full: '',
+        org: '',
+        tags: ''
+      },
+      title: '',
+      type: 'unknown',
+      until: 0,
+      urls: {
+        browser: '',
+        default: '',
+        org: ''
+      },
+      platformMeta: {}
+    },
+    changed: 0,
+    responsible: '',
+    status: 'processing',
+    uuid: ''
+  }
+}

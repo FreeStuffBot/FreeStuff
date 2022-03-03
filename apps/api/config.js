@@ -4,6 +4,9 @@ const loadArg = require('config/load-arg')
 module.exports = {
   port: loadArg('API_PORT'),
   redis: null,
+  mongoUrl: loadArg('API_MONGO_URL'),
+  dashboardCorsOrigin: 'http://localhost:5522',
+  dashboardOauthCallbackUrl: 'http://localhost:5522/oauth/callback',
   keys: {
     privateKeyUri: './vault/serverauth-private.key'
   },
@@ -12,5 +15,16 @@ module.exports = {
       appId: loadArg('API_OAUTH_DISCORD_APPID'),
       appSecret: loadArg('API_OAUTH_DISCORD_APPSECRET')
     }
+  },
+  thirdparty: {
+    currconv: {
+      key: loadArg('API_THIRDPARTY_CURRCONV_KEY')
+    },
+    firebase: {
+      key: loadArg('API_THIRDPARTY_FIREBASE_KEY')
+    }
+  },
+  network: {
+    thumbnailer: loadArg('NETWORK_THUMBNAILER')
   }
 }

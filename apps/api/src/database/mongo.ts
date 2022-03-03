@@ -1,4 +1,4 @@
-import { AppSchema, LanguageSchema, UserSchema } from '@freestuffbot/common'
+import { AppSchema, LanguageSchema, ProductSchema, UserSchema } from '@freestuffbot/common'
 import * as chalk from 'chalk'
 import * as mongoose from 'mongoose'
 
@@ -10,6 +10,7 @@ export default class Mongo {
   public static App = mongoose.model('App', AppSchema)
   public static User = mongoose.model('User', UserSchema)
   public static Language = mongoose.model('Language', LanguageSchema)
+  public static Product = mongoose.model('Product', ProductSchema)
 
   //
 

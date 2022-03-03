@@ -8,6 +8,7 @@ import Modules from './modules'
 async function run() {
   Logger.log('Starting...')
 
+  await Modules.connectMongo()
   Modules.startServer()
 }
 

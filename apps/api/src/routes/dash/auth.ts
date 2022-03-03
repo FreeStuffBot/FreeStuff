@@ -24,7 +24,7 @@ export async function postCode(req: Request, res: Response) {
   if (!provider)
     return res.status(400).send({ error: 'missing_provider' })
 
-  const code = req.body.code
+  const code = req.body?.code
   if (!code)
     return res.status(400).send({ error: 'missing_code' })
 
@@ -55,7 +55,7 @@ export async function getMe(_req: Request, res: Response) {
   if (!res.locals.user)
     return ReqError.invalidAuth(res)
 
-  const out = { ...res.locals.user } as any
+  const out = { ...res.locals.user.toObject() } as any
 
   delete out.logins
   delete out.data?._accessToken
@@ -91,7 +91,7 @@ async function packageLang() {
       .exec(),
     Mongo.Language
       .find({})
-      .projection({ _index: 1, lang_name_en: 1 })
+      .select({ _index: 1, lang_name_en: 1 })
       .exec()
   ])
 
