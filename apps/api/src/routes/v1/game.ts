@@ -92,8 +92,8 @@ function localize(game: SanitizedProductType, langs: any) {
     }
 
     const [ priceEur, priceUsd ] = [
-      game.oldPrices.find(p => p.currency === 'eur').value,
-      game.oldPrices.find(p => p.currency === 'usd').value
+      game.prices.find(p => p.currency === 'eur').oldValue,
+      game.prices.find(p => p.currency === 'usd').oldValue
     ]
 
     out[l._id] = {

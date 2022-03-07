@@ -1,19 +1,19 @@
 import { createNewProduct, ProductApprovalStatusArray, ProductDataType, ProductType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from "../../../database/mongo"
+import InputValidator from '../../../lib/inputvalidator'
 import LocalConst from '../../../lib/localconst'
+import Notifier from '../../../lib/notifier'
 import ReqError from '../../../lib/reqerror'
 import Utils from '../../../lib/utils'
 
 
 export async function getProducts(req: Request, res: Response) {
-  const statusFilter = req.query.status + ''
+  const queryName = req.query.queryName + ''
 
-  if (statusFilter && !ProductApprovalStatusArray.includes(statusFilter))
-    return ReqError.badRequest(res, 'Invalid Status', `Received "${statusFilter}". Must be in ${JSON.stringify(ProductApprovalStatusArray)}`)
-
-  const query = statusFilter
-    ? { status: statusFilter }
+  const query
+    = (queryName === 'pending') ? { status: { $in: [ 'pending', 'approved', 'processing' ] } }
+    : (queryName === 'published') ? { status: { $in: [ 'published', 'declined' ] } }
     : {}
 
   const products = await Mongo.Product
@@ -46,14 +46,18 @@ export async function getProducts(req: Request, res: Response) {
 export async function getProduct(req: Request, res: Response) {
   const id = req.params.product + ''
 
-  if (!id || !/^\d{6,10}$/g.test(id))
-    return ReqError.badRequest(res, 'Invalid Product Id', 'Product id did not match criteria.')
+  let error: string
+  if (error = InputValidator.validateProductId(id))
+    return ReqError.badRequest(res, 'Invalid Product Id', error)
 
-  const product: any = await Mongo.Product
+  const product = await Mongo.Product
     .findById(id)
     .lean(true)
     .exec()
-    .catch(() => ReqError.badGateway(res)) as any[]
+    .catch(() => {})
+
+  if (!product)
+    return ReqError.notFound(res, 'Product not found')
 
   product.id = product._id
   delete product._id
@@ -72,7 +76,7 @@ export async function postProduct(req: Request, res: Response) {
     await Utils.sleep(200)
   } while (await Mongo.Product.exists({ _id: id }))
 
-  const product: ProductDataType = createNewProduct()
+  const product = createNewProduct()
 
   product._id = id
   product.responsible = LocalConst.PSEUDO_USER_SYSTEM_ID
@@ -93,4 +97,39 @@ export async function postProduct(req: Request, res: Response) {
   dbobj.save()
     .then(() => res.status(200).json({ id }))
     .catch((err) => ReqError.badGateway(res, err?.message))
+}
+
+
+export async function patchProduct(req: Request, res: Response) {
+  const id = req.params.product + ''
+  
+  let error: string
+  if (error = InputValidator.validateProductId(id))
+    return ReqError.badRequest(res, 'Invalid Product Id', error)
+
+  const body: ProductDataType = req.body
+  if (!body || typeof body !== 'object')
+    return ReqError.badRequest(res, 'Invalid Body', 'Missing form body or invalid data format.')
+
+  const product: ProductType = await Mongo.Product
+    .findById(id)
+    .catch(() => {})
+
+  if (!product)
+    return ReqError.notFound(res, 'Product not found')
+
+  if (product.status === 'processing' || product.status === 'published')
+    return ReqError.badRequest(res, 'Product is readonly', `This product's status is "${product.status}", which makes it immuteable. You cannot edit this.`)
+
+  //
+
+  if (body.status)
+    product.status = body.status
+
+  if (body.data)
+    product.data = body.data
+  
+  // Notifier.newEvent('game_save_draft', { user: res.locals.user.data.id, game: req.body._id })
+  await product.save().catch(() => {})
+  res.status(200).json({})
 }
