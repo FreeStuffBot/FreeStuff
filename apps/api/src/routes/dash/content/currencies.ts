@@ -1,11 +1,11 @@
-import { PlatformDataType, PlatformSanitizer, PlatformType } from '@freestuffbot/common'
+import { CurrencyDataType, CurrencySanitizer, CurrencyType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from "../../../database/mongo"
 import ReqError from '../../../lib/reqerror'
 
 
-export async function getPlatforms(_, res: Response) {
-  const platforms = await Mongo.Platform
+export async function getCurrencies(_, res: Response) {
+  const currencies = await Mongo.Currency
     .find({})
     .skip(res.locals.pageOffset)
     .limit(res.locals.pageAmount)
@@ -13,40 +13,35 @@ export async function getPlatforms(_, res: Response) {
     .exec()
     .catch(() => ReqError.badGateway(res)) as any[]
 
-  const sanitized = platforms.map(PlatformSanitizer.sanitize)
+  const sanitized = currencies.map(CurrencySanitizer.sanitize)
 
   res.status(200).json(sanitized || {})
 }
 
 
-export async function postPlatform(req: Request, res: Response) {
+export async function postCurrency(req: Request, res: Response) {
   const body = req.body
   if (!body || typeof body !== 'object')
     return ReqError.badRequest(res, 'Body invalid', 'Invalid body')
 
-  if (!body.id || !/^[a-z]{2,12}$/.test(body.id))
-    return ReqError.badRequest(res, 'Body invalid', 'Id must be in /^[a-z]{2,12}$/')
+  if (!body.id || !/^[a-z]{3}$/.test(body.id))
+    return ReqError.badRequest(res, 'Body invalid', 'Id must be in /^[a-z]{3}$/')
 
-  const data: PlatformDataType = {
+  const data: CurrencyDataType = {
     _id: body.id,
     name: '',
-    url: '',
-    description: '',
-    assets: {
-      icon: ''
-    },
-    gibuRef: ''
+    symbol: ''
   }
 
-  const platform: PlatformType = new Mongo.Platform(data)
-  await platform.save()
+  const currency: CurrencyType = new Mongo.Currency(data)
+  await currency.save()
   
   res.status(200).json({ id: body.id })
 }
 
 
-export async function patchPlatform(req: Request, res: Response) {
-  const id = req.params.platform
+export async function patchCurrency(req: Request, res: Response) {
+  const id = req.params.currency
   if (!id)
     return ReqError.badRequest(res, 'Id invalid', 'Invalid id')
 
@@ -54,39 +49,39 @@ export async function patchPlatform(req: Request, res: Response) {
   if (!body || typeof body !== 'object')
     return ReqError.badRequest(res, 'Body invalid', 'Invalid body')
     
-  const platform: PlatformType = await Mongo.Platform
+  const currency: CurrencyType = await Mongo.Currency
     .findById(id)
     .exec()
     .catch(() => {})
 
-  if (!platform)
-    return ReqError.notFound(res, `No platform with id "${id}" found!`)
+  if (!currency)
+    return ReqError.notFound(res, `No currency with id "${id}" found!`)
 
   for (const key in body) {
     if (key === 'id') continue
-    platform[key] = body[key]
+    currency[key] = body[key]
   }
 
-  platform.save()
+  currency.save()
     .then(() => res.status(200).json({}))
     .catch(err => ReqError.badGateway(res, JSON.stringify(err)))
 }
 
 
-export async function deletePlatform(req: Request, res: Response) {
-  const id = req.params.platform
+export async function deleteCurrency(req: Request, res: Response) {
+  const id = req.params.currency
   if (!id)
     return ReqError.badRequest(res, 'Id invalid', 'Invalid id')
     
-  const platform: PlatformType = await Mongo.Platform
+  const currency: CurrencyType = await Mongo.Currency
     .findById(id)
     .exec()
     .catch(() => {})
 
-  if (!platform)
-    return ReqError.notFound(res, `No platform with id "${id}" found!`)
+  if (!currency)
+    return ReqError.notFound(res, `No currency with id "${id}" found!`)
 
-  platform.delete()
+  currency.delete()
     .then(() => res.status(200).json({}))
     .catch(err => ReqError.badGateway(res, JSON.stringify(err)))
 }
