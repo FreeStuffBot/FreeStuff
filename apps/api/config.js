@@ -22,6 +22,9 @@ module.exports = {
     },
     firebase: {
       key: loadArg('API_THIRDPARTY_FIREBASE_KEY')
+    },
+    gibu: {
+      gqlUri: 'http://localhost:3030/graphql'
     }
   },
   network: {

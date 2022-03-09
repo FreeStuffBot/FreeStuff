@@ -4,12 +4,17 @@ import * as express from 'express'
 import DashRouter from "./routes/dash/_router"
 import Mongo from './database/mongo'
 import V1Router from "./routes/v1/_router"
+import GibuGqlCore from "./services/gibu/gibu-gql-core"
 
 
 export default class Modules {
 
   public static connectMongo(): Promise<any> {
     return Mongo.connect(config.mongoUrl)
+  }
+
+  public static connectGibu() {
+    GibuGqlCore.connect()
   }
 
   public static startServer() {

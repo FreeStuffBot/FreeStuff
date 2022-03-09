@@ -25,6 +25,7 @@ export type PlatformDataType = {
   url: string // https://epicgames.com
   description: string // ?
   assets: PlatformAssets
+  gibuRef: string // epic
 }
 
 /** The user mongoose object, muteable and saveable */
@@ -37,6 +38,7 @@ export type SanitizedPlatformType = {
   url: string
   description: string
   assets: PlatformAssets
+  gibuRef: string
 }
 
 
@@ -49,5 +51,6 @@ export const PlatformSchema = new Schema({
   description: String,
   assets: {
     icon: String
-  }
+  },
+  gibuRef: String
 }, { collection: 'platforms' })

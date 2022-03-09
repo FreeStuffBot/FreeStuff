@@ -9,6 +9,7 @@ async function run() {
   Logger.log('Starting...')
 
   await Modules.connectMongo()
+  Modules.connectGibu()
   Modules.startServer()
 }
 

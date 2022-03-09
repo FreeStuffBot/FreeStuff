@@ -23,6 +23,9 @@ export type configjs = {
     firebase: {
       key: string
     }
+    gibu: {
+      gqlUri: string
+    }
   }
   network: {
     thumbnailer: string

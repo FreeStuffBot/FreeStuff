@@ -12,7 +12,8 @@ export class PlatformSanitizer {
       description: data.description,
       assets: {
         icon: data.assets.icon
-      }
+      },
+      gibuRef: data.gibuRef
     }
   }
 

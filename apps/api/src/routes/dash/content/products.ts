@@ -1,6 +1,7 @@
 import { createNewProduct, ProductApprovalStatusArray, ProductDataType, ProductType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from "../../../database/mongo"
+import AutoScraper from '../../../lib/auto-scraper'
 import InputValidator from '../../../lib/inputvalidator'
 import LocalConst from '../../../lib/localconst'
 import Notifier from '../../../lib/notifier'
@@ -81,7 +82,8 @@ export async function postProduct(req: Request, res: Response) {
   product._id = id
   product.responsible = LocalConst.PSEUDO_USER_SYSTEM_ID
   product.changed = Date.now()
-  product.data.id
+  product.data.id = id
+  product.data.urls.org = url
 
   if (fetching) {
     product.status = 'processing'
@@ -93,6 +95,9 @@ export async function postProduct(req: Request, res: Response) {
 
   const dbobj: ProductType = new Mongo.Product(product)
   if (!dbobj) return ReqError.badGateway(res)
+
+  if (fetching)
+    AutoScraper.scrape(dbobj)
 
   dbobj.save()
     .then(() => res.status(200).json({ id }))

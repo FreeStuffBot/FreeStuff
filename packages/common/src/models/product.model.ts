@@ -10,7 +10,14 @@ export const ProductKind = [ 'game', 'dlc', 'software', 'art', 'ost', 'book', 'o
 export const ProductKindArray = ProductKind as readonly string[]
 export type ProductKindType = typeof ProductKind[number]
 
-export const ProductApprovalStatus = [ 'pending', 'issues', 'approved', 'processing' ] as const
+/**
+ * pending - data has been fetched in but not verified by a content moderator yet
+ * issues - unused at the moment
+ * approved - a content moderator has approved the data but the product is not yet published
+ * processing - the product is in a loading state. automatic data scrapers are collecting data, no action shall be taken yet
+ * published - this product has been published and can no longer be edited
+ */
+export const ProductApprovalStatus = [ 'pending', 'issues', 'approved', 'processing', 'published' ] as const
 export const ProductApprovalStatusArray = ProductApprovalStatus as readonly string[]
 export type ProductApprovalStatusType = typeof ProductApprovalStatus[number]
 
@@ -48,8 +55,10 @@ export type ProductUrls = {
 export type ProductPrice = {
   /** name of the currency */
   currency: string
-  /** price in this currency */
-  value: number
+  /** price in this currency before the discount */
+  oldValue: number
+  /** price in this currency after the discount */
+  newValue: number
   /** whether this was converted from another currency or not */
   converted: boolean
 }
@@ -90,10 +99,8 @@ export type SanitizedProductType = {
   id: number
   /** product's title */
   title: string
-  /** old price before the discount */
-  oldPrices: ProductPrice[]
-  /** new discounted price */
-  newPrices: ProductPrice[]
+  /** prices */
+  prices: ProductPrice[]
   /** what kind of product is this? */
   kind: ProductKindType
   /** tags that further describe the product */
@@ -129,7 +136,8 @@ export type SanitizedProductType = {
 
 const ProductPriceSchema = new Schema({
   currency: String,
-  value: Number,
+  oldValue: Number,
+  newValue: Number,
   converted: Boolean
 })
 
@@ -154,8 +162,7 @@ const ProductPlatformMetaSchema = new Schema({
 const ProductDataSchema = new Schema({
   id: Number,
   title: String,
-  oldPrices: [ ProductPriceSchema ],
-  newPrices: [ ProductPriceSchema ],
+  prices: [ ProductPriceSchema ],
   kind: {
     type: String,
     enum: ProductKindArray
@@ -210,8 +217,7 @@ export function createNewProduct(): ProductDataType {
       flags: 0,
       id: 0,
       kind: 'other',
-      newPrices: [],
-      oldPrices: [],
+      prices: [],
       platform: '',
       staffApproved: false,
       tags: [],
@@ -223,7 +229,7 @@ export function createNewProduct(): ProductDataType {
       },
       title: '',
       type: 'unknown',
-      until: 0,
+      until: null,
       urls: {
         browser: '',
         default: '',

@@ -8,6 +8,7 @@ import { config } from '../..'
 import { getLanguage, getLanguages } from './translations/languages'
 import { getProduct, getProducts, patchProduct, postProduct } from './content/products'
 import pagination from '../../middleware/pagination'
+import { deletePlatform, getPlatforms, patchPlatform, postPlatform } from './content/platforms'
 
 
 export default class DashRouter {
@@ -44,10 +45,14 @@ export default class DashRouter {
     r.get('/translations/languages/:id',  fw('admin|translate.*'), getLanguage)
 
     // content
-    r.get(  '/content/products',          fw('admin|contentmod'), pagination(20, 40), getProducts)
-    r.get(  '/content/products/:product', fw('admin|contentmod'), getProduct)
-    r.post( '/content/products',          fw('admin|contentmod'), postProduct)
-    r.patch('/content/products/:product', fw('admin|contentmod'), patchProduct)
+    r.get(   '/content/products',            fw('admin|contentmod'), pagination(20, 40), getProducts)
+    r.get(   '/content/products/:product',   fw('admin|contentmod'), getProduct)
+    r.post(  '/content/products',            fw('admin|contentmod'), postProduct)
+    r.patch( '/content/products/:product',   fw('admin|contentmod'), patchProduct)
+    r.get(   '/content/platforms',           fw('admin|contentmod'), pagination(50, 50), getPlatforms)
+    r.post(  '/content/platforms',           fw('admin'),            postPlatform)
+    r.patch( '/content/platforms/:platform', fw('admin'),            patchPlatform)
+    r.delete('/content/platforms/:platform', fw('admin'),            deletePlatform)
 
 
     /* Default 404 handler */

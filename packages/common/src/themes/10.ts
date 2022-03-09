@@ -32,7 +32,7 @@ export default class ThemeTen implements ThemeBuilderClass {
       '```yaml',
       `  Name: ${product.title}`,
       ` Store: ${Localisation.text(guild, '=platform_' + product.platform)}`,
-      ` Price: $${product.oldPrices.find(p => p.currency === 'usd').value} | €${product.oldPrices.find(p => p.currency === 'usd').value}`,
+      ` Price: $${product.prices.find(p => p.currency === 'usd').oldValue} | €${product.prices.find(p => p.currency === 'usd').oldValue}`,
       ` Until: ${product.until ? Timestamps.parse(product.until).toLocaleDateString('en-GB') : 'unknown'}`,
       `  Tags: ${product.tags?.slice(0, 3).join(', ') ?? ''}`,
       `Rating: ${~~(product.rating * 100)}% positive`,

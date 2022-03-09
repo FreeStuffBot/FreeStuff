@@ -314,8 +314,8 @@ export default class Const {
   public static readonly testAnnouncementContent: SanitizedProductType = {
     id: 0,
     title: '=cmd_test_announcement_header',
-    oldPrices: [ 'usd', 'eur', 'gbp', 'brl', 'bgn', 'pln', 'huf', 'btc' ].map(currency => ({ currency, value: 19.99, converted: false })),
-    newPrices: [ 'usd', 'eur', 'gbp', 'brl', 'bgn', 'pln', 'huf', 'btc' ].map(currency => ({ currency, value: 0, converted: false })),
+    prices: [ 'usd', 'eur', 'gbp', 'brl', 'bgn', 'pln', 'huf', 'btc' ]
+      .map(currency => ({ currency, newValue: 0, oldValue: 19.99, converted: false })),
     platform: 'steam',
     thumbnails: {
       blank: Const.placeholderThumbnail,
