@@ -1,5 +1,5 @@
 {
-  "name": "discord-interactions",
+  "name": "@freestuffbot/discord-interactions",
   "version": "1.0.0",
   "main": "build/index.js",
   "scripts": {
@@ -29,6 +29,6 @@
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.6",
-    "config": "*"
+    "@freestuffbot/config": "*"
   }
 }

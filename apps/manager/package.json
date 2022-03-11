@@ -1,7 +1,7 @@
 {
-  "name": "@freestuffbot/discord-gateway",
+  "name": "@freestuffbot/manager",
   "version": "1.0.0",
-  "main": "build/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "start": "node --icu-data-dir=node_modules\\full-icu ./dist/index.js",
     "build": "tsc",
@@ -17,9 +17,13 @@
     "Bartosz Król (https://github.com/badosz0)"
   ],
   "dependencies": {
-    "@freestuffbot/common": "*",
     "axios": "^0.24.0",
+    "cors": "^2.8.5",
     "express": "^4.17.2",
+    "express-rate-limit": "^6.1.0",
+    "googleapis": "^92.0.0",
+    "mongoose": "^6.2.5",
+    "ms": "^3.0.0-beta.2",
     "typescript": "^4.5.4"
   },
   "devDependencies": {

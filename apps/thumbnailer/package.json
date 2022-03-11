@@ -1,5 +1,5 @@
 {
-  "name": "thumbnailer",
+  "name": "@freestuffbot/thumbnailer",
   "version": "2.1.0",
   "description": "A thumbnail generator microservice",
   "main": "index.js",
@@ -19,6 +19,6 @@
     "morgan": "^1.10.0",
     "prom-client": "^13.1.0",
     "skia-canvas": "^0.9.27",
-    "config": "*"
+    "@freestuffbot/config": "*"
   }
 }

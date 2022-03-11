@@ -1,5 +1,5 @@
 {
-  "name": "link-proxy",
+  "name": "@freestuffbot/link-proxy",
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
@@ -28,6 +28,6 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
-    "config": "*"
+    "@freestuffbot/config": "*"
   }
 }
