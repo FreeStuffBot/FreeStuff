@@ -1,10 +1,8 @@
 import { Logger } from "@freestuffbot/common"
 import { config } from "."
 import * as express from 'express'
-import { getAnalytics } from "./router/analytics"
-import { getMetrics } from "./router/metrics"
 import Mongo from "./database/mongo"
-import Metrics from "./lib/metrics"
+import DockerInterface from "./lib/docker-interface"
 
 
 export default class Modules {
@@ -13,16 +11,15 @@ export default class Modules {
     return Mongo.connect(config.mongoUrl)
   }
 
-  public static initMetrics() {
-    Metrics.init()
+  public static initDocker() {
+    DockerInterface.connect()
   }
 
   public static startServer() {
     const app = express()
     app.set('trust proxy', 1)
 
-    app.get('/analytics', getAnalytics)
-    app.get('/metrics', getMetrics)
+    // app.get('/analytics', getAnalytics)
 
     app.all('*', (_, res) => res.status(400).end())
 

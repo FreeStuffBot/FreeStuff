@@ -11,6 +11,8 @@ import { getLanguage, getLanguages } from './translations/languages'
 import { getProduct, getProducts, patchProduct, postProduct } from './content/products'
 import { deletePlatform, getPlatforms, patchPlatform, postPlatform } from './content/platforms'
 import { deleteCurrency, getCurrencies, patchCurrency, postCurrency } from './content/currencies'
+import { getExperiments } from './admin/experiments'
+import { getConfig } from './admin/config'
 
 
 export default class DashRouter {
@@ -35,32 +37,37 @@ export default class DashRouter {
     /* ENDPOINTS */
 
     // ping
-    r.all('/ping', limit(10, 60), fw('[everyone]'), () => {})
+    r.all(   '/ping',    limit(10, 60),       fw('[everyone]'), () => {})
 
     // auth
-    r.get( '/auth/login/:provider', fw('[everyone]'),   getLogin)
-    r.post('/auth/code/:provider',  fw('[everyone]'),   postCode)
-    r.get( '/auth/me',              fw('[logged_in]'),  getMe)
+    r.get(   '/auth/login/:provider',         fw('[everyone]'),        getLogin)
+    r.post(  '/auth/code/:provider',          fw('[everyone]'),        postCode)
+    r.get(   '/auth/me',                      fw('[logged_in]'),       getMe)
 
     // translations
-    r.get('/translations/languages',      fw('admin|translate.*'), getLanguages)
-    r.get('/translations/languages/:id',  fw('admin|translate.*'), getLanguage)
+    r.get(   '/translations/languages',       fw('admin|translate.*'), getLanguages)
+    r.get(   '/translations/languages/:id',   fw('admin|translate.*'), getLanguage)
 
     // content
-    r.get(   '/content/products',             fw('admin|contentmod'), pagination(20, 40), getProducts)
-    r.get(   '/content/products/:product',    fw('admin|contentmod'), getProduct)
-    r.post(  '/content/products',             fw('admin|contentmod'), postProduct)
-    r.patch( '/content/products/:product',    fw('admin|contentmod'), patchProduct)
+    r.get(   '/content/products',             fw('admin|contentmod'),  pagination(20, 40), getProducts)
+    r.get(   '/content/products/:product',    fw('admin|contentmod'),  getProduct)
+    r.post(  '/content/products',             fw('admin|contentmod'),  postProduct)
+    r.patch( '/content/products/:product',    fw('admin|contentmod'),  patchProduct)
 
-    r.get(   '/content/platforms',            fw('admin|contentmod'), pagination(50, 50), getPlatforms)
-    r.post(  '/content/platforms',            fw('admin'),            postPlatform)
-    r.patch( '/content/platforms/:platform',  fw('admin'),            patchPlatform)
-    r.delete('/content/platforms/:platform',  fw('admin'),            deletePlatform)
+    r.get(   '/content/platforms',            fw('admin|contentmod'),  pagination(50, 50), getPlatforms)
+    r.post(  '/content/platforms',            fw('admin'),             postPlatform)
+    r.patch( '/content/platforms/:platform',  fw('admin'),             patchPlatform)
+    r.delete('/content/platforms/:platform',  fw('admin'),             deletePlatform)
 
-    r.get(   '/content/currencies',           fw('admin|contentmod'), pagination(50, 50), getCurrencies)
-    r.post(  '/content/currencies',           fw('admin'),            postCurrency)
-    r.patch( '/content/currencies/:currency', fw('admin'),            patchCurrency)
-    r.delete('/content/currencies/:currency', fw('admin'),            deleteCurrency)
+    r.get(   '/content/currencies',           fw('admin|contentmod'),  pagination(50, 50), getCurrencies)
+    r.post(  '/content/currencies',           fw('admin'),             postCurrency)
+    r.patch( '/content/currencies/:currency', fw('admin'),             patchCurrency)
+    r.delete('/content/currencies/:currency', fw('admin'),             deleteCurrency)
+
+    // admin
+    r.get(   '/admin/experiments',            fw('admin'),             getExperiments)
+
+    r.get(   '/admin/config',                 fw('admin'),             getConfig)
 
 
     /* Default 404 handler */

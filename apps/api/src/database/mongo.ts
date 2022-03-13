@@ -1,4 +1,4 @@
-import { AppSchema, CurrencySchema, LanguageSchema, PlatformSchema, ProductSchema, UserSchema } from '@freestuffbot/common'
+import { AppSchema, CurrencySchema, ExperimentSchema, LanguageSchema, MiscSchema, PlatformSchema, ProductSchema, UserSchema } from '@freestuffbot/common'
 import * as chalk from 'chalk'
 import * as mongoose from 'mongoose'
 
@@ -13,6 +13,8 @@ export default class Mongo {
   public static Product = mongoose.model('Product', ProductSchema)
   public static Platform = mongoose.model('Platform', PlatformSchema)
   public static Currency = mongoose.model('Currency', CurrencySchema)
+  public static Experiment = mongoose.model('Experiment', ExperimentSchema)
+  public static Misc = mongoose.model('Misc', MiscSchema)
 
   //
 

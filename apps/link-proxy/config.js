@@ -1,4 +1,4 @@
-const loadArg = require('config/load-arg')
+const loadArg = require('@freestuffbot/config/load-arg')
 
 
 /** @type {import('./src/types/config').configjs} */

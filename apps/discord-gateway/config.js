@@ -1,4 +1,4 @@
-const loadArg = require('config/load-arg')
+const loadArg = require('@freestuffbot/config/load-arg')
 
 
 const hours = x => x * 60 * 60 * 1000

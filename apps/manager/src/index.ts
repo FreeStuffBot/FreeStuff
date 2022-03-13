@@ -9,7 +9,7 @@ async function run() {
   Logger.log('Starting...')
 
   await Modules.connectMongo()
-  Modules.initMetrics()
+  Modules.initDocker()
   Modules.startServer()
 }
 
