@@ -11,12 +11,12 @@ export enum Priority {
  *
  */
 
-export type TaskQueueType = {
-  name: string
+export type TaskQueueType<Name extends string> = {
+  name: Name
   options: amqp.Options.AssertQueue
 }
 
-const TaskQueueData = {
+export const StaticTypedTaskQueue = {
   DISCORD: {
     name: 'fsb-discord',
     options: {
@@ -24,9 +24,9 @@ const TaskQueueData = {
       maxPriority: Priority.HIGH
     }
   }
-}
+} as const
 
-export const TaskQueue: Record<keyof typeof TaskQueueData, TaskQueueType> = TaskQueueData
+export const TaskQueue: Record<keyof typeof StaticTypedTaskQueue, TaskQueueType<any>> = StaticTypedTaskQueue
 
 export type QueueName = keyof typeof TaskQueue
 
@@ -45,7 +45,7 @@ export enum TaskId {
   DISCORD_PUBLISH_SPLIT = 4
 }
 
-type TaskType = {
+export type TaskType = {
   t: TaskId.DISCORD_PUBLISH
   /** bucket number */
   b: number
@@ -73,14 +73,26 @@ type TaskType = {
 
 export type Task<T extends TaskId> = TaskType & { t: T }
 
-export type TaskMetaType = {
-  queue: TaskQueueType,
+export type TaskMetaType<Name extends string> = {
+  queue: TaskQueueType<Name>,
   priority: Priority
 }
 
-export const TaskMeta: Record<TaskId, TaskMetaType> = {
-  [TaskId.DISCORD_PUBLISH]: { queue: TaskQueue.DISCORD, priority: Priority.MEDIUM },
-  [TaskId.DISCORD_RESEND_ONE]: { queue: TaskQueue.DISCORD, priority: Priority.HIGH },
-  [TaskId.DISCORD_TEST_ONE]: { queue: TaskQueue.DISCORD, priority: Priority.HIGH },
-  [TaskId.DISCORD_PUBLISH_SPLIT]: { queue: TaskQueue.DISCORD, priority: Priority.LOW }
+export const StaticTypedTaskMeta = {
+  [TaskId.DISCORD_PUBLISH]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.MEDIUM },
+  [TaskId.DISCORD_RESEND_ONE]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.HIGH },
+  [TaskId.DISCORD_TEST_ONE]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.HIGH },
+  [TaskId.DISCORD_PUBLISH_SPLIT]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.LOW }
+} as const
+
+export const TaskMeta: Record<TaskId, TaskMetaType<any>> = StaticTypedTaskMeta
+
+export type TaskIdsForQueue<Q extends QueueName> = keyof {
+  [
+    K in TaskId as (typeof StaticTypedTaskMeta)[K] extends {
+      queue: { name: (typeof StaticTypedTaskQueue[Q])['name'] }
+    } ? K : never
+  ]: any
 }
+
+export type TasksForQueue<Q extends QueueName> = TaskType & { t: TaskIdsForQueue<Q> }

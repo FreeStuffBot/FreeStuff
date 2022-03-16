@@ -1,5 +1,5 @@
 import * as amqp from 'amqplib'
-import { QueueName, Task, TaskId, TaskMeta, TaskQueue, TaskQueueType } from './types/tasks'
+import { QueueName, Task, TaskId, TaskMeta, TaskQueue, TaskQueueType, TasksForQueue } from './types/tasks'
 
 
 export default class RabbitHole {
@@ -9,7 +9,7 @@ export default class RabbitHole {
 
   private static subscription: amqp.Replies.Consume
 
-  public static async open(uri: string, queue: TaskQueueType): Promise<void> {
+  public static async open(uri: string, queue: TaskQueueType<any>): Promise<void> {
     RabbitHole.connection = await amqp.connect(uri)
     RabbitHole.channel = await RabbitHole.connection.createChannel()
 
@@ -45,7 +45,7 @@ export default class RabbitHole {
    */
   public static async subscribe<Q extends QueueName>(
     queue: Q,
-    handler: (task: Task<TaskId>) => Promise<boolean>
+    handler: (task: TasksForQueue<Q>) => Promise<boolean>
   ): Promise<void> {
     if (RabbitHole.subscription) throw new Error('This Rabbit Hole has already been subscribed to a queue.')
 
