@@ -1,4 +1,4 @@
-import { Task, TaskId, TaskQueueType, TasksForQueue } from "@freestuffbot/rabbit-hole"
+import { TaskId, TasksForQueue } from "@freestuffbot/rabbit-hole"
 import handleDiscordPublish from "./discord-publish"
 import handleDiscordPublishSplit from "./discord-publish-split"
 import handleDiscordTestOne from "./discord-test-one"
@@ -9,7 +9,6 @@ export default class TaskRouter {
   private static readonly UNKNOWN_TASK_DEFER_DELAY = 5000
   
   public static consume(task: TasksForQueue<'DISCORD'>): Promise<boolean> {
-    console.log('t', task)
     switch (task.t) {
       case TaskId.DISCORD_PUBLISH:
         return handleDiscordPublish(task)

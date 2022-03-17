@@ -1,4 +1,5 @@
-import { LanguageDataType, LanguageType, Localisation, Logger } from "@freestuffbot/common"
+import { Localisation, Logger } from "@freestuffbot/common"
+import RabbitHole from '@freestuffbot/rabbit-hole'
 import Cordo, { GuildData } from "cordo"
 import { config } from "."
 import * as express from 'express'
@@ -8,6 +9,10 @@ import Mongo from "./services/mongo"
 
 
 export default class Modules {
+
+  public static async initRabbit(): Promise<void> {
+    await RabbitHole.open(config.rabbitUrl)
+  }
 
   public static initCordo() {
     Cordo.init({

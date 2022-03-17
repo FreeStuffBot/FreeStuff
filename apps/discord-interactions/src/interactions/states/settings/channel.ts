@@ -9,6 +9,7 @@ import { CustomChannelPermissions } from '@freestuffbot/common/dist/lib/custom-p
 
 type Options = {
   missingPermissions?: string,
+  conflict?: string,
   changedTo?: string,
   ignoreCache?: boolean
 }
@@ -95,8 +96,11 @@ export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Pr
     description = Localisation.text(i, '=settings_channel_ui_2_way_too_many') + '\n\n*' + Localisation.text(i, '=settings_channel_ui_too_many_channels_tip') + '*'
   else if (youHaveTooManyChannelsStage > 0)
     description = Localisation.text(i, '=settings_channel_ui_2_too_many') + '\n\n*' + Localisation.text(i, '=settings_channel_ui_too_many_channels_tip') + '*'
+
   if (opts?.missingPermissions)
     description += `\n\n⚠️ **${Localisation.text(i, '=settings_channel_ui_missing_permissions', { channel: opts?.changedTo, permissions: opts?.missingPermissions })}**`
+  else if (opts?.conflict)
+    description += `\n\n⚠️ **${opts.conflict}**`
 
   return {
     title: '=settings_channel_ui_1',

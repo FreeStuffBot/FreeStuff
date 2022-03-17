@@ -1,20 +1,16 @@
 import * as amqp from 'amqplib'
-import { QueueName, Task, TaskId, TaskMeta, TaskQueue, TaskQueueType, TasksForQueue } from './types/tasks'
+import { QueueName, Task, TaskId, TaskMeta, TaskQueue, TasksForQueue } from './types/tasks'
 
 
 export default class RabbitHole {
 
   private static connection: amqp.Connection
   private static channel: amqp.Channel
-
   private static subscription: amqp.Replies.Consume
 
-  public static async open(uri: string, queue: TaskQueueType<any>): Promise<void> {
+  public static async open(uri: string): Promise<void> {
     RabbitHole.connection = await amqp.connect(uri)
     RabbitHole.channel = await RabbitHole.connection.createChannel()
-
-    RabbitHole.channel.assertQueue(queue.name, queue.options)
-    RabbitHole.channel.prefetch(1)
   }
 
   /*
@@ -44,10 +40,14 @@ export default class RabbitHole {
    * @param handler 
    */
   public static async subscribe<Q extends QueueName>(
-    queue: Q,
+    queueName: Q,
     handler: (task: TasksForQueue<Q>) => Promise<boolean>
   ): Promise<void> {
     if (RabbitHole.subscription) throw new Error('This Rabbit Hole has already been subscribed to a queue.')
+
+    const queue = TaskQueue[queueName]
+    RabbitHole.channel.assertQueue(queue.name, queue.options)
+    RabbitHole.channel.prefetch(1)
 
     const internalHandler = (msg: amqp.ConsumeMessage) => !msg?.content
       ? void RabbitHole.channel.ack(msg)
@@ -57,7 +57,7 @@ export default class RabbitHole {
         .catch(() => {})
 
     RabbitHole.subscription = await RabbitHole.channel.consume(
-      TaskQueue[queue].name,
+      queue.name,
       internalHandler,
       { noAck: false }
     )

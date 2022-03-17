@@ -11,6 +11,7 @@ async function run() {
   Logger.log('Starting...')
 
   await Modules.connectDatabases()
+  await Modules.initRabbit()
   Modules.loadLanguageFiles()
   Modules.initCordo()
   Modules.startServer()

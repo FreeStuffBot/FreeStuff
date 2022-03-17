@@ -38,9 +38,9 @@ export enum TaskId {
   /** publish an announcement to multiple guilds */
   DISCORD_PUBLISH = 1,
   /** resend announcements to a single guild */
-  DISCORD_RESEND_ONE = 2,
+  DISCORD_RESEND = 2,
   /** send a test message to a single guild */
-  DISCORD_TEST_ONE = 3,
+  DISCORD_TEST = 3,
   /** task to split up remaining guilds into workable chunks */
   DISCORD_PUBLISH_SPLIT = 4
 }
@@ -54,11 +54,13 @@ export type TaskType = {
   /** announcement id */
   a: number
 } | {
-  t: TaskId.DISCORD_RESEND_ONE
+  t: TaskId.DISCORD_RESEND
   /** guild id as string */
   g: string
+  /** list of product ids */
+  p: number[]
 } | {
-  t: TaskId.DISCORD_TEST_ONE
+  t: TaskId.DISCORD_TEST
   /** guild id as string */
   g: string
 } | {
@@ -80,8 +82,8 @@ export type TaskMetaType<Name extends string> = {
 
 export const StaticTypedTaskMeta = {
   [TaskId.DISCORD_PUBLISH]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.MEDIUM },
-  [TaskId.DISCORD_RESEND_ONE]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.HIGH },
-  [TaskId.DISCORD_TEST_ONE]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.HIGH },
+  [TaskId.DISCORD_RESEND]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.HIGH },
+  [TaskId.DISCORD_TEST]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.HIGH },
   [TaskId.DISCORD_PUBLISH_SPLIT]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.LOW }
 } as const
 

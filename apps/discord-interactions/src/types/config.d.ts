@@ -5,6 +5,7 @@ export type configjs = {
   discordClientId: string
   discordPublicKey: string
   mongoUrl: string
+  rabbitUrl: string
   discordGuildCacheInterval: number
   discordChannelsCacheInterval: number
   discordWebhooksCacheInterval: number

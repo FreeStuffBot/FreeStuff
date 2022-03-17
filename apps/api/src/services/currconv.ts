@@ -1,6 +1,10 @@
 import axios from "axios"
 import { config } from ".."
 
+// TODO USE THIS
+// https://github.com/fawazahmed0/currency-api#readme
+
+
 const currencies = [
   'GBP',
   'BRL',

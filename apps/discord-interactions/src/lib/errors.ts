@@ -4,6 +4,8 @@ import { InteractionApplicationCommandCallbackData, ReplyableCommandInteraction,
 
 export default class Errors {
 
+  public static readonly HTTP_STATUS_CONFLICT = 409
+
   public static readonly STATUS_GENERIC = 10_000
   public static readonly STATUS_ERRNO = 10_001
   public static readonly STATUS_INTERNAL = 10_002

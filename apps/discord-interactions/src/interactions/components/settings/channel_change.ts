@@ -1,6 +1,5 @@
-import { ChannelType, GenericInteraction, GuildData, ReplyableComponentInteraction } from 'cordo'
-import { CustomPermissions, DataChannel, Localisation } from '@freestuffbot/common'
-import Experiments from '../../../lib/experiments'
+import { ChannelType, ReplyableComponentInteraction } from 'cordo'
+import { CustomPermissions, Localisation } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import DiscordGateway from '../../../services/discord-gateway'
 import Errors from '../../../lib/errors'
@@ -48,6 +47,14 @@ export default async function (i: ReplyableComponentInteraction) {
       i.state('settings_channel', {
         missingPermissions: Localisation.getLine(i, 'permission_manage_webhooks'),
         changedTo: `<#${val}>`
+      })
+      return
+    }
+
+    if (webhookError.status === Errors.HTTP_STATUS_CONFLICT) {
+      // TODO add settings_channel_error_too_many_webhooks to lang
+      i.state('settings_channel', {
+        conflict: Localisation.text(i, 'settings_channel_error_too_many_webhooks', { channel: `<#${val}>` })
       })
       return
     }

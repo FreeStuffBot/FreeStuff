@@ -9,7 +9,10 @@ export async function getExperiments(req: Request, res: Response) {
     .find({})
     .lean(true)
     .exec()
-    .catch(() => ReqError.badGateway(res)) as any[]
+    .catch(() => {}) as any[]
+
+  if (!experiments)
+    return ReqError.badGateway(res)
 
   const out = experiments
     .map(ExperimentSanitizer.sanitize)

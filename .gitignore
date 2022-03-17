@@ -12,4 +12,4 @@ private.key
 .turbo
 
 dev-*.js
-
+*.log

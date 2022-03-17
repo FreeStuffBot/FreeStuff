@@ -9,7 +9,10 @@ export async function getConfig(req: Request, res: Response) {
     .findById('config.global')
     .lean(true)
     .exec()
-    .catch(() => ReqError.badGateway(res)) as any
+    .catch(() => {}) as any
+
+  if (!config)
+    return ReqError.badGateway(res)
 
   res.status(200).json(config?.data || {})
 }

@@ -6,6 +6,7 @@ module.exports = {
   discordClientId: loadArg('DISCORD_INTERACTIONS_CLIENTID'),
   discordPublicKey: loadArg('DISCORD_INTERACTIONS_PUBKEY'),
   mongoUrl: loadArg('DISCORD_INTERACTIONS_MONGO_URL'),
+  rabbitUrl: loadArg('DISCORD_INTERACTIONS_RABBIT_URL'),
   discordGuildCacheInterval: 60_000,
   discordChannelsCacheInterval: 60_000,
   discordWebhooksCacheInterval: 60_000,

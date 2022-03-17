@@ -18,6 +18,7 @@
   ],
   "dependencies": {
     "@freestuffbot/common": "*",
+    "@freestuffbot/rabbit-hole": "*",
     "axios": "^0.24.0",
     "bson": "^4.6.1",
     "cordo": "^1.10.0",

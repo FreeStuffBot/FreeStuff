@@ -7,7 +7,9 @@ export default function handleDiscordPublishSplit(task: Task<TaskId.DISCORD_PUBL
   const amount = config.behavior.publishSplitTaskAmount
 
   for (let i = 0; i < amount; i++) {
-    if (task.v + i >= task.c) return
+    if (task.v + i >= task.c)
+      return Promise.resolve(true)
+
     RabbitHole.publish({
       t: TaskId.DISCORD_PUBLISH,
       a: task.a,

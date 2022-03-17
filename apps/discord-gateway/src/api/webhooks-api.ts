@@ -1,7 +1,7 @@
 import { DataWebhook } from "@freestuffbot/common"
 import { config } from ".."
 import WebhooksData from "../data/webhooks-data"
-import { MagicNumber, MAGICNUMBER_MISSING_PERMISSIONS } from "../lib/magic-number"
+import { MagicNumber, MAGICNUMBER_MAX_WEBHOOKS_REACHED, MAGICNUMBER_MISSING_PERMISSIONS } from "../lib/magic-number"
 import RestGateway from "./rest-gateway"
 
 
@@ -48,6 +48,9 @@ export default class WebhooksApi {
 
     if (res.status === 403)
       return MAGICNUMBER_MISSING_PERMISSIONS
+
+    if (res.status === 400 && res.data?.code === 30007)
+      return MAGICNUMBER_MAX_WEBHOOKS_REACHED
 
     if (res.status >= 400 && res.status < 500)
       return null
