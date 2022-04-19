@@ -13,6 +13,7 @@ import { deletePlatform, getPlatforms, patchPlatform, postPlatform } from './con
 import { deleteCurrency, getCurrencies, patchCurrency, postCurrency } from './content/currencies'
 import { getExperiments } from './admin/experiments'
 import { getConfig } from './admin/config'
+import { postAnnouncement } from './content/announcements'
 
 
 export default class DashRouter {
@@ -53,6 +54,8 @@ export default class DashRouter {
     r.get(   '/content/products/:product',    fw('admin|contentmod'),  getProduct)
     r.post(  '/content/products',             fw('admin|contentmod'),  postProduct)
     r.patch( '/content/products/:product',    fw('admin|contentmod'),  patchProduct)
+
+    r.post(  '/content/announcements',        fw('admin|contentmod'),  postAnnouncement)
 
     r.get(   '/content/platforms',            fw('admin|contentmod'),  pagination(50, 50), getPlatforms)
     r.post(  '/content/platforms',            fw('admin'),             postPlatform)

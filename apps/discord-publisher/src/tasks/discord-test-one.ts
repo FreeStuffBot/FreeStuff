@@ -1,7 +1,7 @@
 import { Task, TaskId } from "@freestuffbot/rabbit-hole"
 import Mongo from "../database/mongo"
 import { Const, GuildDataType, GuildSanitizer, Localisation, Themes } from "@freestuffbot/common"
-import axios from "axios"
+import Upstream from "../lib/upstream"
 
 
 export default async function handleDiscordTestOne(task: Task<TaskId.DISCORD_TEST>): Promise<boolean> {
@@ -21,10 +21,13 @@ export default async function handleDiscordTestOne(task: Task<TaskId.DISCORD_TES
     { test: true, donationNotice: false }
   )
 
-  // TODO init Localization
   const localized = Localisation.translateObject(theme, sanitizedGuild, {}, 6)
-  
-  axios.post(`https://discord.com/api/webhooks/${sanitizedGuild.webhook}`, localized)
+
+  Upstream.queueRequest({
+    method: 'POST',
+    url: `https://discord.com/api/webhooks/${sanitizedGuild.webhook}`,
+    data: localized
+  })
   console.log('YO LETS GO, ' + sanitizedGuild.id.toString())
 
   return true

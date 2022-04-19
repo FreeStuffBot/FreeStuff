@@ -334,7 +334,7 @@ export default class Const {
     },
     flags: 0,
     until: null,
-    type: 'free',
+    type: 'keep',
     staffApproved: true,
     platformMeta: {
       steamSubids: '12345 98760'

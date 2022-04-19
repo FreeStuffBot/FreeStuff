@@ -9,8 +9,15 @@ export default class RabbitHole {
   private static subscription: amqp.Replies.Consume
 
   public static async open(uri: string): Promise<void> {
-    RabbitHole.connection = await amqp.connect(uri)
-    RabbitHole.channel = await RabbitHole.connection.createChannel()
+    try {
+      RabbitHole.connection = await amqp.connect(uri)
+      RabbitHole.channel = await RabbitHole.connection.createChannel()
+    } catch (ex) {
+      // eslint-disable-next-line no-console
+      console.error('Opening rabbit hole failed.')
+      // eslint-disable-next-line no-console
+      console.error(ex)
+    }
   }
 
   /*

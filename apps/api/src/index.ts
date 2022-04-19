@@ -8,9 +8,11 @@ import Modules from './modules'
 async function run() {
   Logger.log('Starting...')
 
+  await Modules.initRabbit()
   await Modules.connectMongo()
   Modules.connectGibu()
   Modules.startServer()
+  Modules.startCacheJanitor()
 }
 
 run().catch((err) => {

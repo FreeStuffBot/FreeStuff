@@ -12,7 +12,7 @@ export default class TaskRouter {
     switch (task.t) {
       case TaskId.DISCORD_PUBLISH:
         return handleDiscordPublish(task)
-      case TaskId.DISCORD_TEST_ONE:
+      case TaskId.DISCORD_TEST:
         return handleDiscordTestOne(task)
       case TaskId.DISCORD_PUBLISH_SPLIT:
         return handleDiscordPublishSplit(task)

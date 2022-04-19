@@ -13,6 +13,8 @@ async function run() {
   await Modules.connectMongo()
   await Modules.initRabbit()
   Modules.loadLanguageFiles()
+  Modules.startUpstream()
+  Modules.initCacheJanitor()
 }
 
 run().catch((err) => {

@@ -2,6 +2,8 @@ import { LanguageDataType, Localisation, Logger } from '@freestuffbot/common'
 import RabbitHole from '@freestuffbot/rabbit-hole'
 import { config } from '.'
 import Mongo from './database/mongo'
+import ApiGateway from './lib/api-gateway'
+import Upstream from './lib/upstream'
 import TaskRouter from './tasks/router'
 
 
@@ -35,6 +37,14 @@ export default class Modules {
     Localisation.load(lang)
     Logger.process('Language files loaded')
     return true
+  }
+
+  public static async startUpstream(): Promise<void> {
+    Upstream.startBurstInterval()
+  }
+
+  public static async initCacheJanitor(): Promise<void> {
+    setInterval(() => ApiGateway.clearCaches(), 1000 * 60 * 60 * 24)
   }
 
 }

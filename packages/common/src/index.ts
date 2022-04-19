@@ -43,14 +43,14 @@ export * from './models/platform.model'
 export * from './models/product.model'
 export * from './models/user.model'
 
-// export * from './sanitizers/announcement.sanitizer'
+export * from './sanitizers/announcement.sanitizer'
 export * from './sanitizers/app.sanitizer'
 export * from './sanitizers/channel.sanitizer'
 export * from './sanitizers/experiment.sanitizer'
 export * from './sanitizers/currency.sanitizer'
 export * from './sanitizers/guild.sanitizer'
 export * from './sanitizers/platform.sanitizer'
-// export * from './sanitizers/product.sanitizer'
+export * from './sanitizers/product.sanitizer'
 
 export * from './struct/fragile.struct'
 

@@ -96,12 +96,15 @@ export async function postProduct(req: Request, res: Response) {
   const dbobj: ProductType = new Mongo.Product(product)
   if (!dbobj) return ReqError.badGateway(res)
 
-  if (fetching)
-    AutoScraper.scrape(dbobj)
-
-  dbobj.save()
-    .then(() => res.status(200).json({ id }))
-    .catch((err) => ReqError.badGateway(res, err?.message))
+  try {
+    await dbobj.save()
+    res.status(200).json({ id })
+    
+    if (fetching)
+      AutoScraper.scrape(dbobj)
+  } catch (err) {
+    ReqError.badGateway(res, err?.message)
+  }
 }
 
 

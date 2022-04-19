@@ -21,7 +21,7 @@ export const ProductApprovalStatus = [ 'pending', 'issues', 'approved', 'process
 export const ProductApprovalStatusArray = ProductApprovalStatus as readonly string[]
 export type ProductApprovalStatusType = typeof ProductApprovalStatus[number]
 
-export const ProductDiscountType = [ 'free', 'weekend', 'discount', 'ad', 'unknown' ] as const
+export const ProductDiscountType = [ 'keep', 'timed', 'prime', 'gamepass', 'other' ] as const
 export const ProductDiscountTypeArray = ProductDiscountType as readonly string[]
 export type ProductDiscountTypeType = typeof ProductDiscountType[number]
 
@@ -228,7 +228,7 @@ export function createNewProduct(): ProductDataType {
         tags: ''
       },
       title: '',
-      type: 'unknown',
+      type: 'other',
       until: null,
       urls: {
         browser: '',

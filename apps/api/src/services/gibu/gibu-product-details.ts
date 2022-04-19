@@ -38,7 +38,7 @@ export default class GibuProductDetails {
         description: data.descriptionShort,
         rating: data.ratings[0]?.score ?? 0,
         until: data.sale.until,
-        type: data.sale.type as ProductDiscountTypeType,
+        type: GibuProductDetails.parseType(data.sale.type),
         urls: {
           org: url,
           browser: url,
@@ -75,6 +75,12 @@ export default class GibuProductDetails {
     }
 
     return images[0].url
+  }
+
+  private static parseType(inputType: string): ProductDiscountTypeType {
+    if (inputType === 'free') return 'keep'
+    if (inputType === 'timed') return 'timed'
+    return 'other'
   }
 
 }

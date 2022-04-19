@@ -23,7 +23,7 @@ export default class V1Router {
   private static addRoutes() {
     const r = this.ctx
 
-    /* CORS */
+    /* GATEWAY */
 
     r.all('*', apiGateway('v1'))
 

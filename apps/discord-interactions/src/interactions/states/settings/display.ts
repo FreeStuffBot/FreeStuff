@@ -78,14 +78,14 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
         label: '=generic_back',
         emoji: Emojis.caretLeft.toObject()
       },
-      {
-        type: ComponentType.BUTTON,
-        style: guildData.react ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
-        custom_id: 'settings_reaction_toggle',
-        label: guildData.react ? '=settings_display_reactions_on_state' : '=settings_display_reactions_on_prompt',
-        emoji: { name: '🆓' },
-        flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
-      },
+      // {
+      //   type: ComponentType.BUTTON,
+      //   style: guildData.react ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
+      //   custom_id: 'settings_reaction_toggle',
+      //   label: guildData.react ? '=settings_display_reactions_on_state' : '=settings_display_reactions_on_prompt',
+      //   emoji: { name: '🆓' },
+      //   flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
+      // },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.LINK,
