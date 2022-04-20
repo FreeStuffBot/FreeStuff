@@ -1,6 +1,7 @@
 import Util from '../lib/util'
 import Localisation from '../lib/localisation'
-import { SanitizedProductType, SettingCurrency, SettingPlatform, SettingPriceClass, SettingTheme } from '..'
+import { SanitizedProductType, SettingPriceClass, SettingTheme } from '..'
+import CMS from '../lib/cms'
 
 
 export default class Const {
@@ -154,66 +155,66 @@ export default class Const {
 
   public static readonly defaultTheme = Const.themes[0]
 
-  public static readonly currencies: SettingCurrency<any>[] = [
-    {
-      id: 0,
-      code: 'euro',
-      name: '=currency_euro',
-      symbol: '€',
-      calculated: false
-    },
-    {
-      id: 1,
-      code: 'usd',
-      name: '=currency_usd',
-      symbol: '$',
-      calculated: false
-    },
-    {
-      id: 2,
-      code: 'gbp',
-      name: '=currency_gbp',
-      symbol: '£',
-      calculated: true
-    },
-    {
-      id: 3,
-      code: 'brl',
-      name: '=currency_brl',
-      symbol: 'R$',
-      calculated: true
-    },
-    {
-      id: 4,
-      code: 'bgn',
-      name: '=currency_bgn',
-      symbol: 'лв.',
-      calculated: true
-    },
-    {
-      id: 5,
-      code: 'pln',
-      name: '=currency_pln',
-      symbol: 'zł',
-      calculated: true
-    },
-    {
-      id: 6,
-      code: 'huf',
-      name: '=currency_huf',
-      symbol: 'Ft',
-      calculated: true
-    },
-    {
-      id: 7,
-      code: 'btc',
-      name: '=currency_btc',
-      symbol: '₿',
-      calculated: true
-    }
-  ]
+  // public static readonly currencies: SettingCurrency<any>[] = [
+  //   {
+  //     id: 0,
+  //     code: 'euro',
+  //     name: '=currency_euro',
+  //     symbol: '€',
+  //     calculated: false
+  //   },
+  //   {
+  //     id: 1,
+  //     code: 'usd',
+  //     name: '=currency_usd',
+  //     symbol: '$',
+  //     calculated: false
+  //   },
+  //   {
+  //     id: 2,
+  //     code: 'gbp',
+  //     name: '=currency_gbp',
+  //     symbol: '£',
+  //     calculated: true
+  //   },
+  //   {
+  //     id: 3,
+  //     code: 'brl',
+  //     name: '=currency_brl',
+  //     symbol: 'R$',
+  //     calculated: true
+  //   },
+  //   {
+  //     id: 4,
+  //     code: 'bgn',
+  //     name: '=currency_bgn',
+  //     symbol: 'лв.',
+  //     calculated: true
+  //   },
+  //   {
+  //     id: 5,
+  //     code: 'pln',
+  //     name: '=currency_pln',
+  //     symbol: 'zł',
+  //     calculated: true
+  //   },
+  //   {
+  //     id: 6,
+  //     code: 'huf',
+  //     name: '=currency_huf',
+  //     symbol: 'Ft',
+  //     calculated: true
+  //   },
+  //   {
+  //     id: 7,
+  //     code: 'btc',
+  //     name: '=currency_btc',
+  //     symbol: '₿',
+  //     calculated: true
+  //   }
+  // ]
 
-  public static readonly defaultCurrency = Const.currencies[0]
+  // public static readonly defaultCurrency = Const.currencies[0]
 
   public static readonly priceClasses: SettingPriceClass<any>[] = [
     {
@@ -240,76 +241,76 @@ export default class Const {
 
   public static readonly defaultPriceClass = Const.priceClasses[2]
 
-  public static readonly platforms: SettingPlatform<any>[] = [
-    {
-      id: 'other',
-      bit: 1 << 0,
-      name: '=platform_other',
-      description: 'Less popular platforms or publisher websites',
-      moderated: true,
-      default: false
-    },
-    {
-      id: 'steam',
-      bit: 1 << 1,
-      name: '=platform_steam',
-      description: 'https://store.steampowered.com/',
-      moderated: true,
-      default: true
-    },
-    {
-      id: 'epic',
-      bit: 1 << 2,
-      name: '=platform_epic',
-      description: 'https://www.epicgames.com/store/',
-      moderated: true,
-      default: true
-    },
-    {
-      id: 'humble',
-      bit: 1 << 3,
-      name: '=platform_humble',
-      description: 'https://www.humblebundle.com/',
-      moderated: true,
-      default: true
-    },
-    {
-      id: 'gog',
-      bit: 1 << 4,
-      name: '=platform_gog',
-      description: 'https://www.gog.com/',
-      moderated: true,
-      default: true
-    },
-    {
-      id: 'origin',
-      bit: 1 << 5,
-      name: '=platform_origin',
-      description: 'https://www.origin.com/store',
-      moderated: true,
-      default: true
-    },
-    {
-      id: 'uplay',
-      bit: 1 << 6,
-      name: '=platform_uplay',
-      description: 'https://store.ubi.com/',
-      moderated: true,
-      default: true
-    },
-    {
-      id: 'itch',
-      bit: 1 << 7,
-      name: '=platform_itch',
-      description: 'https://itch.io/',
-      moderated: false,
-      default: true
-    }
-  ]
+  // public static readonly platforms: SettingPlatform<any>[] = [
+  //   {
+  //     id: 'other',
+  //     bit: 1 << 0,
+  //     name: '=platform_other',
+  //     description: 'Less popular platforms or publisher websites',
+  //     moderated: true,
+  //     default: false
+  //   },
+  //   {
+  //     id: 'steam',
+  //     bit: 1 << 1,
+  //     name: '=platform_steam',
+  //     description: 'https://store.steampowered.com/',
+  //     moderated: true,
+  //     default: true
+  //   },
+  //   {
+  //     id: 'epic',
+  //     bit: 1 << 2,
+  //     name: '=platform_epic',
+  //     description: 'https://www.epicgames.com/store/',
+  //     moderated: true,
+  //     default: true
+  //   },
+  //   {
+  //     id: 'humble',
+  //     bit: 1 << 3,
+  //     name: '=platform_humble',
+  //     description: 'https://www.humblebundle.com/',
+  //     moderated: true,
+  //     default: true
+  //   },
+  //   {
+  //     id: 'gog',
+  //     bit: 1 << 4,
+  //     name: '=platform_gog',
+  //     description: 'https://www.gog.com/',
+  //     moderated: true,
+  //     default: true
+  //   },
+  //   {
+  //     id: 'origin',
+  //     bit: 1 << 5,
+  //     name: '=platform_origin',
+  //     description: 'https://www.origin.com/store',
+  //     moderated: true,
+  //     default: true
+  //   },
+  //   {
+  //     id: 'uplay',
+  //     bit: 1 << 6,
+  //     name: '=platform_uplay',
+  //     description: 'https://store.ubi.com/',
+  //     moderated: true,
+  //     default: true
+  //   },
+  //   {
+  //     id: 'itch',
+  //     bit: 1 << 7,
+  //     name: '=platform_itch',
+  //     description: 'https://itch.io/',
+  //     moderated: false,
+  //     default: true
+  //   }
+  // ]
 
-  public static readonly defaultPlatforms = Const.platforms
-    .filter(p => p.default)
-    .reduce((val, p) => (val ^= p.bit), 0)
+  // public static readonly defaultPlatforms = Const.platforms
+  //   .filter(p => p.default)
+  //   .reduce((val, p) => (val ^= p.bit), 0)
 
   public static readonly testAnnouncementContent: SanitizedProductType = {
     id: 0,
@@ -341,16 +342,22 @@ export default class Const {
     }
   }
 
-  public static getDefaultSettingsBits(): number {
+  public static get defaultSettingsBits(): number {
     let language = Localisation.languageToId('en-GB')
     if (language === -1) language = 0
-    return Util.modifyBits(0, 5, 4, Const.currencies[0].id)
+    // return Util.modifyBits(0, 5, 4, Const.currencies[0].id)
+    // | Util.modifyBits(0, 10, 6, language)
+    return Util.modifyBits(0, 5, 4, CMS.constants.currencies[0].id)
     | Util.modifyBits(0, 10, 6, language)
   }
 
-  public static getDefaultFilterBits(): number {
+  public static get defaultFilterBits(): number {
+    const defaultPlatforms = CMS.constants.platforms
+      .filter(p => p.enabledDefault)
+      .reduce((val, p) => (val ^= (1 << p.id)), 0)
+
     return Util.modifyBits(0, 2, 2, Const.defaultPriceClass.id)
-    | Util.modifyBits(0, 4, 8, Const.defaultPlatforms)
+    | Util.modifyBits(0, 4, 8, defaultPlatforms)
   }
 
 }

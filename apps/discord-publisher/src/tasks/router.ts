@@ -1,7 +1,8 @@
 import { TaskId, TasksForQueue } from "@freestuffbot/rabbit-hole"
 import handleDiscordPublish from "./discord-publish"
 import handleDiscordPublishSplit from "./discord-publish-split"
-import handleDiscordTestOne from "./discord-test-one"
+import handleDiscordResend from "./discord-resend"
+import handleDiscordTest from "./discord-test"
 
 
 export default class TaskRouter {
@@ -12,13 +13,15 @@ export default class TaskRouter {
     switch (task.t) {
       case TaskId.DISCORD_PUBLISH:
         return handleDiscordPublish(task)
+      case TaskId.DISCORD_RESEND:
+        return handleDiscordResend(task)
       case TaskId.DISCORD_TEST:
-        return handleDiscordTestOne(task)
+        return handleDiscordTest(task)
       case TaskId.DISCORD_PUBLISH_SPLIT:
         return handleDiscordPublishSplit(task)
 
       default: {
-        console.warn('Unhandled Task Type %s, deferring', task.t)
+        console.warn('Unhandled Task Type %s, deferring', (task as TasksForQueue<'DISCORD'>).t)
         return new Promise((res) => setTimeout(
           () => res(false),
           TaskRouter.UNKNOWN_TASK_DEFER_DELAY

@@ -1,17 +1,18 @@
 import { SanitizedGuildType } from "../models/guild.model"
 import { SanitizedProductType } from "../models/product.model"
-import CMS from "./cms"
 
 
 export default class Pricing {
 
-  public static getPreferredCurrency(guild: SanitizedGuildType, product?: SanitizedProductType) {
-    const currencies = CMS.constants.currencies
+  public static getLocalizedOldPrice(product: SanitizedProductType, guild: SanitizedGuildType) {
+    if (!guild.currency) return false
 
-    currencies.find(c => c.id)
+    if (guild.currency) {
+      const price = product.prices.find(p => p.currency === guild.currency.code)
+      if (price) return price.oldValue
+    }
 
-    // perhaps even change the entire currency model again
-    // we need the number index to parse guilddata
+    return product.prices[0]?.oldValue ?? 0
   }
 
 }

@@ -1,9 +1,8 @@
 import { Task, TaskId } from "@freestuffbot/rabbit-hole"
-import { GuildDataType, GuildSanitizer, Localisation, SanitizedProductType, Themes } from "@freestuffbot/common"
+import { GuildDataType, GuildSanitizer, Localisation, ProductFilter, SanitizedProductType, Themes } from "@freestuffbot/common"
 import Mongo from "../database/mongo"
 import Upstream from "../lib/upstream"
 import ApiGateway from "../lib/api-gateway"
-import ProductFilter from "../lib/product-filter"
 
 
 export default async function handleDiscordPublish(task: Task<TaskId.DISCORD_PUBLISH>): Promise<boolean> {

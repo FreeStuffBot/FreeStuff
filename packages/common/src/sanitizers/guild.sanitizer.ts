@@ -1,5 +1,8 @@
-import { Const, Localisation, SettingPlatform } from ".."
+import { Const, Localisation } from ".."
+import CMS from "../lib/cms"
+import { SanitizedCurrencyType } from "../models/currency.model"
 import { GuildDataType, SanitizedGuildType } from "../models/guild.model"
+import { SanitizedPlatformType } from "../models/platform.model"
 
 
 export class GuildSanitizer {
@@ -35,7 +38,7 @@ export class GuildSanitizer {
       filter: data.filter,
       tracker: data.tracker,
 
-      currency: Const.currencies[(data.settings >> GuildSanitizer.BITS_CURRENCY_OFFSET) & GuildSanitizer.BITS_CURRENCY_MASK] ?? Const.currencies[0],
+      currency: GuildSanitizer.parseCurrency((data.settings >> GuildSanitizer.BITS_CURRENCY_OFFSET) & GuildSanitizer.BITS_CURRENCY_MASK),
       price: Const.priceClasses[(data.filter >> GuildSanitizer.BITS_PRICE_OFFSET) & GuildSanitizer.BITS_PRICE_MASK] ?? Const.priceClasses[2],
       react: (data.settings & (1 << GuildSanitizer.BIT_REACT_OFFSET)) !== 0,
       trashGames: (data.filter & (1 << GuildSanitizer.BIT_TRASH_OFFSET)) !== 0,
@@ -47,10 +50,17 @@ export class GuildSanitizer {
     }
   }
 
-  public static platformsRawToList(raw: number): SettingPlatform<any>[] {
-    const out = [] as SettingPlatform<any>[]
-    for (const platform of Const.platforms) {
-      if ((raw & platform.bit) !== 0)
+  public static parseCurrency(id: number): SanitizedCurrencyType {
+    if (!CMS.constants.currencies?.length) return null
+    return CMS.constants.currencies[id] ?? null
+  }
+
+  public static platformsRawToList(raw: number): SanitizedPlatformType[] {
+    if (!CMS.constants.platforms?.length) return null
+
+    const out = [] as SanitizedPlatformType[]
+    for (const platform of CMS.constants.platforms) {
+      if ((raw & (1 << platform.id)) !== 0)
         out.push(platform)
     }
 

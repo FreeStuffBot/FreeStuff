@@ -15,6 +15,8 @@ export { default as CustomPermissions } from './lib/custom-permissions'
 export { default as FlipflopCache } from './lib/flipflop-cache'
 export { default as ApiInterface } from './lib/api-interface'
 export { default as CMS } from './lib/cms'
+export { default as Pricing } from './lib/pricing'
+export { default as ProductFilter } from './lib/product-filter'
 
 export { default as ThemeOne } from './themes/1'
 export { default as ThemeTwo } from './themes/2'
@@ -60,4 +62,5 @@ export * from './types/communication/gateway-discord'
 
 export * from './types/convenience/discord-settings'
 export * from './types/other/theme-builder-class'
+export * from './types/other/product-flag'
 

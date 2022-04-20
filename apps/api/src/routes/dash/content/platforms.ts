@@ -36,6 +36,8 @@ export async function postPlatform(req: Request, res: Response) {
     name: '',
     url: '',
     description: '',
+    enabledDefault: false,
+    autoPublish: false,
     assets: {
       icon: ''
     },

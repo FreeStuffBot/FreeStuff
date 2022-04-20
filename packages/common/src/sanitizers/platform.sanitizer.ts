@@ -11,6 +11,8 @@ export class PlatformSanitizer {
       name: data.name,
       url: data.url,
       description: data.description,
+      enabledDefault: data.enabledDefault,
+      autoPublish: data.autoPublish,
       assets: {
         icon: data.assets.icon
       },

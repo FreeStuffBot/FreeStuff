@@ -25,6 +25,8 @@ export type PlatformDataType = {
   name: string // Epic Games Store
   url: string // https://epicgames.com
   description: string // ?
+  enabledDefault: boolean // true
+  autoPublish: boolean // false
   assets: PlatformAssets
   gibuRef: string // epic
 }
@@ -39,6 +41,8 @@ export type SanitizedPlatformType = {
   name: string
   url: string
   description: string
+  enabledDefault: boolean
+  autoPublish: boolean
   assets: PlatformAssets
   gibuRef: string
 }
@@ -52,6 +56,8 @@ export const PlatformSchema = new Schema({
   name: String,
   url: String,
   description: String,
+  enabledDefault: Boolean,
+  autoPublish: Boolean,
   assets: {
     icon: String
   },

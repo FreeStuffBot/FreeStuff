@@ -4,7 +4,7 @@ import { Const, GuildDataType, GuildSanitizer, Localisation, Themes } from "@fre
 import Upstream from "../lib/upstream"
 
 
-export default async function handleDiscordTestOne(task: Task<TaskId.DISCORD_TEST>): Promise<boolean> {
+export default async function handleDiscordTest(task: Task<TaskId.DISCORD_TEST>): Promise<boolean> {
   const guild: GuildDataType = await Mongo.Guild
     .findById(task.g)
     .lean(true)

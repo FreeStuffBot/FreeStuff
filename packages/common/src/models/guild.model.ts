@@ -1,7 +1,9 @@
 /* eslint-disable spaced-comment */
 import { Schema, Document as MongooseDocument } from 'mongoose'
 import { Long } from 'bson'
-import { SettingCurrency, SettingPlatform, SettingPriceClass, SettingTheme } from '..'
+import { SettingPriceClass, SettingTheme } from '..'
+import { SanitizedCurrencyType } from './currency.model'
+import { SanitizedPlatformType } from './platform.model'
 
 
 // ===== ARRAY CONSTANTS ===== //
@@ -39,13 +41,13 @@ export type SanitizedGuildType = {
   tracker: number
 
   theme: SettingTheme<any>
-  currency: SettingCurrency<any>
+  currency: SanitizedCurrencyType
   price: SettingPriceClass<any>
   react: boolean
   trashGames: boolean
   language: string
   platformsRaw: number
-  platformsList: SettingPlatform<any>[]
+  platformsList: SanitizedPlatformType[]
   beta: boolean
 }
 
