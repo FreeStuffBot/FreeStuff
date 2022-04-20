@@ -7,6 +7,7 @@ export class CurrencySanitizer {
     if (!data) return null
     return {
       id: data._id,
+      code: data.code,
       name: data.name,
       symbol: data.symbol
     }

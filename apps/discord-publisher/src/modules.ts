@@ -1,4 +1,4 @@
-import { LanguageDataType, Localisation, Logger } from '@freestuffbot/common'
+import { ApiInterface, CMS } from '@freestuffbot/common'
 import RabbitHole from '@freestuffbot/rabbit-hole'
 import { config } from '.'
 import Mongo from './database/mongo'
@@ -18,25 +18,15 @@ export default class Modules {
     await RabbitHole.subscribe('DISCORD', TaskRouter.consume)
   }
 
-  /** @returns boolean Whether successful */
-  public static async loadLanguageFiles(): Promise<boolean> {
-    const lang: LanguageDataType[] = await Mongo.Language
-      .find({
-        _index: { $gte: 0 },
-        _enabled: true
-      })
-      .lean(true)
-      .exec()
-      .catch(() => {}) as any[]
+  public static async initApiInterface(): Promise<void> {
+    ApiInterface.storeCredentials(
+      config.freestuffApi.baseUrl,
+      config.freestuffApi.auth
+    )
+  }
 
-    if (!lang?.length) {
-      Logger.warn(`Loading language files failed.`)
-      return false
-    }
-
-    Localisation.load(lang)
-    Logger.process('Language files loaded')
-    return true
+  public static async loadCmsData(): Promise<void> {
+    CMS.loadAll()
   }
 
   public static async startUpstream(): Promise<void> {

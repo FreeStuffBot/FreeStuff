@@ -1,13 +1,11 @@
 import { Task, TaskId } from "@freestuffbot/rabbit-hole"
-import RabbitHole from '@freestuffbot/rabbit-hole'
-import { config } from ".."
 import { GuildDataType, GuildSanitizer, Localisation, SanitizedProductType, Themes } from "@freestuffbot/common"
 import Mongo from "../database/mongo"
 import Upstream from "../lib/upstream"
 import ApiGateway from "../lib/api-gateway"
+import ProductFilter from "../lib/product-filter"
 
 
-/* TODO */
 export default async function handleDiscordPublish(task: Task<TaskId.DISCORD_PUBLISH>): Promise<boolean> {
   const bucketCount = task.c
   const bucketNumber = task.b
@@ -26,8 +24,6 @@ export default async function handleDiscordPublish(task: Task<TaskId.DISCORD_PUB
 
   if (!guilds?.length) return true
 
-  console.log(guilds.length)
-
   const products = await ApiGateway.getProductsForAnnouncement(announcementId)
   if (!products) return false
 
@@ -40,8 +36,12 @@ export default async function handleDiscordPublish(task: Task<TaskId.DISCORD_PUB
 function sendToGuild(guild: GuildDataType, products: SanitizedProductType[]) {
   const sanitizedGuild = GuildSanitizer.sanitize(guild)
 
+  const filteredProducts = ProductFilter.filterList(products, sanitizedGuild)
+
+  if (!filteredProducts.length) return
+
   const theme = Themes.build(
-    products,
+    filteredProducts,
     sanitizedGuild,
     { test: false, donationNotice: false /** TODO */ }
   )
@@ -53,7 +53,6 @@ function sendToGuild(guild: GuildDataType, products: SanitizedProductType[]) {
     url: `https://discord.com/api/webhooks/${sanitizedGuild.webhook}`,
     data: localized
   })
-  console.log('YO LETS WALK, ' + sanitizedGuild.id.toString())
 
   return true
 }

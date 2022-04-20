@@ -24,11 +24,15 @@ export async function postPlatform(req: Request, res: Response) {
   if (!body || typeof body !== 'object')
     return ReqError.badRequest(res, 'Body invalid', 'Invalid body')
 
-  if (!body.id || !/^[a-z]{2,12}$/.test(body.id))
-    return ReqError.badRequest(res, 'Body invalid', 'Id must be in /^[a-z]{2,12}$/')
+  if (!body.id || !/^\d{1,2}$/.test(body.id))
+    return ReqError.badRequest(res, 'Body invalid', 'Id must be a number')
+
+  const idTaken = await Mongo.Platform.exists({ _id: body.id })
+  if (idTaken) return ReqError.badRequest(res, 'Id already taken', 'Another platform by this id already exists.')
 
   const data: PlatformDataType = {
     _id: body.id,
+    code: '',
     name: '',
     url: '',
     description: '',

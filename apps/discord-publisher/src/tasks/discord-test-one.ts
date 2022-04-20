@@ -28,7 +28,6 @@ export default async function handleDiscordTestOne(task: Task<TaskId.DISCORD_TES
     url: `https://discord.com/api/webhooks/${sanitizedGuild.webhook}`,
     data: localized
   })
-  console.log('YO LETS GO, ' + sanitizedGuild.id.toString())
 
   return true
 }

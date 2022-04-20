@@ -1,13 +1,46 @@
+import * as cors from 'cors'
 import { Response, Router } from 'express'
+import { config } from '../..'
 import ReqError from '../../lib/reqerror'
+import { rateLimiter as limit } from '../../middleware/rate-limits'
+
 import { apiGateway } from '../../middleware/api-gateway'
-import { allPing } from './ping'
+import { getCmsConstants, getLanguages, getRemoteConfig } from './data'
 
 
-export const internalRouter: Router = Router()
+export default class InternalRouter {
 
-internalRouter.all('*', apiGateway('internal'))
+  private static ctx: Router
 
-internalRouter.all('/ping', allPing)
+  public static init(): Router {
+    this.ctx = Router()
+    this.addRoutes()
 
-internalRouter.all('*', (_, res: Response) => ReqError.endpointNotFound(res))
+    return this.ctx
+  }
+
+  private static addRoutes() {
+    const r = this.ctx
+
+    /* GATEWAY */
+
+    r.all('*', apiGateway('internal', true))
+
+
+    /* ENDPOINTS */
+
+    // ping
+    r.all(   '/ping', limit(10, 60), () => {})
+
+    // announcements
+    r.get('/data/languages', getLanguages)
+    r.get('/data/cms-constants', getCmsConstants)
+    r.get('/data/remote-config', getRemoteConfig)
+
+
+    /* Default 404 handler */
+
+    r.all('*', (_, res: Response) => ReqError.notFound(res, 'Endpoint Not Found'))
+  }
+
+}

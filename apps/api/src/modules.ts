@@ -8,6 +8,7 @@ import V1Router from "./routes/v1/_router"
 import GibuGqlCore from "./services/gibu/gibu-gql-core"
 import V2Router from "./routes/v2/_router"
 import Resolver from "./lib/resolver"
+import InternalRouter from "./routes/internal/_router"
 
 
 export default class Modules {
@@ -29,12 +30,11 @@ export default class Modules {
     app.set('trust proxy', 1)
 
     app.use('*', express.json())
-    app.use('*', (req, _, next) => { console.log(req.originalUrl); next() }) // TODO remove
 
     app.use('/dash', DashRouter.init())
     app.use('/v1', V1Router.init())
     app.use('/v2', V2Router.init())
-    // app.use('/internal', )
+    app.use('/internal', InternalRouter.init())
 
     app.all('*', (_, res) => res.status(400).end())
 

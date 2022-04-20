@@ -12,7 +12,8 @@ async function run() {
 
   await Modules.connectMongo()
   await Modules.initRabbit()
-  Modules.loadLanguageFiles()
+  Modules.initApiInterface()
+  Modules.loadCmsData()
   Modules.startUpstream()
   Modules.initCacheJanitor()
 }

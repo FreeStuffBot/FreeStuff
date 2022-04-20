@@ -24,11 +24,15 @@ export async function postCurrency(req: Request, res: Response) {
   if (!body || typeof body !== 'object')
     return ReqError.badRequest(res, 'Body invalid', 'Invalid body')
 
-  if (!body.id || !/^[a-z]{3}$/.test(body.id))
-    return ReqError.badRequest(res, 'Body invalid', 'Id must be in /^[a-z]{3}$/')
+  if (!body.id || !/^\d{1,2}$/.test(body.id))
+    return ReqError.badRequest(res, 'Body invalid', 'Id must be a number')
+
+  const idTaken = await Mongo.Currency.exists({ _id: body.id })
+  if (idTaken) return ReqError.badRequest(res, 'Id already taken', 'Another currency by this id already exists.')
 
   const data: CurrencyDataType = {
     _id: body.id,
+    code: '',
     name: '',
     symbol: ''
   }

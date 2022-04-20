@@ -15,17 +15,18 @@
   },
   "author": "FreeStuff Team",
   "dependencies": {
+    "axios": "^0.26.1",
     "bson": "^4.6.1",
     "cordo": "^1.8.4",
     "mongoose": "^6.1.6",
     "mongoose-long": "^0.5.1"
   },
   "devDependencies": {
+    "@freestuffbot/config": "*",
     "@types/mongodb": "^4.0.7",
     "@types/node": "^16.9.6",
     "@typescript-eslint/eslint-plugin": "^4.31.2",
     "@typescript-eslint/parser": "^4.31.2",
-    "@freestuffbot/config": "*",
     "eslint": "^7.32.0",
     "reflect-metadata": "^0.1.13",
     "tsconfig": "*",

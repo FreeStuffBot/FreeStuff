@@ -1,7 +1,4 @@
-import { SanitizedProductType } from "@freestuffbot/common"
-import axios from "axios"
-import * as os from "os"
-import { config } from ".."
+import { ApiInterface, SanitizedProductType } from "@freestuffbot/common"
 
 
 export default class ApiGateway {
@@ -12,14 +9,7 @@ export default class ApiGateway {
     if (ApiGateway.announcementsCache.has(id))
       return ApiGateway.announcementsCache.get(id)
 
-    const { data, status } = await axios.get(`/v2/announcements/${id}?resolve=true`, {
-      baseURL: config.freestuffApi.baseUrl,
-      headers: {
-        Authorization: `Partner ${config.freestuffApi.auth} ${os.hostname()}`,
-        Accept: 'application/json'
-      },
-      validateStatus: null
-    })
+    const { data, status } = await ApiInterface.makeRequest('GET', 'v2', `/announcements/${id}?resolve=true`)
 
     if (status !== 200) return null
 

@@ -39,7 +39,7 @@ export async function validateToken(auth: string, locals: Response['locals']) {
   return true
 }
 
-export function apiGateway(subset: ApiSubset): (req: Request, res: Response, next: NextFunction) => any {
+export function apiGateway(subset: ApiSubset, partnerOnly = false): (req: Request, res: Response, next: NextFunction) => any {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (subset === 'dash')
       return next()
@@ -52,6 +52,9 @@ export function apiGateway(subset: ApiSubset): (req: Request, res: Response, nex
     const token = await validateToken(req.headers.authorization, res.locals)
     if (!token)
       return ReqError.invalidAuth(res, 'Authorization token invalid')
+      
+    if (partnerOnly && !req.headers.authorization.startsWith('Partner'))
+      return ReqError.invalidAuth(res, 'This endpoint is privileged')  
 
     //
 

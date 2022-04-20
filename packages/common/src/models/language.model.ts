@@ -33,6 +33,15 @@ export type SanitizedLanguageType = Record<string, string>
 // ===== MONGO SCHEMA ===== //
 
 export const LanguageSchema = new Schema({
+  _id: String,
+  _index: Number,
+  _enabled: Boolean,
+  _meta_progress: Number,
+  _meta_last_edit: Number,
+  _meta_last_editor: String,
+
+  lang_name_en: String,
+
   _keys: {
     type: Map,
     of: Schema.Types.Mixed

@@ -7,6 +7,7 @@ export class PlatformSanitizer {
     if (!data) return null
     return {
       id: data._id,
+      code: data.code,
       name: data.name,
       url: data.url,
       description: data.description,

@@ -12,7 +12,8 @@ import { Schema, Document as MongooseDocument } from 'mongoose'
 
 /** A reduced type to use internally */
 export type CurrencyDataType = {
-  _id: string // eur
+  _id: number // 0
+  code: string // eur
   name: string // Euro
   symbol: string // €
 }
@@ -22,7 +23,8 @@ export type CurrencyType = CurrencyDataType & MongooseDocument<any, {}>
 
 /** The sanitized version of the data, gets served out by the api */
 export type SanitizedCurrencyType = {
-  id: string
+  id: number
+  code: string
   name: string
   symbol: string
 }
@@ -31,7 +33,8 @@ export type SanitizedCurrencyType = {
 // ===== MONGO SCHEMA ===== //
 
 export const CurrencySchema = new Schema({
-  _id: String,
+  _id: Number,
+  code: String,
   name: String,
   symbol: String,
 }, { collection: 'currencies' })
