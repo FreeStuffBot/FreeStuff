@@ -1,6 +1,5 @@
-import { Const, Emojis, Localisation } from '@freestuffbot/common'
+import { Const, Emojis, Errors, Localisation } from '@freestuffbot/common'
 import { ReplyableCommandInteraction } from 'cordo'
-import Errors from '../../lib/errors'
 import Tracker from '../../lib/tracker'
 import FreestuffData from '../../services/freestuff-data'
 

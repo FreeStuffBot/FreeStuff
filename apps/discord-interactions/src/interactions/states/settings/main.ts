@@ -1,6 +1,5 @@
-import { Const, Emojis, Localisation } from '@freestuffbot/common'
+import { Const, Emojis, Errors } from '@freestuffbot/common'
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, InteractionType } from 'cordo'
-import Errors from '../../../lib/errors'
 import Tracker from '../../../lib/tracker'
 
 

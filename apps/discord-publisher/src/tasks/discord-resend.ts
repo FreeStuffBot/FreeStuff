@@ -1,6 +1,6 @@
 import { Task, TaskId } from "@freestuffbot/rabbit-hole"
 import Mongo from "../database/mongo"
-import { Const, GuildDataType, GuildSanitizer, Localisation, ProductFilter, Themes } from "@freestuffbot/common"
+import { GuildDataType, GuildSanitizer, Localisation, ProductFilter, Themes } from "@freestuffbot/common"
 import Upstream from "../lib/upstream"
 import ApiGateway from "../lib/api-gateway"
 

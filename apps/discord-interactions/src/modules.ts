@@ -1,9 +1,8 @@
-import { Localisation, Logger } from "@freestuffbot/common"
+import { ApiInterface, CMS, Localisation, Logger } from "@freestuffbot/common"
 import RabbitHole from '@freestuffbot/rabbit-hole'
 import Cordo, { GuildData } from "cordo"
 import { config } from "."
 import * as express from 'express'
-import RemoteConfig from "./lib/remote-config"
 import DatabaseGateway from "./services/database-gateway"
 import Mongo from "./services/mongo"
 
@@ -14,11 +13,23 @@ export default class Modules {
     await RabbitHole.open(config.rabbitUrl)
   }
 
+  public static async initApiInterface(): Promise<void> {
+    ApiInterface.storeCredentials(
+      config.freestuffApi.baseUrl,
+      config.freestuffApi.auth
+    )
+  }
+
+  public static async loadCmsData(): Promise<void> {
+    CMS.loadAll()
+  }
+
   public static initCordo() {
     Cordo.init({
       botId: config.discordClientId,
       contextPath: [ __dirname, 'interactions' ],
-      botAdmins: (id: string) => RemoteConfig.botAdmins.includes(id),
+      // TODO remote config
+      // botAdmins: (id: string) => RemoteConfig.botAdmins.includes(id),
       immediateDefer: (_) => true,
       texts: {
         interaction_not_owned_title: '=interaction_not_owned_1',
@@ -67,18 +78,6 @@ export default class Modules {
 
   public static connectDatabases(): Promise<any> {
     return Mongo.connect(config.mongoUrl)
-  }
-
-  public static async loadLanguageFiles() {
-    const [ err, lang ] = await DatabaseGateway.fetchLanguageData()
-    if (err) {
-      Logger.warn(`Loading language files failed.`)
-      Logger.warn(JSON.stringify(err))
-      return
-    }
-
-    Localisation.load(lang)
-    Logger.process('Language files loaded')
   }
 
 }

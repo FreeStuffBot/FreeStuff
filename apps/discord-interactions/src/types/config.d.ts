@@ -17,4 +17,8 @@ export type configjs = {
   network: {
     discordGateway: string
   }
+  freestuffApi: {
+    baseUrl: string
+    auth: string
+  }
 }

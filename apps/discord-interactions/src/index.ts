@@ -12,7 +12,8 @@ async function run() {
 
   await Modules.connectDatabases()
   await Modules.initRabbit()
-  Modules.loadLanguageFiles()
+  Modules.initApiInterface()
+  Modules.loadCmsData()
   Modules.initCordo()
   Modules.startServer()
 }

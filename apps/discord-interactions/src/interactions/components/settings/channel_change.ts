@@ -1,8 +1,7 @@
 import { ChannelType, ReplyableComponentInteraction } from 'cordo'
-import { CustomPermissions, Localisation } from '@freestuffbot/common'
+import { CustomPermissions, Errors, Localisation } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import DiscordGateway from '../../../services/discord-gateway'
-import Errors from '../../../lib/errors'
 import Webhooks from '../../../lib/webhooks'
 import { Long } from 'bson'
 
@@ -23,7 +22,7 @@ export default async function (i: ReplyableComponentInteraction) {
 
   // fetch channels
   const [ channelError, allChannels ] = await DiscordGateway.getChannels(i.guild_id)
-  if (channelError) return Errors.handleErrorAndCommunicate(channelError)
+  if (channelError) return Errors.handleErrorAndCommunicate(channelError, i)
 
   // find channel and return if invalid
   const channel = allChannels.find(c => c.id === val)

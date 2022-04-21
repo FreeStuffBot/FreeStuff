@@ -1,8 +1,7 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
-import { DataGuild, Emojis, Localisation } from '@freestuffbot/common'
+import { DataGuild, Emojis, Errors, Localisation } from '@freestuffbot/common'
 import Tracker from '../../../lib/tracker'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
-import Errors from '../../../lib/errors'
 import DiscordGateway from '../../../services/discord-gateway'
 
 

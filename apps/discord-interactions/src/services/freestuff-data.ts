@@ -1,5 +1,4 @@
-import { Fragile, Logger, SanitizedProductType } from "@freestuffbot/common"
-import Errors from "../lib/errors"
+import { Errors, Fragile, Logger, SanitizedProductType } from "@freestuffbot/common"
 
 
 export default class FreestuffData {

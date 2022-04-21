@@ -1,9 +1,8 @@
 import { ReplyableComponentInteraction } from 'cordo'
 import RabbitHole, { TaskId } from '@freestuffbot/rabbit-hole'
-import { Const, CustomPermissions, DataChannel, SanitizedGuildType } from '@freestuffbot/common'
+import { Const, CustomPermissions, DataChannel, Errors, SanitizedGuildType } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import Tracker from '../../../lib/tracker'
-import Errors from '../../../lib/errors'
 import DiscordGateway from '../../../services/discord-gateway'
 import FreestuffData from '../../../services/freestuff-data'
 

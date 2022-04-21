@@ -17,6 +17,7 @@ export { default as ApiInterface } from './lib/api-interface'
 export { default as CMS } from './lib/cms'
 export { default as Pricing } from './lib/pricing'
 export { default as ProductFilter } from './lib/product-filter'
+export { default as Errors } from './lib/errors'
 
 export { default as ThemeOne } from './themes/1'
 export { default as ThemeTwo } from './themes/2'

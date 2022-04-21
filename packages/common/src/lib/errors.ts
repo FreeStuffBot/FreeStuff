@@ -1,5 +1,5 @@
-import { Fragile, FragileError } from "@freestuffbot/common"
 import { InteractionApplicationCommandCallbackData, ReplyableCommandInteraction, ReplyableComponentInteraction } from "cordo"
+import { Fragile, FragileError } from "../struct/fragile.struct"
 
 
 export default class Errors {

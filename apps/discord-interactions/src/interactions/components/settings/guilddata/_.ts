@@ -1,6 +1,5 @@
-import { Const, Localisation } from '@freestuffbot/common'
+import { Const, Errors, Localisation } from '@freestuffbot/common'
 import { ButtonStyle, ComponentType, InteractionComponentFlag, ReplyableComponentInteraction } from 'cordo'
-import Errors from '../../../../lib/errors'
 import guildDataToViewString from '../../../../lib/guilddata-visualizer'
 import Tracker from '../../../../lib/tracker'
 

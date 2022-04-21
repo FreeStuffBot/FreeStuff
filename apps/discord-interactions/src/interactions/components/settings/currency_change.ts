@@ -1,5 +1,5 @@
+import { CMS, Errors } from '@freestuffbot/common'
 import { ReplyableComponentInteraction } from 'cordo'
-import { Const } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
@@ -10,7 +10,11 @@ export default function (i: ReplyableComponentInteraction) {
   const val = i.data.values[0]
   if (!val) return i.ack()
 
-  const currency = Const.currencies[parseInt(val, 10) || 0]
+  if (!CMS.constants.currencies?.length)
+    return Errors.handleErrorAndCommunicate(Errors.throwStderrNotInitialized('@currency_change::CMS.constants.currencies')[0], i)
+
+  const id = parseInt(val, 10) || 0
+  const currency = CMS.constants.currencies?.find(c => c.id === id) || CMS.constants.currencies[0]
   if (!currency) return i.ack()
 
   i.guildData.changeSetting('currency', currency)

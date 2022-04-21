@@ -1,7 +1,6 @@
-import { FlipflopCache, Fragile, SanitizedGuildType, GuildSanitizer, LanguageDataType, FragileError, SanitizedGuildWithChangesType, GuildDataType, SettingPriceClass, Util, SettingTheme, SettingCurrency, Localisation, SettingPlatform } from "@freestuffbot/common"
+import { FlipflopCache, Fragile, SanitizedGuildType, GuildSanitizer, LanguageDataType, FragileError, SanitizedGuildWithChangesType, GuildDataType, SettingPriceClass, Util, SettingTheme, Localisation, SanitizedCurrencyType, SanitizedPlatformType, Errors } from "@freestuffbot/common"
 import { Long } from "bson"
 import { config } from ".."
-import Errors from "../lib/errors"
 import { DatabaseActions } from "../types/database-actions"
 import Mongo from "./mongo"
 
@@ -66,25 +65,6 @@ export default class DatabaseGateway {
       )
   }
 
-  public static async fetchLanguageData(): Promise<Fragile<LanguageDataType[]>> {
-    try {
-      const lang = await Mongo
-        .collection('language')
-        .find({
-          _index: { $gte: 0 },
-          _enabled: true
-        })
-        .toArray() as LanguageDataType[]
-
-      if (!lang?.length)
-        return Errors.throwInternal('database-gateway::fetch-language-data')
-
-      return Errors.success(lang)
-    } catch (ex) {
-      return Errors.throwInternal('database-gateway::fetch-language-data')
-    }
-  }
-
   //
 
   private static readonly flattener: Flattener<keyof DatabaseActions> = {
@@ -106,7 +86,7 @@ export default class DatabaseGateway {
       data.settings = Util.modifyBitsMask(data.settings, GuildSanitizer.BITS_THEME_OFFSET, GuildSanitizer.BITS_THEME_MASK, value.id)
       data._changes.settings = data.settings
     },
-    currency(data: SanitizedGuildWithChangesType, value: SettingCurrency<any>) {
+    currency(data: SanitizedGuildWithChangesType, value: SanitizedCurrencyType) {
       data.currency = value
       data.settings = Util.modifyBitsMask(data.settings, GuildSanitizer.BITS_CURRENCY_OFFSET, GuildSanitizer.BITS_CURRENCY_MASK, value.id)
       data._changes.settings = data.settings
@@ -126,8 +106,8 @@ export default class DatabaseGateway {
       data.settings = Util.modifyBitsMask(data.settings, GuildSanitizer.BITS_LANGUAGE_OFFSET, GuildSanitizer.BITS_LANGUAGE_MASK, value)
       data._changes.settings = data.settings
     },
-    platforms(data: SanitizedGuildWithChangesType, value: SettingPlatform<any>[]) {
-      const bits = value.reduce((plat, val) => (val.bit | plat), 0)
+    platforms(data: SanitizedGuildWithChangesType, value: SanitizedPlatformType[]) {
+      const bits = value.reduce((plat, val) => ((1 << val.id) | plat), 0)
       data.platformsList = value
       data.platformsRaw = bits
       data.filter = Util.modifyBitsMask(data.filter, GuildSanitizer.BITS_PLATFORMS_OFFSET, GuildSanitizer.BITS_PLATFORMS_MASK, bits)

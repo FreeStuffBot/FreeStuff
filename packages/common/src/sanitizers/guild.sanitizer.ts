@@ -51,15 +51,17 @@ export class GuildSanitizer {
   }
 
   public static parseCurrency(id: number): SanitizedCurrencyType {
-    if (!CMS.constants.currencies?.length) return null
-    return CMS.constants.currencies[id] ?? null
+    const [ err, currencies ] = CMS.currencies
+    if (err) return null
+    return currencies[id] ?? null
   }
 
   public static platformsRawToList(raw: number): SanitizedPlatformType[] {
-    if (!CMS.constants.platforms?.length) return null
+    const [ err, platforms ] = CMS.platforms
+    if (err) return null
 
     const out = [] as SanitizedPlatformType[]
-    for (const platform of CMS.constants.platforms) {
+    for (const platform of platforms) {
       if ((raw & (1 << platform.id)) !== 0)
         out.push(platform)
     }

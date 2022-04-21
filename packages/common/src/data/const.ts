@@ -345,16 +345,22 @@ export default class Const {
   public static get defaultSettingsBits(): number {
     let language = Localisation.languageToId('en-GB')
     if (language === -1) language = 0
-    // return Util.modifyBits(0, 5, 4, Const.currencies[0].id)
-    // | Util.modifyBits(0, 10, 6, language)
-    return Util.modifyBits(0, 5, 4, CMS.constants.currencies[0].id)
+
+    const [ err, currencies ] = CMS.currencies
+
+    const defaultId = err ? 0 : currencies[0].id
+    return Util.modifyBits(0, 5, 4, defaultId)
     | Util.modifyBits(0, 10, 6, language)
   }
 
   public static get defaultFilterBits(): number {
-    const defaultPlatforms = CMS.constants.platforms
-      .filter(p => p.enabledDefault)
-      .reduce((val, p) => (val ^= (1 << p.id)), 0)
+    const [ err, platforms ] = CMS.platforms
+
+    const defaultPlatforms = err
+      ? 0
+      : platforms
+        .filter(p => p.enabledDefault)
+        .reduce((val, p) => (val ^= (1 << p.id)), 0)
 
     return Util.modifyBits(0, 2, 2, Const.defaultPriceClass.id)
     | Util.modifyBits(0, 4, 8, defaultPlatforms)

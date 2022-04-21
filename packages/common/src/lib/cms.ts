@@ -1,7 +1,9 @@
 import { SanitizedCurrencyType } from "../models/currency.model"
 import { LanguageDataType } from "../models/language.model"
 import { SanitizedPlatformType } from "../models/platform.model"
+import { Fragile } from "../struct/fragile.struct"
 import ApiInterface from "./api-interface"
+import Errors from "./errors"
 import Localisation from "./localisation"
 
 
@@ -12,23 +14,42 @@ type CmsConstantsType = {
 
 export default class CMS {
 
-  private static _languages: LanguageDataType[] = []
-  public static get languages(): typeof CMS._languages {
-    return CMS._languages
+  private static _languages: LanguageDataType[] = null
+  private static _constants: CmsConstantsType = { currencies: null, platforms: null }
+
+  //
+
+  public static get languages(): Fragile<LanguageDataType[]> {
+    if (CMS._languages)
+      return Errors.success(CMS._languages)
+
+    return Errors.throwStderrNotInitialized('@common::cms.get.languages')
   }
 
-  private static _constants: CmsConstantsType = { currencies: [], platforms: [] }
-  public static get constants(): typeof CMS._constants {
-    return CMS._constants
+  public static get currencies(): Fragile<SanitizedCurrencyType[]> {
+    if (CMS._constants.currencies)
+      return Errors.success(CMS._constants.currencies)
+
+    return Errors.throwStderrNotInitialized('@common::cms.get.currencies')
+  }
+
+  public static get platforms(): Fragile<SanitizedPlatformType[]> {
+    if (CMS._constants.platforms)
+      return Errors.success(CMS._constants.platforms)
+
+    return Errors.throwStderrNotInitialized('@common::cms.get.platforms')
   }
 
   //
 
-  public static loadAll() {
-    CMS.loadLanguages()
+  public static loadAll(): Promise<boolean> {
+    return Promise.all([
+      CMS.loadLanguages(),
+      CMS.loadConstants()
+    ]).then(p => p.reduce((a, b) => a && b, false))
   }
 
-  public static async loadLanguages() {
+  public static async loadLanguages(): Promise<boolean> {
     const lang = await ApiInterface.loadData<LanguageDataType[]>('languages')
 
     if (!lang?.length)
@@ -39,13 +60,25 @@ export default class CMS {
     return true
   }
 
-  public static async loadConstants() {
+  public static async loadConstants(): Promise<boolean> {
     const data = await ApiInterface.loadData<CmsConstantsType>('cms-constants')
 
     if (!data)
       return false
 
-    CMS._constants = data
+    if (data.currencies?.length) {
+      CMS._constants.currencies = []
+      for (const currency of data.currencies)
+        CMS._constants.currencies[currency.id] = currency
+    }
+
+    if (data.platforms?.length) {
+      CMS._constants.platforms = []
+      for (const platform of data.platforms)
+        CMS._constants.platforms[platform.id] = platform
+    }
+
+    return true
   }
 
 }

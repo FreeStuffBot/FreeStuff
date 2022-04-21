@@ -1,7 +1,6 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData } from 'cordo'
-import { Emojis } from '@freestuffbot/common'
+import { Emojis, Errors } from '@freestuffbot/common'
 import Experiments from '../../../lib/experiments'
-import Errors from '../../../lib/errors'
 
 
 export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {

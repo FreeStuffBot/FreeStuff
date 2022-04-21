@@ -1,7 +1,6 @@
-import { Fragile, DataGuild, DataChannel, FlipflopCache, DataWebhook } from "@freestuffbot/common"
+import { Fragile, DataGuild, DataChannel, FlipflopCache, DataWebhook, Errors } from "@freestuffbot/common"
 import axios from "axios"
 import { config } from ".."
-import Errors from "../lib/errors"
 
 
 export default class DiscordGateway {

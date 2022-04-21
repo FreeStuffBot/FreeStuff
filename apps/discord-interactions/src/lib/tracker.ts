@@ -1,6 +1,5 @@
-import { Fragile, SanitizedGuildType, Tracking } from '@freestuffbot/common'
+import { Errors, Fragile, SanitizedGuildType, Tracking } from '@freestuffbot/common'
 import { GuildData as GuildDataPending } from 'cordo'
-import Errors from './errors'
 
 
 export type GuildDataResolveable = SanitizedGuildType | Promise<SanitizedGuildType> | GuildDataPending

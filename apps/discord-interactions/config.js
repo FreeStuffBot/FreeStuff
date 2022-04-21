@@ -17,5 +17,9 @@ module.exports = {
   },
   network: {
     discordGateway: loadArg('NETWORK_DISCORD_GATEWAY')
+  },
+  freestuffApi: {
+    baseUrl: loadArg('DISCORD_INTERACTIONS_FREESTUFF_API_URL'),
+    auth: loadArg('DISCORD_INTERACTIONS_FREESTUFF_API_KEY')
   }
 }

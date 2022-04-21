@@ -1,7 +1,5 @@
-import { CustomPermissions, DataChannel, DataWebhook, Fragile, FragileError } from "@freestuffbot/common"
-import { GenericInteraction } from "cordo"
+import { CustomPermissions, DataChannel, DataWebhook, Errors, Fragile } from "@freestuffbot/common"
 import DiscordGateway from "../services/discord-gateway"
-import Errors from "./errors"
 
 
 export default class Webhooks {
