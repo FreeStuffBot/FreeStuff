@@ -10,11 +10,10 @@ export default function (i: ReplyableComponentInteraction) {
   const val = i.data.values[0]
   if (!val) return i.ack()
 
-  if (!CMS.constants.currencies?.length)
-    return Errors.handleErrorAndCommunicate(Errors.throwStderrNotInitialized('@currency_change::CMS.constants.currencies')[0], i)
+  const [ err, currencies ] = CMS.currencies
+  if (err) return Errors.handleErrorAndCommunicate(err, i)
 
-  const id = parseInt(val, 10) || 0
-  const currency = CMS.constants.currencies?.find(c => c.id === id) || CMS.constants.currencies[0]
+  const currency = currencies.find(c => c.code === val)
   if (!currency) return i.ack()
 
   i.guildData.changeSetting('currency', currency)

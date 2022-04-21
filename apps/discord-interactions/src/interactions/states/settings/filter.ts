@@ -1,20 +1,23 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
-import { Const, Emojis, Errors, Localisation } from '@freestuffbot/common'
+import { CMS, Const, Emojis, Errors, Localisation } from '@freestuffbot/common'
 import Tracker from '../../../lib/tracker'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
 export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
-  const [ err, guildData ] = await i.guildData.fetch()
-  if (err) return Errors.handleErrorAndCommunicate(err)
+  const [ err1, guildData ] = await i.guildData.fetch()
+  if (err1) return Errors.handleErrorAndCommunicate(err1)
+
+  const [ err2, platforms ] = CMS.platforms
+  if (err2) return Errors.handleErrorAndCommunicate(err2)
 
   Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_FILTER')
 
-  const platformOptions: MessageComponentSelectOption[] = Const.platforms.map(p => ({
-    value: p.id + '',
+  const platformOptions: MessageComponentSelectOption[] = platforms.map(p => ({
+    value: p.code,
     label: p.name,
     description: p.description,
-    default: (guildData.platformsRaw & p.bit) !== 0,
+    default: (guildData.platformsRaw & (1 << p.id)) !== 0,
     emoji: (Emojis.store[p.id] || Emojis.store.other).toObject()
   }))
 

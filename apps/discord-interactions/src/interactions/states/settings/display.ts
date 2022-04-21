@@ -1,12 +1,15 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption, MessageEmbed } from 'cordo'
-import { Const, Emojis, Errors, Localisation, Themes } from '@freestuffbot/common'
+import { CMS, Const, Emojis, Errors, Localisation, Themes } from '@freestuffbot/common'
 import Tracker from '../../../lib/tracker'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
 export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
-  const [ err, guildData ] = await i.guildData.fetch()
-  if (err) return Errors.handleErrorAndCommunicate(err)
+  const [ err1, guildData ] = await i.guildData.fetch()
+  if (err1) return Errors.handleErrorAndCommunicate(err1)
+
+  const [ err2, currencies ] = CMS.currencies
+  if (err2) return Errors.handleErrorAndCommunicate(err2)
 
   Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_DISPLAY')
 
@@ -31,11 +34,11 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
       emoji: { name: Emojis.fromFlagName(l.flag).string }
     }))
 
-  const currencyOptions: MessageComponentSelectOption[] = Const.currencies
+  const currencyOptions: MessageComponentSelectOption[] = currencies
     .map(c => ({
-      value: c.id + '',
+      value: c.code,
       label: `${c.symbol} ${Localisation.text(i, c.name)}`,
-      description: c.calculated ? '=price_converted' : '=price_actual',
+      // description: c.calculated ? '=price_converted' : '=price_actual',
       default: guildData.currency.id === c.id
     }))
 

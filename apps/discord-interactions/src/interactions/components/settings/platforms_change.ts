@@ -1,5 +1,5 @@
 import { ReplyableComponentInteraction } from 'cordo'
-import { Const } from '@freestuffbot/common'
+import { CMS, Const, Errors } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
@@ -10,10 +10,11 @@ export default function (i: ReplyableComponentInteraction) {
   const vals = i.data.values
   if (!vals) return i.ack()
 
-  const platforms = Const
-    .platforms
-    .filter(p => vals.includes(p.id))
+  const [ err, platforms ] = CMS.platforms
+  if (err) return Errors.handleErrorAndCommunicate(err)
 
-  i.guildData.changeSetting('platforms', platforms)
+  const newList = platforms.filter(p => vals.includes(p.code))
+
+  i.guildData.changeSetting('platforms', newList)
   i.state('settings_filter')
 }
