@@ -64,10 +64,10 @@ export default async function (i: ReplyableComponentInteraction) {
 
   const filteredList = ProductFilter.filterList(freebies, guildData)
 
-  if (!freebies?.length) {
+  if (!filteredList?.length) {
     i.replyPrivately({
-      title: '=cmd_resend_nothing_free_1',
-      description: '=cmd_resend_nothing_free_2',
+      title: '=cmd_resend_all_filtered_out_1',
+      description: '=cmd_resend_all_filtered_out_2',
       _context: { discordInvite: Const.links.supportInvite }
     })
     return
@@ -78,7 +78,7 @@ export default async function (i: ReplyableComponentInteraction) {
     RabbitHole.publish({
       t: TaskId.DISCORD_RESEND,
       g: i.guild_id,
-      p: freebies.map(f => f.id)
+      p: filteredList.map(f => f.id)
     })
 
     if (channel.id === i.channel_id) {
