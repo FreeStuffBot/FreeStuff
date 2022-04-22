@@ -1,3 +1,4 @@
+import Const from "../data/const"
 import { SanitizedCurrencyType } from "../models/currency.model"
 import { LanguageDataType } from "../models/language.model"
 import { SanitizedPlatformType } from "../models/platform.model"
@@ -23,21 +24,29 @@ export default class CMS {
     if (CMS._languages)
       return Errors.success(CMS._languages)
 
-    return Errors.throwStderrNotInitialized('@common::cms.get.languages')
+    return Errors.throwStderrNotInitialized('common::cms.get.languages')
   }
 
   public static get currencies(): Fragile<SanitizedCurrencyType[]> {
-    if (CMS._constants.currencies)
+    if (CMS._constants.currencies?.length)
       return Errors.success(CMS._constants.currencies)
 
-    return Errors.throwStderrNotInitialized('@common::cms.get.currencies')
+    return Errors.throwStderrNotInitialized('common::cms.get.currencies')
   }
 
   public static get platforms(): Fragile<SanitizedPlatformType[]> {
-    if (CMS._constants.platforms)
+    if (CMS._constants.platforms?.length)
       return Errors.success(CMS._constants.platforms)
 
-    return Errors.throwStderrNotInitialized('@common::cms.get.platforms')
+    return Errors.throwStderrNotInitialized('common::cms.get.platforms')
+  }
+
+  //
+
+  public static getPlatformIconUrl(platformCode: string): string {
+    const plat = CMS._constants.platforms?.find(p => p.code === platformCode)
+    if (plat) return plat.assets.icon
+    return Const.platformIconFiller
   }
 
   //
@@ -46,7 +55,7 @@ export default class CMS {
     return Promise.all([
       CMS.loadLanguages(),
       CMS.loadConstants()
-    ]).then(p => p.reduce((a, b) => a && b, false))
+    ]).then(p => p.reduce((a, b) => a && b, true))
   }
 
   public static async loadLanguages(): Promise<boolean> {

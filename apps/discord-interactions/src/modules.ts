@@ -20,8 +20,12 @@ export default class Modules {
     )
   }
 
-  public static async loadCmsData(): Promise<void> {
-    CMS.loadAll()
+  public static async loadCmsData(retryDelay = 1000): Promise<void> {
+    const success = await CMS.loadAll()
+    if (success) return
+
+    Logger.warn('Loading data from CMS failed. Retrying soon.')
+    setTimeout(() => Modules.loadCmsData(retryDelay * 2), retryDelay)
   }
 
   public static initCordo() {
@@ -30,7 +34,8 @@ export default class Modules {
       contextPath: [ __dirname, 'interactions' ],
       // TODO remote config
       // botAdmins: (id: string) => RemoteConfig.botAdmins.includes(id),
-      immediateDefer: (_) => true,
+      // maybe we don't need to defer every time... hmmm...
+      // immediateDefer: (_) => true,
       texts: {
         interaction_not_owned_title: '=interaction_not_owned_1',
         interaction_not_owned_description: '=interaction_not_owned_2',

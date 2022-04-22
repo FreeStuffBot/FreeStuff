@@ -26,6 +26,14 @@ export default class Emojis {
 
   //
 
+  public static fromString(string: string): Emojis {
+    const inner = string.match(/<(.*?)>/)?.[1]
+    if (!inner) return null
+    const [ animated, name, id ] = inner.split(':')
+    if (!id) return null
+    return new Emojis(id, name, !!animated, string)
+  }
+
   public static fromFlagName(name: string): Emojis {
     const char = name
       .split(':')
@@ -57,23 +65,22 @@ export default class Emojis {
   public static readonly global = new Emojis('863734030280032256', 'global')
   public static readonly no = new Emojis('863734030457372692', 'no')
 
-  // TODO?
-  public static readonly store: Record<string, Emojis> = {
-    steam: new Emojis('820258442303242320', 'steam'),
-    epic: new Emojis('820258440512798731', 'epic'),
-    humble: new Emojis('820258441217966120', 'humble'),
-    gog: new Emojis('820258440488026113', 'gog'),
-    origin: new Emojis('820258441725476914', 'origin'),
-    uplay: new Emojis('820258441704505354', 'ubi'),
-    twitch: new Emojis('820258440882028544', 'twitch'),
-    itch: new Emojis('820258441557442600', 'itch'),
-    discord: new Emojis('820258441503309824', 'discord'),
-    apple: new Emojis('700097690653949952', 'store_apple'),
-    google: new Emojis('700097689194594305', 'store_google'),
-    switch: new Emojis('820258441225699338', 'switch'),
-    ps: new Emojis('', '❔', false, '❔'),
-    xbox: new Emojis('', '❔', false, '❔'),
-    other: new Emojis('', '❔', false, '❔')
-  }
+  // public static readonly store: Record<string, Emojis> = {
+  //   steam: new Emojis('820258442303242320', 'steam'),
+  //   epic: new Emojis('820258440512798731', 'epic'),
+  //   humble: new Emojis('820258441217966120', 'humble'),
+  //   gog: new Emojis('820258440488026113', 'gog'),
+  //   origin: new Emojis('820258441725476914', 'origin'),
+  //   uplay: new Emojis('820258441704505354', 'ubi'),
+  //   twitch: new Emojis('820258440882028544', 'twitch'),
+  //   itch: new Emojis('820258441557442600', 'itch'),
+  //   discord: new Emojis('820258441503309824', 'discord'),
+  //   apple: new Emojis('700097690653949952', 'store_apple'),
+  //   google: new Emojis('700097689194594305', 'store_google'),
+  //   switch: new Emojis('820258441225699338', 'switch'),
+  //   ps: new Emojis('', '❔', false, '❔'),
+  //   xbox: new Emojis('', '❔', false, '❔'),
+  //   other: new Emojis('', '❔', false, '❔')
+  // }
 
 }

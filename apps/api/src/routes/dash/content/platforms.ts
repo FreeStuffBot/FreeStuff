@@ -39,7 +39,8 @@ export async function postPlatform(req: Request, res: Response) {
     enabledDefault: false,
     autoPublish: false,
     assets: {
-      icon: ''
+      icon: '',
+      discordEmoji: ''
     },
     gibuRef: ''
   }

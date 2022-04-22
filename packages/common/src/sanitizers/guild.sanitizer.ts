@@ -62,6 +62,7 @@ export class GuildSanitizer {
 
     const out = [] as SanitizedPlatformType[]
     for (const platform of platforms) {
+      if (!platform) continue
       if ((raw & (1 << platform.id)) !== 0)
         out.push(platform)
     }

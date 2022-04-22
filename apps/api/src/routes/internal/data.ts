@@ -1,4 +1,4 @@
-import { CurrencyDataType, LanguageDataType, PlatformDataType } from '@freestuffbot/common'
+import { CurrencyDataType, CurrencySanitizer, LanguageDataType, PlatformDataType, PlatformSanitizer, SanitizedLanguageType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from '../../database/mongo'
 
@@ -30,7 +30,10 @@ export async function getCmsConstants(req: Request, res: Response) {
     .exec()
     .catch(() => {}) as any[]
 
-  res.status(200).json({ currencies, platforms })
+  res.status(200).json({
+    currencies: currencies.map(CurrencySanitizer.sanitize),
+    platforms: platforms.map(PlatformSanitizer.sanitize)
+  })
 }
 
 

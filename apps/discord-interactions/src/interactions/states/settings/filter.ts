@@ -13,30 +13,33 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
 
   Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_FILTER')
 
-  const platformOptions: MessageComponentSelectOption[] = platforms.map(p => ({
-    value: p.code,
-    label: p.name,
-    description: p.description,
-    default: (guildData.platformsRaw & (1 << p.id)) !== 0,
-    emoji: (Emojis.store[p.id] || Emojis.store.other).toObject()
-  }))
+  const platformOptions: MessageComponentSelectOption[] = platforms
+    .filter(p => !!p)
+    .map(p => ({
+      value: p.code,
+      label: p.name,
+      description: p.description,
+      default: (guildData.platformsRaw & (1 << p.id)) !== 0,
+      emoji: (Emojis.fromString(p.assets.discordEmoji ?? '') ?? Emojis.store.other).toObject()
+    }))
 
-  const priceOptions: MessageComponentSelectOption[] = Const.priceClasses.map(c => ({
-    value: c.id + '',
-    label: c.name,
-    description: Localisation.text(
-      i,
-      c.from === 0
-        ? '=settings_filter_price_class_desc_everything'
-        : '=settings_filter_price_class_desc_generic',
-      {
-        price: (Localisation.text(i, '=currency_sign_position') === 'before')
-          ? `${guildData.currency.symbol}${c.from}`
-          : `${c.from}${guildData.currency.symbol}`
-      }
-    ),
-    default: guildData.price.id === c.id
-  }))
+  const priceOptions: MessageComponentSelectOption[] = Const.priceClasses
+    .map(c => ({
+      value: c.id + '',
+      label: c.name,
+      description: Localisation.text(
+        i,
+        c.from === 0
+          ? '=settings_filter_price_class_desc_everything'
+          : '=settings_filter_price_class_desc_generic',
+        {
+          price: (Localisation.text(i, '=currency_sign_position') === 'before')
+            ? `${guildData.currency.symbol}${c.from}`
+            : `${c.from}${guildData.currency.symbol}`
+        }
+      ),
+      default: guildData.price.id === c.id
+    }))
 
   return {
     title: '=settings_filter_ui_1',

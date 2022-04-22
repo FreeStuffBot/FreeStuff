@@ -14,7 +14,8 @@ export class PlatformSanitizer {
       enabledDefault: data.enabledDefault,
       autoPublish: data.autoPublish,
       assets: {
-        icon: data.assets.icon
+        icon: data.assets.icon,
+        discordEmoji: data.assets.discordEmoji
       },
       gibuRef: data.gibuRef
     }

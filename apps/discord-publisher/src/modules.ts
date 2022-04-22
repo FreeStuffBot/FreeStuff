@@ -1,4 +1,4 @@
-import { ApiInterface, CMS } from '@freestuffbot/common'
+import { ApiInterface, CMS, Logger } from '@freestuffbot/common'
 import RabbitHole from '@freestuffbot/rabbit-hole'
 import { config } from '.'
 import Mongo from './database/mongo'
@@ -24,9 +24,13 @@ export default class Modules {
       config.freestuffApi.auth
     )
   }
+  
+  public static async loadCmsData(retryDelay = 1000): Promise<void> {
+    const success = await CMS.loadAll()
+    if (success) return
 
-  public static async loadCmsData(): Promise<void> {
-    CMS.loadAll()
+    Logger.warn('Loading data from CMS failed. Retrying soon.')
+    setTimeout(() => Modules.loadCmsData(retryDelay * 2), retryDelay)
   }
 
   public static async startUpstream(): Promise<void> {

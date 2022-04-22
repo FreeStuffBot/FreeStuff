@@ -13,13 +13,14 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
 
   Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_DISPLAY')
 
-  const themeOptions: MessageComponentSelectOption[] = Const.themes.map(t => ({
-    value: t.id + '',
-    label: t.name,
-    description: t.description,
-    default: guildData.theme.id === t.id,
-    emoji: { name: t.emoji }
-  }))
+  const themeOptions: MessageComponentSelectOption[] = Const.themes
+    .map(t => ({
+      value: t.id + '',
+      label: t.name,
+      description: t.description,
+      default: guildData.theme.id === t.id,
+      emoji: { name: t.emoji }
+    }))
 
   const languageOptions = Localisation
     .getAllLanguages()
@@ -35,6 +36,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
     }))
 
   const currencyOptions: MessageComponentSelectOption[] = currencies
+    .filter(c => !!c)
     .map(c => ({
       value: c.code,
       label: `${c.symbol} ${Localisation.text(i, c.name)}`,

@@ -1,5 +1,6 @@
 import { InteractionApplicationCommandCallbackData } from "cordo"
 import Const from "../data/const"
+import CMS from "../lib/cms"
 import Localisation from "../lib/localisation"
 import { SanitizedGuildType } from "../models/guild.model"
 import { SanitizedProductType } from "../models/product.model"
@@ -143,9 +144,11 @@ export default class BaseTheme {
     if (!settings.themeImages) return undefined
 
     return {
-      url: (product.flags & ProductFlag.THIRDPARTY)
-        ? Const.platformIconsExt[product.platform]
-        : Const.platformIcons[product.platform],
+      // TODO external platform icon
+      // url: (product.flags & ProductFlag.THIRDPARTY)
+      //   ? Const.platformIconsExt[product.platform]
+      //   : Const.platformIcons[product.platform],
+      url: CMS.getPlatformIconUrl(product.platform),
       width: 128,
       height: 128
     }

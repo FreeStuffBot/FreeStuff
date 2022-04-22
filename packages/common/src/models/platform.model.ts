@@ -13,6 +13,7 @@ import { Schema, Document as MongooseDocument } from 'mongoose'
 
 type PlatformAssets = {
   icon: string
+  discordEmoji: string
 }
 
 
@@ -59,7 +60,8 @@ export const PlatformSchema = new Schema({
   enabledDefault: Boolean,
   autoPublish: Boolean,
   assets: {
-    icon: String
+    icon: String,
+    discordEmoji: String
   },
   gibuRef: String
 }, { collection: 'platforms' })
