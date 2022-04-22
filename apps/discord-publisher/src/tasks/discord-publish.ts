@@ -2,7 +2,7 @@ import { Task, TaskId } from "@freestuffbot/rabbit-hole"
 import { GuildDataType, GuildSanitizer, Localisation, ProductFilter, SanitizedProductType, Themes } from "@freestuffbot/common"
 import Mongo from "../database/mongo"
 import Upstream from "../lib/upstream"
-import ApiGateway from "../lib/api-gateway"
+import FreestuffGateway from "../lib/freestuff-gateway"
 
 
 export default async function handleDiscordPublish(task: Task<TaskId.DISCORD_PUBLISH>): Promise<boolean> {
@@ -23,7 +23,8 @@ export default async function handleDiscordPublish(task: Task<TaskId.DISCORD_PUB
 
   if (!guilds?.length) return true
 
-  const products = await ApiGateway.getProductsForAnnouncement(announcementId)
+  const products = await FreestuffGateway.getProductsForAnnouncement(announcementId)
+
   if (!products) return false
 
   for (const guild of guilds)
@@ -36,7 +37,6 @@ function sendToGuild(guild: GuildDataType, products: SanitizedProductType[]) {
   const sanitizedGuild = GuildSanitizer.sanitize(guild)
 
   const filteredProducts = ProductFilter.filterList(products, sanitizedGuild)
-
   if (!filteredProducts.length) return
 
   const theme = Themes.build(
@@ -45,12 +45,10 @@ function sendToGuild(guild: GuildDataType, products: SanitizedProductType[]) {
     { test: false, donationNotice: false /** TODO */ }
   )
 
-  const localized = Localisation.translateObject(theme, sanitizedGuild, {}, 6)
-
   Upstream.queueRequest({
     method: 'POST',
     url: `https://discord.com/api/webhooks/${sanitizedGuild.webhook}`,
-    data: localized
+    data: theme
   })
 
   return true

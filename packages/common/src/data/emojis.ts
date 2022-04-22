@@ -65,6 +65,8 @@ export default class Emojis {
   public static readonly global = new Emojis('863734030280032256', 'global')
   public static readonly no = new Emojis('863734030457372692', 'no')
 
+  public static readonly unknownPlatform = new Emojis('', '❔', false, '❔')
+
   // public static readonly store: Record<string, Emojis> = {
   //   steam: new Emojis('820258442303242320', 'steam'),
   //   epic: new Emojis('820258440512798731', 'epic'),

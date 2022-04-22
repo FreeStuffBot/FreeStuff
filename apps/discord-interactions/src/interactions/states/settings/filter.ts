@@ -20,7 +20,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
       label: p.name,
       description: p.description,
       default: (guildData.platformsRaw & (1 << p.id)) !== 0,
-      emoji: (Emojis.fromString(p.assets.discordEmoji ?? '') ?? Emojis.store.other).toObject()
+      emoji: CMS.getPlatformDiscordEmoji(p.code).toObject()
     }))
 
   const priceOptions: MessageComponentSelectOption[] = Const.priceClasses

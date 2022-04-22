@@ -26,7 +26,7 @@ export async function postAnnouncement(req: Request, res: Response) {
   announcement.responsible = LocalConst.PSEUDO_USER_SYSTEM_ID
   announcement.published = Date.now()
   announcement.status = 'published'
-  announcement.items.push(...items)
+  announcement.products.push(...items)
 
   const dbobj: AnnouncementType = new Mongo.Announcement(announcement)
   if (!dbobj) return ReqError.badGateway(res)

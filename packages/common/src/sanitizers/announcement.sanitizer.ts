@@ -10,7 +10,7 @@ export class AnnouncementSanitizer {
       published: data.published,
       status: data.status,
       responsible: data.responsible,
-      items: data.items
+      products: data.products
     }
   }
 

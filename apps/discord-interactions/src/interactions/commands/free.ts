@@ -1,20 +1,27 @@
-import { Const, Emojis, Errors, Localisation } from '@freestuffbot/common'
+import { CMS, Const, Emojis, Errors, Localisation } from '@freestuffbot/common'
 import { ReplyableCommandInteraction } from 'cordo'
 import Tracker from '../../lib/tracker'
-import FreestuffData from '../../services/freestuff-data'
+import FreestuffGateway from '../../services/freestuff-gateway'
 
 
 export default function (i: ReplyableCommandInteraction) {
   const freeLonger: string[] = []
   const freeToday: string[] = []
 
-  const [ err, games ] = FreestuffData.getCurrentFreebies()
+  const [ err, products ] = FreestuffGateway.getChannel('keep')
   if (err) return void Errors.handleErrorAndCommunicate(err, i)
 
-  for (const game of games) {
-    // g happens to be undefined here at times, investigate
-    const str = `${Emojis.store[game.platform] || ':gray_question:'} **[${game.title}](${game.urls.default})**\n${Emojis.bigSpace.string} ~~${Localisation.renderPriceTag(i, game)}~~ • ${Localisation.text(i, '=cmd_free_until')} ${game.until ? `<t:${game.until / 1000}:${('_today' in game) ? 't' : 'd'}>` : 'unknown'}\n`
-    if ('_today' in game) freeToday.push(str)
+  for (const product of products) {
+    const platformEmoji = CMS.getPlatformDiscordEmoji(product.platform).toString()
+    const productLink = `**[${product.title}](${product.urls.default})**`
+    const priceTag = `~~${Localisation.renderPriceTag(i, product)}~~ • ${Localisation.text(i, '=cmd_free_until')}`
+    const until = product.until
+      ? `<t:${product.until / 1000}:${('_today' in product) ? 't' : 'd'}>`
+      : 'unknown'
+
+    const str = `${platformEmoji} ${productLink}\n${Emojis.bigSpace.string} ${priceTag} ${until}\n`
+
+    if ('_today' in product) freeToday.push(str)
     else freeLonger.push(str)
   }
 

@@ -1,4 +1,5 @@
 import Const from "../data/const"
+import Emojis from "../data/emojis"
 import { SanitizedCurrencyType } from "../models/currency.model"
 import { LanguageDataType } from "../models/language.model"
 import { SanitizedPlatformType } from "../models/platform.model"
@@ -44,9 +45,15 @@ export default class CMS {
   //
 
   public static getPlatformIconUrl(platformCode: string): string {
-    const plat = CMS._constants.platforms?.find(p => p.code === platformCode)
+    const plat = CMS._constants.platforms?.find(p => p && p?.code === platformCode)
     if (plat) return plat.assets.icon
     return Const.platformIconFiller
+  }
+
+  public static getPlatformDiscordEmoji(platformCode: string): Emojis {
+    const plat = CMS._constants.platforms?.find(p => p && p.code === platformCode)
+    if (plat) return Emojis.fromString(plat.assets.discordEmoji)
+    return Emojis.unknownPlatform
   }
 
   //

@@ -1,8 +1,8 @@
 import { Task, TaskId } from "@freestuffbot/rabbit-hole"
 import Mongo from "../database/mongo"
-import { GuildDataType, GuildSanitizer, Localisation, ProductFilter, Themes } from "@freestuffbot/common"
+import { GuildDataType, GuildSanitizer, ProductFilter, Themes } from "@freestuffbot/common"
 import Upstream from "../lib/upstream"
-import ApiGateway from "../lib/api-gateway"
+import FreestuffGateway from "../lib/freestuff-gateway"
 
 
 export default async function handleDiscordResend(task: Task<TaskId.DISCORD_RESEND>): Promise<boolean> {
@@ -14,25 +14,25 @@ export default async function handleDiscordResend(task: Task<TaskId.DISCORD_RESE
 
   if (!guild) return true
 
-  // task.p
-  const products = await ApiGateway.getProductsForAnnouncement(0) // TODO
+  const productIds = task.p
+  const products = await FreestuffGateway.getProductsByIds(productIds)
   if (!products) return false
 
   const sanitizedGuild = GuildSanitizer.sanitize(guild)
-  const filteredProducts = ProductFilter.filterList(products, sanitizedGuild)
+  // // we do not filter the products here as this is the job of whomever put the task in the queue
+  // // this way we can use this event to force announce a certain product on a server with admin tools
+  // const filteredProducts = ProductFilter.filterList(products, sanitizedGuild)
 
   const theme = Themes.build(
-    filteredProducts,
+    products,
     sanitizedGuild,
     { test: true, donationNotice: false }
   )
 
-  const localized = Localisation.translateObject(theme, sanitizedGuild, {}, 6)
-
   Upstream.queueRequest({
     method: 'POST',
     url: `https://discord.com/api/webhooks/${sanitizedGuild.webhook}`,
-    data: localized
+    data: theme
   })
 
   return true

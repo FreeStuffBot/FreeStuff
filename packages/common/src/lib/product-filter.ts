@@ -16,7 +16,8 @@ export default class ProductFilter {
   }
 
   public static isPassing(product: SanitizedProductType, config: SanitizedGuildType): boolean {
-    return ProductFilter.passesTrashFilter(product, config)
+    return !!product
+      && ProductFilter.passesTrashFilter(product, config)
       && ProductFilter.passesPriceFilter(product, config)
       && ProductFilter.passesPlatformFilter(product, config)
   }

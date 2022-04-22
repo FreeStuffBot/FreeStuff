@@ -1,29 +1,28 @@
 import { ApiInterface, SanitizedProductType } from "@freestuffbot/common"
 
 
-export default class ApiGateway {
+export default class FreestuffGateway {
 
   private static productsCache: Map<string | number, SanitizedProductType> = new Map()
 
-  public static async getProductsById(ids: string[] | number[]): Promise<SanitizedProductType[]> {
+  public static async getProductsByIds(ids: string[] | number[]): Promise<SanitizedProductType[]> {
     const out = await Promise.all(ids
-      .map(async id => await ApiGateway.getProductById(id))
+      .map(async id => await FreestuffGateway.getProductById(id))
       .filter(p => !!p)
     )
     return out
   }
 
   public static async getProductById(id: string | number): Promise<SanitizedProductType> {
-    if (ApiGateway.productsCache.has(id))
-      return ApiGateway.productsCache.get(id)
+    if (FreestuffGateway.productsCache.has(id))
+      return FreestuffGateway.productsCache.get(id)
 
-    // const { data, status } = await ApiInterface.makeRequest('GET', 'v2', `/announcements/${id}?resolve=true`)
+    const { data, status } = await ApiInterface.makeRequest('GET', 'v2', `/products/${id}`)
 
-    // if (status !== 200) return null
+    if (status !== 200) return null
 
-    // const out = Object.values(data.resolved) as SanitizedProductType[]
-    ApiGateway.productsCache.set(id, out)
-    return out
+    FreestuffGateway.productsCache.set(id, data)
+    return data
   }
 
   //
@@ -31,24 +30,25 @@ export default class ApiGateway {
   private static announcementsCache: Map<string | number, SanitizedProductType[]> = new Map()
 
   public static async getProductsForAnnouncement(id: string | number): Promise<SanitizedProductType[]> {
-    if (ApiGateway.announcementsCache.has(id))
-      return ApiGateway.announcementsCache.get(id)
+    if (FreestuffGateway.announcementsCache.has(id))
+      return FreestuffGateway.announcementsCache.get(id)
 
     const { data, status } = await ApiInterface.makeRequest('GET', 'v2', `/announcements/${id}?resolve=true`)
 
     if (status !== 200) return null
 
     const out = Object.values(data.resolved) as SanitizedProductType[]
-    ApiGateway.announcementsCache.set(id, out)
+    FreestuffGateway.announcementsCache.set(id, out)
     for (const product of out)
-      ApiGateway.productsCache.set(product.id, product)
+      FreestuffGateway.productsCache.set(product.id, product)
     return out
   }
 
   //
 
   public static clearCaches() {
-    ApiGateway.announcementsCache.clear()
+    FreestuffGateway.productsCache.clear()
+    FreestuffGateway.announcementsCache.clear()
   }
 
 }

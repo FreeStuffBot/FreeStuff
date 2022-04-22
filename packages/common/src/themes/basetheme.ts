@@ -4,7 +4,6 @@ import CMS from "../lib/cms"
 import Localisation from "../lib/localisation"
 import { SanitizedGuildType } from "../models/guild.model"
 import { SanitizedProductType } from "../models/product.model"
-import { ProductFlag } from "../types/other/product-flag"
 import { roleIdToMention } from "./themeutils"
 
 
@@ -27,7 +26,7 @@ export default class BaseTheme {
 
   public static build(product: SanitizedProductType[], guild: SanitizedGuildType, settings: themeSettings): InteractionApplicationCommandCallbackData {
     const content = roleIdToMention(guild.role)
-    const embeds = product.map(game => this.buildEmbed(game, guild, settings))
+    const embeds = product.map(p => this.buildEmbed(p, guild, settings))
 
     if (settings.donationNotice) {
       embeds.push({

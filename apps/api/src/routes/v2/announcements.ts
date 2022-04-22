@@ -1,7 +1,5 @@
-import { AnnouncementDataType, AnnouncementSanitizer, AnnouncementType, createNewAnnouncement, ProductDataType, ProductSanitizer, SanitizedAnnouncementType, SanitizedProductType } from '@freestuffbot/common'
-import RabbitHole, { TaskId } from '@freestuffbot/rabbit-hole'
+import { AnnouncementDataType, AnnouncementSanitizer, ProductDataType, ProductSanitizer, SanitizedAnnouncementType, SanitizedProductType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
-import Mongo from '../../database/mongo'
 import ReqError from '../../lib/reqerror'
 import Resolver from '../../lib/resolver'
 import Utils from '../../lib/utils'
@@ -21,11 +19,7 @@ export async function getAnnouncement(req: Request, res: Response) {
 
   const resolveItems = req.query.resolve && Utils.isStringTruth(req.query.resolve + '')
 
-  const data: AnnouncementDataType = await Mongo.Announcement
-    .findById(numId)
-    .lean(true)
-    .exec()
-    .catch(() => {})
+  const data: AnnouncementDataType = await Resolver.resolveAnnouncement(numId)
   if (!data) return ReqError.notFound(res, `No announcement by id ${id} found!`)
 
   const out: Partial<OutType> = AnnouncementSanitizer.sanitize(data)
@@ -33,7 +27,7 @@ export async function getAnnouncement(req: Request, res: Response) {
 
   if (resolveItems) {  
     out.resolved = {}
-    const resolving = out.items.map(async id => (
+    const resolving = out.products.map(async id => (
       [ id, await Resolver.resolveProduct(id) ] as
       [ number, ProductDataType ]
     ))

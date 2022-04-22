@@ -11,7 +11,7 @@ export default class ThemeEight implements ThemeBuilderClass {
 
     const content = links.length > 1
       ? `${mention}\n${links.join('\n')}`
-      : mention + links
+      : mention + ' ' + links
 
     return { content }
   }

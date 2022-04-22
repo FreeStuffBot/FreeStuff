@@ -21,7 +21,7 @@ export default class Upstream {
     // TODO handle status
     // • log it to prometheus
     // • handle rate limits properly
-    console.log(res.status)
+    console.log('http ', res.status)
   }
 
   public static startBurstInterval() {

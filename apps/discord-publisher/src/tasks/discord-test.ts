@@ -21,12 +21,10 @@ export default async function handleDiscordTest(task: Task<TaskId.DISCORD_TEST>)
     { test: true, donationNotice: false }
   )
 
-  const localized = Localisation.translateObject(theme, sanitizedGuild, {}, 6)
-
   Upstream.queueRequest({
     method: 'POST',
     url: `https://discord.com/api/webhooks/${sanitizedGuild.webhook}`,
-    data: localized
+    data: theme
   })
 
   return true

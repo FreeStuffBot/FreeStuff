@@ -136,7 +136,9 @@ export async function patchProduct(req: Request, res: Response) {
 
   if (body.data)
     product.data = body.data
-  
+
+  product.data.staffApproved = (body.status === 'approved')
+
   // Notifier.newEvent('game_save_draft', { user: res.locals.user.data.id, game: req.body._id })
   await product.save().catch(() => {})
   res.status(200).json({})

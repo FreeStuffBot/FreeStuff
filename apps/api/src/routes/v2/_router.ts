@@ -7,6 +7,8 @@ import pagination from '../../middleware/pagination'
 
 import { getAnnouncement } from './announcements'
 import { apiGateway } from '../../middleware/api-gateway'
+import { getProduct } from './products'
+import { getChannel, getChannels } from './channels'
 
 
 export default class V2Router {
@@ -33,8 +35,15 @@ export default class V2Router {
     // ping
     r.all(   '/ping', limit(10, 60), () => {})
 
+    // products
+    r.get(   '/products/:product', limit(50, 5), getProduct)
+
     // announcements
     r.get(   '/announcements/:announcement', limit(5, 1), getAnnouncement)
+
+    // channels
+    r.get(   '/channels',          limit(5, 1), getChannels)
+    r.get(   '/channels/:channel', limit(50, 5), getChannel)
 
 
     /* Default 404 handler */

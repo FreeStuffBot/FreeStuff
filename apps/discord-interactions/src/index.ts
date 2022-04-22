@@ -13,7 +13,8 @@ async function run() {
   await Modules.connectDatabases()
   await Modules.initRabbit()
   Modules.initApiInterface()
-  Modules.loadCmsData()
+  await Modules.loadCmsData()
+  Modules.loadProductChannnels()
   Modules.initCordo()
   Modules.startServer()
 }

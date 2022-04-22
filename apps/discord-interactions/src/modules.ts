@@ -1,10 +1,11 @@
-import { ApiInterface, CMS, Localisation, Logger } from "@freestuffbot/common"
+import { ApiInterface, CMS, Localisation, Logger, ProductDiscountTypeArray, ProductDiscountTypeType } from "@freestuffbot/common"
 import RabbitHole from '@freestuffbot/rabbit-hole'
 import Cordo, { GuildData } from "cordo"
 import { config } from "."
 import * as express from 'express'
 import DatabaseGateway from "./services/database-gateway"
 import Mongo from "./services/mongo"
+import FreestuffGateway from "./services/freestuff-gateway"
 
 
 export default class Modules {
@@ -22,10 +23,19 @@ export default class Modules {
 
   public static async loadCmsData(retryDelay = 1000): Promise<void> {
     const success = await CMS.loadAll()
-    if (success) return
+    if (success) {
+      Logger.process('CMS data loaded.')
+      return
+    }
 
     Logger.warn('Loading data from CMS failed. Retrying soon.')
-    setTimeout(() => Modules.loadCmsData(retryDelay * 2), retryDelay)
+    await new Promise(res => setTimeout(res, retryDelay))
+    await Modules.loadCmsData(retryDelay * 2)
+  }
+
+  public static async loadProductChannnels() {
+    for (const channel of ProductDiscountTypeArray)
+      FreestuffGateway.updateChannel(channel as ProductDiscountTypeType)
   }
 
   public static initCordo() {

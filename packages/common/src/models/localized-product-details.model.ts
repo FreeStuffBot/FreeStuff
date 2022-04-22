@@ -22,8 +22,7 @@ export type LocalizedProductDetailsDataType = {
   free: string
   header: string
   footer: string
-  orgPriceEur: string
-  orgPriceUsd: string
+  orgPrice: string
   until: string
   flags: string[]
 }

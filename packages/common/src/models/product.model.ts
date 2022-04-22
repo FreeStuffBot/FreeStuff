@@ -1,7 +1,7 @@
 /* eslint-disable spaced-comment */
 import { Schema, Document as MongooseDocument } from 'mongoose'
 import { ProductFlags } from '../types/other/product-flag'
-import { LocalizedProductDetailsSchema, SanitizedLocalizedProductDetails } from './localized-product-details.model'
+import { SanitizedLocalizedProductDetails } from './localized-product-details.model'
 
 
 // ===== ARRAY CONSTANTS ===== //
@@ -181,8 +181,7 @@ const ProductDataSchema = new Schema({
   flags: Number,
   notice: String,
   platformMeta: ProductPlatformMetaSchema,
-  staffApproved: Boolean,
-  localized: [ LocalizedProductDetailsSchema ]
+  staffApproved: Boolean
 })
 
 const ProductAnalyticsSchema = new Schema({

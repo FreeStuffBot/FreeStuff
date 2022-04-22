@@ -24,7 +24,7 @@ export type AnnouncementDataType = {
   /** User id of the moderator, responsible for checking the info and publishing the announcement */
   responsible: string
   /** the products in this announcement */
-  items: number[]
+  products: number[]
 }
 
 /** The user mongoose object, muteable and saveable */
@@ -36,7 +36,7 @@ export type SanitizedAnnouncementType = {
   published: number
   status: AnnouncementApprovalStatusType
   responsible: string
-  items: number[]
+  products: number[]
 }
 
 
@@ -50,7 +50,7 @@ export const AnnouncementSchema = new Schema({
     enum: AnnouncementApprovalStatusArray
   },
   responsible: String,
-  items: [ Number ]
+  products: [ Number ]
 }, { collection: 'announcements' })
 
 
@@ -62,6 +62,6 @@ export function createNewAnnouncement(): AnnouncementDataType {
     published: 0,
     status: 'pending',
     responsible: '',
-    items: []
+    products: []
   }
 }

@@ -1,10 +1,10 @@
 import { ReplyableComponentInteraction } from 'cordo'
 import RabbitHole, { TaskId } from '@freestuffbot/rabbit-hole'
-import { Const, CustomPermissions, DataChannel, Errors, SanitizedGuildType } from '@freestuffbot/common'
+import { Const, CustomPermissions, DataChannel, Errors, ProductFilter, SanitizedGuildType } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import Tracker from '../../../lib/tracker'
 import DiscordGateway from '../../../services/discord-gateway'
-import FreestuffData from '../../../services/freestuff-data'
+import FreestuffGateway from '../../../services/freestuff-gateway'
 
 
 const testCooldown = [ ]
@@ -50,8 +50,19 @@ export default async function (i: ReplyableComponentInteraction) {
   }
 
   /* Load and handle list */
-  const [ err, freebies ] = FreestuffData.getCurrentFreebies()
-  if (err) return void Errors.handleErrorAndCommunicate(err, i)
+  const [ err, freebies ] = FreestuffGateway.getChannel('keep')
+  if (err) return Errors.handleErrorAndCommunicate(err, i)
+
+  if (!freebies?.length) {
+    i.replyPrivately({
+      title: '=cmd_resend_nothing_free_1',
+      description: '=cmd_resend_nothing_free_2',
+      _context: { discordInvite: Const.links.supportInvite }
+    })
+    return
+  }
+
+  const filteredList = ProductFilter.filterList(freebies, guildData)
 
   if (!freebies?.length) {
     i.replyPrivately({
