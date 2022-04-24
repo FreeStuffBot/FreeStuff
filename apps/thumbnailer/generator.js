@@ -42,7 +42,7 @@ exports.generateImage = async (body) => {
     props.jobs.push(drawWatermark)
   }
 
-  const imgbuffer = await loadImage(data.thumbnail.org)
+  const imgbuffer = await loadImage(data.thumbnail)
   const imgscale = 460 / imgbuffer.width
   const canvas = new Canvas(~~(imgbuffer.width * imgscale) + props.additionalWidth, ~~(imgbuffer.height * imgscale) + props.additionalHeight)
   const ctx = canvas.getContext('2d')
@@ -51,7 +51,7 @@ exports.generateImage = async (body) => {
   props.canvas = canvas
 
   try {
-    props.palette = await ColorThief.getPalette(data.thumbnail.org)
+    props.palette = await ColorThief.getPalette(data.thumbnail)
   } catch (ex) { }
 
   ctx.save();
@@ -60,7 +60,8 @@ exports.generateImage = async (body) => {
   ctx.drawImage(imgbuffer, ...imgdimensions)
   ctx.restore();
 
-  await Promise.all(props.jobs.map(j => j(ctx, props, data, options)))
+  for (const job of props.jobs)
+    await job(ctx, props, data, options)
 
   const buffer = await canvas.toBuffer('image/png', { compressionLevel: 3 })
   return Buffer.from(buffer, 'binary').toString('base64')

@@ -46,3 +46,25 @@ GET https://thumbnailer.mydomain.com/eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJnYW
 Original Thumbnail: | Generated Thumbnail: (http response)
 ---|---
 ![](https://media.discordapp.net/attachments/543150321686413313/814913447627456532/header.jpg)|![](https://images-ext-2.discordapp.net/external/s19yWa-LYm-Ou00HRmiGY3-3ke5-us_06Vc6awU0-PM/https/media.discordapp.net/attachments/543150321686413313/814906979595845672/response.png)
+
+
+
+
+
+
+
+## new docs
+
+payload:
+```jsonc
+{
+  "data": {
+    "thumbnail": "https://image.url/abc.png",
+    "tags": [ "gaming", "pogging" ]
+  },
+  "options": {
+    "tags": true,
+    "watermark": true // or "tl" for top left, tr, bl, br
+  }
+}
+```

@@ -97,7 +97,7 @@ export default class Logger {
    * @param text The message to log.
    */
   public static excessive(..._text: string[]) {
-    // TODO
+    // TODO excessive logging, remote config
     // if (!RemoteConfig.excessiveLogging) return
     // const out = text.join(chalk.gray(', '))
     // console.info(Logger.getTimestamp() + chalk`{magenta #} {white ${out}}`)

@@ -1,7 +1,7 @@
 import axios from "axios"
 import { config } from ".."
 
-// TODO USE THIS
+// TODO use this alternative currency conversion api
 // https://github.com/fawazahmed0/currency-api#readme
 
 

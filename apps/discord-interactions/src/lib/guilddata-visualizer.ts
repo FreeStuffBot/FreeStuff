@@ -9,7 +9,7 @@ export default function guildDataToViewString(g: SanitizedGuildType, maxLength =
     delete gd._changes
     if (includeMetainfo) {
       gd.host = hostname()
-      // TODO
+      // TODO include hostname? maybe this todo is dismissable
     }
 
     gd.currency = gd.currency.name

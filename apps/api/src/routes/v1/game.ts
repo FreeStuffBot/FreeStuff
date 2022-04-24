@@ -40,7 +40,7 @@ function getInfo(field: string) {
           if (!out[id]) continue
 
           if (typeof out[id].info.thumbnail === 'string')
-            out[id].info.thumbnail = await Thumbnailer.generateObject({ thumbnail: { org: out[id].info.thumbnail } }, true)
+            out[id].info.thumbnail = await Thumbnailer.generateObject({ thumbnail: out[id].info.thumbnail }, true)
 
           generateUrls(out[id].info)
 

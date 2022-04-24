@@ -51,7 +51,6 @@ export default async function (i: ReplyableComponentInteraction) {
     }
 
     if (webhookError.status === Errors.HTTP_STATUS_CONFLICT) {
-      // TODO add settings_channel_error_too_many_webhooks to lang
       i.state('settings_channel', {
         conflict: Localisation.text(i, 'settings_channel_error_too_many_webhooks', { channel: `<#${val}>` })
       })

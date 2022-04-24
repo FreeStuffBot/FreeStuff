@@ -5,13 +5,12 @@ import { config } from '..'
 
 export type ThumbnailerProperties = {
   data: {
+    thumbnail: string
     tags?: string[]
-    thumbnail: {
-      org: string
-    }
   }
   options?: {
     tags?: boolean
+    watermark?: boolean | 'tl' | 'tr' | 'bl' | 'br'
     full?: boolean
   }
 }
@@ -37,11 +36,7 @@ export default class Thumbnailer {
       const { data, status } = await axios.post(url, props, { responseType: 'arraybuffer', validateStatus: null })
       if (status !== 200)
         return ''
-  
-      // const cdnUrl = await uploadImageToCdn(Buffer.from(data, 'binary'), 'freestuff-thumbnail.png')
-      // this.cache.set(hash, cdnUrl)
-      // return cdnUrl
-      return '' // TODO
+      return data.url
     } catch (ex) {
       return ''
     }
@@ -49,10 +44,10 @@ export default class Thumbnailer {
 
   public static async generateObject(data: ThumbnailerProperties['data'], shellOnly: boolean): Promise<SanitizedProductType['thumbnails']> {
     if (shellOnly) return {
-      org: data.thumbnail.org,
-      blank: data.thumbnail.org,
-      full: data.thumbnail.org,
-      tags: data.thumbnail.org
+      org: data.thumbnail,
+      blank: data.thumbnail,
+      full: data.thumbnail,
+      tags: data.thumbnail
     }
 
     const images = await Promise.all([
@@ -62,10 +57,10 @@ export default class Thumbnailer {
     ])
 
     return {
-      org: data.thumbnail.org,
-      blank: images[0] || data.thumbnail.org,
-      full: images[1] || data.thumbnail.org,
-      tags: images[2] || data.thumbnail.org
+      org: data.thumbnail,
+      blank: images[0] || data.thumbnail,
+      full: images[1] || data.thumbnail,
+      tags: images[2] || data.thumbnail
     }
   }
 
