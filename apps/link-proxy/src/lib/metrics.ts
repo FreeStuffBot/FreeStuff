@@ -32,7 +32,7 @@ export default class Metrics {
     // TODO LINK PROXY SERVICE ADD DELAY BETWEEN GOOGLE ANALYTICS REQUESTS (POTENTIAL 5/s RATELIMIT)
     const betterProds = await Promise.all(prods.map(Metrics.fetchAndApplyAnalytics))
     betterProds
-      .filter(prod => prod.data)
+      .filter(prod => prod?.data)
       .forEach(prod => newCache.add(prod))
     Metrics.productCache = newCache
   }
@@ -66,6 +66,7 @@ export default class Metrics {
     if (!list) return null
 
     return list
+      .filter(p => !!p)
       .map(product => ({
         id: product._id,
         url: product.data?.urls?.default,

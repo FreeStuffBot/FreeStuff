@@ -1,6 +1,5 @@
 import { SanitizedProductType } from '@freestuffbot/common'
 import axios from 'axios'
-import * as crypto from 'crypto'
 import { config } from '..'
 
 
@@ -19,17 +18,20 @@ export type ThumbnailerProperties = {
 export default class Thumbnailer {
 
   public static async generateUrl(props: ThumbnailerProperties): Promise<string> {
-    try {
-      const url = config.network.thumbnailer + '/render'
-      const { data, status } = await axios.post(url, props, { validateStatus: null })
-      console.log(data, status)
-      if (status !== 200)
-        return null
-      return data.url
-    } catch (ex) {
-      console.error(ex)
+    const { data, status } = await axios
+      .post('/render', props, {
+        validateStatus: null,
+        baseURL: config.network.thumbnailer
+      })
+      .catch(() => ({
+        data: null,
+        status: 999
+      }))
+
+    if (status !== 200)
       return null
-    }
+
+    return data.url
   }
 
   public static async generateObject(data: ThumbnailerProperties['data'], shellOnly: boolean): Promise<SanitizedProductType['thumbnails']> {

@@ -3,6 +3,7 @@ import { config } from "."
 import * as express from 'express'
 import { getAnalytics } from "./router/analytics"
 import { getMetrics } from "./router/metrics"
+import { postCreateGame } from "./router/create"
 import Mongo from "./database/mongo"
 import Metrics from "./lib/metrics"
 
@@ -23,6 +24,7 @@ export default class Modules {
 
     app.get('/analytics', getAnalytics)
     app.get('/metrics', getMetrics)
+    app.post('/create-game', express.json(), postCreateGame)
 
     app.all('*', (_, res) => res.status(400).end())
 

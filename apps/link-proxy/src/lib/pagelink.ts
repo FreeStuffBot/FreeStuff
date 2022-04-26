@@ -76,11 +76,11 @@ export default class FirebasePagelink {
     return data.shortLink + (decorator ? `#${decorator}` : '')
   }
 
-  public static createLinkForGame(game: SanitizedProductType): Promise<string> {
-    return this.createLink('redirect.freestuffbot.xyz/game', game.urls.org, StringUtils.sanitizeGameName(game.title), {
-      socialTitle: `Get ${game.title} for 100% off!`,
-      socialDescription: game.description,
-      socialImageLink: game.thumbnails.org
+  public static createLinkForGame(product: SanitizedProductType): Promise<string> {
+    return this.createLink('redirect.freestuffbot.xyz/game', product.urls.org, StringUtils.sanitizeProductName(product.title), {
+      socialTitle: `Get ${product.title} for 100% off!`,
+      socialDescription: product.description,
+      socialImageLink: product.thumbnails.org
     })
   }
 

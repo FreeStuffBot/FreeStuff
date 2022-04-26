@@ -31,6 +31,7 @@ module.exports = {
     }
   },
   network: {
-    thumbnailer: loadArg('NETWORK_THUMBNAILER')
+    thumbnailer: loadArg('NETWORK_THUMBNAILER'),
+    linkProxy: loadArg('NETWORK_LINK_PROXY')
   }
 }

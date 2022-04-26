@@ -1,6 +1,7 @@
 import { CurrencyDataType, ProductType } from "@freestuffbot/common"
 import Mongo from "../database/mongo"
 import CurrConv from "../services/currconv"
+import LinkProxy from "../services/link-proxy"
 import Thumbnailer from "../services/thumbnailer"
 
 
@@ -16,6 +17,11 @@ export default class ProductApproval {
     }, false)
 
     // links
+    const leanProduct = product.toObject({ aliases: false, depopulate: true, flattenMaps: true, getters: false, minimize: true, useProjection: false, versionKey: false, virtuals: false })
+    const proxyLink = await LinkProxy.createGameLink(leanProduct)
+    product.data.urls.browser = proxyLink
+    product.data.urls.default = proxyLink
+    // TODO product.data.urls.client = TODO
 
     // prices
     const currencies = await Mongo.Currency

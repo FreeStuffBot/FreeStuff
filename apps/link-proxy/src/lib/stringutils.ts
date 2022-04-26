@@ -17,7 +17,7 @@ export default class StringUtils {
 
   //
 
-  public static sanitizeGameName(name: string) {
+  public static sanitizeProductName(name: string) {
     return name
       .split(' ').join('-')
       .split('').filter(c => this.BASE64.includes(c)).join('')

@@ -32,5 +32,6 @@ export type configjs = {
   }
   network: {
     thumbnailer: string
+    linkProxy: string
   }
 }
