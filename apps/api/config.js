@@ -10,7 +10,8 @@ module.exports = {
   dashboardOauthCallbackUrl: 'http://localhost:5522/oauth/callback',
   behavior: {
     desiredGuildCountPerBucket: 250,
-    resolvingCacheMaxAge: 1000 * 60 * 5
+    resolvingCacheMaxAge: 1000 * 60 * 5,
+    currconvUpdateInterval: 1000 * 60 * 60 * 24
   },
   keys: {
     privateKeyUri: './vault/serverauth-private.key'
@@ -22,9 +23,6 @@ module.exports = {
     }
   },
   thirdparty: {
-    currconv: {
-      key: loadArg('API_THIRDPARTY_CURRCONV_KEY')
-    },
     firebase: {
       key: loadArg('API_THIRDPARTY_FIREBASE_KEY')
     },

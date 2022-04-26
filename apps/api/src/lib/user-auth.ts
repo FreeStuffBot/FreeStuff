@@ -8,7 +8,7 @@ import { Request, Response } from 'express'
 import Mongo from '../database/mongo'
 import IPApi from './ipapi'
 import JWT from './jwt'
-import { OauthDiscordUserObject } from './oauthstrat'
+import { OauthDiscordUserObject } from './oauth-strat'
 
 
 export type UserAuthPayload = {

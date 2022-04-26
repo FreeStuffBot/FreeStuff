@@ -3,7 +3,7 @@ import { apiGateway } from '../../middleware/api-gateway'
 import { ping as Ping } from './ping'
 import { router as GamesEndpoint } from './games'
 import { router as GameEndpoint } from './game'
-import ReqError from '../../lib/reqerror'
+import ReqError from '../../lib/req-error'
 import { rateLimiter } from '../../middleware/rate-limits'
 
 

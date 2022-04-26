@@ -1,7 +1,7 @@
 import { MiscDataType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from '../../../database/mongo'
-import ReqError from '../../../lib/reqerror'
+import ReqError from '../../../lib/req-error'
 
 
 export async function getConfig(req: Request, res: Response) {

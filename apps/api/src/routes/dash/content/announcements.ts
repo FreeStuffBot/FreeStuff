@@ -1,10 +1,10 @@
-import { AnnouncementType, createNewAnnouncement } from '@freestuffbot/common'
+import { AnnouncementType, createNewAnnouncement, ProductType } from '@freestuffbot/common'
 import RabbitHole, { TaskId } from '@freestuffbot/rabbit-hole'
 import { Request, Response } from 'express'
 import { config } from '../../..'
 import Mongo from "../../../database/mongo"
-import LocalConst from '../../../lib/localconst'
-import ReqError from '../../../lib/reqerror'
+import LocalConst from '../../../lib/local-const'
+import ReqError from '../../../lib/req-error'
 import Utils from '../../../lib/utils'
 
 
@@ -18,8 +18,8 @@ export async function postAnnouncement(req: Request, res: Response) {
   const items = req.body?.products as number[]
   if (!items?.length) return ReqError.badRequest(res, 'Missing products', 'Products list empty or null')
 
-  const allItemsValid = await Promise.all(items.map(_id => Mongo.Product.exists({ _id, status: 'approved' })))
-  if (!allItemsValid) return ReqError.badRequest(res, 'Invalid products', 'One or more product provided does not exist.')
+  const itemsValid = await Promise.all(items.map(_id => Mongo.Product.findOne({ _id, status: 'approved' }).exec() as Promise<ProductType>))
+  if (!itemsValid.every(i => !!i)) return ReqError.badRequest(res, 'Invalid products', 'One or more products provided does not exist or is not approved.')
 
   const announcement = createNewAnnouncement()
   announcement._id = id
@@ -49,4 +49,13 @@ export async function postAnnouncement(req: Request, res: Response) {
   })
 
   res.status(200).json({ id })
+
+  try {
+    for (const product of itemsValid) {
+      product.status = 'published'
+      await product.save()
+    }
+  } catch (err) {
+    console.error(err)
+  }
 }

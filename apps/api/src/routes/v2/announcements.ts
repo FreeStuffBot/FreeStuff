@@ -1,6 +1,6 @@
 import { AnnouncementDataType, AnnouncementSanitizer, ProductDataType, ProductSanitizer, SanitizedAnnouncementType, SanitizedProductType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
-import ReqError from '../../lib/reqerror'
+import ReqError from '../../lib/req-error'
 import Resolver from '../../lib/resolver'
 import Utils from '../../lib/utils'
 

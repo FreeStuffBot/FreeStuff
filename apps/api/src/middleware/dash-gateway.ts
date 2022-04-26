@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express"
 import Mongo from "../database/mongo"
 import JWT from "../lib/jwt"
-import ReqError from "../lib/reqerror"
-import { UserAuthPayload } from "../lib/userauth"
+import ReqError from "../lib/req-error"
+import { UserAuthPayload } from "../lib/user-auth"
 
 
 export default function dashGateway(scope: string): (req: Request, res: Response, next: NextFunction) => any {

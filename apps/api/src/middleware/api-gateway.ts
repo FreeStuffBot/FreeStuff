@@ -5,7 +5,7 @@ import { AppType } from '@freestuffbot/common'
 import { Request, Response, NextFunction } from 'express'
 import Mongo from '../database/mongo'
 import Redis from '../database/redis'
-import ReqError from '../lib/reqerror'
+import ReqError from '../lib/req-error'
 
 //
 

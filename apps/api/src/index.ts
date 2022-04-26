@@ -12,7 +12,7 @@ async function run() {
   await Modules.connectMongo()
   Modules.connectGibu()
   Modules.startServer()
-  Modules.startCacheJanitor()
+  Modules.startRoutines()
 }
 
 run().catch((err) => {

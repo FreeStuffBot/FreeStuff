@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import rateLimit from 'express-rate-limit'
-import ReqError from '../lib/reqerror'
+import ReqError from '../lib/req-error'
 
 
 export function rateLimiter(max: number, window: number) {

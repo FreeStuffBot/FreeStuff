@@ -1,9 +1,9 @@
 import { LanguageType, UserType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from '../../database/mongo'
-import OAuthStrat, { OauthDiscordUserObject } from '../../lib/oauthstrat'
-import ReqError from '../../lib/reqerror'
-import UserAuth from '../../lib/userauth'
+import OAuthStrat, { OauthDiscordUserObject } from '../../lib/oauth-strat'
+import ReqError from '../../lib/req-error'
+import UserAuth from '../../lib/user-auth'
 
 
 export function getLogin(req: Request, res: Response) {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import Mongo from '../../../database/mongo'
-import DiscordUtils from '../../../lib/discordutils'
-import ReqError from '../../../lib/reqerror'
+import DiscordUtils from '../../../lib/discord-utils'
+import ReqError from '../../../lib/req-error'
 
 
 export async function getLanguages(req: Request, res: Response) {

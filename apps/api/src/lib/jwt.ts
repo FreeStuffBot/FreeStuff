@@ -6,7 +6,7 @@
 import { readFileSync } from 'fs'
 import * as jwtlib from 'jsonwebtoken'
 import { config } from '..'
-import { UserAuthPayload } from './userauth'
+import { UserAuthPayload } from './user-auth'
 
 
 export default class JWT {

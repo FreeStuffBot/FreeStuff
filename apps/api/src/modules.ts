@@ -9,6 +9,7 @@ import GibuGqlCore from "./services/gibu/gibu-gql-core"
 import V2Router from "./routes/v2/_router"
 import Resolver from "./lib/resolver"
 import InternalRouter from "./routes/internal/_router"
+import CurrConv from "./services/currconv"
 
 
 export default class Modules {
@@ -43,8 +44,12 @@ export default class Modules {
     })
   }
 
-  public static startCacheJanitor() {
+  public static startRoutines() {
+    Resolver.clearCache()
     setInterval(() => Resolver.clearCache(), config.behavior.resolvingCacheMaxAge)
+
+    CurrConv.updateData()
+    setInterval(() => CurrConv.updateData(), config.behavior.currconvUpdateInterval)
   }
 
 }

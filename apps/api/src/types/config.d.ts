@@ -11,6 +11,7 @@ export type configjs = {
   behavior: {
     desiredGuildCountPerBucket: number
     resolvingCacheMaxAge: number
+    currconvUpdateInterval: number
   }
   keys: {
     privateKeyUri: string
@@ -22,9 +23,6 @@ export type configjs = {
     }
   }
   thirdparty: {
-    currconv: {
-      key: string
-    }
     firebase: {
       key: string
     }

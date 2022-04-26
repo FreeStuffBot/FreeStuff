@@ -1,5 +1,6 @@
 import { SanitizedProductType } from '@freestuffbot/common'
 import axios from 'axios'
+import * as crypto from 'crypto'
 import { config } from '..'
 
 
@@ -17,37 +18,28 @@ export type ThumbnailerProperties = {
 
 export default class Thumbnailer {
 
-  private static cache: Map<string, string> = new Map()
-
-  private static getCacheHash(props: ThumbnailerProperties): string {
-    const crypto = require('crypto')
-    const name = JSON.stringify(props)
-    const hash = crypto.createHash('md5').update(name).digest('hex')
-    return hash
-  }
-
   public static async generateUrl(props: ThumbnailerProperties): Promise<string> {
-    const hash = this.getCacheHash(props)
-    if (this.cache.has(hash))
-      return this.cache.get(hash)
-
     try {
       const url = config.network.thumbnailer + '/render'
-      const { data, status } = await axios.post(url, props, { responseType: 'arraybuffer', validateStatus: null })
+      const { data, status } = await axios.post(url, props, { validateStatus: null })
+      console.log(data, status)
       if (status !== 200)
-        return ''
+        return null
       return data.url
     } catch (ex) {
-      return ''
+      console.error(ex)
+      return null
     }
   }
 
   public static async generateObject(data: ThumbnailerProperties['data'], shellOnly: boolean): Promise<SanitizedProductType['thumbnails']> {
-    if (shellOnly) return {
-      org: data.thumbnail,
-      blank: data.thumbnail,
-      full: data.thumbnail,
-      tags: data.thumbnail
+    if (shellOnly) {
+      return {
+        org: data.thumbnail,
+        blank: data.thumbnail,
+        full: data.thumbnail,
+        tags: data.thumbnail
+      }
     }
 
     const images = await Promise.all([

@@ -2,10 +2,11 @@ import { createNewProduct, ProductApprovalStatusArray, ProductDataType, ProductT
 import { Request, Response } from 'express'
 import Mongo from "../../../database/mongo"
 import AutoScraper from '../../../lib/auto-scraper'
-import InputValidator from '../../../lib/inputvalidator'
-import LocalConst from '../../../lib/localconst'
+import InputValidator from '../../../lib/input-validator'
+import LocalConst from '../../../lib/local-const'
 import Notifier from '../../../lib/notifier'
-import ReqError from '../../../lib/reqerror'
+import ProductApproval from '../../../lib/product-approval'
+import ReqError from '../../../lib/req-error'
 import Utils from '../../../lib/utils'
 
 
@@ -137,7 +138,8 @@ export async function patchProduct(req: Request, res: Response) {
   if (body.data)
     product.data = body.data
 
-  product.data.staffApproved = (body.status === 'approved')
+  if (body.status === 'approved')
+    await ProductApproval.completeProduct(product, true)
 
   // Notifier.newEvent('game_save_draft', { user: res.locals.user.data.id, game: req.body._id })
   await product.save().catch(() => {})
