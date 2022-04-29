@@ -29,7 +29,7 @@ export default class Notifier {
   public static newEvent(event: EventWithNoData): any
   public static newEvent(event: Event, data?: any): any {
 
-    // TODO database audit log
+    // TODO(lowest) database audit log
     this.sendDiscordWebhook(event, data)
   }
 

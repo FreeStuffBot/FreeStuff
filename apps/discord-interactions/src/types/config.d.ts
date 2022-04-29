@@ -15,6 +15,7 @@ export type configjs = {
     refreshRolesInterval: number
   }
   network: {
+    umiAllowedIpRange: string
     discordGateway: string
   }
   freestuffApi: {

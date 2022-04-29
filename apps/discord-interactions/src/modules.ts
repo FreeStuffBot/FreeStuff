@@ -6,6 +6,7 @@ import * as express from 'express'
 import DatabaseGateway from "./services/database-gateway"
 import Mongo from "./services/mongo"
 import FreestuffGateway from "./services/freestuff-gateway"
+import Metrics from "./lib/metrics"
 
 
 export default class Modules {
@@ -21,6 +22,10 @@ export default class Modules {
     )
   }
 
+  public static async initMetrics(): Promise<void> {
+    Metrics.init()
+  }
+
   public static async loadCmsData(retryDelay = 1000): Promise<void> {
     const success = await CMS.loadAll()
     if (success) {
@@ -30,6 +35,12 @@ export default class Modules {
 
     Logger.warn('Loading data from CMS failed. Retrying soon.')
     await new Promise(res => setTimeout(res, retryDelay))
+
+    if (retryDelay > 1000 * 60 * 2) {
+      Logger.error('CMS data retry delay reached two minutes. Restarting.')
+      process.exit(-1)
+    }
+
     await Modules.loadCmsData(retryDelay * 2)
   }
 
@@ -84,7 +95,10 @@ export default class Modules {
     const app = express()
     app.set('trust proxy', 1)
 
-    app.use('/', Cordo.useWithExpress(config.discordPublicKey))
+    app.post('/', Cordo.useWithExpress(config.discordPublicKey))
+
+    app.all('/umi/*', UmiLibs TODO ipLockMIddleware)
+    app.get('/umi/metrics', Metrics.endpoint())
 
     app.listen(config.port, undefined, () => {
       Logger.process(`Server launched at port ${config.port}`)

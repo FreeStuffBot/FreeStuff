@@ -1,5 +1,6 @@
 import { GuildDataType, LanguageDataType, Logger } from '@freestuffbot/common'
 import * as mongo from 'mongodb'
+import Metrics from '../lib/metrics'
 
 
 
@@ -37,16 +38,27 @@ export default class Mongo {
 
   //
 
-  public static findById(collection: 'language', id: any): Promise<LanguageDataType>
-  public static findById(collection: 'guilds', id: any): Promise<GuildDataType>
-  public static findById(collection: Collection, id: any): Promise<any> {
-    return Mongo.collection(collection).findOne({ _id: id })
+  public static async findById(collection: 'language', id: any): Promise<LanguageDataType>
+  public static async findById(collection: 'guilds', id: any): Promise<GuildDataType>
+  public static async findById(collection: Collection, id: any): Promise<any> {
+    const data = await Mongo
+      .collection(collection)
+      .findOne({ _id: id })
+      .catch(() => null)
+    Metrics.counterDiDbReads.inc({ collection, success: data ? 1 : 0 })
+    return data
   }
 
-  public static findMultiple(collection: 'language', query: Query): Promise<LanguageDataType[]>
-  public static findMultiple(collection: 'guilds', query: Query): Promise<GuildDataType[]>
-  public static findMultiple(collection: Collection, query: Query): Promise<any[]> {
-    return Mongo.collection(collection).find(query).toArray()
+  public static async findMultiple(collection: 'language', query: Query): Promise<LanguageDataType[]>
+  public static async findMultiple(collection: 'guilds', query: Query): Promise<GuildDataType[]>
+  public static async findMultiple(collection: Collection, query: Query): Promise<any[]> {
+    const data = await Mongo
+      .collection(collection)
+      .find(query)
+      .toArray()
+      .catch(() => null)
+    Metrics.counterDiDbReads.inc({ collection })
+    return data
   }
 
 }

@@ -60,9 +60,6 @@ export async function getMe(_req: Request, res: Response) {
   delete out.logins
   delete out.data?._accessToken
   out.lang = await packageLang()
-  // TODO git data to admin dashboard
-  // if (out.scope?.includes('admin'))
-  //   out.gitData = gitCommit
 
   // package guilds if needed
 

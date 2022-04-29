@@ -1,6 +1,7 @@
 import { FlipflopCache, Fragile, SanitizedGuildType, GuildSanitizer, LanguageDataType, FragileError, SanitizedGuildWithChangesType, GuildDataType, SettingPriceClass, Util, SettingTheme, Localisation, SanitizedCurrencyType, SanitizedPlatformType, Errors } from "@freestuffbot/common"
 import { Long } from "bson"
 import { config } from ".."
+import Metrics from "../lib/metrics"
 import { DatabaseActions } from "../types/database-actions"
 import Mongo from "./mongo"
 
@@ -30,8 +31,6 @@ export default class DatabaseGateway {
 
   public static async fetchGuild(guildid: string): Promise<Fragile<SanitizedGuildType>> {
     const raw = await Mongo.findById('guilds', Long.fromString(guildid))
-
-    // TODO metrics
 
     if (!raw)
       return Errors.throwStderrNoGuilddata('discord-interactions::database-gateway')
@@ -63,6 +62,15 @@ export default class DatabaseGateway {
         { _id: guild.id },
         { $set: changes }
       )
+
+    Metrics.counterDiDbWrites.inc({ collection: 'guilds' })
+  }
+
+  public static get cacheSizes(): [number, number] {
+    return [
+      DatabaseGateway.guildCache.activeSize,
+      DatabaseGateway.guildCache.passiveSize
+    ]
   }
 
   //

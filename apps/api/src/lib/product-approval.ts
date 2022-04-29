@@ -21,7 +21,7 @@ export default class ProductApproval {
     const proxyLink = await LinkProxy.createGameLink(leanProduct)
     product.data.urls.browser = proxyLink
     product.data.urls.default = proxyLink
-    // TODO product.data.urls.client = TODO
+    product.data.urls.client = ProductApproval.getClientUrl(product.data.urls.org)
 
     // prices
     const currencies = await Mongo.Currency
@@ -49,6 +49,32 @@ export default class ProductApproval {
         })
       }
     }
+  }
+
+  public static getClientUrl(httpUrl: string) {
+    const isSteamUrl = /^https?:\/\/store\.steampowered\.com\/app\/.*/g.test(httpUrl)
+    if (isSteamUrl) {
+      try {
+        const id = httpUrl.split('/app/')[1].split('/')[0]
+        return `steam://store/${id}`
+      } catch (ex) {
+        console.info(`Failed creating the client url for steam with url ${httpUrl} for reason:`)
+        console.log(ex)
+      }
+    }
+  
+    const isEpicUrl = /^https?:\/\/(www\.|store\.)?epicgames\.com\/.*$/g.test(httpUrl)
+    if (isEpicUrl) {
+      try {
+        const data = httpUrl.split('/p/')[1].replace(/\/home$/, '').split('?')[0]
+        return `com.epicgames.launcher://store/p/${data}`
+      } catch (ex) {
+        console.info(`Failed creating the client url for epic games with url ${httpUrl} for reason:`)
+        console.log(ex)
+      }
+    }
+
+    return null
   }
 
 }

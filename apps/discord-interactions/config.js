@@ -16,6 +16,7 @@ module.exports = {
     refreshRolesInterval: 10_000,
   },
   network: {
+    umiAllowedIpRange: loadArg('NETWORK_UMI_ALLOWED_IP_RANGE'),
     discordGateway: loadArg('NETWORK_DISCORD_GATEWAY')
   },
   freestuffApi: {
