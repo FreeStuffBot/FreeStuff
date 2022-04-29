@@ -15,9 +15,12 @@
   },
   "author": "FreeStuff Team",
   "dependencies": {
+    "@types/express": "^4.17.13",
+    "@types/ip": "^1.1.0",
     "axios": "^0.26.1",
     "bson": "^4.6.1",
     "cordo": "^1.8.4",
+    "ip": "^1.1.5",
     "mongoose": "^6.1.6",
     "mongoose-long": "^0.5.1"
   },
