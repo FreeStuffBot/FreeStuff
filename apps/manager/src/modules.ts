@@ -2,7 +2,7 @@ import { Logger } from "@freestuffbot/common"
 import { config } from "."
 import * as express from 'express'
 import Mongo from "./database/mongo"
-import DockerInterface from "./lib/docker-interface"
+// import DockerInterface from "./lib/docker-interface"
 
 
 export default class Modules {
@@ -12,7 +12,7 @@ export default class Modules {
   }
 
   public static initDocker() {
-    DockerInterface.connect()
+    // DockerInterface.connect()
   }
 
   public static startServer() {

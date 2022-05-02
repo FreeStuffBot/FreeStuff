@@ -21,8 +21,8 @@ COPY --from=installer /app/ .
 COPY --from=builder /app/out/full/ .
 COPY .gitignore .gitignore
 # unfortunately the dockerode module has some dependency on node-gyp...
-RUN apk add --no-cache --virtual .build-deps alpine-sdk python3
+# RUN apk add --no-cache --virtual .build-deps alpine-sdk python3
 RUN yarn turbo run build --scope=@freestuffbot/manager --include-dependencies --no-deps
-RUN apk del .build-deps
+# RUN apk del .build-deps
 
 ENTRYPOINT [ "yarn", "run-manager" ]
