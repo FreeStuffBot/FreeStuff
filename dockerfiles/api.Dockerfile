@@ -20,7 +20,6 @@ WORKDIR /app
 COPY --from=installer /app/ .
 COPY --from=builder /app/out/full/ .
 COPY .gitignore .gitignore
-# RUN yarn turbo run build test --scope=@freestuffbot/api --include-dependencies --no-deps
 RUN yarn turbo run build --scope=@freestuffbot/api --include-dependencies --no-deps
 
 ENTRYPOINT [ "yarn", "run-api" ]
