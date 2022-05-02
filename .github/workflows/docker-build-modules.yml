@@ -17,7 +17,8 @@ jobs:
 
     strategy:
       matrix:
-        module: [ api, discord-gateway ]
+        # repeating this job for the following module names, using ${{ matrix.module }} as the name
+        module: [ api, discord-gateway, discord-interactions, discord-publisher, link-proxy, manager, thumbnailer ]
 
     steps:
       - name: Set up QEMU
@@ -48,6 +49,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
+          #            v ghcr.io       v orga name  v package name  v module name
           images: ${{ env.REGISTRY }}/FreeStuffBot/fsb-${{ matrix.module }}
 
       - name: Build and push Docker image
@@ -55,6 +57,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          # dockerfile to build, using the module name
           file: ./dockerfiles/${{ matrix.module }}.Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}

@@ -1,0 +1,15 @@
+node_modules/
+
+files/
+build/
+dist/
+vault/
+
+config.private.js
+
+private.key
+.env
+.turbo
+
+dev-*.js
+*.log
