@@ -19,7 +19,7 @@
     "@types/dockerode": "^3.3.3",
     "axios": "^0.24.0",
     "cors": "^2.8.5",
-    "chalk": "^5.0.1",
+    "chalk": "^2.4.2",
     "express": "^4.17.2",
     "express-rate-limit": "^6.1.0",
     "googleapis": "^92.0.0",
