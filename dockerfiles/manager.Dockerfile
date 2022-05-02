@@ -12,7 +12,10 @@ RUN apk update
 WORKDIR /app
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/yarn.lock ./yarn.lock
-RUN yarn install --production
+# unfortunately the dockerode module has some dependency on node-gyp...
+RUN apk add --no-cache --virtual .build-deps alpine-sdk python \
+RUN yarn install --production \
+RUN apk del .build-deps
 
 FROM node:alpine AS sourcer
 RUN apk update
