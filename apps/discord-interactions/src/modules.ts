@@ -7,6 +7,7 @@ import DatabaseGateway from "./services/database-gateway"
 import Mongo from "./services/mongo"
 import FreestuffGateway from "./services/freestuff-gateway"
 import Metrics from "./lib/metrics"
+import UmiLibs from "@freestuffbot/common/src/lib/umi-libs"
 
 
 export default class Modules {
@@ -97,7 +98,7 @@ export default class Modules {
 
     app.post('/', Cordo.useWithExpress(config.discordPublicKey))
 
-    app.all('/umi/*', UmiLibs TODO ipLockMIddleware)
+    app.all('/umi/*', UmiLibs.ipLockMiddleware(config.network.umiAllowedIpRange))
     app.get('/umi/metrics', Metrics.endpoint())
 
     app.listen(config.port, undefined, () => {

@@ -1,12 +1,13 @@
-name: Docker Container Build
+name: Build API Service
 
 on:
   push:
-    branches: [ staging ]
+    branches: [ master, staging ]
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  # IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: fsb-api
 
 jobs:
   build-and-push-image:

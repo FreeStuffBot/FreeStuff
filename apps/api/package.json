@@ -1,7 +1,6 @@
 {
   "name": "@freestuffbot/api",
   "version": "1.0.0",
-  "main": "build/index.js",
   "scripts": {
     "start": "node --icu-data-dir=node_modules\\full-icu ./dist/index.js",
     "build": "tsc",
@@ -13,8 +12,7 @@
   "contributors": [
     "Andreas May (https://github.com/Maanex)",
     "Rami Sabbagh (https://github.com/Rami-Sabbagh)",
-    "Seyhan Halil (https://github.com/EasyThe)",
-    "Bartosz Król (https://github.com/badosz0)"
+    "Seyhan Halil (https://github.com/EasyThe)"
   ],
   "dependencies": {
     "@freestuffbot/common": "*",
@@ -27,6 +25,7 @@
     "googleapis": "^92.0.0",
     "graphql": "^16.3.0",
     "graphql-request": "^4.0.0",
+    "jsonwebtoken": "^8.5.1",
     "paparsya": "^1.0.1",
     "redis": "^4.0.2",
     "typescript": "^4.5.4"

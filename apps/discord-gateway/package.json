@@ -1,7 +1,6 @@
 {
   "name": "@freestuffbot/discord-gateway",
   "version": "1.0.0",
-  "main": "build/index.js",
   "scripts": {
     "start": "node --icu-data-dir=node_modules\\full-icu ./dist/index.js",
     "build": "tsc",

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node .",
+    "build": "exit 0",
     "dev": "node . --dev"
   },
   "author": "Andreas May (@maanex)",
