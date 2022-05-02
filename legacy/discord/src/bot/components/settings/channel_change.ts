@@ -1,5 +1,5 @@
 import { GuildData, ReplyableComponentInteraction } from 'cordo'
-import { GuildChannel, TextChannel } from 'discord.js'
+import { GuildChannel, TextChannel, Webhook } from 'discord.js'
 import { Localisation } from '@freestuffbot/common'
 import { Core } from '../../../index'
 import DatabaseManager from '../../database-manager'
@@ -52,13 +52,17 @@ export default async function (i: ReplyableComponentInteraction) {
 }
 
 async function updateWebhook(guildData: GuildData, channel: TextChannel): Promise<boolean> {
+  const member = channel.guild.members.resolve(Core.user.id)
+  if (!channel.permissionsFor(member).has('MANAGE_WEBHOOKS'))
+    return false
+
   let webhook = await MessageDistributor.findWebhook(channel)
   if (webhook) {
     DatabaseManager.changeSetting(guildData, 'webhook', `${webhook.id}/${webhook.token}`)
     return true
   }
 
-  webhook = await MessageDistributor.createWebhook(guildData, channel)
+  webhook = <Webhook> (await MessageDistributor.createWebhook(guildData, channel, false)) ?? null
   if (webhook) {
     DatabaseManager.changeSetting(guildData, 'webhook', `${webhook.id}/${webhook.token}`)
     return true

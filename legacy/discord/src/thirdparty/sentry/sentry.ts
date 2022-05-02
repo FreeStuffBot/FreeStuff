@@ -21,7 +21,13 @@ export default class SentryManager {
 
     Sentry.init({
       dsn: config.thirdParty.sentry.dsn,
-      serverName: hostname()
+      serverName: hostname(),
+      beforeSend: async (event, hint) => {
+        let err = (hint.originalException?.toString() || hint.syntheticException.message) as any
+        if ('then' in err) err = await err
+        Logger.warn('sentry <> ' + err)
+        return event
+      }
     })
 
     Logger.process('Sentry initialized')

@@ -33,7 +33,7 @@ if (process.argv) {
 
       const item = key.split('.')[0]
       overrideConfig(
-        key.substr(item.length + 1),
+        key.slice(item.length + 1),
         value,
         conf[item]
       )

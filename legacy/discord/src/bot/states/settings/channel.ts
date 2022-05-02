@@ -26,10 +26,13 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
   if (!i.guildData) return { title: 'An error occured' }
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
 
-  let channelsFound = [ ...Core.guilds.resolve(i.guild_id).channels.cache.values() ]
+  const guild = Core.guilds.resolve(i.guild_id)
+  if (!guild) return { title: 'An error occured. Your guild could not be loaded. Please try again.' }
+
+  let channelsFound = [ ...guild.channels.cache.values() ]
     .filter(c => (c.type === 'GUILD_TEXT' || c.type === 'GUILD_NEWS')) as (TextChannel | NewsChannel)[]
 
-  const self = await Core.guilds.resolve(i.guild_id).members.fetch(Core.user.id)
+  const self = await guild.members.fetch(Core.user.id)
 
   let youHaveTooManyChannelsStage = 0
 
@@ -71,7 +74,7 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
     .slice(0, 24)
     .map((c) => {
       const p = c.permissionsFor(self)
-      let description = '' // (c as TextChannel).topic?.substr(0, 50) || ''
+      let description = '' // (c as TextChannel).topic?.slice(0, 50) || ''
       if (!p.has('VIEW_CHANNEL')) description = '⚠️ ' + Localisation.text(i.guildData, '=settings_channel_list_warning_missing_view_channel')
       else if (!p.has('MANAGE_WEBHOOKS')) description = '⚠️ ' + Localisation.text(i.guildData, '=settings_channel_list_warning_missing_manage_webhooks')
       else if (!p.has('SEND_MESSAGES')) description = '=settings_channel_list_warning_missing_send_messages'
@@ -145,7 +148,7 @@ export default async function (i: GenericInteraction, args: [ Options ]): Promis
 function sanitizeChannelName(name: string, maxlength: number): string {
   if (name.length < maxlength) return name
 
-  name = name.substr(0, maxlength)
+  name = name.slice(0, maxlength)
   if (name.split('').some(n => n.charCodeAt(0) > 0xFF))
     // eslint-disable-next-line no-control-regex
     name = name.replace(/((?:[\0-\x08\x0B\f\x0E-\x1F\uFFFD\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))/g, '')
