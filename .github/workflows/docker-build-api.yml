@@ -8,6 +8,7 @@ env:
   REGISTRY: ghcr.io
   # IMAGE_NAME: ${{ github.repository }}
   IMAGE_NAME: fsb-api
+  DOCKERFILE: api.Dockerfile
 
 jobs:
   build-and-push-image:
@@ -52,6 +53,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          file: {context}/dockerfiles/${{ DOCKERFILE }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
