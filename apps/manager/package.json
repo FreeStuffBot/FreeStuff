@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@freestuffbot/config": "*",
-    "@types/express": "^4.17.13"
+    "@types/express": "^4.17.13",
+    "@types/chalk": "^2.2.0"
   }
 }

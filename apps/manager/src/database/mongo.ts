@@ -1,4 +1,4 @@
-import { AppSchema, CurrencySchema, LanguageSchema, PlatformSchema, ProductSchema, UserSchema } from '@freestuffbot/common'
+import { ProductSchema } from '@freestuffbot/common'
 import * as chalk from 'chalk'
 import * as mongoose from 'mongoose'
 
