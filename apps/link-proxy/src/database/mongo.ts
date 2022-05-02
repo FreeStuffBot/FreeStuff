@@ -1,5 +1,4 @@
-import { AppSchema, CurrencySchema, LanguageSchema, PlatformSchema, ProductSchema, UserSchema } from '@freestuffbot/common'
-import * as chalk from 'chalk'
+import { Logger, ProductSchema } from '@freestuffbot/common'
 import * as mongoose from 'mongoose'
 
 
@@ -12,14 +11,14 @@ export default class Mongo {
   //
 
   public static connect(url?: string): Promise<any> {
-    console.info(chalk`{yellow ⏳Connecting to Mongo...}`)
+    Logger.info('Connecting to Mongo...')
 
     return new Promise<any>((resolve, reject) => {
       this.connection = mongoose.connection
       mongoose.connect(url)
       this.connection.on('error', reject)
       this.connection.on('open', () => {
-        console.info(chalk`{green ✓ Mongo connection estabished}`)
+        Logger.process('Mongo connection estabished')
         resolve(this.connection)
       })
     })
