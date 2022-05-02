@@ -6,7 +6,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  MODULE_NAME: api
 
 jobs:
   build-and-push-image:
@@ -49,14 +48,14 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/FreeStuffBot/fsb-${{ env.MODULE_NAME }}
+          images: ${{ env.REGISTRY }}/FreeStuffBot/fsb-${{ matrix.module }}
 
       - name: Build and push Docker image
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./dockerfiles/${{ env.MODULE_NAME }}.Dockerfile
+          file: ./dockerfiles/${{ matrix.module }}.Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
