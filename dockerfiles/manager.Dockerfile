@@ -12,7 +12,7 @@ RUN apk update
 WORKDIR /app
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/yarn.lock ./yarn.lock
-RUN yarn install
+RUN yarn install --production
 
 FROM node:alpine AS sourcer
 RUN apk update
