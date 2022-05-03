@@ -22,7 +22,8 @@
     "cordo": "1.13.3",
     "ip": "^1.1.5",
     "mongoose": "^6.1.6",
-    "mongoose-long": "^0.5.1"
+    "mongoose-long": "^0.5.1",
+    "prom-client": "14.0.1"
   },
   "devDependencies": {
     "@freestuffbot/config": "*",
