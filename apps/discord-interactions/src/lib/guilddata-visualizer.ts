@@ -7,10 +7,8 @@ export default function guildDataToViewString(g: SanitizedGuildType, maxLength =
   const gd = { ...g } as any || { error: 'Guild Data Error' }
   if (!gd.error) {
     delete gd._changes
-    if (includeMetainfo) {
+    if (includeMetainfo)
       gd.host = hostname()
-      // TODO include hostname? maybe this todo is dismissable
-    }
 
     gd.currency = gd.currency.name
     gd.price = gd.price.name

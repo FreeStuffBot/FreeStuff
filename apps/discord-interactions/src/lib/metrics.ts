@@ -14,19 +14,25 @@ export default class Metrics {
   })
 
   public static counterDiDbReads = new Counter({
-    name: 'fsb_service_di_db_reads',
+    name: 'fsb_sdi_db_reads',
     help: 'FreeStuffBot Service DiscordInteractions: DataBase Reads',
     labelNames: [ 'collection', 'success' ]
   })
 
   public static counterDiDbWrites = new Counter({
-    name: 'fsb_service_di_db_writes',
+    name: 'fsb_sdi_db_writes',
     help: 'FreeStuffBot Service DiscordInteractions: DataBase Writes',
     labelNames: [ 'collection', 'success' ]
   })
 
+  public static counterDiErrors = new Counter({
+    name: 'fsb_sdi_db_errors',
+    help: 'FreeStuffBot Service DiscordInteractions: Errors',
+    labelNames: [ 'errorid', 'source' ]
+  })
+
   public static gaugeDiGuildCacheSize = new Gauge({
-    name: 'fsb_service_di_guild_cache_size',
+    name: 'fsb_sdi_guild_cache_size',
     help: 'Amount of channels currently cached on this worker. Updated every 10 seconds.',
     labelNames: [ 'bucket' ]
   })
@@ -44,6 +50,7 @@ export default class Metrics {
     Metrics.register.registerMetric(Metrics.counterInteractions)
     Metrics.register.registerMetric(Metrics.counterDiDbReads)
     Metrics.register.registerMetric(Metrics.counterDiDbWrites)
+    Metrics.register.registerMetric(Metrics.counterDiErrors)
 
     Metrics.register.registerMetric(Metrics.gaugeDiGuildCacheSize)
   }

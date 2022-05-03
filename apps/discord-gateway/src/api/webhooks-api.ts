@@ -2,6 +2,7 @@ import { DataWebhook } from "@freestuffbot/common"
 import { config } from ".."
 import WebhooksData from "../data/webhooks-data"
 import { MagicNumber, MAGICNUMBER_MAX_WEBHOOKS_REACHED, MAGICNUMBER_MISSING_PERMISSIONS } from "../lib/magic-number"
+import Metrics from "../lib/metrics"
 import RestGateway from "./rest-gateway"
 
 
@@ -14,7 +15,7 @@ export default class WebhooksApi {
       endpoint: `/channels/${channel}/webhooks`
     })
 
-    // TODO metrics
+    Metrics.counterDgRequests.inc({ method: 'GET', endpoint: 'webhooks', status: res.status })
 
     if (res.status === 403)
       return MAGICNUMBER_MISSING_PERMISSIONS
@@ -44,7 +45,7 @@ export default class WebhooksApi {
       payload
     })
 
-    // TODO metrics
+    Metrics.counterDgRequests.inc({ method: 'POST', endpoint: 'webhooks', status: res.status })
 
     if (res.status === 403)
       return MAGICNUMBER_MISSING_PERMISSIONS

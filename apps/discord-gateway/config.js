@@ -11,6 +11,9 @@ module.exports = {
   apiUser: loadArg('DISCORD_GATEWAY_API_USER'),
   baseUrl: 'https://discord.com/api/v9',
   globalRateLimit: 50,
+  network: {
+    umiAllowedIpRange: loadArg('NETWORK_UMI_ALLOWED_IP_RANGE')
+  },
   cacheTtlChannelsMin: seconds(10),
   cacheTtlChannelsMax: minutes(20),
   cacheTtlGuildMin: seconds(10),

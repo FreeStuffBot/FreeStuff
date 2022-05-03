@@ -1,6 +1,7 @@
 import { DataMember } from "@freestuffbot/common"
 import { config } from ".."
 import MemberData from "../data/member-data"
+import Metrics from "../lib/metrics"
 import RestGateway from "./rest-gateway"
 
 
@@ -12,6 +13,8 @@ export default class MemberApi {
       bucket: guild,
       endpoint: `/guilds/${guild}/members/${config.apiUser}`
     })
+
+    Metrics.counterDgRequests.inc({ method: 'GET', endpoint: 'member', status: res.status })
 
     if (res.status >= 400 && res.status < 500)
       return null

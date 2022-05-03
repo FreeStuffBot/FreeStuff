@@ -1,13 +1,18 @@
-import { Logger } from "@freestuffbot/common"
+import { Logger, UmiLibs } from "@freestuffbot/common"
 import { config } from "."
 import * as express from 'express'
 import { getChannels } from "./router/channels"
 import { getGuild } from "./router/guild"
 import { getMember } from "./router/member"
 import { getWebhooks, postWebhook } from "./router/webhooks"
+import Metrics from "./lib/metrics"
 
 
 export default class Modules {
+
+  public static async initMetrics(): Promise<void> {
+    Metrics.init()
+  }
 
   public static startServer() {
     const app = express()
@@ -18,6 +23,9 @@ export default class Modules {
     app.get('/member/:guild', getMember)
     app.get('/webhooks/:channel', getWebhooks)
     app.post('/webhooks/:channel', postWebhook)
+
+    app.all('/umi/*', UmiLibs.ipLockMiddleware(config.network.umiAllowedIpRange))
+    app.get('/umi/metrics', Metrics.endpoint())
 
     app.all('*', (_, res) => res.status(400).end())
 

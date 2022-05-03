@@ -6,6 +6,9 @@ export type configjs = {
   apiUser: string
   baseUrl: string
   globalRateLimit: number
+  network: {
+    umiAllowedIpRange: string
+  }
   cacheTtlChannelsMin: number
   cacheTtlChannelsMax: number
   cacheTtlGuildMin: number

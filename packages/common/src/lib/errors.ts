@@ -15,6 +15,14 @@ export default class Errors {
 
   //
 
+  private static errorHandler: (error: FragileError) => any
+
+  public static createErrorHandler(handler: (error: FragileError) => any): void {
+    Errors.errorHandler = handler
+  }
+
+  //
+
   public static handleErrorAndCommunicate(error: FragileError, i?: ReplyableCommandInteraction | ReplyableComponentInteraction): InteractionApplicationCommandCallbackData {
     Errors.handleErrorWithoutCommunicate(error)
 
@@ -30,7 +38,7 @@ export default class Errors {
   }
 
   public static handleErrorWithoutCommunicate(error: FragileError): void {
-    // TODO Metrics.log.blabla
+    Errors.errorHandler?.(error)
   }
 
   //

@@ -30,4 +30,8 @@ export default class MemberCache {
     }
   }
 
+  public static get size(): number {
+    return MemberCache.cacheData.size
+  }
+
 }

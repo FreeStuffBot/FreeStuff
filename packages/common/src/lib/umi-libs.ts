@@ -5,11 +5,11 @@ import * as ip from 'ip'
 export default class UmiLibs {
 
   public static ipLockMiddleware(range: string) {
-    const subnet = ip.cidrSubnet(range)
+    const subnet = range ? ip.cidrSubnet(range) : null
     return (req: Request, res: Response, next: NextFunction) => {
-      if (subnet.contains(req.ip)) return next()
+      if (!range || subnet.contains(req.ip)) return next()
 
-      res.status(401).send('Not allowed. Your IP address does not have access to this resource.')
+      res.status(407).send(`Not allowed. Your IP address does not have access to this resource.\n${req.ip}`)
     }
   }
 

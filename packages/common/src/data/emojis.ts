@@ -27,6 +27,7 @@ export default class Emojis {
   //
 
   public static fromString(string: string): Emojis {
+    if (!string) return null
     const inner = string.match(/<(.*?)>/)?.[1]
     if (!inner) return null
     const [ animated, name, id ] = inner.split(':')

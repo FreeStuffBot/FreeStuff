@@ -30,4 +30,8 @@ export default class GuildCache {
     }
   }
 
+  public static get size(): number {
+    return GuildCache.cacheData.size
+  }
+
 }

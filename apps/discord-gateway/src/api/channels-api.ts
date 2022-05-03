@@ -1,6 +1,7 @@
 import { DataChannel } from "@freestuffbot/common"
 import ChannelsData from "../data/channels-data"
 import { MagicNumber } from "../lib/magic-number"
+import Metrics from "../lib/metrics"
 import RestGateway from "./rest-gateway"
 
 
@@ -13,7 +14,7 @@ export default class ChannelsApi {
       endpoint: `/guilds/${guild}/channels`
     })
 
-    // TODO metrics
+    Metrics.counterDgRequests.inc({ method: 'GET', endpoint: 'channels', status: res.status })
 
     if (res.status >= 400 && res.status < 500)
       return null

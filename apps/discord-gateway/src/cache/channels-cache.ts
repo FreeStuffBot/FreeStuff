@@ -30,4 +30,8 @@ export default class ChannelsCache {
     }
   }
 
+  public static get size(): number {
+    return ChannelsCache.cacheData.size
+  }
+
 }

@@ -1,5 +1,6 @@
 import { DataGuild } from "@freestuffbot/common"
 import GuildData from "../data/guild-data"
+import Metrics from "../lib/metrics"
 import RestGateway from "./rest-gateway"
 
 
@@ -11,6 +12,8 @@ export default class GuildApi {
       bucket: guild,
       endpoint: `/guilds/${guild}`
     })
+
+    Metrics.counterDgRequests.inc({ method: 'GET', endpoint: 'guilds', status: res.status })
 
     if (res.status >= 400 && res.status < 500)
       return null

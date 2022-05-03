@@ -19,6 +19,7 @@ export { default as Pricing } from './lib/pricing'
 export { default as ProductFilter } from './lib/product-filter'
 export { default as Errors } from './lib/errors'
 export { default as UmiLibs } from './lib/umi-libs'
+export { default as ContainerVersion } from './lib/container-version'
 
 export { default as ThemeOne } from './themes/1'
 export { default as ThemeTwo } from './themes/2'

@@ -1,4 +1,4 @@
-import { ApiInterface, CMS, Localisation, Logger, ProductDiscountTypeArray, ProductDiscountTypeType } from "@freestuffbot/common"
+import { UmiLibs, ApiInterface, CMS, Errors, Localisation, Logger, ProductDiscountTypeArray, ProductDiscountTypeType } from "@freestuffbot/common"
 import RabbitHole from '@freestuffbot/rabbit-hole'
 import Cordo, { GuildData } from "cordo"
 import { config } from "."
@@ -7,7 +7,6 @@ import DatabaseGateway from "./services/database-gateway"
 import Mongo from "./services/mongo"
 import FreestuffGateway from "./services/freestuff-gateway"
 import Metrics from "./lib/metrics"
-import UmiLibs from "@freestuffbot/common/src/lib/umi-libs"
 
 
 export default class Modules {
@@ -25,6 +24,10 @@ export default class Modules {
 
   public static async initMetrics(): Promise<void> {
     Metrics.init()
+    Errors.createErrorHandler(h => Metrics.counterDiErrors.inc({
+      errorid: h.status,
+      source: h.source
+    }))
   }
 
   public static async loadCmsData(retryDelay = 1000): Promise<void> {

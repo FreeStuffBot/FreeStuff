@@ -19,6 +19,7 @@ RUN apk update
 WORKDIR /app
 COPY --from=installer /app/ .
 COPY --from=builder /app/out/full/ .
+COPY --from=builder /app/version .
 COPY .gitignore .gitignore
 RUN yarn turbo run build --scope=@freestuffbot/api --include-dependencies --no-deps
 

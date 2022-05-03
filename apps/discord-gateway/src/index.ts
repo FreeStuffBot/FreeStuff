@@ -9,6 +9,7 @@ async function run() {
   Logger.log('Starting...')
 
   RestGateway.startLoop()
+  Modules.initMetrics()
   Modules.startServer()
 }
 

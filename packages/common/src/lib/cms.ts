@@ -46,13 +46,13 @@ export default class CMS {
 
   public static getPlatformIconUrl(platformCode: string): string {
     const plat = CMS._constants.platforms?.find(p => p && p?.code === platformCode)
-    if (plat) return plat.assets.icon
+    if (plat) return plat.assets.icon ?? Const.platformIconFiller
     return Const.platformIconFiller
   }
 
   public static getPlatformDiscordEmoji(platformCode: string): Emojis {
     const plat = CMS._constants.platforms?.find(p => p && p.code === platformCode)
-    if (plat) return Emojis.fromString(plat.assets.discordEmoji)
+    if (plat) return Emojis.fromString(plat.assets.discordEmoji) ?? Emojis.unknownPlatform
     return Emojis.unknownPlatform
   }
 
