@@ -25,4 +25,5 @@ COPY .gitignore .gitignore
 RUN yarn turbo run build --scope=@freestuffbot/manager --include-dependencies --no-deps
 # RUN apk del .build-deps
 
+EXPOSE 80
 ENTRYPOINT [ "yarn", "run-manager" ]

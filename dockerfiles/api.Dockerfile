@@ -23,4 +23,5 @@ COPY --from=builder /app/version .
 COPY .gitignore .gitignore
 RUN yarn turbo run build --scope=@freestuffbot/api --include-dependencies --no-deps
 
+EXPOSE 80
 ENTRYPOINT [ "yarn", "run-api" ]

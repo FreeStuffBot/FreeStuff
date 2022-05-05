@@ -22,4 +22,5 @@ COPY --from=builder /app/out/full/ .
 COPY .gitignore .gitignore
 RUN yarn turbo run build --scope=@freestuffbot/thumbnailer --include-dependencies --no-deps
 
+EXPOSE 80
 ENTRYPOINT [ "yarn", "run-thumbnailer" ]

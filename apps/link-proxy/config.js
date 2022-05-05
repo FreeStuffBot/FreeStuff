@@ -3,7 +3,7 @@ const loadArg = require('@freestuffbot/config/load-arg')
 
 /** @type {import('./src/types/config').configjs} */
 module.exports = {
-  port: loadArg('LINK_PROXY_PORT'),
+  port: loadArg('LINK_PROXY_PORT') || 80,
   mongoUrl: loadArg('LINK_PROXY_MONGO_URL'),
   firebase: {
     key: loadArg('LINK_PROXY_FIREBASE_API_KEY'),

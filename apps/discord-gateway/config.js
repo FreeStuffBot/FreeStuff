@@ -6,7 +6,7 @@ const minutes = x => x * 60 * 1000
 const seconds = x => x * 1000
 
 module.exports = {
-  port: loadArg('DISCORD_GATEWAY_PORT'),
+  port: loadArg('DISCORD_GATEWAY_PORT') || 80,
   apiToken: loadArg('DISCORD_GATEWAY_API_TOKEN'),
   apiUser: loadArg('DISCORD_GATEWAY_API_USER'),
   baseUrl: 'https://discord.com/api/v9',

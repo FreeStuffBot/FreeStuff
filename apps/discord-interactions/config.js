@@ -2,7 +2,7 @@ const loadArg = require('@freestuffbot/config/load-arg')
 
 
 module.exports = {
-  port: loadArg('DISCORD_INTERACTIONS_PORT'),
+  port: loadArg('DISCORD_INTERACTIONS_PORT') || 80,
   discordClientId: loadArg('DISCORD_INTERACTIONS_CLIENTID'),
   discordPublicKey: loadArg('DISCORD_INTERACTIONS_PUBKEY'),
   mongoUrl: loadArg('DISCORD_INTERACTIONS_MONGO_URL'),

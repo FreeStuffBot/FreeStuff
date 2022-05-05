@@ -2,7 +2,7 @@ const loadArg = require('@freestuffbot/config/load-arg')
 
 
 module.exports = {
-  port: loadArg('API_PORT'),
+  port: loadArg('API_PORT') || 80,
   redis: null,
   mongoUrl: loadArg('API_MONGO_URL'),
   rabbitUrl: loadArg('API_RABBIT_URL'),
