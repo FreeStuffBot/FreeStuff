@@ -14,7 +14,7 @@ module.exports = {
     currconvUpdateInterval: 1000 * 60 * 60 * 24
   },
   keys: {
-    privateKeyUri: './vault/serverauth-private.key'
+    privateKeyUri: loadArg('API_PRIVATE_KEY_URI')
   },
   oauth: {
     discord: {
@@ -24,7 +24,7 @@ module.exports = {
   },
   thirdparty: {
     gibu: {
-      gqlUri: 'http://localhost:3030/graphql'
+      gqlUri: loadArg('NETWORK_GIBU_GQL_ENDPOINT')
     }
   },
   network: {
