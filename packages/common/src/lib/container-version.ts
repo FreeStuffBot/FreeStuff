@@ -16,7 +16,7 @@ export default class ContainerVersion {
 
   private static readVersion(): string {
     if (!fs.existsSync('/app/version')) return 'NONE'
-    return fs.readFileSync('/app/version').toString()?.substring(0, 8)
+    return fs.readFileSync('/app/version').toString()?.substring(0, 7)
   }
 
   public static printVersion(): void {
