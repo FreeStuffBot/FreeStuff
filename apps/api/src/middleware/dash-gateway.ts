@@ -42,6 +42,9 @@ export default function dashGateway(scope: string): (req: Request, res: Response
       .map(s => s.split('.').join('\\.'))
       .map(s => s.split('*').join('.*'))
       .map(s => `^${s}$`)
+    
+    if (!res.locals.user)
+      return ReqError.invalidAuth(res)
 
     // check scopes
     for (const item of scopes) {
