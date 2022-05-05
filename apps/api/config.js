@@ -6,8 +6,8 @@ module.exports = {
   redis: null,
   mongoUrl: loadArg('API_MONGO_URL'),
   rabbitUrl: loadArg('API_RABBIT_URL'),
-  dashboardCorsOrigin: 'http://localhost:5522',
-  dashboardOauthCallbackUrl: 'http://localhost:5522/oauth/callback',
+  dashboardCorsOrigin: loadArg('API_DASH_CORS_ORIGIN'),
+  dashboardOauthCallbackUrl: loadArg('API_DASH_OAUTH_CALLBACK_URL'),
   behavior: {
     desiredGuildCountPerBucket: 250,
     resolvingCacheMaxAge: 1000 * 60 * 5,
@@ -23,9 +23,6 @@ module.exports = {
     }
   },
   thirdparty: {
-    firebase: {
-      key: loadArg('API_THIRDPARTY_FIREBASE_KEY')
-    },
     gibu: {
       gqlUri: 'http://localhost:3030/graphql'
     }

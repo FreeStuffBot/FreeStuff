@@ -24,10 +24,9 @@ export async function getChannel(req: Request, res: Response) {
 
   if (resolveItems) {  
     out.resolved = {}
-    const resolving = out.products.map(async id => (
-      [ id, await Resolver.resolveProduct(id) ] as
-      [ number, ProductDataType ]
-    ))
+    const resolving = out.products.map(async (id: number) => ([
+      id, await Resolver.resolveProduct(id)
+    ])) as [ number, ProductDataType ][]
 
     for (const [ id, data ] of await Promise.all(resolving)) {
       if (!data) continue

@@ -23,9 +23,6 @@ export type configjs = {
     }
   }
   thirdparty: {
-    firebase: {
-      key: string
-    }
     gibu: {
       gqlUri: string
     }
