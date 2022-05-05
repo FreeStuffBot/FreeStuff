@@ -1,5 +1,6 @@
 const fs = require('fs')
-const devConfig = require('./dev-config')
+let devConfig
+try { devConfig = require('./dev-config') } catch() {}
 
 const secretPrefix = 'FSB_'
 const secretSuffix = ''
@@ -8,7 +9,7 @@ const secretSuffix = ''
 module.exports = function loadArg(name) {
   name = secretPrefix + name + secretSuffix
   try {
-    if (devConfig.env[name] === undefined)
+    if (!devConfig || devConfig.env[name] === undefined)
       throw new Error()
     return devConfig.env[name]
   } catch (ex) {
