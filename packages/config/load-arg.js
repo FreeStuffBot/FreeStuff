@@ -1,6 +1,6 @@
 const fs = require('fs')
 let devConfig
-try { devConfig = require('./dev-config') } catch() {}
+try { devConfig = require('./dev-config') } catch (ex) {}
 
 const secretPrefix = 'FSB_'
 const secretSuffix = ''
