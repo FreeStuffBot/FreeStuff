@@ -19,6 +19,7 @@ type UserDetails = {
   username: string
   discriminator: string
   flags: number
+  avatar: string
   banner: string | null
   banner_color: string
   accent_color: number
@@ -37,7 +38,6 @@ export type UserDataType = {
   _id: string
   display: string
   scope: string[]
-  avatar: string
   logins: UserLogin[]
   data: UserDetails
 }
@@ -50,7 +50,6 @@ export type SanitizedUserType = {
   id: string
   display: string
   scope: string[]
-  avatar: string
 }
 
 
@@ -68,6 +67,7 @@ export const UserDetailsSchema = new Schema({
   username: String,
   discriminator: String,
   flags: Number,
+  avatar: String,
   banner: String,
   banner_color: String,
   accent_color: Number,
@@ -82,7 +82,6 @@ export const UserSchema = new Schema({
   _id: String,
   display: String,
   scope: [ String ],
-  avatar: String,
   logins: [ UserLoginSchema ],
   data: UserDetailsSchema
 }, { collection: 'users' })

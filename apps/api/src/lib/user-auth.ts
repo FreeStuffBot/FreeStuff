@@ -3,7 +3,7 @@
  * @copyright 2020 File Authors
  */
 
-import { UserType } from '@freestuffbot/common'
+import { UserDataType, UserType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from '../database/mongo'
 import IPApi from './ipapi'
@@ -30,8 +30,10 @@ export default class UserAuth {
     const found: UserType | undefined = await Mongo.User.findById(user.id)
 
     if (found) {
-      found.data = user
+      console.log(found, user)
+      found.data = UserAuth.compileDuserData(user)
       await UserAuth.registerNewLogin(req, found)
+      await found.save()
 
       return [ await JWT.signAuth({ id: found._id }), found, false ]
     }
@@ -39,6 +41,7 @@ export default class UserAuth {
     const duser: UserType = new Mongo.User({
       _id: user.id,
       display: user.username,
+      data: UserAuth.compileDuserData(user),
       scope: [],
       logins: []
     })
@@ -64,7 +67,12 @@ export default class UserAuth {
       la: geoloc?.latitude ?? 0,
       lo: geoloc?.longitude ?? 0
     })
-    user.save()
+  }
+
+  private static compileDuserData(user: OauthDiscordUserObject): UserDataType['data'] {
+    const out = {...user}
+    delete out._accessToken
+    return out
   }
 
 }

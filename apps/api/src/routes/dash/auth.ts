@@ -84,7 +84,7 @@ async function packageLang() {
     LanguageType[]
   ] = await Promise.all([
     Mongo.User
-      .find({})
+      .find({ scope: { $exists: true, $ne: [] } })
       .exec(),
     Mongo.Language
       .find({})

@@ -22,7 +22,7 @@ export default class CurrConv {
   public static convert(usd: number, to: string) {
     if (!this.priceMap.has(to)) return undefined
     if (this.priceMap.get(to) < 0.01) return this.priceMap.get(to) * usd
-    return ~~(this.priceMap.get(to) * usd * 100) / 100
+    return ~~(this.priceMap.get(to) * usd)
   }
 
 }

@@ -48,7 +48,8 @@ export async function postPlatform(req: Request, res: Response) {
   const platform: PlatformType = new Mongo.Platform(data)
   await platform.save()
   
-  res.status(200).json({ id: body.id })
+  const out = PlatformSanitizer.sanitize(data)
+  res.status(200).json(out)
 }
 
 

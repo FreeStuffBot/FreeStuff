@@ -40,7 +40,8 @@ export async function postCurrency(req: Request, res: Response) {
   const currency: CurrencyType = new Mongo.Currency(data)
   await currency.save()
   
-  res.status(200).json({ id: body.id })
+  const out = CurrencySanitizer.sanitize(data)
+  res.status(200).json(out)
 }
 
 

@@ -7,16 +7,16 @@ const secretSuffix = ''
 
 
 module.exports = function loadArg(name) {
-  name = secretPrefix + name + secretSuffix
+  const extName = secretPrefix + name + secretSuffix
   try {
     if (!devConfig || devConfig.env[name] === undefined)
       throw new Error()
     return devConfig.env[name]
   } catch (ex) {
     try {
-      return fs.readFileSync('/run/secrets/' + name).toString()
+      return fs.readFileSync('/run/secrets/' + extName).toString()
     } catch (ex) {
-      return process.env[name]
+      return process.env[extName]
     }
   }
 }

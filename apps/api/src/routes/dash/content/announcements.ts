@@ -19,7 +19,7 @@ export async function postAnnouncement(req: Request, res: Response) {
   if (!items?.length) return ReqError.badRequest(res, 'Missing products', 'Products list empty or null')
 
   const itemsValid = await Promise.all(items.map(_id => Mongo.Product.findOne({ _id, status: 'approved' }).exec() as Promise<ProductType>))
-  if (!itemsValid.every(i => !!i)) return ReqError.badRequest(res, 'Invalid products', 'One or more products provided does not exist or is not approved.')
+  if (!itemsValid.every(i => !!i)) return ReqError.badRequest(res, 'Invalid products', 'One or more products provided do not exist or are not approved.')
 
   const announcement = createNewAnnouncement()
   announcement._id = id

@@ -62,7 +62,7 @@ export default class GibuProductDetails {
     for (const image of images) {
       if (image.name === 'background_landscape')
         return image.url
-      if (image.name === 'thumbnail')
+      if (image.name === 'landscape')
         return image.url
     }
 
@@ -70,7 +70,7 @@ export default class GibuProductDetails {
     for (const image of images) {
       if (image.name === 'trailer_thumbnail')
         return image.url
-      if (image.name === 'promo_0')
+      if (image.name === 'thumbnail')
         return image.url
     }
 
