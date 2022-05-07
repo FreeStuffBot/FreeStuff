@@ -3,7 +3,7 @@ import Tracker from './tracker'
 import { Logger, SanitizedGuildType } from '@freestuffbot/common'
 
 
-export default function guildDataToViewString(g: SanitizedGuildType, maxLength = 2048, errorMessage?: string, includeMetainfo = false) {
+export default function guildDataToViewString(g: SanitizedGuildType, maxLength = 2048, errorMessage?: string, includeMetainfo = false): string {
   const gd = { ...g } as any || { error: 'Guild Data Error' }
   if (!gd.error) {
     delete gd._changes
@@ -13,7 +13,7 @@ export default function guildDataToViewString(g: SanitizedGuildType, maxLength =
     gd.currency = gd.currency?.name ?? '<unknown>'
     gd.price = gd.price?.name ?? '<unknown>'
     gd.theme = gd.theme?.name ?? '<unknown>'
-    gd.platformsList = gd.platformsList?.map(p => p.id) ?? []
+    gd.platformsList = gd.platformsList?.map(p => p.name) ?? []
     gd.trackerList = Object
       .entries(Tracker.TRACKING_POINT ?? {})
       .filter(v => (gd.tracker & v[1]) !== 0)
@@ -24,7 +24,14 @@ export default function guildDataToViewString(g: SanitizedGuildType, maxLength =
     gd.role = gd.role?.toString?.() ?? gd.role
   }
 
-  let guilddata = `\`\`\`json\n${JSON.stringify(gd, null, 2)}\`\`\``
+  delete gd.sharder
+  delete gd.settings
+  delete gd.filter
+  delete gd.tracker
+  delete gd.platformsRaw
+
+  let guilddata = `\`\`\`yaml\n${yamlifyJson(gd)}\`\`\``
+  if (guilddata.length > maxLength) guilddata = `\`\`\`json\n${JSON.stringify(gd, null, 2)}\`\`\``
   if (guilddata.length > maxLength) guilddata = `\`\`\`json\n${JSON.stringify(gd, null, 1)}\`\`\``
   if (guilddata.length > maxLength) guilddata = `\`\`\`json\n${JSON.stringify(gd)}\`\`\``
   if (guilddata.length > maxLength) {
@@ -33,4 +40,18 @@ export default function guildDataToViewString(g: SanitizedGuildType, maxLength =
   }
 
   return guilddata
+}
+
+function yamlifyJson(object: any) {
+  let out = ''
+  for (const [ key, value ] of Object.entries(object)) {
+    out += `\n${key}:`
+    if (typeof value === 'object')
+      out += `\n${(value as any[]).map(v => ` - ${v}`).join('\n')}`
+    else if (typeof value === 'boolean')
+      out += ` ${value ? 'Enabled' : 'Disabled'}`
+    else
+      out += ` ${value}`
+  }
+  return out.substring(1)
 }

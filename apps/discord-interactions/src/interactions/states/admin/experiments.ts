@@ -1,6 +1,6 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData } from 'cordo'
-import { Emojis, Errors } from '@freestuffbot/common'
-import Experiments from '../../../lib/experiments'
+import { CMS, Emojis, Errors } from '@freestuffbot/common'
+import Experiments from '@freestuffbot/common/dist/lib/experiments'
 
 
 export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
@@ -8,7 +8,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
   if (err) return Errors.handleErrorAndCommunicate(err)
 
   const description = Object
-    .values(Experiments.getRawData())
+    .values(CMS.experiments)
     .map((ex: any) => `**${ex._id}**\n${Experiments.runExperimentOnServer(ex._id, guildData) ? '🗹' : '☐'} ${~~(ex.amount * 1000) / 10}% ${ex.group ? `of ${ex.group}` : ''}`)
     .join('\n\n')
 

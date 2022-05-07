@@ -31,7 +31,7 @@ export default async function (i: ReplyableComponentInteraction) {
 
   i.replyPrivately({
     title: '=settings_guilddata_success_1',
-    description: `**What we store:**\n\`\`\`${JSON.stringify(raw)}\`\`\`\n**Human readable**:\n${rendered}\n**About you specifically:**\nNothing :sparkles:`,
+    description: `**What we store:**\n\`\`\`${JSON.stringify(raw)}\`\`\`\n**Human readable**:\n${rendered}\n**Personalized Data:**\nNone :sparkles:`,
     components: [
       {
         type: ComponentType.BUTTON,

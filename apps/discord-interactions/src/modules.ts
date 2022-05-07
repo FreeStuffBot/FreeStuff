@@ -30,24 +30,6 @@ export default class Modules {
     }))
   }
 
-  public static async loadCmsData(retryDelay = 1000): Promise<void> {
-    const success = await CMS.loadAll()
-    if (success) {
-      Logger.process('CMS data loaded.')
-      return
-    }
-
-    Logger.warn('Loading data from CMS failed. Retrying soon.')
-    // await new Promise(res => setTimeout(res, retryDelay))
-
-    // if (retryDelay > 1000 * 60 * 2) {
-    //   Logger.error('CMS data retry delay reached two minutes. Restarting.')
-    //   process.exit(-1)
-    // }
-
-    // await Modules.loadCmsData(retryDelay * 2)
-  }
-
   public static async loadProductChannnels() {
     for (const channel of ProductDiscountTypeArray)
       FreestuffGateway.updateChannel(channel as ProductDiscountTypeType)
@@ -57,10 +39,7 @@ export default class Modules {
     Cordo.init({
       botId: config.discordClientId,
       contextPath: [ __dirname, 'interactions' ],
-      // TODO(high) remote config
-      // botAdmins: (id: string) => RemoteConfig.botAdmins.includes(id),
-      // maybe we don't need to defer every time... hmmm...
-      // immediateDefer: (_) => true,
+      botAdmins: (id: string) => !!CMS.remoteConfig[1]?.global?.botAdmins?.includes(id),
       texts: {
         interaction_not_owned_title: '=interaction_not_owned_1',
         interaction_not_owned_description: '=interaction_not_owned_2',
@@ -92,6 +71,7 @@ export default class Modules {
 
       return out as GuildData
     })
+    // not needed because we dont send out any api requests, we just respond to incoming webhooks
     // Cordo.setMiddlewareApiResponseHandler(res => Metrics.counterApiResponses.labels({ status: res.status }).inc())
   }
 
@@ -101,11 +81,23 @@ export default class Modules {
 
     app.post('/', Cordo.useWithExpress(config.discordPublicKey))
 
-    app.all('/umi/*', UmiLibs.ipLockMiddleware(config.network.umiAllowedIpRange))
-    app.get('/umi/metrics', Metrics.endpoint())
+    Modules.enableUmi(app)
 
     app.listen(config.port, undefined, () => {
       Logger.process(`Server launched at port ${config.port}`)
+    })
+  }
+
+  public static enableUmi(server: express.Express) {
+    UmiLibs.mount(server, {
+      allowedIpRange: config.network.umiAllowedIpRange,
+      renderMetrics: Metrics.endpoint(),
+      fetch: {
+        cmsConstants: 1000 * 60 * 60 * 6, // every 6h
+        languages: 1000 * 60 * 60 * 6, // every 6h
+        experiments: 1000 * 60 * 60 * 6, // every 6h
+        remoteConfig: 1000 * 60 * 60 * 6, // every 6h
+      }
     })
   }
 

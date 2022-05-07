@@ -5,7 +5,7 @@ import ReqError from '../../lib/req-error'
 import { rateLimiter as limit } from '../../middleware/rate-limits'
 
 import { apiGateway } from '../../middleware/api-gateway'
-import { getCmsConstants, getLanguages, getRemoteConfig } from './data'
+import { getCmsConstants, getExperiments, getLanguages, getRemoteConfig } from './data'
 
 
 export default class InternalRouter {
@@ -36,6 +36,7 @@ export default class InternalRouter {
     r.get('/data/languages', getLanguages)
     r.get('/data/cms-constants', getCmsConstants)
     r.get('/data/remote-config', getRemoteConfig)
+    r.get('/data/experiments', getExperiments)
 
 
     /* Default 404 handler */

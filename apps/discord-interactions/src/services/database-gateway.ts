@@ -1,4 +1,4 @@
-import { FlipflopCache, Fragile, SanitizedGuildType, GuildSanitizer, LanguageDataType, FragileError, SanitizedGuildWithChangesType, GuildDataType, SettingPriceClass, Util, SettingTheme, Localisation, SanitizedCurrencyType, SanitizedPlatformType, Errors } from "@freestuffbot/common"
+import { FlipflopCache, Fragile, SanitizedGuildType, GuildSanitizer, LanguageDataType, FragileError, SanitizedGuildWithChangesType, GuildDataType, SettingPriceClass, Util, SettingTheme, Localisation, SanitizedCurrencyType, SanitizedPlatformType, Errors, CMS } from "@freestuffbot/common"
 import { Long } from "bson"
 import { config } from ".."
 import Metrics from "../lib/metrics"
@@ -22,20 +22,28 @@ export default class DatabaseGateway {
     const prom = this.fetchGuild(guildid)
     DatabaseGateway.pendingGuilds.set(guildid, prom)
     const fresh = await prom
+
+    DatabaseGateway.pendingGuilds.delete(guildid)
     if (fresh[0]) return fresh
 
     DatabaseGateway.guildCache.put(guildid, fresh[1])
-    DatabaseGateway.pendingGuilds.delete(guildid)
     return fresh
   }
 
   public static async fetchGuild(guildid: string): Promise<Fragile<SanitizedGuildType>> {
     const raw = await Mongo.findById('guilds', Long.fromString(guildid))
 
-    if (!raw)
-      return Errors.throwStderrNoGuilddata('discord-interactions::database-gateway')
+    if (!raw) // mo guild found
+      return Errors.throwStderrNoGuilddata('discord-interactions::database-gateway.none')
+
+    if (!CMS.currencies[1]) // currencies not loaded
+      return Errors.throwStderrNoGuilddata('discord-interactions::database-gateway.currencies')
+
+    if (!CMS.platforms[1]) // platforms not loaded
+      return Errors.throwStderrNoGuilddata('discord-interactions::database-gateway.platforms')
 
     const sanitized = GuildSanitizer.sanitize(raw)
+
     return Errors.success(sanitized)
   }
 

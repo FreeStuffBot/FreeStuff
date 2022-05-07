@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosResponse } from "axios"
+import axios, { AxiosResponse } from "axios"
 import * as os from "os"
 
 
@@ -40,7 +40,7 @@ export default class ApiInterface {
 
   //
 
-  public static async loadData<T>(set: 'languages' | 'cms-constants'): Promise<T> {
+  public static async loadData<T>(set: 'languages' | 'cms-constants' | 'remote-config' | 'experiments'): Promise<T> {
     const res = await ApiInterface.makeRequest('GET', 'internal', `/data/${set}`)
 
     if (res.status !== 200)

@@ -6,6 +6,7 @@ import { SanitizedPlatformType } from "../models/platform.model"
 import { Fragile } from "../struct/fragile.struct"
 import ApiInterface from "./api-interface"
 import Errors from "./errors"
+import Experiments, { Experiment } from "./experiments"
 import Localisation from "./localisation"
 
 
@@ -14,10 +15,19 @@ type CmsConstantsType = {
   platforms: SanitizedPlatformType[]
 }
 
+type RemoteConfigType = {
+  global: {
+    excessiveLogging: boolean
+    botAdmins: string[]
+  }
+}
+
 export default class CMS {
 
   private static _languages: LanguageDataType[] = null
   private static _constants: CmsConstantsType = { currencies: null, platforms: null }
+  private static _config: RemoteConfigType = null
+  private static _experiments: Experiment[] = null
 
   //
 
@@ -42,6 +52,20 @@ export default class CMS {
     return Errors.throwStderrNotInitialized('common::cms.get.platforms')
   }
 
+  public static get remoteConfig(): Fragile<RemoteConfigType> {
+    if (CMS._config)
+      return Errors.success(CMS._config)
+
+    return Errors.throwStderrNotInitialized('common::cms.get.remoteconfig')
+  }
+
+  public static get experiments(): Fragile<Experiment[]> {
+    if (CMS._experiments)
+      return Errors.success(CMS._experiments)
+
+    return Errors.throwStderrNotInitialized('common::cms.get.experiments')
+  }
+
   //
 
   public static getPlatformIconUrl(platformCode: string): string {
@@ -61,7 +85,9 @@ export default class CMS {
   public static loadAll(): Promise<boolean> {
     return Promise.all([
       CMS.loadLanguages(),
-      CMS.loadConstants()
+      CMS.loadConstants(),
+      CMS.loadRemoteConfig(),
+      CMS.loadExperiments()
     ]).then(p => p.reduce((a, b) => a && b, true))
   }
 
@@ -94,6 +120,27 @@ export default class CMS {
         CMS._constants.platforms[platform.id] = platform
     }
 
+    return true
+  }
+
+  public static async loadRemoteConfig(): Promise<boolean> {
+    const conf = await ApiInterface.loadData<RemoteConfigType>('remote-config')
+
+    if (!conf)
+      return false
+
+    CMS._config = conf
+    return true
+  }
+
+  public static async loadExperiments(): Promise<boolean> {
+    const exp = await ApiInterface.loadData<Experiment[]>('experiments')
+
+    if (!exp)
+      return false
+
+    CMS._experiments = exp
+    Experiments.load(exp)
     return true
   }
 
