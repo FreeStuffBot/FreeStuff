@@ -11,15 +11,6 @@ export default function (_i: GenericInteraction, args: [ boolean ]): Interaction
     components: [
       {
         type: ComponentType.BUTTON,
-        style: ButtonStyle.SECONDARY,
-        custom_id: 'admin_print',
-        label: 'Print'
-      },
-      {
-        type: ComponentType.LINE_BREAK
-      },
-      {
-        type: ComponentType.BUTTON,
         style: args[0] ? ButtonStyle.SUCCESS : ButtonStyle.SECONDARY,
         custom_id: 'admin_refetch',
         label: '[Refetch]'

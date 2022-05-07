@@ -39,7 +39,14 @@ export async function getCmsConstants(req: Request, res: Response) {
 
 export async function getRemoteConfig(req: Request, res: Response) {
   // TODO(high)
-  res.status(200).json({ soon: 'tm' })
+  res.status(200).json({
+    global: {
+      botAdmins: [
+        '137258778092503042'
+      ],
+      soon: 'tm'
+    }
+  })
 }
 
 
