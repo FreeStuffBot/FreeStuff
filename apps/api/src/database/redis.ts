@@ -19,7 +19,7 @@ export default class Redis {
 
     Redis.client = redis.createClient(config.redis)
     Redis.client.on('error', (err) => {
-      // TODO sentry
+      // TODO(low) sentry
       // SentryManager.report(err)
     })
   }

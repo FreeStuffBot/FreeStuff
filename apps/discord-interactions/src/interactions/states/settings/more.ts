@@ -10,7 +10,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_MORE')
 
   // const debugInfo = `\n\n**Debug info:** Container \`${hostname() || 'unknown'}\` ─ Node \`${process.env.NODE_ID}\` ─ Version \`${VERSION}\` ─ Guildid \`${i.guild_id}\``
-  const debugInfo = 'TODO' // TODO show real debug data
+  const debugInfo = 'TODO' // TODO(low) show real debug data
 
   return {
     title: '=settings_more_ui_1',

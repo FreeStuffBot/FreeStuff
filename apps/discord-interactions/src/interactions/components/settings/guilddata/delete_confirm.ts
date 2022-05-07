@@ -14,7 +14,7 @@ export default async function (i: ReplyableComponentInteraction) {
   onGuildDataDeleteCooldown.push(i.guild_id)
   setTimeout(() => onGuildDataDeleteCooldown.splice(0, 1), 1000 * 60 * 60 * 12)
 
-  // TODO actually delete the stuff from db
+  // TODO(medium) actually delete the stuff from db
   // await DatabaseManager.removeGuild(Long.fromString(i.guild_id))
   // await DatabaseManager.addGuild(i.guild_id)
 

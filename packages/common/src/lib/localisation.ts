@@ -129,7 +129,7 @@ export default class Localisation {
    * Renders a price tag properly
    */
   public static renderPriceTag(_cont: LocaleContainer, _game: SanitizedProductType) {
-    // TODO have currency connected to language
+    // TODO(medium) have currency connected to language
     // const price = game.org_price[data.currency.code] || game.org_price.euro
     // return Localisation.getLine(data, 'currency_sign_position') === 'after'
     //   ? `${price}${data.currency.symbol}`

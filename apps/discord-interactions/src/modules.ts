@@ -57,7 +57,7 @@ export default class Modules {
     Cordo.init({
       botId: config.discordClientId,
       contextPath: [ __dirname, 'interactions' ],
-      // TODO remote config
+      // TODO(high) remote config
       // botAdmins: (id: string) => RemoteConfig.botAdmins.includes(id),
       // maybe we don't need to defer every time... hmmm...
       // immediateDefer: (_) => true,

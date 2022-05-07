@@ -11,7 +11,7 @@ export default function (i: ReplyableCommandInteraction) {
     })
   }
 
-  // TODO remote config
+  // TODO(high) remote config
   // if (!PermissionStrings.containsManageServer(i.member.permissions) && !RemoteConfig.botAdmins.includes(i.user.id)) {
   if (!PermissionStrings.containsManageServer(i.member.permissions)) {
     return i.replyPrivately({

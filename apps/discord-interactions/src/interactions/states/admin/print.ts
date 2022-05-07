@@ -7,7 +7,7 @@ import { Emojis } from '@freestuffbot/common'
 // import { Core } from '../../..'
 
 
-// TODO everything here
+// TODO(low) everything here
 export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
   // try {
   //   const data = await Database

@@ -44,16 +44,16 @@ function localizeProduct(product: SanitizedProductType, langs: LanguageDataType[
     const get = (key: string) => (l[key] ?? fallback[key])
 
     const flags = []
-    // TODO check language keys here, they dont seem to exist
+    // TODO(low) check language keys here, they dont seem to exist
     if ((product.flags & ProductFlag.TRASH) !== 0) flags.push(get('product_meta_flag_trash'))
     if ((product.flags & ProductFlag.THIRDPARTY) !== 0) flags.push(get('product_meta_flag_thirdparty'))
     if ((product.flags & ProductFlag.PERMANENT) !== 0) flags.push(get('product_meta_flag_permanent'))
     if ((product.flags & ProductFlag.STAFF_PICK) !== 0) flags.push(get('product_meta_flag_staff_pick'))
 
-    // TODO localize the platform name
+    // TODO(medium) localize the platform name
     const platform = product.platform
 
-    // TODO give each language a default currency and use that here
+    // TODO(high) give each language a default currency and use that here
     const orgPrice = 'TODO'
 
     const until = date ? paparsya(

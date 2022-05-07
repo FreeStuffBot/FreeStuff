@@ -143,7 +143,7 @@ export default class BaseTheme {
     if (!settings.themeImages) return undefined
 
     return {
-      // TODO external platform icon
+      // TODO(low) external platform icon
       // url: (product.flags & ProductFlag.THIRDPARTY)
       //   ? Const.platformIconsExt[product.platform]
       //   : Const.platformIcons[product.platform],

@@ -18,7 +18,7 @@ export default class Upstream {
   }
 
   private static handleResponse(res: AxiosResponse) {
-    // TODO handle status
+    // TODO(medium) handle status
     // • log it to prometheus
     // • handle rate limits properly
     console.log('http ', res.status)

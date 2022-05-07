@@ -159,8 +159,7 @@ async function checkRequirements(i: ReplyableComponentInteraction, channel: Data
     return false
   }
 
-  // TODO check if webhook exists
-  // TODO THIS IS IMPORTANT!
+  // TODO(highest) check if webhook exists
   // just GET on the webhook url to see if it's status 200, but rate limits somehow think about
 
   return true

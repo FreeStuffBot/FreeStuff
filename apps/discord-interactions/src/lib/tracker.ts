@@ -65,7 +65,7 @@ export default class Tracker {
     if (!g) return
     const state = this.syncIsTracked(g, hint)
     if (state === value) return // no change
-    // TODO save tracker changes to database
+    // TODO(medium) save tracker changes to database
     // DatabaseManager?.changeSetting(g, 'tracker', g.tracker ^ Tracker.TRACKING_POINT[hint])
   }
 

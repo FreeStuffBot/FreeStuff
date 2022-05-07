@@ -29,7 +29,7 @@ export default class Metrics {
   private static async refreshProducts() {
     const newCache: typeof Metrics.productCache = new Set()
     const prods = await Metrics.getActiveProducts()
-    // TODO LINK PROXY SERVICE ADD DELAY BETWEEN GOOGLE ANALYTICS REQUESTS (POTENTIAL 5/s RATELIMIT)
+    // TODO(low) LINK PROXY SERVICE ADD DELAY BETWEEN GOOGLE ANALYTICS REQUESTS (POTENTIAL 5/s RATELIMIT)
     const betterProds = await Promise.all(prods.map(Metrics.fetchAndApplyAnalytics))
     betterProds
       .filter(prod => prod?.data)

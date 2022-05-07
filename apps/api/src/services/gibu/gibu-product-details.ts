@@ -44,7 +44,7 @@ export default class GibuProductDetails {
           browser: url,
           default: url
         },
-        platform: data.store, // TODO resolve gibu store type to custom platform type
+        platform: data.store, // TODO(high) resolve gibu store type to custom platform type
         flags: 0,
         notice: null,
         platformMeta: {

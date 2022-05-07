@@ -12,7 +12,7 @@ export const router: Router = Router()
 
 //
 
-// TODO re-map new ProductType to old GameData object
+// TODO(medium) re-map new ProductType to old GameData object
 function getInfo(field: string) {
   return async (req: Request, res: Response) => {
     if (!req.params?.id)
