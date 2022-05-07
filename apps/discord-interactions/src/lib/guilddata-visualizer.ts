@@ -10,12 +10,12 @@ export default function guildDataToViewString(g: SanitizedGuildType, maxLength =
     if (includeMetainfo)
       gd.host = hostname()
 
-    gd.currency = gd.currency.name
-    gd.price = gd.price.name
-    gd.theme = gd.theme.name
-    gd.platformsList = gd.platformsList.map(p => p.id)
+    gd.currency = gd.currency?.name ?? '<unknown>'
+    gd.price = gd.price?.name ?? '<unknown>'
+    gd.theme = gd.theme?.name ?? '<unknown>'
+    gd.platformsList = gd.platformsList?.map(p => p.id) ?? []
     gd.trackerList = Object
-      .entries(Tracker.TRACKING_POINT)
+      .entries(Tracker.TRACKING_POINT ?? {})
       .filter(v => (gd.tracker & v[1]) !== 0)
       .map(v => v[0])
 

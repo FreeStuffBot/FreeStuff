@@ -38,14 +38,14 @@ export default class Modules {
     }
 
     Logger.warn('Loading data from CMS failed. Retrying soon.')
-    await new Promise(res => setTimeout(res, retryDelay))
+    // await new Promise(res => setTimeout(res, retryDelay))
 
-    if (retryDelay > 1000 * 60 * 2) {
-      Logger.error('CMS data retry delay reached two minutes. Restarting.')
-      process.exit(-1)
-    }
+    // if (retryDelay > 1000 * 60 * 2) {
+    //   Logger.error('CMS data retry delay reached two minutes. Restarting.')
+    //   process.exit(-1)
+    // }
 
-    await Modules.loadCmsData(retryDelay * 2)
+    // await Modules.loadCmsData(retryDelay * 2)
   }
 
   public static async loadProductChannnels() {

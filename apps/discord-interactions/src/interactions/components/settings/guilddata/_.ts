@@ -5,13 +5,19 @@ import Tracker from '../../../../lib/tracker'
 
 
 export default async function (i: ReplyableComponentInteraction) {
-  const [ err, guildData ] = await i.guildData.fetch()
+  const [ err, guildDataRaw ] = await i.guildData.fetch()
   if (err) return Errors.handleErrorAndCommunicate(err)
+
+  const guildData = { ...guildDataRaw }
 
   Tracker.set(guildData, 'ACTION_DATA_REQUESTED')
 
+  if (guildData.webhook)
+    guildData.webhook = `${guildData.webhook.split('/')[0]}/${guildData.webhook.split('/')[1].substring(0, 3)}...${guildData.webhook.substring(guildData.webhook.length - 3)}`
+
   const errormsg = Localisation.text(i, '=settings_guilddata_display_error', { invite: Const.links.supportInvite })
-  const guilddata = guildDataToViewString(guildData, 2000, errormsg)
+  const rendered = guildDataToViewString(guildData, 2000, errormsg)
+
   const raw = {
     id: guildData.id.toString(),
     sharder: guildData.sharder,
@@ -25,7 +31,7 @@ export default async function (i: ReplyableComponentInteraction) {
 
   i.replyPrivately({
     title: '=settings_guilddata_success_1',
-    description: `**What we store:**\n\`\`\`${JSON.stringify(raw)}\`\`\`\n**Human readable**:\n${guilddata}\n**About you specifically:**\nNothing :sparkles:`,
+    description: `**What we store:**\n\`\`\`${JSON.stringify(raw)}\`\`\`\n**Human readable**:\n${rendered}\n**About you specifically:**\nNothing :sparkles:`,
     components: [
       {
         type: ComponentType.BUTTON,
