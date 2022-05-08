@@ -1,4 +1,5 @@
 import { ProductDataType, ProductDiscountTypeType, ProductKindType } from "@freestuffbot/common"
+import Mongo from "../../database/mongo"
 import GibuGqlCore from "./gibu-gql-core"
 import GibuGqlQueries from "./gibu-gql-queries"
 
@@ -15,6 +16,7 @@ export default class GibuProductDetails {
     if (!data) return null
 
     const thumbnail = GibuProductDetails.findBestThumbnail(data.images)
+    const platform = await this.gibuStoreToFsbPlatform(data.store)
 
     return {
       uuid: data.uuid,
@@ -44,7 +46,7 @@ export default class GibuProductDetails {
           browser: url,
           default: url
         },
-        platform: data.store, // TODO(high) resolve gibu store type to custom platform type
+        platform, // TODO(medium) test this
         flags: 0,
         notice: null,
         platformMeta: {
@@ -81,6 +83,19 @@ export default class GibuProductDetails {
     if (inputType === 'free') return 'keep'
     if (inputType === 'timed') return 'timed'
     return 'other'
+  }
+
+  private static async gibuStoreToFsbPlatform(name: string): Promise<string> {
+    const res = await Mongo.Platform
+      .findOne({ gibuRef: name })
+      .lean(true)
+      .select({ code: 1 })
+      .exec()
+      .catch(() => null)
+
+    if (!res) return ''
+
+    return res.code
   }
 
 }

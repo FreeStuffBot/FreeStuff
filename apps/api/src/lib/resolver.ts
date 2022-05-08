@@ -1,4 +1,4 @@
-import { AnnouncementDataType, LanguageDataType, ProductDataType } from "@freestuffbot/common"
+import { AnnouncementDataType, CurrencyDataType, LanguageDataType, ProductDataType } from "@freestuffbot/common"
 import Mongo from "../database/mongo"
 
 
@@ -14,9 +14,10 @@ export default class Resolver {
       .findById(id)
       .lean(true)
       .exec()
-      .catch(console.error)
+      .catch(() => null)
 
-    Resolver.productCache.set(id, data)
+    if (data)
+      Resolver.productCache.set(id, data)
     return data
   }
 
@@ -32,9 +33,10 @@ export default class Resolver {
       .findById(id)
       .lean(true)
       .exec()
-      .catch(console.error)
+      .catch(() => null)
 
-    Resolver.announcementCache.set(id, data)
+    if (data)
+      Resolver.announcementCache.set(id, data)
     return data
   }
 
@@ -50,9 +52,10 @@ export default class Resolver {
       .findById(id)
       .lean(true)
       .exec()
-      .catch(console.error)
+      .catch(() => null)
 
-    Resolver.languagesCache.set(id, data)
+    if (data)
+      Resolver.languagesCache.set(id, data)
     return data
   }
 
@@ -75,14 +78,37 @@ export default class Resolver {
       .lean(true)
       .select({ _id: 1 })
       .exec()
-      .catch(console.error)
+      .catch(() => null)
 
     const out: number[] = data
       ? data.map(d => d._id)
       : null
 
-    Resolver.channelsCache.set(name, out)
+    if (out)
+      Resolver.channelsCache.set(name, out)
     return out
+  }
+
+  //
+
+  private static currenciesCache: Map<string, CurrencyDataType> = new Map()
+
+  public static async resolveCurrency(code: string): Promise<CurrencyDataType> {
+    if (!code) return null
+
+    if (Resolver.currenciesCache.has(code))
+      return Resolver.currenciesCache.get(code)
+
+    const data = await Mongo.Product
+      .findById(code)
+      .lean(true)
+      .select({ _id: 1 })
+      .exec()
+      .catch(() => null) as CurrencyDataType
+
+    if (data)
+      Resolver.currenciesCache.set(code, data)
+    return data
   }
 
   //
@@ -92,6 +118,7 @@ export default class Resolver {
     Resolver.announcementCache.clear()
     Resolver.languagesCache.clear()
     Resolver.channelsCache.clear()
+    Resolver.currenciesCache.clear()
   }
 
 }

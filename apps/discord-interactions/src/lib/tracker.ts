@@ -1,5 +1,6 @@
 import { Errors, Fragile, SanitizedGuildType, Tracking } from '@freestuffbot/common'
 import { GuildData as GuildDataPending } from 'cordo'
+import DatabaseGateway from '../services/database-gateway'
 
 
 export type GuildDataResolveable = SanitizedGuildType | Promise<SanitizedGuildType> | GuildDataPending
@@ -65,8 +66,7 @@ export default class Tracker {
     if (!g) return
     const state = this.syncIsTracked(g, hint)
     if (state === value) return // no change
-    // TODO(medium) save tracker changes to database
-    // DatabaseManager?.changeSetting(g, 'tracker', g.tracker ^ Tracker.TRACKING_POINT[hint])
+    DatabaseGateway.pushGuildDataChange(g.id.toString(), 'tracker', g.tracker ^ Tracker.TRACKING_POINT[hint])
   }
 
 }

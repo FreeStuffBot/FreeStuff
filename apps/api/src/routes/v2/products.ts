@@ -54,6 +54,9 @@ function localizeProduct(product: SanitizedProductType, langs: LanguageDataType[
     const platform = product.platform
 
     // TODO(high) give each language a default currency and use that here
+    const defaultCurrencyCode = get('default_currency')
+    const defaultCurrency = await Resolver.resolveCurrency(defaultCurrencyCode)
+    if (!defaultCurrency) // krise
     const orgPrice = 'TODO'
 
     const until = date ? paparsya(
