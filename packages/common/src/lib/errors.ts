@@ -6,11 +6,16 @@ export default class Errors {
 
   public static readonly HTTP_STATUS_CONFLICT = 409
 
+  // misc / internal errors
   public static readonly STATUS_GENERIC = 10_000
   public static readonly STATUS_ERRNO = 10_001
   public static readonly STATUS_INTERNAL = 10_002
+
+  // missing / invalid state errors
   public static readonly STATUS_NOT_INITIALIZED = 10_010
   public static readonly STATUS_NO_GUILDDATA = 10_011
+
+  // user errors
   public static readonly STATUS_MISPERM_WEBHOOKS = 10_100
 
   //

@@ -98,7 +98,10 @@ export default class FlipflopCache<T> {
     }
   }
 
-  public remove(key: string): void {
+  public remove(key: string, deprecate = false): void {
+    if (deprecate && this.has(key))
+      this.onDeprecate?.(this.get(key))
+
     this.cacheBucketT.delete(key)
     this.cacheBucketF.delete(key)
   }

@@ -3,6 +3,7 @@ import RabbitHole, { TaskId } from '@freestuffbot/rabbit-hole'
 import { ReplyableComponentInteraction } from 'cordo'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import Tracker from '../../../lib/tracker'
+import DatabaseGateway from '../../../services/database-gateway'
 import DiscordGateway from '../../../services/discord-gateway'
 
 
@@ -15,7 +16,7 @@ export default async function (i: ReplyableComponentInteraction) {
   if (!i.guild_id)
     return i.ack()
 
-  /* Handle timeouts */
+  // Handle timeouts
   if (testCooldownHarsh.includes(i.guild_id))
     return i.ack()
   if (testCooldown.includes(i.guild_id)) {
@@ -28,7 +29,7 @@ export default async function (i: ReplyableComponentInteraction) {
     return
   }
 
-  /* Track the interaction */
+  // Track the interaction
   Tracker.set(i.guildData, 'ACTION_TEST_TRIGGERED')
 
   const [ err1, guildData ] = await i.guildData.fetch()
@@ -38,7 +39,7 @@ export default async function (i: ReplyableComponentInteraction) {
   if (err2) return Errors.handleErrorAndCommunicate(err2, i)
 
   const channel = getChannel(guildData, channels)
-  const goodToGo = await checkRequirements(i, channel)
+  const goodToGo = await checkRequirements(i, channel, guildData.webhook)
   if (!goodToGo) {
     testCooldown.push(i.guild_id)
     setTimeout(() => {
@@ -48,7 +49,12 @@ export default async function (i: ReplyableComponentInteraction) {
     return
   }
 
-  /* Send announcement */
+  // save changes so the publisher service has the newest data
+  // if changes have been saved wait a bit for it to sync
+  const changes = await DatabaseGateway.forceSaveChanges(i.guild_id)
+  if (changes) await new Promise(res => setTimeout(res, 200))
+
+  // Send announcement
   try {
     RabbitHole.publish({
       t: TaskId.DISCORD_TEST,
@@ -84,7 +90,7 @@ function getChannel(guildData: SanitizedGuildType, channels: DataChannel[]): Dat
   return channels.find(c => c.id === str) ?? null
 }
 
-async function checkRequirements(i: ReplyableComponentInteraction, channel: DataChannel): Promise<boolean> {
+async function checkRequirements(i: ReplyableComponentInteraction, channel: DataChannel, webhook: string): Promise<boolean> {
   if (!i.guildData) {
     // DatabaseManager.addGuild(i.guild_id)
     i.replyPrivately({
@@ -125,7 +131,7 @@ async function checkRequirements(i: ReplyableComponentInteraction, channel: Data
   }
 
   if (!permissions.embedLinks) {
-    i.replyPrivately({
+    i.replyPrivately({ 
       title: '=cmd_test_noembeds_1',
       description: '=cmd_test_noembeds_2',
       _context: { channel: channel.toString() }
@@ -133,8 +139,19 @@ async function checkRequirements(i: ReplyableComponentInteraction, channel: Data
     return false
   }
 
-  // TODO(highest) check if webhook exists
-  // just GET on the webhook url to see if it's status 200, but rate limits somehow think about
+  const [ webhookError, webhookValid ] = await DiscordGateway.validateWebhook(webhook)
+  if (webhookError) {
+    i.replyPrivately(Errors.handleErrorAndCommunicate(webhookError))
+    return false
+  }
+  if (!webhookValid) {
+    i.replyPrivately({
+      title: '=cmd_test_invalid_webhook_1',
+      description: '=cmd_test_invalid_webhook_2',
+      _context: { channel: channel.toString() }
+    })
+    return false
+  }
 
   return true
 }

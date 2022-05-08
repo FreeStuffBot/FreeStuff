@@ -32,6 +32,30 @@ export default class WebhooksApi {
     return undefined
   }
 
+  public static async fetchWebhook(accessor: string, directives: string[], retry = true): Promise<DataWebhook[] | null | MagicNumber> {
+    const res = await RestGateway.queue({
+      method: 'GET',
+      bucket: accessor,
+      endpoint: `/webhooks/${accessor}`
+    })
+
+    Metrics.counterDgRequests.inc({ method: 'GET', endpoint: 'webhook', status: res.status })
+
+    if (res.status === 403)
+      return MAGICNUMBER_MISSING_PERMISSIONS
+
+    if (res.status >= 400 && res.status < 500)
+      return null
+
+    if (res.status >= 200 && res.status < 300)
+      return directives.includes('nodata') ? {} : res.data
+
+    if (retry)
+      return await this.fetchWebhook(accessor, directives, false)
+
+    return undefined
+  }
+
   public static async createWebhook(channel: string, retry = true): Promise<DataWebhook | null | MagicNumber> {
     const payload = {
       name: config.webhookDefaultName,

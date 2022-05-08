@@ -4,7 +4,7 @@ import * as express from 'express'
 import { getChannels } from "./router/channels"
 import { getGuild } from "./router/guild"
 import { getMember } from "./router/member"
-import { getWebhooks, postWebhook } from "./router/webhooks"
+import { getWebhook, getWebhooks, postWebhook } from "./router/webhooks"
 import Metrics from "./lib/metrics"
 
 
@@ -22,6 +22,7 @@ export default class Modules {
     app.get('/guild/:guild', getGuild)
     app.get('/member/:guild', getMember)
     app.get('/webhooks/:channel', getWebhooks)
+    app.get('/webhooks/:hookid/:hooktoken', getWebhook)
     app.post('/webhooks/:channel', postWebhook)
 
     app.all('/umi/*', UmiLibs.ipLockMiddleware(config.network.umiAllowedIpRange))

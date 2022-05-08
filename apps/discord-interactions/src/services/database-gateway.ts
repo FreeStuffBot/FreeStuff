@@ -1,4 +1,4 @@
-import { FlipflopCache, Fragile, SanitizedGuildType, GuildSanitizer, LanguageDataType, FragileError, SanitizedGuildWithChangesType, GuildDataType, SettingPriceClass, Util, SettingTheme, Localisation, SanitizedCurrencyType, SanitizedPlatformType, Errors, CMS } from "@freestuffbot/common"
+import { FlipflopCache, Fragile, SanitizedGuildType, GuildSanitizer, FragileError, SanitizedGuildWithChangesType, SettingPriceClass, Util, SettingTheme, Localisation, SanitizedCurrencyType, SanitizedPlatformType, Errors, CMS } from "@freestuffbot/common"
 import { Long } from "bson"
 import { config } from ".."
 import Metrics from "../lib/metrics"
@@ -58,13 +58,26 @@ export default class DatabaseGateway {
     flat(data, value)
   }
 
-  private static saveGuildChanges(guild: SanitizedGuildWithChangesType) {
-    if (!guild._changes) return
+  /**
+   * Force a database write on a guild
+   * @param guildid The id of the guild to save
+   * @returns true if changes have been saved, false if every was already saved
+   */
+  public static async forceSaveChanges(guildid: string): Promise<boolean> {
+    if (!DatabaseGateway.guildCache.has(guildid)) return
+    const item = DatabaseGateway.guildCache.get(guildid) as SanitizedGuildWithChangesType
+    const hasChanges = !!item._changes
+    await DatabaseGateway.saveGuildChanges(item)
+    return hasChanges
+  }
+
+  private static async saveGuildChanges(guild: SanitizedGuildWithChangesType): Promise<void> {
+    if (!guild?._changes) return
 
     const changes = guild._changes
     delete guild._changes
 
-    Mongo
+    await Mongo
       .collection('guilds')
       .updateOne(
         { _id: guild.id },

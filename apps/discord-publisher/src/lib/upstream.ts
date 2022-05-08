@@ -13,8 +13,11 @@ export default class Upstream {
   public static burst() {
     if (!Upstream.queue.length) return
     const out = Upstream.queue.splice(0, config.behavior.upstreamRequestRate)
-    for (const req of out)
-      axios(req).then(Upstream.handleResponse)
+    for (const req of out) {
+      axios(req)
+        .catch(err => err?.response ?? {})
+        .then(Upstream.handleResponse)
+    }
   }
 
   private static handleResponse(res: AxiosResponse) {

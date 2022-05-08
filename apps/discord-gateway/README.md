@@ -56,6 +56,22 @@ Code| Data | Description
 502 | - | webhook lookup failed due to bad gateway
 
 
+### GET `/webhooks/:hookid/:hooktoken`
+
+Tests a given webhook and proxies the exact data Discord returns.
+
+Directives:
+- nodata: Does not return the webhook object on success, only status code
+
+Code| Data | Description
+----|------|---
+200 | Webhook | success
+400 | - | invalid channel
+403 | - | missing permissions to view webhook
+500 | - | webhook lookup failed for unknown reason (e.g. guild not found)
+502 | - | webhook lookup failed due to bad gateway
+
+
 ### POST `/webhooks/:channel`
 
 Creates a new webhook in that channel and returns it's data.

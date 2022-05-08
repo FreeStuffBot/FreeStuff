@@ -159,4 +159,27 @@ export default class DiscordGateway {
     }
   }
 
+  public static async validateWebhook(accessor: string): Promise<Fragile<boolean>> {
+    if (!accessor || !accessor.includes('/'))
+      return Errors.success(false)
+
+    const { status, statusText } = await axios.get(`/webhooks/${accessor}?nodata`, {
+      baseURL: config.network.discordGateway,
+      validateStatus: null
+    }).catch(err => ({ status: 999, statusText: err.name }))
+
+    if (status === 200)
+      return Errors.success(true)
+
+    if (status === 404)
+      return Errors.success(false)
+
+    return Errors.throw({
+      status: Errors.STATUS_ERRNO,
+      name: `${status} ${statusText}`,
+      source: 'discord-interactions::discord-gateway',
+      description: 'An issue occured while trying to validate a webhook.'
+    })
+  }
+
 }
