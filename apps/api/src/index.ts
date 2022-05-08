@@ -1,13 +1,13 @@
 import { configjs } from './types/config'
 export const config = require('../config.js') as configjs
 
-import { ContainerVersion, Logger } from '@freestuffbot/common'
+import { ContainerInfo, Logger } from '@freestuffbot/common'
 import Modules from './modules'
 
 
 async function run() {
   Logger.log('Starting...')
-  ContainerVersion.printVersion()
+  ContainerInfo.printVersion()
 
   await Modules.initRabbit()
   await Modules.connectMongo()

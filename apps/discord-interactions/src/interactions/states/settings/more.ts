@@ -1,5 +1,5 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag } from 'cordo'
-import { Emojis, Errors, Localisation } from '@freestuffbot/common'
+import { ContainerInfo, Emojis, Errors, Localisation } from '@freestuffbot/common'
 import Tracker from '../../../lib/tracker'
 
 
@@ -7,10 +7,15 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
   const [ err, guildData ] = await i.guildData.fetch()
   if (err) return Errors.handleErrorAndCommunicate(err)
 
-  Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_MORE')
+  const firstTimeOnThisPage = !Tracker.isTracked(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_MORE')
+  if (firstTimeOnThisPage)
+    Tracker.set(i.guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_MORE')
 
-  // const debugInfo = `\n\n**Debug info:** Container \`${hostname() || 'unknown'}\` ─ Node \`${process.env.NODE_ID}\` ─ Version \`${VERSION}\` ─ Guildid \`${i.guild_id}\``
-  const debugInfo = 'TODO' // TODO(low) show real debug data
+  const debugInfo = '\n\n**Debug info:** ' + [
+    `Container \`${ContainerInfo.getId()}\``,
+    `Version \`${ContainerInfo.getVersion()}\``,
+    `Guildid \`${i.guild_id}\``
+  ].join(' ─ ')
 
   return {
     title: '=settings_more_ui_1',
@@ -53,6 +58,13 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
         custom_id: 'settings_beta_toggle',
         label: guildData.beta ? '=settings_more_beta_on_state' : '=settings_more_beta_on_prompt',
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
+      },
+      {
+        type: ComponentType.BUTTON,
+        style: ButtonStyle.SECONDARY,
+        custom_id: 'settings_mysterious_button',
+        label: '=settings_more_mysterious_button',
+        visible: !firstTimeOnThisPage
       }
     ]
   }

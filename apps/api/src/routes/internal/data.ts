@@ -1,6 +1,7 @@
-import { CurrencyDataType, CurrencySanitizer, LanguageDataType, PlatformDataType, PlatformSanitizer, SanitizedLanguageType } from '@freestuffbot/common'
+import { CurrencyDataType, CurrencySanitizer, ExperimentDataType, ExperimentSanitizer, LanguageDataType, MiscDataType, PlatformDataType, PlatformSanitizer, SanitizedLanguageType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from '../../database/mongo'
+import ReqError from '../../lib/req-error'
 
 
 export async function getLanguages(req: Request, res: Response) {
@@ -11,7 +12,10 @@ export async function getLanguages(req: Request, res: Response) {
     })
     .lean(true)
     .exec()
-    .catch(() => {}) as any[]
+    .catch(() => null) as any[]
+
+  if (!lang)
+    return ReqError.badGateway(res)
 
   res.status(200).json(lang)
 }
@@ -22,35 +26,52 @@ export async function getCmsConstants(req: Request, res: Response) {
     .find({})
     .lean(true)
     .exec()
-    .catch(() => {}) as any[]
+    .catch(() => null) as any[]
+
+  if (!currencies)
+    return ReqError.badGateway(res)
 
   const platforms: PlatformDataType[] = await Mongo.Platform
     .find({})
     .lean(true)
     .exec()
-    .catch(() => {}) as any[]
+    .catch(() => null) as any[]
 
-  res.status(200).json({
+  if (!platforms)
+    return ReqError.badGateway(res)
+
+  const out = {
     currencies: currencies.map(CurrencySanitizer.sanitize),
     platforms: platforms.map(PlatformSanitizer.sanitize)
-  })
+  }
+  res.status(200).json(out)
 }
 
 
 export async function getRemoteConfig(req: Request, res: Response) {
-  // TODO(high)
-  res.status(200).json({
-    global: {
-      botAdmins: [
-        '137258778092503042'
-      ],
-      soon: 'tm'
-    }
-  })
+  const config: MiscDataType = await Mongo.Misc
+    .findById('config.global')
+    .lean(true)
+    .exec()
+    .catch(() => null) as any
+
+  if (!config)
+    return ReqError.badGateway(res)
+
+  res.status(200).json(config.data)
 }
 
 
 export async function getExperiments(req: Request, res: Response) {
-  // TODO(high)
-  res.status(200).json([])
+  const experiments: ExperimentDataType[] = await Mongo.Experiment
+    .find({})
+    .lean(true)
+    .exec()
+    .catch(() => null) as any
+
+  if (!experiments)
+    return ReqError.badGateway(res)
+
+  const out = experiments.map(ExperimentSanitizer.sanitize)
+  res.status(200).json(out)
 }

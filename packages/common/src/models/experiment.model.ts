@@ -25,6 +25,9 @@ export type SanitizedExperimentType = {
   id: string
   description: string
   rules: string
+  amount: number
+  group: string
+  filter: string[]
 }
 
 

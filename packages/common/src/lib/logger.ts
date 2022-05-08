@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import chalk from 'chalk'
+import CMS from './cms'
 
 
 /**
@@ -96,11 +97,10 @@ export default class Logger {
    * Gets prefixed with a magenta `#` and a timestamp.
    * @param text The message to log.
    */
-  public static excessive(..._text: string[]) {
-    // TODO(medium) excessive logging, remote config
-    // if (!RemoteConfig.excessiveLogging) return
-    // const out = text.join(chalk.gray(', '))
-    // console.info(Logger.getTimestamp() + chalk`{magenta #} {white ${out}}`)
+  public static excessive(...text: string[]) {
+    if (!CMS.remoteConfig[1]?.global?.excessiveLogging) return
+    const out = text.join(chalk.gray(', '))
+    console.info(Logger.getTimestamp() + chalk`{magenta #} {white ${out}}`)
   }
 
 }

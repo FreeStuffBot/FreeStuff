@@ -2,7 +2,7 @@ import { Express, Request, Response, NextFunction } from 'express'
 import * as ip from 'ip'
 import * as os from 'os'
 import CMS from './cms'
-import ContainerVersion from './container-version'
+import ContainerInfo from './container-info'
 import Logger from './logger'
 
 
@@ -68,7 +68,7 @@ export default class UmiLibs {
   public static renderInfoResponse(req: Request, res: Response): void {
     const out: UmiInfoReport = {
       name: UmiLibs.serviceName,
-      version: ContainerVersion.getVersion(),
+      version: ContainerInfo.getVersion(),
       id: os.hostname(),
       status: 'ok',
       features: UmiLibs.features

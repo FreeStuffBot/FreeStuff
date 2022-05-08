@@ -1,16 +1,17 @@
 import * as fs from 'fs'
+import * as os from 'os'
 import Logger from './logger'
 
 
-export default class ContainerVersion {
+export default class ContainerInfo {
 
   private static version: string
 
   public static getVersion(): string {
-    if (ContainerVersion.version)
-      return ContainerVersion.version
-    const v = ContainerVersion.readVersion()
-    ContainerVersion.version = v
+    if (ContainerInfo.version)
+      return ContainerInfo.version
+    const v = ContainerInfo.readVersion()
+    ContainerInfo.version = v
     return v
   }
 
@@ -20,7 +21,13 @@ export default class ContainerVersion {
   }
 
   public static printVersion(): void {
-    Logger.info(`Running version ${ContainerVersion.getVersion()}`)
+    Logger.info(`Running version ${ContainerInfo.getVersion()}`)
+  }
+
+  //
+
+  public static getId(): string {
+    return os.hostname() || 'unknown'
   }
 
 }

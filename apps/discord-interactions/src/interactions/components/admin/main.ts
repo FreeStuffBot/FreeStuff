@@ -1,10 +1,12 @@
+import { CMS } from '@freestuffbot/common'
 import { ReplyableComponentInteraction } from 'cordo'
 
 
 export default function (i: ReplyableComponentInteraction) {
-  // if (!i.member || !RemoteConfig.botAdmins.includes(i.user.id))
-  //   return i.ack()
-  // TODO(high) remote config
+  const [ _, remoteConfig ] = CMS.remoteConfig
+  const botAdmin = !!remoteConfig?.global.botAdmins.includes(i.user.id)
+  if (!i.member || !botAdmin)
+    return i.ack()
 
   i.state('admin_main')
 }

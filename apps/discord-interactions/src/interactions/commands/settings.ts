@@ -1,3 +1,4 @@
+import { CMS } from '@freestuffbot/common'
 import { ReplyableCommandInteraction } from 'cordo'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
@@ -11,9 +12,8 @@ export default function (i: ReplyableCommandInteraction) {
     })
   }
 
-  // TODO(high) remote config
-  // if (!PermissionStrings.containsManageServer(i.member.permissions) && !RemoteConfig.botAdmins.includes(i.user.id)) {
-  if (!PermissionStrings.containsManageServer(i.member.permissions)) {
+  const botAdmin = !!CMS.remoteConfig[1]?.global.botAdmins.includes(i.user.id)
+  if (!PermissionStrings.containsManageServer(i.member.permissions) || botAdmin) {
     return i.replyPrivately({
       title: '=interaction_not_permitted_1',
       description: '=interaction_not_permitted_2_manage_server'

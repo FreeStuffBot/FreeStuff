@@ -1,3 +1,4 @@
+import { SanitizedExperimentType } from "../models/experiment.model"
 import { SanitizedGuildType } from "../models/guild.model"
 import Logger from "./logger"
 
@@ -7,20 +8,14 @@ export type ExperimentId
 | 'use_proxy_url'
 | 'show_donation_notice'
 
-export type Experiment = {
-  _id: ExperimentId
-  amount: number
-  group: string
-}
-
 export default class Experiments {
 
-  private static experiments: Map<string, Experiment> = new Map()
+  private static experiments: Map<string, SanitizedExperimentType> = new Map()
 
-  public static load(data?: Experiment[]) {
+  public static load(data?: SanitizedExperimentType[]) {
     Experiments.experiments.clear()
     for (const exp of data)
-      Experiments.experiments.set(exp._id, exp)
+      Experiments.experiments.set(exp.id, exp)
 
     Logger.info('Experiments updated')
   }
@@ -42,14 +37,14 @@ export default class Experiments {
 
   //
 
-  private static passesBucketFilter(experiment: Experiment, guildData: SanitizedGuildType): boolean {
+  private static passesBucketFilter(experiment: SanitizedExperimentType, guildData: SanitizedGuildType): boolean {
     const bucket = Math.sin(typeof guildData.sharder === 'number'
       ? guildData.sharder
       : (guildData.sharder as any).getLowBits()) / 2 + 0.5
     return bucket <= experiment.amount
   }
 
-  private static passesGroupFilter(experiment: Experiment, guildData: SanitizedGuildType): boolean {
+  private static passesGroupFilter(experiment: SanitizedExperimentType, guildData: SanitizedGuildType): boolean {
     if (!experiment.group) return true
     switch (experiment.group) {
       case 'all': return true

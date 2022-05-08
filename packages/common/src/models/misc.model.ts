@@ -30,5 +30,5 @@ export type SanitizedMiscType = {
 
 export const MiscSchema = new Schema({
   _id: String,
-  data: [ Object, Array ],
+  data: Object,
 }, { collection: 'misc' })

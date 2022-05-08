@@ -9,7 +9,7 @@ export async function getConfig(req: Request, res: Response) {
     .findById('config.global')
     .lean(true)
     .exec()
-    .catch(() => {}) as any
+    .catch(() => null) as any
 
   if (!config)
     return ReqError.badGateway(res)
@@ -25,7 +25,7 @@ export async function patchConfig(req: Request, res: Response) {
   const config: MiscType = await Mongo.Misc
     .findById('config.global')
     .exec()
-    .catch(() => {}) as any
+    .catch(() => null) as any
 
   if (!config)
     return ReqError.badGateway(res)

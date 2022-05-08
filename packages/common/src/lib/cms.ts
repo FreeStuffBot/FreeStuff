@@ -1,12 +1,13 @@
 import Const from "../data/const"
 import Emojis from "../data/emojis"
 import { SanitizedCurrencyType } from "../models/currency.model"
+import { SanitizedExperimentType } from "../models/experiment.model"
 import { LanguageDataType } from "../models/language.model"
 import { SanitizedPlatformType } from "../models/platform.model"
 import { Fragile } from "../struct/fragile.struct"
 import ApiInterface from "./api-interface"
 import Errors from "./errors"
-import Experiments, { Experiment } from "./experiments"
+import Experiments from "./experiments"
 import Localisation from "./localisation"
 
 
@@ -27,7 +28,7 @@ export default class CMS {
   private static _languages: LanguageDataType[] = null
   private static _constants: CmsConstantsType = { currencies: null, platforms: null }
   private static _config: RemoteConfigType = null
-  private static _experiments: Experiment[] = null
+  private static _experiments: SanitizedExperimentType[] = null
 
   //
 
@@ -59,7 +60,7 @@ export default class CMS {
     return Errors.throwStderrNotInitialized('common::cms.get.remoteconfig')
   }
 
-  public static get experiments(): Fragile<Experiment[]> {
+  public static get experiments(): Fragile<SanitizedExperimentType[]> {
     if (CMS._experiments)
       return Errors.success(CMS._experiments)
 
@@ -134,7 +135,7 @@ export default class CMS {
   }
 
   public static async loadExperiments(): Promise<boolean> {
-    const exp = await ApiInterface.loadData<Experiment[]>('experiments')
+    const exp = await ApiInterface.loadData<SanitizedExperimentType[]>('experiments')
 
     if (!exp)
       return false

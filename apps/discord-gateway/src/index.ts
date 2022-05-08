@@ -1,4 +1,4 @@
-import { Logger } from '@freestuffbot/common'
+import { ContainerInfo, Logger } from '@freestuffbot/common'
 import RestGateway from './api/rest-gateway'
 import Modules from './modules'
 import { configjs } from './types/config'
@@ -7,6 +7,7 @@ export const config = require('../config.js') as configjs
 
 async function run() {
   Logger.log('Starting...')
+  ContainerInfo.printVersion()
 
   RestGateway.startLoop()
   Modules.initMetrics()
