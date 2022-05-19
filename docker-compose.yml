@@ -1,0 +1,37 @@
+version: "3.3"
+
+networks:
+  local:
+    driver: bridge
+
+services:
+  rabbit:
+    image: rabbitmq:latest
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+  discord-interactions:
+    image: ghcr.io/freestuffbot/fsb-discord-interactions:master
+    environment:
+      NODE_ENV: "production"
+      FSB_DISCORD_INTERACTIONS_PORT: 80
+      FSB_DISCORD_INTERACTIONS_CLIENTID: ""
+      FSB_DISCORD_INTERACTIONS_PUBKEY: ""
+      FSB_DISCORD_INTERACTIONS_MONGO_URL: "mongodb://host.docker.internal:27017/freestuffbot"
+      FSB_DISCORD_INTERACTIONS_RABBIT_URL: "amqp://rabbit"
+      FSB_NETWORK_UMI_ALLOWED_IP_RANGE: ""
+      FSB_NETWORK_DISCORD_GATEWAY: ""
+      FSB_DISCORD_INTERACTIONS_FREESTUFF_API_URL: ""
+      FSB_DISCORD_INTERACTIONS_FREESTUFF_API_KEY: ""
+    depends_on:
+      - rabbit
+    links:
+      - rabbit
+    labels:
+      - prometheus-job=fsb
+      - xyz.freestuffbot.service.role=discord-interactions
+      - xyz.freestuffbot.service.network=fsb-discord
+
