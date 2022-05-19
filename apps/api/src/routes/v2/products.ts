@@ -25,14 +25,14 @@ export async function getProduct(req: Request, res: Response) {
       langs.push('en-US')
     const data = await Promise.all(langs.map(Resolver.resolveLanguage))
     const valid = data.filter(d => !!d)
-    const localized = localizeProduct(out, valid)
+    const localized = await localizeProduct(out, valid)
     out.localized = localized
   }
 
   res.status(200).json(out)
 }
 
-function localizeProduct(product: SanitizedProductType, langs: LanguageDataType[]): LocalizedProductDetailsDataType[] {
+async function localizeProduct(product: SanitizedProductType, langs: LanguageDataType[]): Promise<LocalizedProductDetailsDataType[]> {
   const out: LocalizedProductDetailsDataType[] = []
   const fallback: LanguageDataType = langs.find((l: any) => (l._id === 'en-US'))
 
@@ -56,7 +56,7 @@ function localizeProduct(product: SanitizedProductType, langs: LanguageDataType[
     // TODO(high) give each language a default currency and use that here
     const defaultCurrencyCode = get('default_currency')
     const defaultCurrency = await Resolver.resolveCurrency(defaultCurrencyCode)
-    if (!defaultCurrency) // krise
+    // if (!defaultCurrency) // krise
     const orgPrice = 'TODO'
 
     const until = date ? paparsya(
