@@ -1,4 +1,11 @@
-# Discord Gateway
+# Discord Gateway Service
+
+This service is our internal gateway to Discord. Instead of each microservice sending requests directly to Discord, all data is routed through this gateway. By doing so we get the following benefits:
+- Abstraction. Requests can be made a lot simpler by abstracting all static content away (like Authorization), requiring minimal internal traffic.
+- Caching across multiple microservices. As all requests go through this gateway caching practically comes out of the box.
+- Rate limit management. If each microservice would push out their requests manually we would either have to slow them down by so much that they can't interfer with eachother or have some sort of global resource pool. This gateway can be thought of as this resource pool, just wrapped in an api.
+- Metrics and Insights. With all traffic going through this service it's easy to collect information about service health and uptime.
+
 
 ## Endpoints
 
