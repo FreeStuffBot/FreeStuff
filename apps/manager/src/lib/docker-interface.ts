@@ -25,7 +25,7 @@ export default class DockerInterface {
       .then(console.log) // REMOVE
   }
 
-  public static async getFsContainersReal() {
+  public static async getFsContainers() {
     const list = await DockerInterface.client.listContainers()
     // console.log(JSON.stringify(list))
     const freestuffContainers = list.filter(item => item.Labels[config.dockerLabels.role])
@@ -51,7 +51,7 @@ export default class DockerInterface {
     return out
   }
 
-  public static async getFsContainers() {
+  public static async getFsContainersTest() {
     return Promise.resolve([
       {
         "id": "fd895233b73e2f08e2eeb36ff2e30e8262d0d4fb9e5d8cc7047a47bb25159c2f",
