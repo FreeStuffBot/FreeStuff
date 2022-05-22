@@ -14,6 +14,7 @@ import { deleteCurrency, getCurrencies, patchCurrency, postCurrency } from './co
 import { deleteExperiment, getExperiments, patchExperiment, postExperiment } from './admin/experiments'
 import { getConfig, patchConfig } from './admin/config'
 import { postAnnouncement } from './content/announcements'
+import { getServices } from './admin/services'
 
 
 export default class DashRouter {
@@ -75,6 +76,8 @@ export default class DashRouter {
 
     r.get(   '/admin/config',                  fw('admin'),             getConfig)
     r.patch( '/admin/config',                  fw('admin'),             patchConfig)
+
+    r.get(   '/admin/services',                fw('admin'),             getServices)
 
 
     /* Default 404 handler */

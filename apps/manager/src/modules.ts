@@ -3,6 +3,8 @@ import { config } from "."
 import * as express from 'express'
 import Mongo from "./database/mongo"
 import DockerInterface from "./lib/docker-interface"
+import { getServicesComposed, getServicesRaw } from "./router/services"
+import { getComposition } from "./router/composition"
 
 
 export default class Modules {
@@ -19,7 +21,9 @@ export default class Modules {
     const app = express()
     app.set('trust proxy', 1)
 
-    // app.get('/analytics', getAnalytics)
+    app.get('/services/raw', getServicesRaw)
+    app.get('/services/composed', getServicesComposed)
+    app.get('/composition', getComposition)
 
     app.all('*', (_, res) => res.status(400).end())
 
