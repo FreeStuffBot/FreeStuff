@@ -15,6 +15,7 @@ import { deleteExperiment, getExperiments, patchExperiment, postExperiment } fro
 import { getConfig, patchConfig } from './admin/config'
 import { postAnnouncement } from './content/announcements'
 import { getServices } from './admin/services'
+import { getApp, patchAppDescription, patchAppWebhook, postApp, postAppKeyRegen, postAppWebhookTest } from './api/app'
 
 
 export default class DashRouter {
@@ -49,6 +50,15 @@ export default class DashRouter {
     // translations
     r.get(   '/translations/languages',        fw('admin|translate.*'), getLanguages)
     r.get(   '/translations/languages/:id',    fw('admin|translate.*'), getLanguage)
+    // r.patch( '/translations/languages/:id',    fw('admin|translate.{id}'), TODO)
+
+    // api apps
+    r.get(   '/app',                           fw('admin|api'), getApp)
+    r.post(  '/app',                           fw('admin|api'), postApp)
+    r.post(  '/app/key/regen',                 fw('admin|api'), postAppKeyRegen)
+    r.patch( '/app/webhook',                   fw('admin|api'), patchAppWebhook)
+    r.post(  '/app/webhook/test',              fw('admin|api'), postAppWebhookTest)
+    r.patch( '/app/description',               fw('admin|api'), patchAppDescription)
 
     // content
     r.get(   '/content/products',              fw('admin|contentmod'),  pagination(20, 40), getProducts)
