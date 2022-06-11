@@ -352,7 +352,7 @@ export default class Const {
 
     const [ err, currencies ] = CMS.currencies
 
-    const defaultCurrencyId = err ? 0 : currencies[0].id
+    const defaultCurrencyId = err ? 0 : currencies[0]?.id ?? 0
     return 0
       | Util.modifyBits(0, 5, 4, defaultCurrencyId)
       | Util.modifyBits(0, 10, 6, language)
