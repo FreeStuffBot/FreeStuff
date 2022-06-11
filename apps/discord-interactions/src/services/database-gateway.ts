@@ -1,4 +1,4 @@
-import { FlipflopCache, Fragile, SanitizedGuildType, GuildSanitizer, FragileError, SanitizedGuildWithChangesType, SettingPriceClass, Util, SettingTheme, Localisation, SanitizedCurrencyType, SanitizedPlatformType, Errors, CMS } from "@freestuffbot/common"
+import { FlipflopCache, Fragile, SanitizedGuildType, GuildSanitizer, FragileError, SanitizedGuildWithChangesType, SettingPriceClass, Util, SettingTheme, Localisation, SanitizedCurrencyType, SanitizedPlatformType, Errors, CMS, GuildType, GuildDataType, Const } from "@freestuffbot/common"
 import { Long } from "bson"
 import { config } from ".."
 import Metrics from "../lib/metrics"
@@ -19,7 +19,7 @@ export default class DatabaseGateway {
     if (DatabaseGateway.pendingGuilds.has(guildid))
       return DatabaseGateway.pendingGuilds.get(guildid)
 
-    const prom = this.fetchGuild(guildid)
+    const prom = this.fetchGuild(guildid, true)
     DatabaseGateway.pendingGuilds.set(guildid, prom)
     const fresh = await prom
 
@@ -30,21 +30,65 @@ export default class DatabaseGateway {
     return fresh
   }
 
-  public static async fetchGuild(guildid: string): Promise<Fragile<SanitizedGuildType>> {
-    const raw = await Mongo.findById('guilds', Long.fromString(guildid))
-
-    if (!raw) // mo guild found
-      return Errors.throwStderrNoGuilddata('discord-interactions::database-gateway.none')
-
+  public static async fetchGuild(guildid: string, createIfNotExists: boolean): Promise<Fragile<SanitizedGuildType>> {
     if (!CMS.currencies[1]) // currencies not loaded
       return Errors.throwStderrNoGuilddata('discord-interactions::database-gateway.currencies')
 
     if (!CMS.platforms[1]) // platforms not loaded
       return Errors.throwStderrNoGuilddata('discord-interactions::database-gateway.platforms')
 
-    const sanitized = GuildSanitizer.sanitize(raw)
+    const found = await Mongo.Guild
+      .findById(Long.fromString(guildid))
+      .lean(true)
+      .exec()
+      .catch(() => null) as GuildDataType
 
+    if (found) {
+      const sanitized = GuildSanitizer.sanitize(found)
+      return Errors.success(sanitized)
+    }
+
+    // no guild found
+    if (!createIfNotExists)
+      return Errors.throwStderrNoGuilddata('discord-interactions::database-gateway.none')
+
+    // create a new one
+    const created = await DatabaseGateway.addGuildToDb(guildid)
+    if (!created)
+      return Errors.throwStderrNoGuilddata('discord-interactions::database-gateway.created')
+
+    const sanitized = GuildSanitizer.sanitize(created.toObject())
     return Errors.success(sanitized)
+  }
+
+  public static async addGuildToDb(guildid: string): Promise<GuildType> {
+    const data: GuildDataType = {
+      _id: Long.fromString(guildid),
+      sharder: Long.fromString(guildid).shiftRight(22),
+      webhook: null,
+      channel: null,
+      role: null,
+      settings: Const.defaultSettingsBits,
+      filter: Const.defaultFilterBits,
+      tracker: 0
+    }
+
+    const obj = new Mongo.Guild(data) as GuildType
+    await obj?.save()
+    return obj
+  }
+
+  public static async removeGuildFromDb(guildid: string): Promise<boolean> {
+    const raw = await Mongo.Guild
+      .findById(Long.fromString(guildid))
+      .exec()
+      .catch(() => null) as GuildType
+
+    await raw?.delete()
+    if (DatabaseGateway.guildCache.has(guildid))
+      DatabaseGateway.guildCache.remove(guildid, false)
+
+    return !!raw
   }
 
   public static async pushGuildDataChange<T extends keyof DatabaseActions>(guildid: string, key: T, value: DatabaseActions[T]) {
@@ -77,8 +121,7 @@ export default class DatabaseGateway {
     const changes = guild._changes
     delete guild._changes
 
-    await Mongo
-      .collection('guilds')
+    await Mongo.Guild
       .updateOne(
         { _id: guild.id },
         { $set: changes }

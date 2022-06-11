@@ -6,7 +6,7 @@ import Tracker from '../../../../lib/tracker'
 
 export default async function (i: ReplyableComponentInteraction) {
   const [ err, guildDataRaw ] = await i.guildData.fetch()
-  if (err) return Errors.handleErrorAndCommunicate(err)
+  if (err) return Errors.handleErrorAndCommunicate(err, i)
 
   const guildData = { ...guildDataRaw }
 

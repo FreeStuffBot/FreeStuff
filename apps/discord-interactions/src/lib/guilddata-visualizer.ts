@@ -46,8 +46,10 @@ function yamlifyJson(object: any) {
   let out = ''
   for (const [ key, value ] of Object.entries(object)) {
     out += `\n${key}:`
-    if (typeof value === 'object')
-      out += `\n${(value as any[]).map(v => ` - ${v}`).join('\n')}`
+    if (value === null || value === undefined)
+      out += ' None'
+    else if (typeof value === 'object')
+      out += `\n${(value as any[]).map?.(v => ` - ${v}`).join('\n') ?? JSON.stringify(value)}`
     else if (typeof value === 'boolean')
       out += ` ${value ? 'Enabled' : 'Disabled'}`
     else
