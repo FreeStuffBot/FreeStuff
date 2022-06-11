@@ -101,6 +101,16 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
           InteractionComponentFlag.HIDE_IF_NOT_ALLOWED
         ]
       }
+      // {
+      //   type: ComponentType.LINE_BREAK
+      // },
+      // {
+      //   type: ComponentType.BUTTON,
+      //   style: ButtonStyle.SECONDARY,
+      //   custom_id: 'settings_close',
+      //   label: '=generic_close',
+      //   emoji: Emojis.close.toObject()
+      // }
     ],
     _context: {
       invite: Const.links.supportInvite,

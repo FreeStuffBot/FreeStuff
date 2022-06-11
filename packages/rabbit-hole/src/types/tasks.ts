@@ -23,6 +23,13 @@ export const StaticTypedTaskQueue = {
       durable: true,
       maxPriority: Priority.HIGH
     }
+  },
+  APPS: {
+    name: 'fsb-apps',
+    options: {
+      durable: true,
+      maxPriority: Priority.HIGH
+    }
   }
 } as const
 
@@ -42,35 +49,51 @@ export enum TaskId {
   /** send a test message to a single guild */
   DISCORD_TEST = 3,
   /** task to split up remaining guilds into workable chunks */
-  DISCORD_PUBLISH_SPLIT = 4
+  DISCORD_PUBLISH_SPLIT = 4,
+  /** publish an announcement to multiple apps (webhoook) */
+  APPS_PUBLISH = 11,
+  /** resend an announcement to a single app webhoook */
+  APPS_RESEND = 12,
+  /** send a test message to an app webhoook */
+  APPS_TEST = 13,
+  /** task to split up remaining apps into workable chunks */
+  APPS_PUBLISH_SPLIT = 14,
 }
 
 export type TaskType = {
   t: TaskId.DISCORD_PUBLISH
-  /** bucket number */
-  b: number
-  /** total bucket count */
-  c: number
-  /** announcement id */
-  a: number
+  /** bucket number               */ b: number
+  /** total bucket count          */ c: number
+  /** announcement id             */ a: number
 } | {
   t: TaskId.DISCORD_RESEND
-  /** guild id as string */
-  g: string
-  /** list of product ids */
-  p: number[]
+  /** guild id as string          */ g: string
+  /** list of product ids         */ p: number[]
 } | {
   t: TaskId.DISCORD_TEST
-  /** guild id as string */
-  g: string
+  /** guild id as string          */ g: string
 } | {
-  t: TaskId.DISCORD_PUBLISH_SPLIT,
-  /** next value to continue with */
-  v: number
-  /** total bucket count */
-  c: number
-  /** announcement id */
-  a: number
+  t: TaskId.DISCORD_PUBLISH_SPLIT
+  /** next value to continue with */ v: number
+  /** total bucket count          */ c: number
+  /** announcement id             */ a: number
+} | {
+  t: TaskId.APPS_PUBLISH
+  /** bucket number               */ b: number
+  /** total bucket count          */ c: number
+  /** announcement id             */ a: number
+} | {
+  t: TaskId.APPS_RESEND
+  /** app id as string            */ i: string
+  /** list of product ids         */ p: number[]
+} | {
+  t: TaskId.APPS_TEST
+  /** app id as string            */ i: string
+} | {
+  t: TaskId.APPS_PUBLISH
+  /** next value to continue with */ v: number
+  /** total bucket count          */ c: number
+  /** announcement id             */ a: number
 }
 
 export type Task<T extends TaskId> = TaskType & { t: T }
@@ -84,7 +107,11 @@ export const StaticTypedTaskMeta = {
   [TaskId.DISCORD_PUBLISH]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.MEDIUM },
   [TaskId.DISCORD_RESEND]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.HIGH },
   [TaskId.DISCORD_TEST]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.HIGH },
-  [TaskId.DISCORD_PUBLISH_SPLIT]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.LOW }
+  [TaskId.DISCORD_PUBLISH_SPLIT]: { queue: StaticTypedTaskQueue.DISCORD, priority: Priority.LOW },
+  [TaskId.APPS_PUBLISH]: { queue: StaticTypedTaskQueue.APPS, priority: Priority.MEDIUM },
+  [TaskId.APPS_RESEND]: { queue: StaticTypedTaskQueue.APPS, priority: Priority.HIGH },
+  [TaskId.APPS_TEST]: { queue: StaticTypedTaskQueue.APPS, priority: Priority.HIGH },
+  [TaskId.APPS_PUBLISH_SPLIT]: { queue: StaticTypedTaskQueue.APPS, priority: Priority.LOW },
 } as const
 
 export const TaskMeta: Record<TaskId, TaskMetaType<any>> = StaticTypedTaskMeta

@@ -99,10 +99,9 @@ export default class Resolver {
     if (Resolver.currenciesCache.has(code))
       return Resolver.currenciesCache.get(code)
 
-    const data = await Mongo.Product
+    const data = await Mongo.Currency
       .findById(code)
       .lean(true)
-      .select({ _id: 1 })
       .exec()
       .catch(() => null) as CurrencyDataType
 

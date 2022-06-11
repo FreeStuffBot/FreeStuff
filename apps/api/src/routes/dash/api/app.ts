@@ -1,4 +1,5 @@
 import * as crypto from 'crypto'
+import RabbitHole, { TaskId } from '@freestuffbot/rabbit-hole'
 import { AppDataType, AppSanitizer, AppType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from '../../../database/mongo'
@@ -117,7 +118,7 @@ export async function postAppWebhookTest(req: Request, res: Response) {
     .findById(appId)
     .lean(true)
     .exec()
-    .catch(() => null)
+    .catch(() => null) as AppDataType
 
   if (app === null)
     return ReqError.notFound(res, 'No app with the provided id found')
@@ -125,11 +126,10 @@ export async function postAppWebhookTest(req: Request, res: Response) {
   if (!app)
     return ReqError.badGateway(res)
 
-  // API.publishEvent({
-  //   event: 'webhook_test',
-  //   data: { funfact: 'The electric chair was invented by a dentist.' }
-  // }, false, app)
-  // TODO BIG TODO -> put in rabbit queue for api publisher
+  RabbitHole.publish({
+    t: TaskId.APPS_TEST,
+    i: app._id
+  })
 
   Notifier.newEvent('api_webhook_test', {
     user: appId

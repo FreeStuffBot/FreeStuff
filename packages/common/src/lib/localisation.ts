@@ -1,8 +1,8 @@
 import { GenericInteraction } from 'cordo'
-import { SanitizedGuildType, SanitizedProductType } from '..'
+import { SanitizedGuildType, SanitizedProductType, CurrencyDataType, SanitizedCurrencyType, Const } from '..'
 
 
-export type LocaleContainer = SanitizedGuildType | GenericInteraction
+export type LocaleContainer = SanitizedGuildType | GenericInteraction | string
 
 export default class Localisation {
 
@@ -128,18 +128,21 @@ export default class Localisation {
   /**
    * Renders a price tag properly
    */
-  public static renderPriceTag(_cont: LocaleContainer, _game: SanitizedProductType) {
-    // TODO(medium) have currency connected to language
-    // const price = game.org_price[data.currency.code] || game.org_price.euro
-    // return Localisation.getLine(data, 'currency_sign_position') === 'after'
-    //   ? `${price}${data.currency.symbol}`
-    //   : `${data.currency.symbol}${price}`
-    return 'TODO'
+  public static renderPriceTag(cont: LocaleContainer, curr: CurrencyDataType | SanitizedCurrencyType, product: SanitizedProductType) {
+    const price = product.prices.find(p => p.currency === curr?.code)
+      ?? product.prices.find(p => p.currency === Const.currencyFallback)
+      ?? product.prices[0]
+    return Localisation.getLine(cont, 'currency_sign_position') === 'after'
+      ? `${price.oldValue}${curr.symbol ?? '€'}`
+      : `${curr.symbol ?? '€'}${price.oldValue}`
   }
 
   public static getLocaleFromContainer(cont: LocaleContainer): string {
     if (!cont)
       return Localisation.DEFAULT_LANGUAGE_ID
+
+    if (typeof cont === 'string')
+      return Localisation.findClosesLanguageMatchHelper(cont as string)
 
     if ((cont as SanitizedGuildType).language)
       return (cont as SanitizedGuildType).language

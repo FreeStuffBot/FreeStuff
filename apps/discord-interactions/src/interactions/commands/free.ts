@@ -14,7 +14,7 @@ export default function (i: ReplyableCommandInteraction) {
   for (const product of products) {
     const platformEmoji = CMS.getPlatformDiscordEmoji(product.platform).toString()
     const productLink = `**[${product.title}](${product.urls.default})**`
-    const priceTag = `~~${Localisation.renderPriceTag(i, product)}~~ • ${Localisation.text(i, '=cmd_free_until')}`
+    const priceTag = `~~${Localisation.renderPriceTag(i, null, product)}~~ • ${Localisation.text(i, '=cmd_free_until')}`
     const until = product.until
       ? `<t:${product.until / 1000}:${('_today' in product) ? 't' : 'd'}>`
       : 'unknown'

@@ -50,6 +50,7 @@ export default class Emojis {
 
   public static readonly bigSpace = new Emojis('716252611962994718', 'nothing')
   public static readonly caretLeft = new Emojis('863506003751337996', 'caret_left')
+  public static readonly close = new Emojis('985130436395159562', 'close')
   public static readonly amogus = new Emojis('882222064625385552', 'amogus')
 
   public static readonly mention = new Emojis('863103982603075634', 'mention')

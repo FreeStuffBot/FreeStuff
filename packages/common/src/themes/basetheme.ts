@@ -41,14 +41,16 @@ export default class BaseTheme {
   //
 
   static buildEmbed(product: SanitizedProductType, guild: SanitizedGuildType, settings: themeSettings): Partial<MessageEmbed> {
-    const priceString = Localisation.renderPriceTag(guild, product)
+    const priceString = Localisation.renderPriceTag(guild, guild.currency, product)
     const until = BaseTheme.generateUntil(product, guild)
     const button = BaseTheme.generateButton(product, guild)
     const showDescription = product.description && settings.themeExtraInfo
     const showRating = product.rating && settings.themeExtraInfo
     const showStore = !until || !showRating || !settings.themeImages
-    const divider = settings.themeExtraInfo ? ' ** ** ** ** ' : ' • '
     const title = product.title
+    const divider = settings.themeExtraInfo
+      ? `${Const.invisibleCharacter} `.repeat(6).substring(1)
+      : ' • '
 
     const btnText = button[0] === 'text' ? button[1] : undefined
     const fields = button[0] === 'fields' ? button[1] : undefined

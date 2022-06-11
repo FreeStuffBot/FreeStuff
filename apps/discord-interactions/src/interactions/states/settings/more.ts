@@ -41,13 +41,6 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
-        custom_id: 'settings_main',
-        label: '=generic_back',
-        emoji: Emojis.caretLeft.toObject()
-      },
-      {
-        type: ComponentType.BUTTON,
-        style: ButtonStyle.SECONDARY,
         custom_id: 'settings_guilddata',
         label: '=settings_more_btn_guilddata',
         flags: [ InteractionComponentFlag.ACCESS_EVERYONE, InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
@@ -65,6 +58,16 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
         custom_id: 'settings_mysterious_button',
         label: '=settings_more_mysterious_button',
         visible: !firstTimeOnThisPage
+      },
+      {
+        type: ComponentType.LINE_BREAK
+      },
+      {
+        type: ComponentType.BUTTON,
+        style: ButtonStyle.SECONDARY,
+        custom_id: 'settings_main',
+        label: '=generic_back',
+        emoji: Emojis.caretLeft.toObject()
       }
     ]
   }

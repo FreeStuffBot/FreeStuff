@@ -1,6 +1,7 @@
-import { Const, LanguageDataType, LocalizedProductDetailsDataType, ProductDataType, ProductFlag, ProductSanitizer, SanitizedProductType } from '@freestuffbot/common'
+import { Const, LanguageDataType, Localisation, LocalizedProductDetailsDataType, ProductDataType, ProductFlag, ProductSanitizer, SanitizedProductType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import paparsya from 'paparsya'
+import LocalConst from '../../lib/local-const'
 import ReqError from '../../lib/req-error'
 import Resolver from '../../lib/resolver'
 
@@ -41,44 +42,43 @@ async function localizeProduct(product: SanitizedProductType, langs: LanguageDat
     : null
 
   for (const l of langs) {
-    const get = (key: string) => (l[key] ?? fallback[key])
+    const t = (key: string) => (l[key] ?? fallback[key])
 
     const flags = []
-    // TODO(low) check language keys here, they dont seem to exist
-    if ((product.flags & ProductFlag.TRASH) !== 0) flags.push(get('product_meta_flag_trash'))
-    if ((product.flags & ProductFlag.THIRDPARTY) !== 0) flags.push(get('product_meta_flag_thirdparty'))
-    if ((product.flags & ProductFlag.PERMANENT) !== 0) flags.push(get('product_meta_flag_permanent'))
-    if ((product.flags & ProductFlag.STAFF_PICK) !== 0) flags.push(get('product_meta_flag_staff_pick'))
+    if ((product.flags & ProductFlag.TRASH) !== 0) flags.push(t('product_meta_flag_trash'))
+    if ((product.flags & ProductFlag.THIRDPARTY) !== 0) flags.push(t('product_meta_flag_thirdparty'))
+    if ((product.flags & ProductFlag.PERMANENT) !== 0) flags.push(t('product_meta_flag_permanent'))
+    if ((product.flags & ProductFlag.STAFF_PICK) !== 0) flags.push(t('product_meta_flag_staff_pick'))
 
-    // TODO(medium) localize the platform name
-    const platform = product.platform
+    const platform = t(`platform_${product.platform}`) ?? product.platform
 
-    // TODO(high) give each language a default currency and use that here
-    const defaultCurrencyCode = get('default_currency')
-    const defaultCurrency = await Resolver.resolveCurrency(defaultCurrencyCode)
-    // if (!defaultCurrency) // krise
-    const orgPrice = 'TODO'
+    const defaultCurrencyCode = t('default_currency')
+    const defaultCurrency = defaultCurrencyCode
+      ? await Resolver.resolveCurrency(defaultCurrencyCode)
+      : null
+    const currency = defaultCurrency ?? await Resolver.resolveCurrency(Const.currencyFallback)
+    const orgPrice = Localisation.renderPriceTag(l._id, currency, product)
 
     const until = date ? paparsya(
-      get('announcement_free_until_date'),
-      { date: date.toLocaleDateString(get('date_format')) }
+      t('announcement_free_until_date'),
+      { date: date.toLocaleDateString(t('date_format')) }
     ) : null
 
     const footer = paparsya(
-      get('announcement_footer'),
+      t('announcement_footer'),
       { website: Const.links.websiteClean }
     )
 
     out.push({
       langId: l._id,
-      langName: get('lang_name'),
+      langName: t('lang_name'),
       langNameEn: l.lang_name_en,
-      langFlagEmoji: get('lang_flag_emoji'),
+      langFlagEmoji: t('lang_flag_emoji'),
       platform,
-      claimLong: get('announcement_button_text'),
+      claimLong: t('announcement_button_text'),
       claimShort: 'GET',
-      free: get('announcement_pricetag_free'),
-      header: get('announcement_header'),
+      free: t('announcement_pricetag_free'),
+      header: t('announcement_header'),
       footer,
       orgPrice,
       until,

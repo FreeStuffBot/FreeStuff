@@ -16,7 +16,7 @@ export default class GibuProductDetails {
     if (!data) return null
 
     const thumbnail = GibuProductDetails.findBestThumbnail(data.images)
-    const platform = await this.gibuStoreToFsbPlatform(data.store)
+    const platform = await GibuProductDetails.gibuStoreToFsbPlatform(data.store)
 
     return {
       uuid: data.uuid,

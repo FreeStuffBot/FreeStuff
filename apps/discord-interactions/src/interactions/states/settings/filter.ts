@@ -62,13 +62,6 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
       },
       {
         type: ComponentType.BUTTON,
-        style: ButtonStyle.SECONDARY,
-        custom_id: 'settings_main',
-        label: '=generic_back',
-        emoji: Emojis.caretLeft.toObject()
-      },
-      {
-        type: ComponentType.BUTTON,
         style: guildData.trashGames
           ? ButtonStyle.SUCCESS
           : ButtonStyle.SECONDARY,
@@ -78,6 +71,16 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
           : '=settings_filter_trash_on_prompt',
         emoji: { name: '🗑️' },
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
+      },
+      {
+        type: ComponentType.LINE_BREAK
+      },
+      {
+        type: ComponentType.BUTTON,
+        style: ButtonStyle.SECONDARY,
+        custom_id: 'settings_main',
+        label: '=generic_back',
+        emoji: Emojis.caretLeft.toObject()
       },
       {
         type: ComponentType.BUTTON,

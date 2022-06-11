@@ -13,7 +13,7 @@ export default function (i: ReplyableCommandInteraction) {
   }
 
   const botAdmin = !!CMS.remoteConfig[1]?.global.botAdmins.includes(i.user.id)
-  if (!PermissionStrings.containsManageServer(i.member.permissions) || botAdmin) {
+  if (!PermissionStrings.containsManageServer(i.member.permissions) && !botAdmin) {
     return i.replyPrivately({
       title: '=interaction_not_permitted_1',
       description: '=interaction_not_permitted_2_manage_server'
