@@ -27,8 +27,14 @@ export default class DockerInterface {
 
   public static async getFsContainers() {    
     const networks = await DockerInterface.getNetworks(config.dockerNetworkPrefix)
+    console.log('NETWORKS')
+    console.log(networks)
     const list = await DockerInterface.extractContainers(networks)
+    console.log('LIST')
+    console.log(list)
     const freestuffServices = list.filter(item => item.Config.Labels[config.dockerLabels.role])
+    console.log('SERVICES')
+    console.log(freestuffServices)
     const out: FsContainer[] = []
 
     for (const service of freestuffServices) {
