@@ -7,6 +7,7 @@ export type configjs = {
   port: number
   mongoUrl: string
   dockerOptions: DockerOptions
+  dockerNetworkPrefix: string
   dockerLabels: {
     role: string
     network: string

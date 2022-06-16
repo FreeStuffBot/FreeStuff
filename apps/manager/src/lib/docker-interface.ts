@@ -25,30 +25,54 @@ export default class DockerInterface {
       .then(console.log) // REMOVE
   }
 
-  public static async getFsContainers() {
-    const list = await DockerInterface.client.listContainers()
-    // console.log(JSON.stringify(list))
-    const freestuffContainers = list.filter(item => item.Labels[config.dockerLabels.role])
+  public static async getFsContainers() {    
+    const networks = await DockerInterface.getNetworks(config.dockerNetworkPrefix)
+    const list = await DockerInterface.extractContainers(networks)
+    const freestuffServices = list.filter(item => item.Config.Labels[config.dockerLabels.role])
     const out: FsContainer[] = []
 
-    for (const container of freestuffContainers) {
-      const networkName = container.Labels[config.dockerLabels.network]
-      const network = container.NetworkSettings.Networks[networkName]
+    for (const service of freestuffServices) {
+      const networkName = service.Config.Labels[config.dockerLabels.network]
+      const network = service.NetworkSettings.Networks[networkName]
       if (!network) continue // TODO
 
       out.push({
-        id: container.Id,
-        role: container.Labels[config.dockerLabels.role],
-        imageName: container.Image,
-        imageId: container.ImageID,
-        labels: container.Labels,
-        state: container.State,
+        id: service.Id,
+        role: service.Config.Labels[config.dockerLabels.role],
+        imageName: service.Config.Image,
+        imageId: service.Image,
+        labels: service.Config.Labels,
+        state: service.State.Status,
         networkName,
         networkIp: network.IPAddress
       })
     }
 
     return out
+  }
+
+  private static async getNetworks(beginWith: string): Promise<any[]> {
+    const raw = await DockerInterface.client.listNetworks()
+    const promised = raw
+      .filter(n => n.Name.startsWith(beginWith))
+      .map(n => DockerInterface.client.getNetwork(n.Id).inspect())
+    const details = await Promise.all(promised)
+    return details
+  }
+
+  private static async extractContainers(networks: any[]): Promise<any[]> {
+    const out: Map<string, any> = new Map()
+
+    for (const network of networks) {
+      for (const id of Object.keys(network.Containers)) {
+        if (out.has(id)) continue
+        if (!/^[a-z0-9]{10,}$/.test(id)) continue
+        const data = await DockerInterface.client.getConfig(id).inspect()
+        out.set(id, data)
+      }
+    }
+
+    return [...out.values()]
   }
 
   public static async getFsContainersTest() {
