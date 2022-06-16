@@ -67,7 +67,7 @@ export default class DockerInterface {
       for (const id of Object.keys(network.Containers)) {
         if (out.has(id)) continue
         if (!/^[a-z0-9]{10,}$/.test(id)) continue
-        const data = await DockerInterface.client.getConfig(id).inspect()
+        const data = await DockerInterface.client.getContainer(id).inspect()
         out.set(id, data)
       }
     }
