@@ -32,11 +32,7 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
         c.from === 0
           ? '=settings_filter_price_class_desc_everything'
           : '=settings_filter_price_class_desc_generic',
-        {
-          price: (Localisation.text(i, '=currency_sign_position') === 'before')
-            ? `${guildData.currency.symbol}${c.from}`
-            : `${c.from}${guildData.currency.symbol}`
-        }
+        { price: Localisation.renderPriceTag(i, guildData.currency, c.from) }
       ),
       default: guildData.price.id === c.id
     }))

@@ -209,6 +209,7 @@ function getEmojiForChannel(recommended: boolean, type: number, sussy: boolean):
  * Trims the name to maxlength and removes invalid characters
  */
 function sanitizeChannelName(name: string, maxlength: number): string {
+  if (!name) return 'channel without a name (sus)'
   if (name.length < maxlength) return name
 
   name = name.substring(0, maxlength)

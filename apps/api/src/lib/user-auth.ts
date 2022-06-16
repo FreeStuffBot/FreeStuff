@@ -30,7 +30,6 @@ export default class UserAuth {
     const found: UserType | undefined = await Mongo.User.findById(user.id)
 
     if (found) {
-      console.log(found, user)
       found.data = UserAuth.compileDuserData(user)
       await UserAuth.registerNewLogin(req, found)
       await found.save()

@@ -128,13 +128,15 @@ export default class Localisation {
   /**
    * Renders a price tag properly
    */
-  public static renderPriceTag(cont: LocaleContainer, curr: CurrencyDataType | SanitizedCurrencyType, product: SanitizedProductType) {
-    const price = product.prices.find(p => p.currency === curr?.code)
-      ?? product.prices.find(p => p.currency === Const.currencyFallback)
-      ?? product.prices[0]
+  public static renderPriceTag(cont: LocaleContainer, curr: CurrencyDataType | SanitizedCurrencyType, productOrPrice: SanitizedProductType | number) {
+    const price = (typeof productOrPrice === 'number')
+      ? (productOrPrice as number)
+      : productOrPrice.prices.find(p => p.currency === curr?.code)?.oldValue
+        ?? productOrPrice.prices.find(p => p.currency === Const.currencyFallback)?.oldValue
+        ?? productOrPrice.prices[0]?.oldValue
     return Localisation.getLine(cont, 'currency_sign_position') === 'after'
-      ? `${price.oldValue}${curr.symbol ?? '€'}`
-      : `${curr.symbol ?? '€'}${price.oldValue}`
+      ? `${price}${curr?.symbol ?? '€'}`
+      : `${curr?.symbol ?? '€'}${price}`
   }
 
   public static getLocaleFromContainer(cont: LocaleContainer): string {
