@@ -14,7 +14,9 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
       .findOne({ _id: Long.fromString(i.guild_id) })
 
     data._ = {
-      shard: ((typeof i.guildData.sharder === 'number') ? i.guildData.sharder : i.guildData.sharder.getLowBits()) % Core.options.shardCount,
+      shard: (typeof i.guildData.sharder === 'number')
+        ? (i.guildData.sharder % Core.options.shardCount)
+        : (i.guildData.sharder.modulo(Long.fromInt(Core.options.shardCount)).toInt()),
       worker: Manager.getSelfUUID(),
       container: await hostname()
     }
