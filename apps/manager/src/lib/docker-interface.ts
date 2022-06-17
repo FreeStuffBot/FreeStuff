@@ -36,7 +36,7 @@ export default class DockerInterface {
 
     // item.Config.Labels['com.docker.swarm.node.id'] // TODO identify node its running on
     console.log(list.map(i => ({ Labels: i.Config.Labels, network: i.NetworkSettings.Networks })))
-    const freestuffServices = list.filter(item => item.Config.Labels[config.dockerLabels.role])
+    const freestuffServices = list.filter(item => item.Config.Labels[config.dockerLabels.module])
     console.log('SERVICES')
     console.log(freestuffServices)
     const out: FsContainer[] = []
@@ -49,7 +49,7 @@ export default class DockerInterface {
 
       out.push({
         id: service.Id,
-        role: service.Config.Labels[config.dockerLabels.role],
+        role: service.Config.Labels[config.dockerLabels.module],
         imageName: service.Config.Image,
         imageId: service.Image,
         labels: service.Config.Labels,

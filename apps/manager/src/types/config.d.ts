@@ -9,6 +9,6 @@ export type configjs = {
   dockerOptions: DockerOptions
   dockerNetworkPrefix: string
   dockerLabels: {
-    role: string
+    module: string
   }
 }
