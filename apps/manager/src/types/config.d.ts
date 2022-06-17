@@ -10,6 +10,5 @@ export type configjs = {
   dockerNetworkPrefix: string
   dockerLabels: {
     role: string
-    network: string
   }
 }

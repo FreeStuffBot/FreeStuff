@@ -64,7 +64,9 @@ jobs:
           file: ./dockerfiles/${{ matrix.module }}.Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: |
+            ${{ steps.meta.outputs.labels }}
+            xyz.freestuffbot.service.module=${{ matrix.module }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           build-args: |

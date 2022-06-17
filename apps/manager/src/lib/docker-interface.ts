@@ -13,6 +13,8 @@ export type FsContainer = {
   networkIp: string
 }
 
+const FSBNetworkName = 'FSBNetworkName'
+
 export default class DockerInterface {
 
   private static client: Docker
@@ -31,6 +33,8 @@ export default class DockerInterface {
     console.log('LIST')
     console.log(list)
     console.log('LIST MAPPED')
+
+    // item.Config.Labels['com.docker.swarm.node.id'] // TODO identify node its running on
     console.log(list.map(i => ({ Labels: i.Config.Labels, network: i.NetworkSettings.Networks })))
     const freestuffServices = list.filter(item => item.Config.Labels[config.dockerLabels.role])
     console.log('SERVICES')
@@ -38,8 +42,9 @@ export default class DockerInterface {
     const out: FsContainer[] = []
 
     for (const service of freestuffServices) {
-      const networkName = service.Config.Labels[config.dockerLabels.network]
+      const networkName = service[FSBNetworkName]
       const network = service.NetworkSettings.Networks[networkName]
+      console.log('FOUND ' + service.Id + " - " + service.Config?.Image + " + " + networkName + " # " + !!network)
       if (!network) continue // TODO
 
       out.push({
@@ -74,6 +79,7 @@ export default class DockerInterface {
         if (out.has(id)) continue
         if (!/^[a-z0-9]{10,}$/.test(id)) continue
         const data = await DockerInterface.client.getContainer(id).inspect()
+        ;(data as any)[FSBNetworkName] = network.Name
         out.set(id, data)
       }
     }

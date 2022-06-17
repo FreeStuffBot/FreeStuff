@@ -8,7 +8,6 @@ module.exports = {
   dockerOptions: null,
   dockerNetworkPrefix: 'fsb',
   dockerLabels: {
-    role: 'xyz.freestuffbot.service.role',
-    network: 'xyz.freestuffbot.service.network'
+    role: 'xyz.freestuffbot.service.role'
   }
 }
