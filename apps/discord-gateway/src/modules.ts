@@ -25,8 +25,10 @@ export default class Modules {
     app.get('/webhooks/:hookid/:hooktoken', getWebhook)
     app.post('/webhooks/:channel', postWebhook)
 
-    app.all('/umi/*', UmiLibs.ipLockMiddleware(config.network.umiAllowedIpRange))
-    app.get('/umi/metrics', Metrics.endpoint())
+    UmiLibs.mount(app, {
+      allowedIpRange: config.network.umiAllowedIpRange,
+      renderMetrics: Metrics.endpoint()
+    })
 
     app.all('*', (_, res) => res.status(400).end())
 
