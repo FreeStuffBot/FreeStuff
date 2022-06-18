@@ -137,15 +137,15 @@ export default class UmiLibs {
 
     // initiate the handhake with the manager
     const out = await axios.post(endpoint, {
-        host: os.hostname(),
-        role: this.getServiceName()
-      }, {
-        validateStatus: null
-      }).catch(() => null)
+      host: os.hostname(),
+      role: this.getServiceName()
+    }, {
+      validateStatus: null
+    }).catch(void console.log)
 
     // if the initial request failed, we failed
-    if (out.status !== 200) {
-      Logger.warn(`UMI Handshake with manager failed: ${out.data}`)
+    if (out?.status !== 200) {
+      Logger.warn(`UMI Handshake with manager failed: ${out?.data ?? 'timeout'}`)
       UmiLibs.handshakeCallback?.(null)
       UmiLibs.handshakeCallback = null
       return false
