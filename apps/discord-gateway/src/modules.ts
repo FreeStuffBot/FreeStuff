@@ -14,7 +14,7 @@ export default class Modules {
     Metrics.init()
   }
 
-  public static startServer() {
+  public static async startServer() {
     const app = express()
     app.set('trust proxy', 1)
 
@@ -32,9 +32,8 @@ export default class Modules {
 
     app.all('*', (_, res) => res.status(400).end())
 
-    app.listen(config.port, undefined, () => {
-      Logger.process(`Server launched at port ${config.port}`)
-    })
+    await new Promise(res => app.listen(config.port, undefined, res as any))
+    Logger.process(`Server launched at port ${config.port}`)
   }
 
 }
