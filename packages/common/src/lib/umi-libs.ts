@@ -88,6 +88,8 @@ export default class UmiLibs {
   }
 
   public static initFetching(config: ServerMountConfig['fetch']) {
+    if (!config) return
+
     if (config.cmsConstants) {
       UmiLibs.loadCertain(CMS.loadConstants, true, () => {
         Logger.error(`Failed loading CMS Constants, shutdown.`)
