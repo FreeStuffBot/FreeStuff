@@ -141,10 +141,10 @@ export default class UmiLibs {
       role: this.getServiceName()
     }, {
       validateStatus: null
-    }).catch(void console.log)
+    }).catch(err => void console.log(err))
 
     // if the initial request failed, we failed
-    if (out?.status !== 200) {
+    if (!out || out.status !== 200) {
       Logger.warn(`UMI Handshake with manager failed: ${out?.data ?? 'timeout'}`)
       UmiLibs.handshakeCallback?.(null)
       UmiLibs.handshakeCallback = null
