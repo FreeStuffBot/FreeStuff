@@ -20,46 +20,46 @@ export default class DockerInterface {
   private static client: Docker
 
   public static connect() {
-    DockerInterface.client = new Docker(config.dockerOptions)
-    DockerInterface
-      .getFsContainers()
-      .then(e => JSON.stringify(e, null, 2))
-      .then(console.log) // REMOVE
+    // DockerInterface.client = new Docker(config.dockerOptions)
+    // DockerInterface
+    //   .getFsContainers()
+    //   .then(e => JSON.stringify(e, null, 2))
+    //   .then(console.log) // REMOVE
   }
 
   public static async getFsContainers() {    
-    const networks = await DockerInterface.getNetworks(config.dockerNetworkPrefix)
-    const list = await DockerInterface.extractContainers(networks)
-    console.log('LIST')
-    console.log(list)
-    console.log('LIST MAPPED')
+    // const networks = await DockerInterface.getNetworks(config.dockerNetworkPrefix)
+    // const list = await DockerInterface.extractContainers(networks)
+    // console.log('LIST')
+    // console.log(list)
+    // console.log('LIST MAPPED')
 
-    // item.Config.Labels['com.docker.swarm.node.id'] // TODO identify node its running on
-    console.log(list.map(i => ({ Labels: i.Config.Labels, network: i.NetworkSettings.Networks })))
-    const freestuffServices = list.filter(item => item.Config.Labels[config.dockerLabels.module])
-    console.log('SERVICES')
-    console.log(freestuffServices)
-    const out: FsContainer[] = []
+    // // item.Config.Labels['com.docker.swarm.node.id'] // TODO identify node its running on
+    // console.log(list.map(i => ({ Labels: i.Config.Labels, network: i.NetworkSettings.Networks })))
+    // const freestuffServices = list.filter(item => item.Config.Labels[config.dockerLabels.module])
+    // console.log('SERVICES')
+    // console.log(freestuffServices)
+    // const out: FsContainer[] = []
 
-    for (const service of freestuffServices) {
-      const networkName = service[FSBNetworkName]
-      const network = service.NetworkSettings.Networks[networkName]
-      console.log('FOUND ' + service.Id + " - " + service.Config?.Image + " + " + networkName + " # " + !!network)
-      if (!network) continue // TODO
+    // for (const service of freestuffServices) {
+    //   const networkName = service[FSBNetworkName]
+    //   const network = service.NetworkSettings.Networks[networkName]
+    //   console.log('FOUND ' + service.Id + " - " + service.Config?.Image + " + " + networkName + " # " + !!network)
+    //   if (!network) continue // TODO
 
-      out.push({
-        id: service.Id,
-        role: service.Config.Labels[config.dockerLabels.module],
-        imageName: service.Config.Image,
-        imageId: service.Image,
-        labels: service.Config.Labels,
-        state: service.State.Status,
-        networkName,
-        networkIp: network.IPAddress
-      })
-    }
+    //   out.push({
+    //     id: service.Id,
+    //     role: service.Config.Labels[config.dockerLabels.module],
+    //     imageName: service.Config.Image,
+    //     imageId: service.Image,
+    //     labels: service.Config.Labels,
+    //     state: service.State.Status,
+    //     networkName,
+    //     networkIp: network.IPAddress
+    //   })
+    // }
 
-    return out
+    // return out
   }
 
   private static async getNetworks(beginWith: string): Promise<any[]> {

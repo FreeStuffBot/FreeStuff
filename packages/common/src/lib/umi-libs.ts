@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { Express, Request, Response, NextFunction } from 'express'
 import * as ip from 'ip'
 import * as os from 'os'
@@ -36,6 +37,8 @@ export default class UmiLibs {
     command: false,
     metrics: false
   }
+  private static serverMounted = false
+  private static handshakeCallback: (req: Request) => any = null
 
   public static mount(server: Express, config: ServerMountConfig): void {
     UmiLibs.serviceName = UmiLibs.getServiceName()
@@ -51,7 +54,14 @@ export default class UmiLibs {
 
     server.get('/umi/info', UmiLibs.renderInfoResponse)
 
+    server.post('/umi/handshake', (req: Request, res: Response) => {
+      UmiLibs.handshakeCallback?.(req)
+      res.status(200).end()
+    })
+
     UmiLibs.initFetching(config.fetch)
+
+    UmiLibs.serverMounted = true
   }
 
   //
@@ -109,6 +119,57 @@ export default class UmiLibs {
       }).then(() => Logger.process('Loaded Experiments.'))
       setInterval(() => CMS.loadExperiments(), config.experiments)
     }
+  }
+
+  /**
+   * sends a handshake to the manager and awaits a handshake response.
+   * returns whether successful or not (bad request, bad gateway, timeout, etc)
+   */
+  public static async sendHandshake(timeout = 10000, endpoint = 'http://manager/handshake'): Promise<boolean> {
+    if (!UmiLibs.serverMounted) {
+      Logger.warn('UMI tried to send handshake but incoming server was not yet mounted')
+      return false
+    }
+
+    const response = new Promise<Request>(res => (UmiLibs.handshakeCallback = res))
+
+    // initiate the handhake with the manager
+    const out = await axios.post(endpoint, {
+        host: os.hostname(),
+        role: this.getServiceName()
+      }, {
+        validateStatus: null
+      }).catch(() => null)
+
+    // if the initial request failed, we failed
+    if (out.status !== 200) {
+      Logger.warn(`UMI Handshake with manager failed: ${out.data}`)
+      UmiLibs.handshakeCallback?.(null)
+      UmiLibs.handshakeCallback = null
+      return false
+    }
+
+    // set an idle timeout in case the downstream doesnt work
+    const idleTimeout = setTimeout(() => {
+      UmiLibs.handshakeCallback?.(null)
+      UmiLibs.handshakeCallback = null
+    }, timeout)
+
+    // wait for something to happen
+    const res = await response
+    clearTimeout(idleTimeout)
+
+    // res === null means the timeout triggered -> failed
+    if (!res) return false
+
+    // otherwise we're in
+    // res.
+    return true
+  }
+
+  public static async performHandshakeOrDie(timeout = 10000, endpoint = 'http://manager/handshake'): Promise<void> {
+    const success = await UmiLibs.sendHandshake(timeout, endpoint)
+    if (!success) process.exit(1)
   }
 
   //

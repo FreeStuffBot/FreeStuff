@@ -1,4 +1,4 @@
-import { ContainerInfo, Logger } from '@freestuffbot/common'
+import { ContainerInfo, Logger, UmiLibs } from '@freestuffbot/common'
 import RestGateway from './api/rest-gateway'
 import Modules from './modules'
 import { configjs } from './types/config'
@@ -12,6 +12,10 @@ async function run() {
   RestGateway.startLoop()
   Modules.initMetrics()
   Modules.startServer()
+
+  Logger.debug('Starting Handshake')
+  await UmiLibs.performHandshakeOrDie()
+  Logger.debug('Handshake Complete')
 }
 
 run().catch((err) => {

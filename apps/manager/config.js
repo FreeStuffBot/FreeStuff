@@ -5,9 +5,12 @@ const loadArg = require('@freestuffbot/config/load-arg')
 module.exports = {
   port: loadArg('MANAGER_PORT') || 80,
   mongoUrl: loadArg('MANAGER_MONGO_URL'),
-  dockerOptions: null,
-  dockerNetworkPrefix: 'fsb',
-  dockerLabels: {
-    module: 'xyz.freestuffbot.service.module'
+  network: {
+    umiAllowedIpRange: loadArg('NETWORK_UMI_ALLOWED_IP_RANGE')
   }
+  // dockerOptions: null,
+  // dockerNetworkPrefix: 'fsb',
+  // dockerLabels: {
+  //   module: 'xyz.freestuffbot.service.module'
+  // }
 }

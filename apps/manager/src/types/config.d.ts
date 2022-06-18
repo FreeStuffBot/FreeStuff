@@ -6,9 +6,12 @@ import { DockerOptions } from 'dockerode'
 export type configjs = {
   port: number
   mongoUrl: string
-  dockerOptions: DockerOptions
-  dockerNetworkPrefix: string
-  dockerLabels: {
-    module: string
+  network: {
+    umiAllowedIpRange: string
   }
+  // dockerOptions: DockerOptions
+  // dockerNetworkPrefix: string
+  // dockerLabels: {
+  //   module: string
+  // }
 }
