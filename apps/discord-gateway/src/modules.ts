@@ -32,7 +32,7 @@ export default class Modules {
 
     app.all('*', (_, res) => {
       Logger.debug('400!!!!! ')
-      Logger.debug(_)
+      console.log(_)
       res.status(400).end()
     })
 
