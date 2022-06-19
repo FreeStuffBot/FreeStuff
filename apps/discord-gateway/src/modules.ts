@@ -30,7 +30,11 @@ export default class Modules {
       renderMetrics: Metrics.endpoint()
     })
 
-    app.all('*', (_, res) => res.status(400).end())
+    app.all('*', (_, res) => {
+      Logger.debug('400!!!!! ')
+      Logger.debug(_)
+      res.status(400).end()
+    })
 
     await new Promise(res => app.listen(config.port, undefined, res as any))
     Logger.process(`Server launched at port ${config.port}`)
