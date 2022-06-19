@@ -32,7 +32,7 @@ export class Services {
 
   public static async returnHandshake(service: Service, token: string): Promise<boolean> {
     const res = await axios.post('/umi/handshake', token, {
-      baseURL: service.addr,
+      baseURL: `http://${service.addr}`,
       validateStatus: null,
       timeout: 10000
     })
