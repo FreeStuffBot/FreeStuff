@@ -18,18 +18,14 @@ export async function postHandshake(req: Request, res: Response) {
   if (!body.host) return res.status(400).send('missing host')
   if (!body.role) return res.status(400).send('missing role')
 
-  const addr = req.ip
-  console.log('HANDSHAKE DEBUG START')
-  console.log(req.ip)
-  console.log(req.ips)
-  console.log('HANDSHAKE DEBUG END')
+  const addr = req.ip?.startsWith('::ffff:')
+    ? req.ip.substring('::ffff:'.length)
+    : req.ip
 
   const subnet = config.network.umiAllowedIpRange
     ? ip.cidrSubnet(config.network.umiAllowedIpRange)
     : null
-  if (!subnet.contains((addr))) res.status(403).end()
-
-  console.log('VALID')
+  if (subnet && !subnet.contains((addr))) res.status(403).end()
 
   const service: Service = {
     id: body.host,
