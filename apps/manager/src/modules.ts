@@ -25,7 +25,7 @@ export default class Modules {
     app.get('/services/raw', getServicesRaw)
     app.get('/services/composed', getServicesComposed)
     app.get('/composition', getComposition)
-    app.post('/handshake', postHandshake)
+    app.post('/handshake', express.json(), postHandshake)
 
     app.all('*', (_, res) => res.status(400).end())
 
