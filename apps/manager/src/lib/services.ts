@@ -35,7 +35,7 @@ export class Services {
       baseURL: `http://${service.addr}`,
       validateStatus: null,
       timeout: 10000
-    })
+    }).catch(() => null)
     return res?.status === 200
   }
 
