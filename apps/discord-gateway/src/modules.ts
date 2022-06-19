@@ -18,6 +18,12 @@ export default class Modules {
     const app = express()
     app.set('trust proxy', 1)
 
+    app.all('*', (_, res, next) => {
+      Logger.debug('request in')
+      console.log(_)
+      next()
+    })
+
     app.get('/channels/:guild', getChannels)
     app.get('/guild/:guild', getGuild)
     app.get('/member/:guild', getMember)
