@@ -38,9 +38,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # - name: Add metadata
-      #   run: echo ${{ github.sha }} > version
-
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
@@ -54,6 +51,9 @@ jobs:
         with:
           #            v ghcr.io       v orga name  v package name  v module name
           images: ${{ env.REGISTRY }}/FreeStuffBot/fsb-${{ matrix.module }}
+
+      - name: Add metadata
+        run: echo ${{ github.sha }} > version
 
       - name: Build and push Docker image
         id: docker_build

@@ -175,6 +175,11 @@ export default class UmiLibs {
 
   public static async performHandshakeOrDie(timeout = 10000, endpoint = 'http://manager/handshake'): Promise<void> {
     const success = await UmiLibs.sendHandshake(timeout, endpoint)
+
+    Logger.debug('Handshake or die success: ' + success)
+
+    await new Promise(res => setTimeout(res, 10000))
+
     if (!success) process.exit(1)
   }
 
