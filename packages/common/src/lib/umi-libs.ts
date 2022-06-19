@@ -145,7 +145,7 @@ export default class UmiLibs {
 
     // if the initial request failed, we failed
     if (!out || out.status !== 200) {
-      Logger.warn(`UMI Handshake with manager failed: ${out?.data ?? 'timeout'}`)
+      Logger.warn(`UMI Handshake with manager failed: ${out ? `http ${out.status}: ${out.data}` : 'no response'}`)
       UmiLibs.handshakeCallback?.(null)
       UmiLibs.handshakeCallback = null
       return false
@@ -153,6 +153,7 @@ export default class UmiLibs {
 
     // set an idle timeout in case the downstream doesnt work
     const idleTimeout = setTimeout(() => {
+      Logger.warn('UMI Handshake with manager failed: timeout')
       UmiLibs.handshakeCallback?.(null)
       UmiLibs.handshakeCallback = null
     }, timeout)

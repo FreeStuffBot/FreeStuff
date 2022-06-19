@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { Service, Services } from '../lib/services'
 import * as ip from 'ip'
 import { config } from '..'
+import { Logger } from '@freestuffbot/common'
 
 
 type ExpectedBodyForm = {
@@ -26,6 +27,8 @@ export async function postHandshake(req: Request, res: Response) {
     ? ip.cidrSubnet(config.network.umiAllowedIpRange)
     : null
   if (subnet && !subnet.contains((addr))) res.status(403).end()
+
+  Logger.debug(`Add service (id ${body.host}) (addr ${addr}) (role ${body.role})`)
 
   const service: Service = {
     id: body.host,
