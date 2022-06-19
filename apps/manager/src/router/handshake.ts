@@ -10,6 +10,8 @@ type ExpectedBodyForm = {
   host: string
   /** service kind, e.g. discord-interactions, api, thumbnailer, ... */
   role: string
+  /** some generic token the service provided, which is sent back on handshake return */
+  loginToken: string
 }
 
 export async function postHandshake(req: Request, res: Response) {
@@ -18,6 +20,7 @@ export async function postHandshake(req: Request, res: Response) {
   if (!body) return res.status(400).send('missing body')
   if (!body.host) return res.status(400).send('missing host')
   if (!body.role) return res.status(400).send('missing role')
+  if (!body.loginToken) return res.status(400).send('missing loginToken')
 
   const addr = req.ip?.startsWith('::ffff:')
     ? req.ip.substring('::ffff:'.length)
@@ -35,6 +38,15 @@ export async function postHandshake(req: Request, res: Response) {
     addr,
     role: body.role
   }
+
+  const response = await Services.returnHandshake(service, body.loginToken)
+  if (!response) {
+    Logger.info(`Service (id ${body.host}) (addr ${addr}) (role ${body.role}) sent handshake but could not be returned`)
+    res.status(408).end()
+    return
+  }
+
+  Logger.info(`Service (id ${body.host}) (addr ${addr}) (role ${body.role}) completed handshake`)
   Services.addService(service)
 
   res.status(200).end()

@@ -1,3 +1,4 @@
+import axios from "axios"
 
 
 export type Service = {
@@ -25,6 +26,17 @@ export class Services {
 
   public static getServices(): Iterator<Service> {
     return Services.list.values()
+  }
+
+  //
+
+  public static async returnHandshake(service: Service, token: string): Promise<boolean> {
+    const res = await axios.post('/umi/handshake', token, {
+      baseURL: service.addr,
+      validateStatus: null,
+      timeout: 10000
+    })
+    return res?.status === 200
   }
 
 }

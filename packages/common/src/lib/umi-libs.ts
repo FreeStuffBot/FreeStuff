@@ -5,6 +5,7 @@ import * as os from 'os'
 import CMS from './cms'
 import ContainerInfo from './container-info'
 import Logger from './logger'
+import Util from './util'
 
 
 type UmiInfoReport = {
@@ -134,13 +135,16 @@ export default class UmiLibs {
     }
 
     const response = new Promise<Request>(res => (UmiLibs.handshakeCallback = res))
+    const loginToken = Util.generateWord('abcdefghijklmnopqrstuvwxyz', 10)
 
     // initiate the handhake with the manager
     const out = await axios.post(endpoint, {
       host: os.hostname(),
-      role: this.getServiceName()
+      role: this.getServiceName(),
+      loginToken
     }, {
-      validateStatus: null
+      validateStatus: null,
+      timeout
     }).catch(err => void console.log(err))
 
     // if the initial request failed, we failed
@@ -150,20 +154,19 @@ export default class UmiLibs {
       UmiLibs.handshakeCallback = null
       return false
     }
-
-    // set an idle timeout in case the downstream doesnt work
-    const idleTimeout = setTimeout(() => {
-      Logger.warn('UMI Handshake with manager failed: timeout')
-      UmiLibs.handshakeCallback?.(null)
-      UmiLibs.handshakeCallback = null
-    }, timeout)
+    Logger.debug('yeeaawdawdawd')
 
     // wait for something to happen
     const res = await response
-    clearTimeout(idleTimeout)
+
+    Logger.debug('awaited!')
 
     // res === null means the timeout triggered -> failed
     if (!res) return false
+
+    Logger.debug(`LoginToken rec: ${res.body} expected: ${loginToken}`)
+    // invalid loginToken -> something went wrong
+    if (res.body !== loginToken) return false
 
     // otherwise we're in
     // res.
