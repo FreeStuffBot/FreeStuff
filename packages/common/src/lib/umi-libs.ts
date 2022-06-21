@@ -185,9 +185,11 @@ export default class UmiLibs {
 
     Logger.debug('Handshake or die success: ' + success)
 
-    await new Promise(res => setTimeout(res, 10000))
+    // await new Promise(res => setTimeout(res, 10000))
 
-    if (!success) process.exit(1)
+    // if (!success) process.exit(1)
+
+    // TODO re-enable above
   }
 
   //
