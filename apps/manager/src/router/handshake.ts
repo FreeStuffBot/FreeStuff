@@ -17,6 +17,11 @@ type ExpectedBodyForm = {
 export async function postHandshake(req: Request, res: Response) {
   const body: ExpectedBodyForm = req.body
 
+  console.log('REQUEST')
+  console.log(req)
+  console.log(JSON.stringify(req))
+  console.log('REQUEST END')
+
   if (!body) return res.status(400).send('missing body')
   if (!body.host) return res.status(400).send('missing host')
   if (!body.role) return res.status(400).send('missing role')
