@@ -10,6 +10,8 @@ type ExpectedBodyForm = {
   host: string
   /** service kind, e.g. discord-interactions, api, thumbnailer, ... */
   role: string
+  /** service's own ip addresses */
+  ips: string[]
   /** some generic token the service provided, which is sent back on handshake return */
   loginToken: string
 }
@@ -27,9 +29,18 @@ export async function postHandshake(req: Request, res: Response) {
   if (!body.role) return res.status(400).send('missing role')
   if (!body.loginToken) return res.status(400).send('missing loginToken')
 
-  const addr = req.ip?.startsWith('::ffff:')
+  const srcAddr = req.ip?.startsWith('::ffff:')
     ? req.ip.substring('::ffff:'.length)
     : req.ip
+
+  console.log('srcAddr: ' + srcAddr)
+  console.log('bodyips: ' + body.ips)
+
+  const addr = body.ips
+    ? findClosestIpMatch(srcAddr, body.ips)
+    : srcAddr
+
+  console.log('-> addr: ' + addr)
 
   const subnet = config.network.umiAllowedIpRange
     ? ip.cidrSubnet(config.network.umiAllowedIpRange)
@@ -55,4 +66,24 @@ export async function postHandshake(req: Request, res: Response) {
   Services.addService(service)
 
   res.status(200).end()
+}
+
+function rankIpMatch(bytes: string[], target: string[]): number {
+  let out = 0
+  for (let i = 0; i < bytes.length; i++)
+    if (bytes[i] === target[i]) out++
+  return out
+}
+
+function findClosestIpMatch(target: string, options: string[]): string {
+  let mVal = 0
+  let mItm = options[0]
+  const bytes = target.split('.')
+  for (const option of options) {
+    const rank = rankIpMatch(bytes, option.split('.'))
+    if (rank <= mVal) continue
+    mVal = rank
+    mItm = option
+  }
+  return mItm
 }

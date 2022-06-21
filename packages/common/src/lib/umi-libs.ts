@@ -137,10 +137,17 @@ export default class UmiLibs {
     const response = new Promise<Request>(res => (UmiLibs.handshakeCallback = res))
     const loginToken = Util.generateWord('abcdefghijklmnopqrstuvwxyz', 10)
 
+    const nets = Object.values(os.networkInterfaces())
+    const ips = nets
+      .flat()
+      .filter(n => n.family === 'IPv4')
+      .map(n => n.address)
+
     // initiate the handhake with the manager
     const out = await axios.post(endpoint, {
       host: os.hostname(),
       role: this.getServiceName(),
+      ips,
       loginToken
     }, {
       validateStatus: null,
