@@ -21,7 +21,6 @@ export async function postHandshake(req: Request, res: Response) {
 
   console.log('REQUEST')
   console.log(req)
-  console.log(JSON.stringify(req))
   console.log('REQUEST END')
 
   if (!body) return res.status(400).send('missing body')
