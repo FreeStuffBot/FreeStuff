@@ -94,8 +94,6 @@ export default class CMS {
 
   public static async loadLanguages(): Promise<boolean> {
     const lang = await ApiInterface.loadData<LanguageDataType[]>('languages')
-    console.log('LANG')
-    console.log(lang)
 
     if (!lang?.length)
       return false
@@ -107,8 +105,6 @@ export default class CMS {
 
   public static async loadConstants(): Promise<boolean> {
     const data = await ApiInterface.loadData<CmsConstantsType>('cms-constants')
-    console.log('CONST')
-    console.log(data)
 
     if (!data)
       return false
@@ -130,8 +126,6 @@ export default class CMS {
 
   public static async loadRemoteConfig(): Promise<boolean> {
     const conf = await ApiInterface.loadData<RemoteConfigType>('remote-config')
-    console.log('CONF')
-    console.log(conf)
 
     if (!conf)
       return false
@@ -142,8 +136,6 @@ export default class CMS {
 
   public static async loadExperiments(): Promise<boolean> {
     const exp = await ApiInterface.loadData<SanitizedExperimentType[]>('experiments')
-    console.log('EXP')
-    console.log(exp)
 
     if (!exp)
       return false
