@@ -20,6 +20,7 @@ WORKDIR /app
 COPY --from=installer /app/ .
 COPY --from=builder /app/out/full/ .
 COPY .gitignore .gitignore
+RUN apk add --no-cache libfontconfig
 RUN yarn turbo run build --scope=@freestuffbot/thumbnailer --include-dependencies --no-deps
 
 EXPOSE 80

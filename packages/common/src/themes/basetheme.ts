@@ -76,9 +76,8 @@ export default class BaseTheme {
   static generateUntil(product: SanitizedProductType, guild: SanitizedGuildType): string {
     if (!product.until) return ''
 
-    console.log(product.until)
     return Localisation.text(guild, '=announcement_free_until_date', {
-      date: `aaa <t:${~~(product.until / 1000)}:d>`
+      date: `<t:${~~(product.until / 1000)}:d>`
     })
   }
 
