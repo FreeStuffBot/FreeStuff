@@ -15,14 +15,15 @@ export default class RabbitHole {
     } catch (ex) {
       if (maxRetries > 0) {
         await new Promise(res => setTimeout(res, retryDelay))
-        this.open(uri, maxRetries - 1, retryDelay)
-        return
+        return RabbitHole.open(uri, maxRetries - 1, retryDelay)
       }
 
       // eslint-disable-next-line no-console
-      console.error('Opening rabbit hole failed.')
+      console.error('Opening rabbit hole failed. Shutting down.')
       // eslint-disable-next-line no-console
       console.error(ex)
+
+      process.exit(1)
     }
   }
 
