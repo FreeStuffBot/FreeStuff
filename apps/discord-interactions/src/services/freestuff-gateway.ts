@@ -18,17 +18,17 @@ export default class FreestuffGateway {
     return Errors.throwStderrNotInitialized('discord-interactions::fsgateway.getchannel')
   }
 
-  public static async updateChannel(name: ProductDiscountTypeType) {
+  /**
+   * Loads new data for the channel from the api
+   * @param name Channel name
+   * @returns whether successful
+   */
+  public static async updateChannel(name: ProductDiscountTypeType): Promise<boolean> {
     Logger.excessive('Updating current freebie list')
     
     const { data, status } = await ApiInterface.makeRequest('GET', 'v2', `/channels/${name}?resolve=true`)
 
-    console.log('YE')
-    console.log(data)
-    console.log(status)
-    console.log('EY')
-
-    if (status !== 200) return null
+    if (status !== 200) return false
 
     const products = Object.values(data.resolved) as SanitizedProductType[]
 
@@ -41,6 +41,7 @@ export default class FreestuffGateway {
       p.today = (p.until - currentTime < this.TWELVE_HOURS)
 
     FreestuffGateway.channelsCache.set(name, out)
+    return true
   }
 
 }

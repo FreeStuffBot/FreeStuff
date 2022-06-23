@@ -30,9 +30,16 @@ export default class Modules {
     }))
   }
 
-  public static async loadProductChannnels() {
+  public static async loadProductChannnels(retryUntilSuccessful = true) {
     for (const channel of ProductDiscountTypeArray)
-      FreestuffGateway.updateChannel(channel as ProductDiscountTypeType)
+      Modules.loadProductChannnel(channel as ProductDiscountTypeType, retryUntilSuccessful)
+  }
+
+  public static async loadProductChannnel(channel: ProductDiscountTypeType, retryUntilSuccessful: boolean) {
+    const success = await FreestuffGateway.updateChannel(channel)
+    if (success || !retryUntilSuccessful) return
+    // retry after 5 seconds
+    setTimeout(() => Modules.loadProductChannnel(channel, true), 5000)
   }
 
   public static initCordo() {
