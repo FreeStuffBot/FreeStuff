@@ -26,6 +26,8 @@ export default class Const {
     donate: 'https://freestuffbot.xyz/donate'
   }
 
+  public static readonly brandName = 'FreeStuff'
+
   public static readonly embedDefaultColor = 0x2F3136
 
   public static readonly invisibleCharacter = '﻿'

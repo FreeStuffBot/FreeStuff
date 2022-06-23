@@ -1,4 +1,5 @@
-import { CurrencyDataType, ProductType } from "@freestuffbot/common"
+import { AnnouncementType, CurrencyDataType, ProductType } from "@freestuffbot/common"
+import RabbitHole, { TaskId } from "@freestuffbot/rabbit-hole"
 import Mongo from "../database/mongo"
 import CurrConv from "../services/currconv"
 import LinkProxy from "../services/link-proxy"

@@ -1,3 +1,4 @@
+import { Logger } from "@freestuffbot/common"
 import { TaskId, TasksForQueue } from "@freestuffbot/rabbit-hole"
 import handleDiscordPublish from "./discord-publish"
 import handleDiscordPublishSplit from "./discord-publish-split"
@@ -10,6 +11,8 @@ export default class TaskRouter {
   private static readonly UNKNOWN_TASK_DEFER_DELAY = 5000
   
   public static consume(task: TasksForQueue<'DISCORD'>): Promise<boolean> {
+    Logger.debug(`Consuming task of type ${task.t}`)
+
     switch (task.t) {
       case TaskId.DISCORD_PUBLISH:
         return handleDiscordPublish(task)
