@@ -23,6 +23,11 @@ export default class FreestuffGateway {
     
     const { data, status } = await ApiInterface.makeRequest('GET', 'v2', `/channels/${name}?resolve=true`)
 
+    console.log('YE')
+    console.log(data)
+    console.log(status)
+    console.log('EY')
+
     if (status !== 200) return null
 
     const products = Object.values(data.resolved) as SanitizedProductType[]

@@ -4,10 +4,16 @@ import { config } from ".."
 
 export default class Upstream {
 
+  private static readonly BURST_INTERVAL = 1000
+
   private static queue = [] as AxiosRequestConfig[]
 
   public static queueRequest(req: AxiosRequestConfig): void {
     Upstream.queue.push(req)
+
+    // TODO(high)
+    // make async
+    // await BURST_INTERVAL ms while queue.size > config.behavior.upstreamRequestRate
   }
 
   public static burst() {
@@ -30,7 +36,7 @@ export default class Upstream {
   public static startBurstInterval() {
     setInterval(() => {
       Upstream.burst()
-    }, 1000)
+    }, Upstream.BURST_INTERVAL)
   }
 
 }
