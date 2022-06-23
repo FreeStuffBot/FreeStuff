@@ -130,13 +130,13 @@ export default class Localisation {
    */
   public static renderPriceTag(cont: LocaleContainer, curr: CurrencyDataType | SanitizedCurrencyType, productOrPrice: SanitizedProductType | number) {
     const price = (typeof productOrPrice === 'number')
-      ? (productOrPrice as number)
+      ? (productOrPrice as number * 100)
       : productOrPrice.prices.find(p => p.currency === curr?.code)?.oldValue
         ?? productOrPrice.prices.find(p => p.currency === Const.currencyFallback)?.oldValue
         ?? productOrPrice.prices[0]?.oldValue
     return Localisation.getLine(cont, 'currency_sign_position') === 'after'
-      ? `${price}${curr?.symbol ?? '€'}`
-      : `${curr?.symbol ?? '€'}${price}`
+      ? `${price / 100}${curr?.symbol ?? '€'}`
+      : `${curr?.symbol ?? '€'}${price / 100}`
   }
 
   public static getLocaleFromContainer(cont: LocaleContainer): string {

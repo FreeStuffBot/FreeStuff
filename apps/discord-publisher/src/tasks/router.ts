@@ -11,7 +11,7 @@ export default class TaskRouter {
   private static readonly UNKNOWN_TASK_DEFER_DELAY = 5000
   
   public static consume(task: TasksForQueue<'DISCORD'>): Promise<boolean> {
-    Logger.debug(`Consuming task of type ${task.t}`)
+    Logger.excessive(`Consuming task of type ${task.t}`)
 
     switch (task.t) {
       case TaskId.DISCORD_PUBLISH:
