@@ -322,7 +322,7 @@ export default class Const {
     id: 0,
     title: '=cmd_test_announcement_header',
     prices: [ 'usd', 'eur', 'gbp', 'brl', 'bgn', 'pln', 'huf', 'btc' ]
-      .map(currency => ({ currency, newValue: 0, oldValue: 19.99, converted: false })),
+      .map(currency => ({ currency, newValue: 0, oldValue: 1999, converted: false })),
     platform: 'steam',
     thumbnails: {
       blank: Const.placeholderThumbnail,
@@ -354,7 +354,10 @@ export default class Const {
 
     const [ err, currencies ] = CMS.currencies
 
-    const defaultCurrencyId = err ? 0 : currencies[0]?.id ?? 0
+    const defaultCurrencyId = err
+      ? 0
+      : currencies[0]?.id ?? 0
+
     return 0
       | Util.modifyBits(0, 5, 4, defaultCurrencyId)
       | Util.modifyBits(0, 10, 6, language)
@@ -363,9 +366,11 @@ export default class Const {
   public static get defaultFilterBits(): number {
     const [ err, platforms ] = CMS.platforms
 
-    const defaultPlatforms = err ? 0 : platforms
-      .filter(p => p.enabledDefault)
-      .reduce((val, p) => (val ^= (1 << p.id)), 0)
+    const defaultPlatforms = err
+      ? 0
+      : platforms
+        .filter(p => p.enabledDefault)
+        .reduce((val, p) => (val ^= (1 << p.id)), 0)
 
     return 0
       | Util.modifyBits(0, 2, 2, Const.defaultPriceClass.id)

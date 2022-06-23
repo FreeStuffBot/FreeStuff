@@ -16,7 +16,7 @@ export default function (i: ReplyableCommandInteraction) {
     const productLink = `**[${product.title}](${product.urls.default})**`
     const priceTag = `~~${Localisation.renderPriceTag(i, null, product)}~~ • ${Localisation.text(i, '=cmd_free_until')}`
     const until = product.until
-      ? `<t:${product.until / 1000}:${('_today' in product) ? 't' : 'd'}>`
+      ? `<t:${~~(product.until / 1000)}:${('_today' in product) ? 't' : 'd'}>`
       : 'unknown'
 
     const str = `${platformEmoji} ${productLink}\n${Emojis.bigSpace.string} ${priceTag} ${until}\n`

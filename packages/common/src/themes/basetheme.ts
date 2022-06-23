@@ -77,7 +77,7 @@ export default class BaseTheme {
     if (!product.until) return ''
 
     return Localisation.text(guild, '=announcement_free_until_date', {
-      date: `<t:${product.until}:d>`
+      date: `<t:${~~(product.until / 1000)}:d>`
     })
   }
 
