@@ -8,10 +8,15 @@ export default class RabbitHole {
   private static channel: amqp.Channel
   private static subscription: amqp.Replies.Consume
 
+  private static initPendingQueue: [string, Buffer, amqp.Options.Publish][] = []
+
   public static async open(uri: string, maxRetries = 3, retryDelay = 5000): Promise<void> {
     try {
       RabbitHole.connection = await amqp.connect(uri)
       RabbitHole.channel = await RabbitHole.connection.createChannel()
+
+      for (const queued of RabbitHole.initPendingQueue)
+        RabbitHole.channel.sendToQueue(...queued)
     } catch (ex) {
       if (maxRetries > 0) {
         await new Promise(res => setTimeout(res, retryDelay))
@@ -39,6 +44,16 @@ export default class RabbitHole {
     const options: amqp.Options.Publish = {
       persistent: true,
       priority: TaskMeta[task.t].priority
+    }
+
+    // if the channel is not yet connected, put it in a queue to be published once connected
+    if (!RabbitHole.channel) {
+      RabbitHole.initPendingQueue.push([
+        queue.name,
+        Buffer.from(JSON.stringify(task)),
+        options  
+      ])
+      return
     }
 
     RabbitHole.channel.sendToQueue(

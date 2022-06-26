@@ -26,7 +26,7 @@ export default async function handleDiscordResend(task: Task<TaskId.DISCORD_RESE
   const theme = Themes.build(
     products,
     sanitizedGuild,
-    { test: true, donationNotice: false }
+    { test: false, donationNotice: false }
   )
 
   Upstream.queueRequest({

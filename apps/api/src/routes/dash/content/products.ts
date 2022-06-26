@@ -100,9 +100,9 @@ export async function postProduct(req: Request, res: Response) {
   try {
     await dbobj.save()
     res.status(200).json({ id })
-    
+
     if (fetching)
-      AutoScraper.scrape(dbobj)
+      AutoScraper.scrape(dbobj, url, false)
   } catch (err) {
     ReqError.badGateway(res, err?.message)
   }
@@ -144,4 +144,48 @@ export async function patchProduct(req: Request, res: Response) {
   // Notifier.newEvent('game_save_draft', { user: res.locals.user.data.id, game: req.body._id })
   await product.save().catch(() => {})
   res.status(200).json({})
+}
+
+
+export async function postProductRefetch(req: Request, res: Response) {
+  const id = req.params.product + ''
+  
+  let error: string
+  if (error = InputValidator.validateProductId(id))
+    return ReqError.badRequest(res, 'Invalid Product Id', error)
+
+  const body: { url: string, merge: boolean } = req.body
+  if (!body || typeof body !== 'object')
+    return ReqError.badRequest(res, 'Invalid Body', 'Missing form body or invalid data format.')
+
+  if (!body.url)
+    return ReqError.badRequest(res, 'Invalid Body', 'Missing url.')
+
+  if (body.merge === undefined)
+    return ReqError.badRequest(res, 'Invalid Body', 'Missing merge.')
+
+  const product: ProductType = await Mongo.Product
+    .findById(id)
+    .catch(() => {})
+
+  if (!product)
+    return ReqError.notFound(res, 'Product not found')
+
+  if (product.status === 'processing' || product.status === 'published')
+    return ReqError.badRequest(res, 'Product is readonly', `This product's status is "${product.status}", which makes it immuteable. You cannot edit this.`)
+
+  //
+
+  product.status = 'processing'
+
+  // Notifier.newEvent('game_save_draft', { user: res.locals.user.data.id, game: req.body._id })
+  
+  try {
+    await product.save()
+    res.status(200).json({})
+
+    AutoScraper.scrape(product, body.url, body.merge)
+  } catch (err) {
+    ReqError.badGateway(res, err?.message)
+  }
 }

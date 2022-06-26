@@ -4,7 +4,7 @@ import GibuGqlCore from "./gibu-gql-core"
 import GibuGqlQueries from "./gibu-gql-queries"
 
 
-type GibuProcessedProduct = {
+export type GibuProcessedProduct = {
   uuid: string
   data: ProductDataType['data']
 }
