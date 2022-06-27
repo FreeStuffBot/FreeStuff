@@ -58,7 +58,7 @@ export default class DockerInterface {
 
     const containers = services
       .map(s => DockerInterface.mapServiceToFsContainer(s, validNetworks))
-      .filter(s => !!s.networkIp)
+      .filter(s => (!!s.networkIp && !!s.role))
 
 
     Logger.debug('begin CONTAINERS')
