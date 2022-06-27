@@ -34,7 +34,7 @@ export function applyComposition(containers: Container[]) {
   for (const c of conts) {
     if (c._tracked) continue
     untracked.services.push({
-      id: c.role,
+      id: c.role ?? c.imageName ?? c.id,
       min: 0,
       max: 0,
       found: c
