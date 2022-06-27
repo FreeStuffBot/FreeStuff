@@ -52,8 +52,9 @@ export default class RestGateway {
         if (item.bucket)
           bucketsBlocked.add(item.bucket)
 
-        RestGateway.outgoingQueue.shift()
+        RestGateway.outgoingQueue.splice(offset, 1)
         RestGateway.execute(item).then(item.resolve)
+        remaining--
       }
 
       blocked = false

@@ -1,3 +1,4 @@
+import { Logger } from '@freestuffbot/common'
 import * as Docker from 'dockerode'
 import { config } from '..'
 
@@ -6,14 +7,9 @@ export type FsContainer = {
   id: string
   role: string
   imageName: string
-  imageId: string
   labels: Record<string, string>
-  state: string
-  networkName: string
   networkIp: string
 }
-
-const FSBNetworkName = 'FSBNetworkName'
 
 export default class DockerInterface {
 
@@ -28,64 +24,67 @@ export default class DockerInterface {
   }
 
   public static async getFsContainers() {
-    return []
-    // const networks = await DockerInterface.getNetworks(config.dockerNetworkPrefix)
-    // const list = await DockerInterface.extractContainers(networks)
-    // console.log('LIST')
-    // console.log(list)
-    // console.log('LIST MAPPED')
-
-    // // item.Config.Labels['com.docker.swarm.node.id'] // TODO identify node its running on
-    // console.log(list.map(i => ({ Labels: i.Config.Labels, network: i.NetworkSettings.Networks })))
-    // const freestuffServices = list.filter(item => item.Config.Labels[config.dockerLabels.module])
-    // console.log('SERVICES')
-    // console.log(freestuffServices)
-    // const out: FsContainer[] = []
-
-    // for (const service of freestuffServices) {
-    //   const networkName = service[FSBNetworkName]
-    //   const network = service.NetworkSettings.Networks[networkName]
-    //   console.log('FOUND ' + service.Id + " - " + service.Config?.Image + " + " + networkName + " # " + !!network)
-    //   if (!network) continue // TODO
-
-    //   out.push({
-    //     id: service.Id,
-    //     role: service.Config.Labels[config.dockerLabels.module],
-    //     imageName: service.Config.Image,
-    //     imageId: service.Image,
-    //     labels: service.Config.Labels,
-    //     state: service.State.Status,
-    //     networkName,
-    //     networkIp: network.IPAddress
-    //   })
-    // }
-
-    // return out
-  }
-
-  private static async getNetworks(beginWith: string): Promise<any[]> {
-    const raw = await DockerInterface.client.listNetworks()
-    const promised = raw
-      .filter(n => n.Name.startsWith(beginWith))
-      .map(n => DockerInterface.client.getNetwork(n.Id).inspect())
-    const details = await Promise.all(promised)
-    return details
-  }
-
-  private static async extractContainers(networks: any[]): Promise<any[]> {
-    const out: Map<string, any> = new Map()
-
-    for (const network of networks) {
-      for (const id of Object.keys(network.Containers)) {
-        if (out.has(id)) continue
-        if (!/^[a-z0-9]{10,}$/.test(id)) continue
-        const data = await DockerInterface.client.getContainer(id).inspect()
-        ;(data as any)[FSBNetworkName] = network.Name
-        out.set(id, data)
+    const self = await DockerInterface.client.listServices({
+      Filters: {
+        name: [ config.dockerManagerServiceName ]
       }
+    })
+
+    if (!self?.length) {
+      Logger.error('Error at DockerInterface::getFsContainers() -> "self was not found"')
+      return
     }
 
-    return [...out.values()]
+    const validNetworks = self[0].Endpoint.VirtualIPs.map(i => i.NetworkID)
+
+    Logger.debug('begin VALID NETWORKS')
+    console.log(validNetworks)
+    Logger.debug('end VALID NETWORKS')
+
+    const services = await DockerInterface.client.listServices({
+      Filters: {
+        label: [ config.dockerLabels.role ]
+      }
+    })
+    
+    if (!services?.length) {
+      Logger.error('Error at DockerInterface::getFsContainers() -> "no services were found"')
+      return
+    }
+
+    Logger.debug('begin SERVICES')
+    console.log(!!services, services?.length)
+    Logger.debug('end SERVICES')
+
+    const containers = services
+      .map(s => DockerInterface.mapServiceToFsContainer(s, validNetworks))
+      .filter(s => !!s.networkIp)
+
+
+    Logger.debug('begin CONTAINERS')
+    console.log(!!containers, containers?.length)
+    console.log(containers)
+    Logger.debug('end CONTAINERS')
+
+    return containers
+  }
+
+  private static mapServiceToFsContainer(service: Docker.Service, validNetworks: string[]): FsContainer {
+    let networkIp = null
+
+    for (const network of service.Endpoint.VirtualIPs) {
+      if (!validNetworks.includes(network.NetworkID)) continue
+      networkIp = network.Addr?.split('/')[0] ?? null
+      if (networkIp) break
+    }
+
+    return {
+      id: service.ID,
+      role: service.Spec.Labels[config.dockerLabels.role],
+      imageName: service.Spec.Name,
+      labels: service.Spec.Labels,
+      networkIp
+    }
   }
 
   public static async getFsContainersTest() {

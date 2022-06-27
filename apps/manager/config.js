@@ -9,8 +9,8 @@ module.exports = {
     umiAllowedIpRange: loadArg('NETWORK_UMI_ALLOWED_IP_RANGE')
   },
   dockerOptions: null,
-  dockerNetworkPrefix: 'fsb',
+  dockerManagerServiceName: 'fsb_manager',
   dockerLabels: {
-    module: 'xyz.freestuffbot.service.module'
+    role: 'xyz.freestuffbot.service.role'
   }
 }

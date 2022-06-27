@@ -10,8 +10,8 @@ export type configjs = {
     umiAllowedIpRange: string
   }
   dockerOptions: DockerOptions
-  dockerNetworkPrefix: string
+  dockerManagerServiceName: string
   dockerLabels: {
-    module: string
+    role: string
   }
 }

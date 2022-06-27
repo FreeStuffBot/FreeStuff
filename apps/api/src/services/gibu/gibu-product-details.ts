@@ -46,7 +46,7 @@ export default class GibuProductDetails {
           browser: url,
           default: url
         },
-        platform, // TODO(medium) test this
+        platform,
         flags: 0,
         notice: null,
         platformMeta: {
