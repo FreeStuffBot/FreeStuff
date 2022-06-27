@@ -20,14 +20,15 @@ export default class DockerInterface {
   private static client: Docker
 
   public static connect() {
-    // DockerInterface.client = new Docker(config.dockerOptions)
-    // DockerInterface
-    //   .getFsContainers()
-    //   .then(e => JSON.stringify(e, null, 2))
-    //   .then(console.log) // REMOVE
+    DockerInterface.client = new Docker(config.dockerOptions)
+    DockerInterface
+      .getFsContainers()
+      .then(e => JSON.stringify(e, null, 2))
+      .then(console.log) // REMOVE
   }
 
-  public static async getFsContainers() {    
+  public static async getFsContainers() {
+    return []
     // const networks = await DockerInterface.getNetworks(config.dockerNetworkPrefix)
     // const list = await DockerInterface.extractContainers(networks)
     // console.log('LIST')

@@ -7,10 +7,10 @@ module.exports = {
   mongoUrl: loadArg('MANAGER_MONGO_URL'),
   network: {
     umiAllowedIpRange: loadArg('NETWORK_UMI_ALLOWED_IP_RANGE')
+  },
+  dockerOptions: null,
+  dockerNetworkPrefix: 'fsb',
+  dockerLabels: {
+    module: 'xyz.freestuffbot.service.module'
   }
-  // dockerOptions: null,
-  // dockerNetworkPrefix: 'fsb',
-  // dockerLabels: {
-  //   module: 'xyz.freestuffbot.service.module'
-  // }
 }
