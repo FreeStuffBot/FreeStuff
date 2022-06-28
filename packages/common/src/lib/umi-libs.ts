@@ -72,6 +72,7 @@ export default class UmiLibs {
     return (req: Request, res: Response, next: NextFunction) => {
       if (!range || subnet.contains(req.ip)) return next()
 
+      Logger.debug('TRIED TO ACCESS. IP ' + req.ip)
       res.status(407).send(`Not allowed. Your IP address does not have access to this resource.\n${req.ip}`)
     }
   }
