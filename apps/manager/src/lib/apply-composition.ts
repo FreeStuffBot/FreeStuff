@@ -1,15 +1,23 @@
-import { desiredComposition } from "../data/network-composition"
+import Mongo from "../database/mongo"
 
 type Container = {
   role: string
 }
 
-export function applyComposition(containers: Container[]) {
+export async function applyComposition(containers: Container[]): Promise<any[]> {
   const conts = JSON.parse(JSON.stringify(containers))
 
   const out = []
+  const desiredComposition = await Mongo.Misc
+    .findById('config.service-composition')
+    .lean()
+    .exec()
 
-  for (const collection of desiredComposition) {
+  if (!desiredComposition) return []
+
+  for (const collection of desiredComposition.data) {
+    if (!collection?.name || !collection.services?.length) continue
+
     const current = {
       name: collection.name,
       services: collection.services.map(s => ({ ...s, found: [] as Container[] }))

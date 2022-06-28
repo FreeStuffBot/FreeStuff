@@ -85,8 +85,8 @@ export default class DashRouter {
     r.patch( '/admin/experiments/:experiment',     fw('admin'),             patchExperiment)
     r.delete('/admin/experiments/:experiment',     fw('admin'),             deleteExperiment)
 
-    r.get(   '/admin/config',                      fw('admin'),             getConfig)
-    r.patch( '/admin/config',                      fw('admin'),             patchConfig)
+    r.get(   '/admin/config/:config',              fw('admin'),             getConfig)
+    r.patch( '/admin/config/:config',              fw('admin'),             patchConfig)
 
     r.get(   '/admin/services',                    fw('admin'),             getServices)
 

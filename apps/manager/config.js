@@ -8,6 +8,7 @@ module.exports = {
   network: {
     umiAllowedIpRange: loadArg('NETWORK_UMI_ALLOWED_IP_RANGE')
   },
+  dockerOfflineMode: loadArg('DOCKER_OFFLINE_MODE') === 'true',
   dockerOptions: null,
   dockerManagerServiceName: 'fsb_manager',
   dockerLabels: {

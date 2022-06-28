@@ -10,6 +10,6 @@ export async function getServicesRaw(req: Request, res: Response) {
 
 export async function getServicesComposed(req: Request, res: Response) {
   const data = await DockerInterface.getFsContainers()
-  const out = applyComposition(data)
+  const out = await applyComposition(data)
   res.status(200).json(out)
 }

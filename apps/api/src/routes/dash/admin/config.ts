@@ -4,9 +4,20 @@ import Mongo from '../../../database/mongo'
 import ReqError from '../../../lib/req-error'
 
 
+const configs = {
+  'global': 'config.global',
+  'service-composition': 'config.service-composition'
+}
+
+
 export async function getConfig(req: Request, res: Response) {
+  const name = req.params.config
+  const dbName = configs[name]
+  if (!dbName)
+    return ReqError.badRequest(res, 'Invalid config', `Config ${name} not found!`)
+
   const config: MiscDataType = await Mongo.Misc
-    .findById('config.global')
+    .findById(dbName)
     .lean(true)
     .exec()
     .catch(() => null) as any
@@ -22,8 +33,13 @@ export async function patchConfig(req: Request, res: Response) {
   if (!req.body || typeof req.body !== 'object')
     return ReqError.badRequest(res, 'Invalid body', 'Yeah...')
 
+  const name = req.params.config
+  const dbName = configs[name]
+  if (!dbName)
+    return ReqError.badRequest(res, 'Invalid config', `Config ${name} not found!`)
+
   const config: MiscType = await Mongo.Misc
-    .findById('config.global')
+    .findById(dbName)
     .exec()
     .catch(() => null) as any
 
