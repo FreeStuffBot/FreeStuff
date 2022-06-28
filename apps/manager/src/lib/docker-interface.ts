@@ -1,4 +1,4 @@
-import { Logger } from '@freestuffbot/common'
+import { Logger, UmiInfoReport } from '@freestuffbot/common'
 import * as Docker from 'dockerode'
 import axios from 'axios'
 import { config } from '..'
@@ -10,6 +10,7 @@ export type FsContainer = {
   imageName: string
   labels: Record<string, string>
   networkIp: string
+  info: UmiInfoReport
 }
 
 export default class DockerInterface {
@@ -19,23 +20,9 @@ export default class DockerInterface {
   public static connect() {
     if (config.dockerOfflineMode) return
     DockerInterface.client = new Docker(config.dockerOptions)
-
-    setInterval(async () => {
-      Logger.debug('debug start')
-      const a = await DockerInterface.getFsContainers()
-      const b = a[~~(Math.random() * a.length)]
-      Logger.debug(`Testing ${b.role} (${b.networkIp})`)
-      const { status: s1 } = await axios.get(`http://${b.networkIp}/`, { validateStatus: null }).catch(() => ({ status: -1 }))
-      Logger.debug('GET / -> ' + s1)
-      const { status: s2 } = await axios.get(`http://${b.networkIp}/umi/info`, { validateStatus: null }).catch(() => ({ status: -1 }))
-      Logger.debug('GET /umi/info -> ' + s2)
-      const { status: s3 } = await axios.get(`http://${b.networkIp}:80/umi/info`, { validateStatus: null }).catch(() => ({ status: -1 }))
-      Logger.debug('GET 80 /umi/info -> ' + s3)
-      Logger.debug('debug end')
-    }, 10000)
   }
 
-  public static async getFsContainers() {
+  public static async getFsContainers(fetchInfo = true) {
     if (config.dockerOfflineMode)
       return this.getFsContainersTestData()
 
@@ -67,6 +54,21 @@ export default class DockerInterface {
       .map(s => DockerInterface.mapServiceToFsContainer(s, validNetworks))
       .filter(s => (!!s.networkIp && !!s.role))
 
+    if (fetchInfo) {
+      for (const container of containers) {
+        const res = await axios
+          .get(`http://${container.networkIp}/umi/info`, { validateStatus: null })
+          .catch(() => null)
+
+        if (res?.status !== 200) {
+          container.info = null
+          continue
+        }
+
+        container.info = res.data
+      }
+    }
+
     return containers
   }
 
@@ -84,7 +86,8 @@ export default class DockerInterface {
       role: service.Spec.Labels[config.dockerLabels.role],
       imageName: service.Spec.Name,
       labels: service.Spec.Labels,
-      networkIp
+      networkIp,
+      info: null
     }
   }
 

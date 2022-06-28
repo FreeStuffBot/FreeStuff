@@ -18,7 +18,7 @@ export { default as CMS } from './lib/cms'
 export { default as Pricing } from './lib/pricing'
 export { default as ProductFilter } from './lib/product-filter'
 export { default as Errors } from './lib/errors'
-export { default as UmiLibs } from './lib/umi-libs'
+export { default as UmiLibs, UmiInfoReport } from './lib/umi-libs'
 export { default as ContainerInfo } from './lib/container-info'
 export { default as Experiments } from './lib/experiments'
 

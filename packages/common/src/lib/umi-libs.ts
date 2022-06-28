@@ -8,7 +8,7 @@ import Logger from './logger'
 import Util from './util'
 
 
-type UmiInfoReport = {
+export type UmiInfoReport = {
   name: string
   version: string
   id: string
