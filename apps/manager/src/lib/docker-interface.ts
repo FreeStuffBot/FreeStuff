@@ -55,18 +55,21 @@ export default class DockerInterface {
       .filter(s => (!!s.networkIp && !!s.role))
 
     if (fetchInfo) {
-      for (const container of containers) {
+      const progress = containers.map(async container => {
         const res = await axios
-          .get(`http://${container.networkIp}/umi/info`, { validateStatus: null })
+          .get(`http://${container.networkIp}/umi/info`, {
+            validateStatus: null,
+            timeout: 3000
+          })
           .catch(() => null)
 
-        if (res?.status !== 200) {
+        if (res?.status === 200)
+          container.info = res.data
+        else
           container.info = null
-          continue
-        }
+      })
 
-        container.info = res.data
-      }
+      await Promise.all(progress)
     }
 
     return containers
