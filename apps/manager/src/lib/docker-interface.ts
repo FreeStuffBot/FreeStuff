@@ -113,7 +113,7 @@ export default class DockerInterface {
         "labels": {
           "xyz.freestuffbot.service.role": "discord-interactions"
         },
-        "networkIp": "172.20.0.2"
+        "networkIp": "172.20.0.1"
       }
     ]
   }
