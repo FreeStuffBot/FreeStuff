@@ -63,10 +63,9 @@ export default class DockerInterface {
           })
           .catch(() => null)
 
-        if (res?.status === 200)
-          container.info = res.data
-        else
-          container.info = null
+        container.info = (res?.status === 200)
+          ? res.data
+          : null
       })
 
       await Promise.all(progress)
