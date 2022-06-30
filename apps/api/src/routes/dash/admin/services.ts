@@ -23,9 +23,11 @@ export async function postServicesCommand(req: Request, res: Response) {
     return ReqError.badRequest(res, 'Invalid Body', 'Missing receivers or name')
 
   try {
-    const d = JSON.stringify(data)
-    if (!d || d.length > 4096)
-      return ReqError.badRequest(res, 'Invalid Payload', 'Command data exceeds 4096 characters. Aborting')
+    if (data) {
+      const d = JSON.stringify(data)
+      if (d.length > 4096)
+        return ReqError.badRequest(res, 'Invalid Payload', 'Command data exceeds 4096 characters. Aborting')
+    }
   } catch (ex) {
     return ReqError.badRequest(res, 'Invalid Payload', 'Error serializing command data. Aborting')
   }
