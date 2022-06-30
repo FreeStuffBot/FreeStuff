@@ -14,3 +14,29 @@ export async function getServices(req: Request, res: Response) {
 
   res.status(200).json(data)
 }
+
+export async function postServicesCommand(req: Request, res: Response) {
+  const { receivers, name, data } = req.body || {}
+
+  if (!receivers?.length || !name)
+    return ReqError.badRequest(res, 'Invalid Body', 'Missing receivers or name')
+
+  try {
+    const d = JSON.stringify(data)
+    if (!d || d.length > 4096)
+      return ReqError.badRequest(res, 'Invalid Payload', 'Command data exceeds 4096 characters. Aborting')
+  } catch (ex) {
+    return ReqError.badRequest(res, 'Invalid Payload', 'Error serializing command data. Aborting')
+  }
+
+  const command = { receivers, name, data }
+
+  const resp = await axios
+    .post(`/services/command`, { receivers, name, data }, { baseURL: config.network.manager })
+    .catch(() => ({ status: 999, data: null }))
+  
+  if (resp.status !== 200)
+    ReqError.badGateway(res, resp.data?.error ?? resp.status + '')
+
+  res.status(200).json({})
+}

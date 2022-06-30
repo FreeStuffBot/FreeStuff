@@ -14,7 +14,7 @@ import { deleteCurrency, getCurrencies, patchCurrency, postCurrency } from './co
 import { deleteExperiment, getExperiments, patchExperiment, postExperiment } from './admin/experiments'
 import { getConfig, patchConfig } from './admin/config'
 import { postAnnouncement } from './content/announcements'
-import { getServices } from './admin/services'
+import { getServices, postServicesCommand } from './admin/services'
 import { getApp, patchAppDescription, patchAppWebhook, postApp, postAppKeyRegen, postAppWebhookTest } from './api/app'
 
 
@@ -89,6 +89,7 @@ export default class DashRouter {
     r.patch( '/admin/config/:config',              fw('admin'),             patchConfig)
 
     r.get(   '/admin/services',                    fw('admin'),             getServices)
+    r.post(  '/admin/services/command',            fw('admin'),             postServicesCommand)
 
 
     /* Default 404 handler */
