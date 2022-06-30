@@ -32,7 +32,11 @@ export async function postServicesCommand(req: Request, res: Response) {
   const command = { receivers, name, data }
 
   const resp = await axios
-    .post(`/services/command`, command, { baseURL: config.network.manager })
+    .post(
+      `/services/command`,
+      command,
+      { baseURL: config.network.manager, validateStatus: null }
+    )
     .catch(() => ({ status: 999, data: null }))
   
   if (resp.status !== 200)
