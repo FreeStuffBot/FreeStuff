@@ -1,10 +1,9 @@
 import { ReplyableComponentInteraction } from 'cordo'
 import RabbitHole, { TaskId } from '@freestuffbot/rabbit-hole'
-import { Const, CustomPermissions, DataChannel, Errors, ProductFilter, SanitizedGuildType } from '@freestuffbot/common'
+import { Const, CustomPermissions, DataChannel, Errors, FSApiGateway, ProductFilter, SanitizedGuildType } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import Tracker from '../../../lib/tracker'
 import DiscordGateway from '../../../services/discord-gateway'
-import FreestuffGateway from '../../../services/freestuff-gateway'
 import DatabaseGateway from '../../../services/database-gateway'
 
 
@@ -51,7 +50,7 @@ export default async function (i: ReplyableComponentInteraction) {
   }
 
   // Load and handle list
-  const [ err, freebies ] = FreestuffGateway.getChannel('keep')
+  const [ err, freebies ] = FSApiGateway.getChannel('keep')
   if (err) return Errors.handleErrorAndCommunicate(err, i)
 
   if (!freebies?.length) {

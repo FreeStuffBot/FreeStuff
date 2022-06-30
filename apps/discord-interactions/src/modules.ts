@@ -1,11 +1,10 @@
-import { UmiLibs, ApiInterface, CMS, Errors, Localisation, Logger, ProductDiscountTypeArray, ProductDiscountTypeType } from "@freestuffbot/common"
+import { UmiLibs, ApiInterface, CMS, Errors, Localisation, Logger, ProductDiscountTypeArray, ProductDiscountTypeType, FSApiGateway } from "@freestuffbot/common"
 import RabbitHole from '@freestuffbot/rabbit-hole'
 import Cordo, { GuildData } from "cordo"
 import { config } from "."
 import * as express from 'express'
 import DatabaseGateway from "./services/database-gateway"
 import Mongo from "./services/mongo"
-import FreestuffGateway from "./services/freestuff-gateway"
 import Metrics from "./lib/metrics"
 
 
@@ -36,7 +35,7 @@ export default class Modules {
   }
 
   public static async loadProductChannnel(channel: ProductDiscountTypeType, retryUntilSuccessful: boolean) {
-    const success = await FreestuffGateway.updateChannel(channel)
+    const success = await FSApiGateway.updateChannel(channel)
     if (success || !retryUntilSuccessful) return
     // retry after 5 seconds
     setTimeout(() => Modules.loadProductChannnel(channel, true), 5000)

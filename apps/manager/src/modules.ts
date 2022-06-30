@@ -4,7 +4,7 @@ import * as express from 'express'
 import Mongo from "./database/mongo"
 import DockerInterface from "./lib/docker-interface"
 import { getServicesComposed, getServicesRaw } from "./router/services"
-import { postHandshake } from "./router/handshake"
+import { postCommand } from "./router/command"
 
 
 export default class Modules {
@@ -23,7 +23,7 @@ export default class Modules {
 
     app.get('/services/raw', getServicesRaw)
     app.get('/services/composed', getServicesComposed)
-    app.post('/handshake', express.json(), postHandshake)
+    app.post('/command', express.json(), postCommand)
 
     app.all('*', (_, res) => res.status(400).end())
 

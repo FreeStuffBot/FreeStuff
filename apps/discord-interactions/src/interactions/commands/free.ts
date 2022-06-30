@@ -1,14 +1,13 @@
-import { CMS, Const, Emojis, Errors, Localisation } from '@freestuffbot/common'
+import { CMS, Const, Emojis, Errors, FSApiGateway, Localisation } from '@freestuffbot/common'
 import { ReplyableCommandInteraction } from 'cordo'
 import Tracker from '../../lib/tracker'
-import FreestuffGateway from '../../services/freestuff-gateway'
 
 
 export default function (i: ReplyableCommandInteraction) {
   const freeLonger: string[] = []
   const freeToday: string[] = []
 
-  const [ err, products ] = FreestuffGateway.getChannel('keep')
+  const [ err, products ] = FSApiGateway.getChannel('keep')
   if (err) return void Errors.handleErrorAndCommunicate(err, i)
 
   for (const product of products) {

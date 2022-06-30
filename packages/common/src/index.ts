@@ -21,6 +21,7 @@ export { default as Errors } from './lib/errors'
 export { default as UmiLibs, UmiInfoReport } from './lib/umi-libs'
 export { default as ContainerInfo } from './lib/container-info'
 export { default as Experiments } from './lib/experiments'
+export { default as FSApiGateway } from './lib/fsapi-gateway'
 
 export { default as ThemeOne } from './themes/1'
 export { default as ThemeTwo } from './themes/2'

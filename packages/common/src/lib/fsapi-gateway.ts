@@ -1,19 +1,21 @@
-import { ApiInterface, Errors, Fragile, Logger, ProductDiscountTypeType, SanitizedProductType } from "@freestuffbot/common"
+import { ApiInterface, Errors, Fragile, Logger, ProductDiscountTypeType, ProductDiscountTypeArray, SanitizedProductType } from ".."
 
 
 export type EnhancedSanitizedProductType = SanitizedProductType & {
   today: boolean
 }
 
-export default class FreestuffGateway {
+export default class FSApiGateway {
 
   private static readonly TWELVE_HOURS = 1000 * 60 * 60 * 12
+
+  //
 
   private static channelsCache: Map<ProductDiscountTypeType, EnhancedSanitizedProductType[]> = new Map()
 
   public static getChannel(name: ProductDiscountTypeType): Fragile<EnhancedSanitizedProductType[]> {
-    if (FreestuffGateway.channelsCache.has(name))
-      return Errors.success(FreestuffGateway.channelsCache.get(name))
+    if (FSApiGateway.channelsCache.has(name))
+      return Errors.success(FSApiGateway.channelsCache.get(name))
 
     return Errors.throwStderrNotInitialized('discord-interactions::fsgateway.getchannel')
   }
@@ -23,9 +25,15 @@ export default class FreestuffGateway {
    * @param name Channel name
    * @returns whether successful
    */
-  public static async updateChannel(name: ProductDiscountTypeType): Promise<boolean> {
-    Logger.excessive('Updating current freebie list')
-    
+  public static async updateChannel(name: ProductDiscountTypeType | '*'): Promise<boolean> {
+    Logger.excessive(`Updating fs channel ${name}`)
+
+    if (name === '*') {
+      for (const channel of ProductDiscountTypeArray as ProductDiscountTypeType[])
+          FSApiGateway.updateChannel(channel)
+      return
+    }
+
     const { data, status } = await ApiInterface.makeRequest('GET', 'v2', `/channels/${name}?resolve=true`)
 
     if (status !== 200) return false
@@ -40,7 +48,7 @@ export default class FreestuffGateway {
     for (const p of out)
       p.today = (p.until - currentTime < this.TWELVE_HOURS)
 
-    FreestuffGateway.channelsCache.set(name, out)
+    FSApiGateway.channelsCache.set(name, out)
     return true
   }
 

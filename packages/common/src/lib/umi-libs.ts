@@ -1,11 +1,12 @@
 import axios from 'axios'
-import { Express, Request, Response, NextFunction } from 'express'
+import { Express, Request, Response, NextFunction, json } from 'express'
 import * as ip from 'ip'
 import * as os from 'os'
+import ApiInterface from './api-interface'
 import CMS from './cms'
 import ContainerInfo from './container-info'
+import FSApiGateway from './fsapi-gateway'
 import Logger from './logger'
-import Util from './util'
 
 
 export type UmiInfoReport = {
@@ -16,7 +17,8 @@ export type UmiInfoReport = {
   features: {
     metrics: boolean
     command: boolean
-  }
+  },
+  commands: string[]
 }
 
 type ServerMountConfig = {
@@ -33,13 +35,58 @@ type ServerMountConfig = {
 
 export default class UmiLibs {
 
+  private static commandHandlers: Record<string, (data: any) => string> = {
+    shutdown(): string {
+      process.exit(0)
+    },
+    refetch(entries: string[]): string {
+      if (entries.includes('config'))
+        CMS.loadRemoteConfig()
+      if (entries.includes('experiments'))
+        CMS.loadExperiments()
+      if (entries.includes('cms.languages'))
+        CMS.loadLanguages()
+      if (entries.includes('cms.constants'))
+        CMS.loadConstants()
+      
+      for (const entry of entries) {
+        if (!entry.startsWith('api')) continue
+        const [ _major, minor, id ] = entry.split('.')
+        if (!minor || !id) continue
+
+        if (minor === 'product')
+          // if (id === '*') clearProductCache... else
+          // FSApiGateway.updateProduct(id as any)
+          void 0 // TODO(lowest)
+        
+        if (minor === 'channel')
+          FSApiGateway.updateChannel(id as any)
+          
+        if (minor === 'announcement')
+          // if (id === '*') clearAnnouncementCache... else
+          // FSApiGateway.updateAnnouncement(id as any)
+          void 0 // TODO(lowest)
+      }
+
+      return ''
+    },
+    log(text: string): string {
+      Logger.debug(`UMI: ${text}`)
+      return ''
+    }
+  }
+
   private static serviceName = 'unknown'
   private static features: UmiInfoReport['features'] = {
-    command: false,
+    command: true,
     metrics: false
   }
-  private static serverMounted = false
-  private static handshakeCallback: (req: Request) => any = null
+
+  //
+
+  public static registerCommand(name: string, handler: (data: any) => string) {
+    UmiLibs.commandHandlers[name] = handler
+  }
 
   public static mount(server: Express, config: ServerMountConfig): void {
     UmiLibs.serviceName = UmiLibs.getServiceName()
@@ -55,14 +102,9 @@ export default class UmiLibs {
 
     server.get('/umi/info', UmiLibs.renderInfoResponse)
 
-    server.post('/umi/handshake', (req: Request, res: Response) => {
-      UmiLibs.handshakeCallback?.(req)
-      res.status(200).end()
-    })
+    server.post('/umi/command', json(), UmiLibs.handleCommand)
 
     UmiLibs.initFetching(config.fetch)
-
-    UmiLibs.serverMounted = true
   }
 
   //
@@ -83,10 +125,29 @@ export default class UmiLibs {
       version: ContainerInfo.getVersion(),
       id: os.hostname(),
       status: 'ok',
-      features: UmiLibs.features
+      features: UmiLibs.features,
+      commands: Object.keys(UmiLibs.commandHandlers)
     }
 
     res.status(200).json(out)
+  }
+
+  public static handleCommand(req: Request, res: Response) {
+    if (!req.body || !req.body.name)
+      return res.status(400).send({ success: false, error: 'missing command' })
+
+    const name = req.body.command
+    const data = req.body.data ?? {}
+
+    Logger.process(`Received UMI command ${name}`)
+
+    const handler = UmiLibs.commandHandlers[name]
+    if (!handler)
+      return res.status(400).json({ success: false, error: `No handler for command "${name}"` })
+
+    const error = handler(data)
+    if (error) return res.status(400).json({ success: false, error })
+    else return res.status(200).json({ success: true })
   }
 
   public static initFetching(config: ServerMountConfig['fetch']) {
@@ -123,74 +184,6 @@ export default class UmiLibs {
       }).then(() => Logger.process('Loaded Experiments.'))
       setInterval(() => CMS.loadExperiments(), config.experiments)
     }
-  }
-
-  /**
-   * sends a handshake to the manager and awaits a handshake response.
-   * returns whether successful or not (bad request, bad gateway, timeout, etc)
-   */
-  public static async sendHandshake(timeout = 10000, endpoint = 'http://manager/handshake'): Promise<boolean> {
-    if (!UmiLibs.serverMounted) {
-      Logger.warn('UMI tried to send handshake but incoming server was not yet mounted')
-      return false
-    }
-
-    const response = new Promise<Request>(res => (UmiLibs.handshakeCallback = res))
-    const loginToken = Util.generateWord('abcdefghijklmnopqrstuvwxyz', 10)
-
-    const nets = Object.values(os.networkInterfaces())
-    const ips = nets
-      .flat()
-      .filter(n => n.family === 'IPv4')
-      .map(n => n.address)
-
-    // initiate the handhake with the manager
-    const out = await axios.post(endpoint, {
-      host: os.hostname(),
-      role: this.getServiceName(),
-      ips,
-      loginToken
-    }, {
-      validateStatus: null,
-      timeout
-    }).catch(err => void console.log(err))
-
-    // if the initial request failed, we failed
-    if (!out || out.status !== 200) {
-      Logger.warn(`UMI Handshake with manager failed: ${out ? `http ${out.status}: ${out.data}` : 'no response'}`)
-      UmiLibs.handshakeCallback?.(null)
-      UmiLibs.handshakeCallback = null
-      return false
-    }
-    Logger.debug('yeeaawdawdawd')
-
-    // wait for something to happen
-    const res = await response
-
-    Logger.debug('awaited!')
-
-    // res === null means the timeout triggered -> failed
-    if (!res) return false
-
-    Logger.debug(`LoginToken rec: ${res.body} expected: ${loginToken}`)
-    // invalid loginToken -> something went wrong
-    if (res.body !== loginToken) return false
-
-    // otherwise we're in
-    // res.
-    return true
-  }
-
-  public static async performHandshakeOrDie(timeout = 10000, endpoint = 'http://manager/handshake'): Promise<void> {
-    const success = await UmiLibs.sendHandshake(timeout, endpoint)
-
-    Logger.debug('Handshake or die success: ' + success)
-
-    // await new Promise(res => setTimeout(res, 10000))
-
-    // if (!success) process.exit(1)
-
-    // TODO re-enable above
   }
 
   //

@@ -13,5 +13,8 @@ module.exports = {
   dockerManagerServiceName: 'fsb_manager',
   dockerLabels: {
     role: 'xyz.freestuffbot.service.role'
+  },
+  behavior: {
+    networkRefetchInterval: 30000
   }
 }

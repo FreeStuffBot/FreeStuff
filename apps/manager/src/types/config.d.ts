@@ -15,4 +15,7 @@ export type configjs = {
   dockerLabels: {
     role: string
   }
+  behavior: {
+    networkRefetchInterval: number
+  }
 }
