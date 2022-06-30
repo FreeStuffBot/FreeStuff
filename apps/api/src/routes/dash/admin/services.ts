@@ -1,3 +1,4 @@
+import { Logger } from '@freestuffbot/common'
 import axios from 'axios'
 import { Request, Response } from 'express'
 import { config } from '../../..'
@@ -38,9 +39,11 @@ export async function postServicesCommand(req: Request, res: Response) {
       { baseURL: config.network.manager, validateStatus: null }
     )
     .catch(() => ({ status: 999, data: null }))
+
+  Logger.debug("Resp: " + JSON.stringify({ d: resp.data, s: resp.status }))
   
   if (resp.status !== 200)
-    ReqError.badRequest(res, resp.status + '', resp.data?.error ?? '')
+    return ReqError.badRequest(res, resp.status + '', resp.data?.error ?? '')
 
   res.status(200).json({})
 }

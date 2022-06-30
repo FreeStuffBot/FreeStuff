@@ -23,7 +23,7 @@ export default class Modules {
 
     app.get('/services/raw', getServicesRaw)
     app.get('/services/composed', getServicesComposed)
-    app.post('/command', express.json(), postCommand)
+    app.post('/services/command', express.json(), postCommand)
 
     app.all('*', (_, res) => res.status(400).end())
 
