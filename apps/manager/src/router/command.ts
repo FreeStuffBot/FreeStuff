@@ -1,3 +1,4 @@
+import { Logger } from '@freestuffbot/common'
 import axios from 'axios'
 import { Request, Response } from 'express'
 import DockerInterface, { FsContainer } from '../lib/docker-interface'
@@ -5,6 +6,7 @@ import DockerInterface, { FsContainer } from '../lib/docker-interface'
 
 export async function postCommand(req: Request, res: Response) {
   const { receivers, name, data } = req.body ?? {}
+  Logger.debug("Command: " + JSON.stringify(req.body))
 
   if (!receivers?.length || !name)
     return res.status(400).json({ error: 'bad request, invalid body' })

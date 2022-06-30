@@ -32,11 +32,11 @@ export async function postServicesCommand(req: Request, res: Response) {
   const command = { receivers, name, data }
 
   const resp = await axios
-    .post(`/services/command`, { receivers, name, data }, { baseURL: config.network.manager })
+    .post(`/services/command`, command, { baseURL: config.network.manager })
     .catch(() => ({ status: 999, data: null }))
   
   if (resp.status !== 200)
-    ReqError.badGateway(res, resp.data?.error ?? resp.status + '')
+    ReqError.badRequest(res, resp.status + '', resp.data?.error ?? '')
 
   res.status(200).json({})
 }
