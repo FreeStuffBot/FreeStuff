@@ -12,10 +12,6 @@ async function run() {
   RestGateway.startLoop()
   Modules.initMetrics()
   await Modules.startServer()
-
-  Logger.debug('Starting Handshake')
-  await UmiLibs.performHandshakeOrDie()
-  Logger.debug('Handshake Complete')
 }
 
 run().catch((err) => {
