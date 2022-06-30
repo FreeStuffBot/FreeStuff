@@ -136,7 +136,7 @@ export default class UmiLibs {
     if (!req.body || !req.body.name)
       return res.status(400).send({ success: false, error: 'missing command' })
 
-    const name = req.body.command
+    const name = req.body.name
     const data = req.body.data ?? {}
 
     Logger.process(`Received UMI command ${name}`)
