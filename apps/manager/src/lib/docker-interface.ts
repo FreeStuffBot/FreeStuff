@@ -53,8 +53,7 @@ export default class DockerInterface {
       return
     }
 
-    const validNetworks = self[0].Endpoint.VirtualIPs
-      .map(i => i.NetworkID)
+    const validNetworks = self[0].Endpoint.VirtualIPs.map(i => i.NetworkID)
 
     const services = await DockerInterface.client.listServices({
       Filters: {
@@ -96,11 +95,6 @@ export default class DockerInterface {
   private static mapServiceToFsContainer(service: Docker.Service, validNetworks: string[]): FsContainer {
     let networkIp = null
 
-    for (const network of service.Endpoint.VirtualIPs) {
-      if (!validNetworks.includes(network.NetworkID)) continue
-      networkIp = network.Addr?.split('/')[0] ?? null
-      Logger.debug(`Service ${service.Spec.Name} has network ${network.NetworkID} (${network.Addr})`)
-    }
     for (const network of service.Endpoint.VirtualIPs) {
       if (!validNetworks.includes(network.NetworkID)) continue
       networkIp = network.Addr?.split('/')[0] ?? null
