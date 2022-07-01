@@ -85,6 +85,7 @@ export default class DockerInterface {
     await Promise.all(progress)
 
     Logger.debug('Done fetching Containers')
+    Logger.debug(JSON.stringify(containers))
 
     DockerInterface.cache = [...containers]
     DockerInterface.onServiceUpdate(containers)
