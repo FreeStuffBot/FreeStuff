@@ -98,6 +98,7 @@ export default class DockerInterface {
     for (const network of service.Endpoint.VirtualIPs) {
       if (!validNetworks.includes(network.NetworkID)) continue
       networkIp = network.Addr?.split('/')[0] ?? null
+      Logger.debug(`Service ${service.Spec.Name} chose network ${network.NetworkID} (${network.Addr})`)
       if (networkIp) break
     }
 
