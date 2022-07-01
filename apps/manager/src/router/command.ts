@@ -33,7 +33,14 @@ function filterNetworkByReceivers(network: FsContainer[], receivers: string[]): 
 }
 
 async function deliverCommandToService(command: any, service: FsContainer): Promise<void> {
+  if (!service?.info || !service.info.features.command || !service.info.commands.includes(command))
+    return
+
   return axios
-    .post(`http://${service.networkIp}/umi/command`, command, { validateStatus: null })
+    .post(
+      `http://${service.networkIp}/umi/command`,
+      command,
+      { validateStatus: null, timeout: 10000 }
+    )
     .catch(() => null)
 }
