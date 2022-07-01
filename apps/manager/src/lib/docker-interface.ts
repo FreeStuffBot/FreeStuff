@@ -55,7 +55,6 @@ export default class DockerInterface {
 
     const validNetworks = self[0].Endpoint.VirtualIPs
       .map(i => i.NetworkID)
-      .filter(n => n.startsWith('fsb_'))
 
     const services = await DockerInterface.client.listServices({
       Filters: {
