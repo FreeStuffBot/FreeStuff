@@ -24,7 +24,7 @@ export default class DockerInterface {
     DockerInterface.client = new Docker(config.dockerOptions)
 
     if (DockerInterface.cacheRefetchInterval)
-      clearTimeout(DockerInterface.cacheRefetchInterval)
+      clearInterval(DockerInterface.cacheRefetchInterval)
 
     DockerInterface.cacheRefetchInterval = setInterval(
       () => DockerInterface.fetchFsContainers(),
@@ -39,6 +39,8 @@ export default class DockerInterface {
   public static async fetchFsContainers(): Promise<FsContainer[]> {
     if (config.dockerOfflineMode)
       return DockerInterface.getFsContainersTestData()
+
+    Logger.debug('Starting to fetch Containers')
 
     const self = await DockerInterface.client.listServices({
       Filters: {
@@ -81,6 +83,8 @@ export default class DockerInterface {
         : null
     })
     await Promise.all(progress)
+
+    Logger.debug('Done fetching Containers')
 
     DockerInterface.cache = [...containers]
     DockerInterface.onServiceUpdate(containers)
