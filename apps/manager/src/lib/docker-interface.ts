@@ -53,7 +53,9 @@ export default class DockerInterface {
       return
     }
 
-    const validNetworks = self[0].Endpoint.VirtualIPs.map(i => i.NetworkID)
+    const validNetworks = self[0].Endpoint.VirtualIPs
+      .map(i => i.NetworkID)
+      .filter(n => n.startsWith('fsb_'))
 
     const services = await DockerInterface.client.listServices({
       Filters: {
@@ -98,7 +100,11 @@ export default class DockerInterface {
     for (const network of service.Endpoint.VirtualIPs) {
       if (!validNetworks.includes(network.NetworkID)) continue
       networkIp = network.Addr?.split('/')[0] ?? null
-      Logger.debug(`Service ${service.Spec.Name} chose network ${network.NetworkID} (${network.Addr})`)
+      Logger.debug(`Service ${service.Spec.Name} has network ${network.NetworkID} (${network.Addr})`)
+    }
+    for (const network of service.Endpoint.VirtualIPs) {
+      if (!validNetworks.includes(network.NetworkID)) continue
+      networkIp = network.Addr?.split('/')[0] ?? null
       if (networkIp) break
     }
 
