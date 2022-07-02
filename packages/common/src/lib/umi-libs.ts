@@ -1,8 +1,6 @@
-import axios from 'axios'
 import { Express, Request, Response, NextFunction, json } from 'express'
 import * as ip from 'ip'
 import * as os from 'os'
-import ApiInterface from './api-interface'
 import CMS from './cms'
 import ContainerInfo from './container-info'
 import FSApiGateway from './fsapi-gateway'
@@ -48,24 +46,20 @@ export default class UmiLibs {
         CMS.loadLanguages()
       if (entries.includes('cms.constants'))
         CMS.loadConstants()
-      
+
       for (const entry of entries) {
         if (!entry.startsWith('api')) continue
         const [ _major, minor, id ] = entry.split('.')
         if (!minor || !id) continue
 
         if (minor === 'product')
-          // if (id === '*') clearProductCache... else
-          // FSApiGateway.updateProduct(id as any)
-          void 0 // TODO(lowest)
-        
+          FSApiGateway.clearProductsCache(id)
+
         if (minor === 'channel')
-          FSApiGateway.updateChannel(id as any)
-          
+          FSApiGateway.updateChannel(id as any, true)
+
         if (minor === 'announcement')
-          // if (id === '*') clearAnnouncementCache... else
-          // FSApiGateway.updateAnnouncement(id as any)
-          void 0 // TODO(lowest)
+          FSApiGateway.clearAnnouncementsCache(id)
       }
 
       return ''

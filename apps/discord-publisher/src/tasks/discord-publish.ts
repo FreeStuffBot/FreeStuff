@@ -1,8 +1,7 @@
 import { Task, TaskId } from "@freestuffbot/rabbit-hole"
-import { GuildDataType, GuildSanitizer, Localisation, ProductFilter, SanitizedProductType, Themes } from "@freestuffbot/common"
+import { FSApiGateway, GuildDataType, GuildSanitizer, ProductFilter, SanitizedProductType, Themes } from "@freestuffbot/common"
 import Mongo from "../database/mongo"
 import Upstream from "../lib/upstream"
-import FreestuffGateway from "../lib/freestuff-gateway"
 
 
 export default async function handleDiscordPublish(task: Task<TaskId.DISCORD_PUBLISH>): Promise<boolean> {
@@ -23,7 +22,7 @@ export default async function handleDiscordPublish(task: Task<TaskId.DISCORD_PUB
 
   if (!guilds?.length) return true
 
-  const products = await FreestuffGateway.getProductsForAnnouncement(announcementId)
+  const products = await FSApiGateway.getProductsForAnnouncement(announcementId)
 
   if (!products) return false
 

@@ -1,8 +1,7 @@
 import { Task, TaskId } from "@freestuffbot/rabbit-hole"
 import Mongo from "../database/mongo"
-import { GuildDataType, GuildSanitizer, ProductFilter, Themes } from "@freestuffbot/common"
+import { FSApiGateway, GuildDataType, GuildSanitizer, Themes } from "@freestuffbot/common"
 import Upstream from "../lib/upstream"
-import FreestuffGateway from "../lib/freestuff-gateway"
 
 
 export default async function handleDiscordResend(task: Task<TaskId.DISCORD_RESEND>): Promise<boolean> {
@@ -15,7 +14,7 @@ export default async function handleDiscordResend(task: Task<TaskId.DISCORD_RESE
   if (!guild) return true
 
   const productIds = task.p
-  const products = await FreestuffGateway.getProductsByIds(productIds)
+  const products = await FSApiGateway.getProductsByIds(productIds)
   if (!products) return false
 
   const sanitizedGuild = GuildSanitizer.sanitize(guild)

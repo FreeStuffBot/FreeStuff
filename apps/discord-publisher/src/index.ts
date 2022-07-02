@@ -15,6 +15,8 @@ async function run() {
   await Modules.initRabbit()
   Modules.initApiInterface()
   await Modules.loadCmsData()
+  Modules.initMetrics()
+  await Modules.startServer()
   Modules.startUpstream()
   Modules.initCacheJanitor()
 }

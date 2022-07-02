@@ -1,8 +1,9 @@
-import { ApiInterface, CMS, Logger } from '@freestuffbot/common'
+import { ApiInterface, CMS, FSApiGateway, Logger, UmiLibs } from '@freestuffbot/common'
 import RabbitHole from '@freestuffbot/rabbit-hole'
+import * as express from 'express'
 import { config } from '.'
 import Mongo from './database/mongo'
-import FreestuffGateway from './lib/freestuff-gateway'
+import Metrics from './lib/metrics'
 import Upstream from './lib/upstream'
 import TaskRouter from './tasks/router'
 
@@ -42,7 +43,24 @@ export default class Modules {
   }
 
   public static async initCacheJanitor(): Promise<void> {
-    setInterval(() => FreestuffGateway.clearCaches(), 1000 * 60 * 60 * 24)
+    setInterval(() => FSApiGateway.clearOrRefetchAll(), 1000 * 60 * 60 * 24)
+  }
+
+  public static async initMetrics(): Promise<void> {
+    Metrics.init()
+  }
+
+  public static async startServer() {
+    const app = express()
+    app.set('trust proxy', 1)
+
+    UmiLibs.mount(app, {
+      allowedIpRange: config.network.umiAllowedIpRange,
+      renderMetrics: Metrics.endpoint()
+    })
+
+    await new Promise(res => app.listen(config.port, undefined, res as any))
+    Logger.process(`Server launched at port ${config.port}`)
   }
 
 }

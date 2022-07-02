@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { Const, LanguageDataType, ProductDataType, ProductType, SanitizedProductType } from '@freestuffbot/common'
+import { Const, LanguageDataType, ProductDataType, SanitizedProductType } from '@freestuffbot/common'
 import paparsya from 'paparsya'
 import { Router, Request, Response } from 'express'
 import Mongo from '../../database/mongo'
