@@ -9,8 +9,8 @@ export const router: Router = Router()
 
 const categories = {
   all: () => ({}),
-  approved: () => ({ status: 'approved' }),
-  free: () => ({ status: 'approved', 'info.until': { $gt: Math.floor(Date.now() / 1000) } })
+  approved: () => ({ status: 'published' }),
+  free: () => ({ status: 'published', 'data.type': 'keep', 'data.until': { $gt: Date.now() } })
 } as { [category: string]: () => any }
 
 //

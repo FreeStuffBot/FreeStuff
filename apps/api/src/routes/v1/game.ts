@@ -1,27 +1,24 @@
 /* eslint-disable camelcase */
-import { Const, LanguageDataType, ProductDataType, SanitizedProductType } from '@freestuffbot/common'
+import { Const, LanguageDataType, Logger, ProductDataType, SanitizedProductType } from '@freestuffbot/common'
 import paparsya from 'paparsya'
 import { Router, Request, Response } from 'express'
 import { ProductFlag } from '@freestuffbot/common/dist/types/other/product-flag'
 import Mongo from '../../database/mongo'
-import CurrConv from '../../services/currconv'
-import Thumbnailer from '../../services/thumbnailer'
 
 
 export const router: Router = Router()
 
 //
 
-// TODO(medium) re-map new ProductType to old GameData object
-function getInfo(field: string) {
+function getInfo() {
   return async (req: Request, res: Response) => {
     if (!req.params?.id)
       return res.status(400).json({ success: false, error: 'Bad Request', message: 'Missing or invalid game id.', data: {} })
 
     const idsraw = req.params.id.split('+')
-    const idsint = idsraw.map(id => parseInt(id))
     if (idsraw.length > 5)
       return res.status(400).json({ success: false, error: 'Bad Request', message: 'You may only request up to 5 ids in one request.', data: {} })
+    const idsint = idsraw.map(id => parseInt(id))
 
     const langs: LanguageDataType[] | null = req.query.lang
       ? await Mongo.Language
@@ -33,40 +30,80 @@ function getInfo(field: string) {
       : null
 
     fetch(idsint)
-      .then(async (games) => {
+      .then((games) => {
         const out = <any> {}
-        for (const id of idsraw) {
-          out[id] = games.find(g => g?.id === parseInt(id)) || null
+        for (const id of idsint) {
+          out[id] = games.find(g => g?.id === id) || null
           if (!out[id]) continue
 
-          if (typeof out[id].info.thumbnail === 'string')
-            out[id].info.thumbnail = await Thumbnailer.generateObject({ thumbnail: out[id].info.thumbnail }, true)
+          // if (typeof out[id].info.thumbnail === 'string')
+          //   out[id].info.thumbnail = await Thumbnailer.generateObject({ thumbnail: out[id].info.thumbnail }, true)
 
-          generateUrls(out[id].info)
+          // generateUrls(out[id].data)
 
-          fillInPrices(out[id].info.org_price)
-          fillInPrices(out[id].info.price)
-
-          if (field && out[id]) out[id] = out[id][field]
           if (langs) out[id].localized = localize(out[id], langs)
+
+          mapToOldStruct(out[id])
         }
 
-        console.log(out)
         res.status(200).json({ success: true, data: out })
       })
-      .catch(() => res.status(502).json({ success: false, error: 'Bad Gateway', message: 'Connection to database failed.', data: {} }))
+      .catch((err) => {
+        Logger.warn('Handled error occured at /v1/game')
+        console.error(err)
+        res.status(502).json({ success: false, error: 'Bad Gateway', message: 'Connection to database failed.', data: {} })
+      })
   }
 }
 
-function fillInPrices(obj: any) {
-  obj.dollar = obj.usd
+function mapToOldStruct(data: any) {
+  delete data._id
+  delete data.staffApproved
 
-  obj.gbp = CurrConv.convert(obj.usd, 'GBP')
-  obj.brl = CurrConv.convert(obj.usd, 'BRL')
-  obj.bgn = CurrConv.convert(obj.usd, 'BGN')
-  obj.pln = CurrConv.convert(obj.usd, 'PLN')
-  obj.huf = CurrConv.convert(obj.usd, 'HUF')
-  obj.btc = CurrConv.convert(obj.usd, 'BTC')
+  //
+
+  data.price = {}
+  data.org_price = {}
+
+  for (const price of data.prices) {
+    data.price[price.currency] = price.newValue
+    data.org_price[price.currency] = price.oldValue
+  }
+
+  data.price.euro = data.price.eur
+  data.org_price.euro = data.org_price.eur
+  data.price.dollar = data.price.usd
+  data.org_price.dollar = data.org_price.usd
+
+  delete data.prices
+
+  //
+
+  data.url = data.urls.default ?? data.urls.org
+  data.org_url = data.urls.org
+  delete data.urls._id
+
+  //
+
+  data.thumbnail = data.thumbnails
+  delete data.thumbnail._id
+  delete data.thumbnails
+
+  //
+
+  data.store = data.platform
+  delete data.platform
+
+  //
+
+  data.type = (data.type === 'keep' ? 'free' : 'unknown')
+
+  //
+
+  data.store_meta = {
+    steam_subids: data.platformMeta?.steamSubids ?? ''
+  }
+  delete data.platformMeta
 }
 
 function localize(game: SanitizedProductType, langs: any) {
@@ -106,47 +143,15 @@ function localize(game: SanitizedProductType, langs: any) {
       free: get('announcement_pricetag_free'),
       header: get('announcement_header'),
       footer: paparsya(get('announcement_footer'), { website: Const.links.websiteClean }),
-      org_price_eur: get('currency_sign_euro_position') === 'before' ? `€${priceEur}` : `${priceEur}€`,
-      org_price_usd: get('currency_sign_dollar_position') === 'before' ? `$${priceUsd}` : `${priceUsd}$`,
-      org_price_dollar: get('currency_sign_dollar_position') === 'before' ? `$${priceUsd}` : `${priceUsd}$`,
+      org_price_eur: get('currency_sign_position') === 'before' ? `€${priceEur/100}` : `${priceEur/100}€`,
+      org_price_usd: get('currency_sign_position') === 'before' ? `$${priceUsd/100}` : `${priceUsd/100}$`,
+      org_price_dollar: get('currency_sign_position') === 'before' ? `$${priceUsd/100}` : `${priceUsd/100}$`,
       until: date ? paparsya(get('announcement_free_until_date'), { date: date.toLocaleDateString(get('date_format')) }) : null,
       until_alt,
       flags
     }
   }
   return out
-}
-
-function generateUrls(object: SanitizedProductType & { urls: any, org_url: string }) {
-  if (!object.urls) {
-    object.urls = {
-      default: object.org_url,
-      browser: object.org_url,
-      org: object.org_url
-    }
-  }
-
-  const isSteamUrl = /^https?:\/\/store\.steampowered\.com\/app\/.*/g.test(object.urls.org)
-  if (isSteamUrl) {
-    try {
-      const id = object.urls.org.split('/app/')[1].split('/')[0]
-      object.urls.client = `steam://store/${id}`
-    } catch (ex) {
-      console.info(`Failed creating the client url for steam with url ${object.urls.org} for reason:`)
-      console.log(ex)
-    }
-  }
-
-  const isEpicUrl = /^https?:\/\/(www\.)?epicgames\.com\/store\/.*$/g.test(object.urls.org)
-  if (isEpicUrl) {
-    try {
-      const data = object.urls.org.split('/store/')[1].replace('/en-US', '').replace(/\/home$/, '').split('?')[0]
-      object.urls.client = `com.epicgames.launcher://store/${data}`
-    } catch (ex) {
-      console.info(`Failed creating the client url for epic games with url ${object.urls.org} for reason:`)
-      console.log(ex)
-    }
-  }
 }
 
 //
@@ -165,39 +170,11 @@ function postAnalytics(req: Request, res: Response) {
     return handleBadRequest('Invalid game id')(req, res)
 
   res.status(200).json({ success: true })
-
-  // const inc = <any> {}
-  // const parse = (obj: any, prefix: string) => {
-  //   if (!obj) return
-  //   for (const key of Object.keys(obj)) {
-  //     if (typeof obj[key] === 'number') inc[`${prefix}.${key}`] = obj[key]
-  //     else parse(obj[key], `${prefix}.${key}`)
-  //   }
-  // }
-  // parse(req.body.data, `analytics.${req.body.service}`)
-
-  // // eslint-disable-next-line no-unused-expressions
-  // const product: ProductType = await Mongo.Product.findById(parseInt(req.params.id))
-  // if (!product) {
-  //   res.status(500).json({ success: false, error: 'Internal Server Error', message: 'Something went wrong. Either bad gateway or bad payload.' })
-  //   return
-  // }
-
-  // Database
-  //   .collection('games')
-  //   ?.updateOne(
-  //     { _id: parseInt(req.params.id) },
-  //     { $inc: inc }
-  //   )
-  //   .then(() => )
-  //   .catch(() => )
 }
 
 //
 
-router.get('/:id/info', getInfo('info'))
-// router.get('/:id/analytics', partnerRequestsOnly, getInfo('analytics'))
-// router.get('/:id/all', partnerRequestsOnly, getInfo(''))
+router.get('/:id/info', getInfo())
 router.get('/:id/*', handleBadRequest('Invalid lookup property.'))
 router.get('/:id', handleBadRequest('Missing lookup property.'))
 router.get('/', handleBadRequest('Missing game id.'))

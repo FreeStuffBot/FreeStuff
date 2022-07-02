@@ -4,6 +4,7 @@ import { rateLimiter as limit } from '../../middleware/rate-limits'
 
 import { apiGateway } from '../../middleware/api-gateway'
 import { getCmsConstants, getExperiments, getLanguages, getRemoteConfig } from './data'
+import { allPing } from './ping'
 
 
 export default class InternalRouter {
@@ -28,7 +29,7 @@ export default class InternalRouter {
     /* ENDPOINTS */
 
     // ping
-    r.all(   '/ping', limit(10, 60), () => {})
+    r.all(   '/ping', limit(10, 60), allPing)
 
     // announcements
     r.get('/data/languages', getLanguages)
