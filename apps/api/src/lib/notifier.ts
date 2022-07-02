@@ -33,7 +33,7 @@ export default class Notifier {
     this.sendDiscordWebhook(event, data)
   }
 
-  private static sendDiscordWebhook(event: Event, data: any) {
+  private static sendDiscordWebhook(_event: Event, _data: any) {
     // if (!config.infra.auditLog?.discordWebhook) return
 
     // const embed = {

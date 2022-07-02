@@ -4,6 +4,7 @@
  */
 
 import { readFileSync } from 'fs'
+import { Logger } from '@freestuffbot/common'
 import * as jwtlib from 'jsonwebtoken'
 import { config } from '..'
 import { UserAuthPayload } from './user-auth'
@@ -15,7 +16,7 @@ export default class JWT {
     try {
       return readFileSync(config.keys.privateKeyUri).toString()
     } catch (ex) {
-      console.info('JWT is missing a private key.')
+      Logger.warn('JWT is missing a private key.')
       return 'undefined'
     }
   })()

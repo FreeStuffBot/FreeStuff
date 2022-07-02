@@ -23,7 +23,7 @@ export default class GibuProductDetails {
       data: {
         id,
         title: data.title,
-        prices: data.prices.map((price) => ({
+        prices: data.prices.map(price => ({
           currency: price.currency,
           oldValue: price.initial,
           newValue: price.final,

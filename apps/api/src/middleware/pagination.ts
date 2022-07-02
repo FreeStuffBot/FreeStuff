@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express"
 
 
 export default function pagination(defaultPageSize = 20, maxPageSize = 50): (req: Request, res: Response, next: NextFunction) => any {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     res.locals.pageOffset = req.query.offset
       ? parseInt(req.query.offset + '', 10)
       : 0

@@ -1,6 +1,6 @@
 import { hostname } from 'os'
-import Tracker from './tracker'
 import { Logger, SanitizedGuildType } from '@freestuffbot/common'
+import Tracker from './tracker'
 
 
 export default function guildDataToViewString(g: SanitizedGuildType, maxLength = 2048, errorMessage?: string, includeMetainfo = false): string {

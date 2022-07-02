@@ -1,10 +1,10 @@
-import { CurrencyDataType, CurrencySanitizer, ExperimentDataType, ExperimentSanitizer, LanguageDataType, MiscDataType, PlatformDataType, PlatformSanitizer, SanitizedLanguageType } from '@freestuffbot/common'
+import { CurrencyDataType, CurrencySanitizer, ExperimentDataType, ExperimentSanitizer, LanguageDataType, MiscDataType, PlatformDataType, PlatformSanitizer } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from '../../database/mongo'
 import ReqError from '../../lib/req-error'
 
 
-export async function getLanguages(req: Request, res: Response) {
+export async function getLanguages(_req: Request, res: Response) {
   const lang: LanguageDataType[] = await Mongo.Language
     .find({
       _index: { $gte: 0 },
@@ -21,7 +21,7 @@ export async function getLanguages(req: Request, res: Response) {
 }
 
 
-export async function getCmsConstants(req: Request, res: Response) {
+export async function getCmsConstants(_req: Request, res: Response) {
   const currencies: CurrencyDataType[] = await Mongo.Currency
     .find({})
     .lean(true)
@@ -48,7 +48,7 @@ export async function getCmsConstants(req: Request, res: Response) {
 }
 
 
-export async function getRemoteConfig(req: Request, res: Response) {
+export async function getRemoteConfig(_req: Request, res: Response) {
   const config: MiscDataType = await Mongo.Misc
     .findById('config.global')
     .lean(true)
@@ -62,7 +62,7 @@ export async function getRemoteConfig(req: Request, res: Response) {
 }
 
 
-export async function getExperiments(req: Request, res: Response) {
+export async function getExperiments(_req: Request, res: Response) {
   const experiments: ExperimentDataType[] = await Mongo.Experiment
     .find({})
     .lean(true)

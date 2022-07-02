@@ -33,7 +33,7 @@ export default class DockerInterface {
   }
 
   public static getFsContainers(): FsContainer[] {
-    return [...this.cache]
+    return [ ...this.cache ]
   }
 
   public static async fetchFsContainers(): Promise<FsContainer[]> {
@@ -70,7 +70,7 @@ export default class DockerInterface {
       .map(s => DockerInterface.mapServiceToFsContainer(s, validNetworks))
       .filter(s => (!!s.networkIp && !!s.role))
 
-    const progress = containers.map(async container => {
+    const progress = containers.map(async (container) => {
       const res = await axios
         .get(`http://${container.networkIp}/umi/info`, {
           validateStatus: null,
@@ -87,7 +87,7 @@ export default class DockerInterface {
     Logger.debug('Done fetching Containers')
     Logger.debug(JSON.stringify(containers))
 
-    DockerInterface.cache = [...containers]
+    DockerInterface.cache = [ ...containers ]
     DockerInterface.onServiceUpdate(containers)
     return containers
   }
@@ -116,7 +116,7 @@ export default class DockerInterface {
   /**
    * Use this method for alerting or external widgets. Gets called once every x seconds
    */
-  private static onServiceUpdate(network: FsContainer[]): void {
+  private static onServiceUpdate(_network: FsContainer[]): void {
     // TODO(low) alerting
   }
 
@@ -146,4 +146,5 @@ export default class DockerInterface {
       }
     ]
   }
+
 }

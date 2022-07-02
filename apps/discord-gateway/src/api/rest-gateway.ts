@@ -61,7 +61,7 @@ export default class RestGateway {
     }, ~~(1000 / frequency))
   }
 
-  public static async queue(request: RestRequest): Promise<AxiosResponse> {
+  public static queue(request: RestRequest): Promise<AxiosResponse> {
     return new Promise((resolve) => {
       RestGateway.outgoingQueue.push({
         ...request,

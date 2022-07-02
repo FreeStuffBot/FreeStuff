@@ -1,12 +1,9 @@
-import * as cors from 'cors'
 import { Response, Router } from 'express'
-import { config } from '../..'
 import ReqError from '../../lib/req-error'
 import { rateLimiter as limit } from '../../middleware/rate-limits'
-import pagination from '../../middleware/pagination'
 
-import { getAnnouncement } from './announcements'
 import { apiGateway } from '../../middleware/api-gateway'
+import { getAnnouncement } from './announcements'
 import { getProduct } from './products'
 import { getChannel, getChannels } from './channels'
 

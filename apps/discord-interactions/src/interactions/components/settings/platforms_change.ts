@@ -1,5 +1,5 @@
 import { ReplyableComponentInteraction } from 'cordo'
-import { CMS, Const, Errors } from '@freestuffbot/common'
+import { CMS, Errors } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 

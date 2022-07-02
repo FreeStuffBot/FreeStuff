@@ -1,6 +1,5 @@
 import { Logger } from "@freestuffbot/common"
 import RabbitHole from "@freestuffbot/rabbit-hole"
-import { config } from "."
 import * as express from 'express'
 import DashRouter from "./routes/dash/_router"
 import Mongo from './database/mongo'
@@ -10,6 +9,7 @@ import V2Router from "./routes/v2/_router"
 import Resolver from "./lib/resolver"
 import InternalRouter from "./routes/internal/_router"
 import CurrConv from "./services/currconv"
+import { config } from "."
 
 
 export default class Modules {

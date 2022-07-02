@@ -19,7 +19,7 @@ type PermissionsContainer = {
   embedLinks: boolean
 }
 
-export async function calculatePermissionsForMemberInChannel(member: DataMember, channel: DataChannel & ChannelPermissionOverrides, guild: DataGuild): Promise<PermissionsContainer> {
+export function calculatePermissionsForMemberInChannel(member: DataMember, channel: DataChannel & ChannelPermissionOverrides, guild: DataGuild): PermissionsContainer {
   if (guild.ownerId === member.id) 
     return containerAllPermissions()
 

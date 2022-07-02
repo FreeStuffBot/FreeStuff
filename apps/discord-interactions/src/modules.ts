@@ -1,11 +1,11 @@
 import { UmiLibs, ApiInterface, CMS, Errors, Localisation, Logger, ProductDiscountTypeArray, ProductDiscountTypeType, FSApiGateway } from "@freestuffbot/common"
 import RabbitHole from '@freestuffbot/rabbit-hole'
 import Cordo, { GuildData } from "cordo"
-import { config } from "."
 import * as express from 'express'
 import DatabaseGateway from "./services/database-gateway"
 import Mongo from "./services/mongo"
 import Metrics from "./lib/metrics"
+import { config } from "."
 
 
 export default class Modules {
@@ -14,14 +14,14 @@ export default class Modules {
     await RabbitHole.open(config.rabbitUrl)
   }
 
-  public static async initApiInterface(): Promise<void> {
+  public static initApiInterface(): void {
     ApiInterface.storeCredentials(
       config.freestuffApi.baseUrl,
       config.freestuffApi.auth
     )
   }
 
-  public static async initMetrics(): Promise<void> {
+  public static initMetrics(): void {
     Metrics.init()
     Errors.createErrorHandler(h => Metrics.counterDiErrors.inc({
       errorid: h.status,
@@ -29,7 +29,7 @@ export default class Modules {
     }))
   }
 
-  public static async loadProductChannnels(retryUntilSuccessful = true) {
+  public static loadProductChannnels(retryUntilSuccessful = true) {
     for (const channel of ProductDiscountTypeArray)
       Modules.loadProductChannnel(channel as ProductDiscountTypeType, retryUntilSuccessful)
   }
@@ -61,7 +61,7 @@ export default class Modules {
       }
     })
     Cordo.addMiddlewareInteractionCallback((data, i) => Localisation.translateObject(data, i, data._context, 14))
-    Cordo.setMiddlewareGuildData(async (guildid) => {
+    Cordo.setMiddlewareGuildData((guildid) => {
       const out = { _cache: null } as Partial<GuildData>
 
       out.changeSetting = (key, value) => {

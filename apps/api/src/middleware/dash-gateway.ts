@@ -33,7 +33,7 @@ export default function dashGateway(scope: string): (req: Request, res: Response
     // find scopes
     const scopes = scope
       .split('|')
-      .map(s => {
+      .map((s) => {
         for (const param in req.params)
           s = s.split(`{${param}}`).join(req.params[param])
         return s

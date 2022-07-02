@@ -1,5 +1,5 @@
-import axios, { AxiosResponse } from "axios"
 import * as os from "os"
+import axios, { AxiosResponse } from "axios"
 
 
 export default class ApiInterface {
@@ -26,7 +26,7 @@ export default class ApiInterface {
         },
         data,
         validateStatus: null
-      }).catch((ex) => ({
+      }).catch(ex => ({
         status: 999,
         statusText: ex?.message ?? `${ex}`
       } as AxiosResponse))

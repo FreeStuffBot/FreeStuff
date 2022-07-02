@@ -1,10 +1,9 @@
-import { createNewProduct, ProductApprovalStatusArray, ProductDataType, ProductType } from '@freestuffbot/common'
+import { createNewProduct, ProductDataType, ProductType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from "../../../database/mongo"
 import AutoScraper from '../../../lib/auto-scraper'
 import InputValidator from '../../../lib/input-validator'
 import LocalConst from '../../../lib/local-const'
-import Notifier from '../../../lib/notifier'
 import ProductApproval from '../../../lib/product-approval'
 import ReqError from '../../../lib/req-error'
 import Utils from '../../../lib/utils'

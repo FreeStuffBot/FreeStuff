@@ -1,7 +1,6 @@
 import { Const, LanguageDataType, Localisation, LocalizedProductDetailsDataType, ProductDataType, ProductFlag, ProductSanitizer, SanitizedProductType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import paparsya from 'paparsya'
-import LocalConst from '../../lib/local-const'
 import ReqError from '../../lib/req-error'
 import Resolver from '../../lib/resolver'
 

@@ -3,7 +3,7 @@ import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationC
 import { Emojis } from '@freestuffbot/common'
 
 
-export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {
+export default function (i: GenericInteraction): InteractionApplicationCommandCallbackData {
   const lang = Localisation.findClosestLanguageMatch(i.locale)
   const translationCredits = lang.startsWith('en')
     ? ''

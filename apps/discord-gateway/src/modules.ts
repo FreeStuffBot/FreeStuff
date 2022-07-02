@@ -1,16 +1,16 @@
 import { Logger, UmiLibs } from "@freestuffbot/common"
-import { config } from "."
 import * as express from 'express'
 import { getChannels } from "./router/channels"
 import { getGuild } from "./router/guild"
 import { getMember } from "./router/member"
 import { getWebhook, getWebhooks, postWebhook } from "./router/webhooks"
 import Metrics from "./lib/metrics"
+import { config } from "."
 
 
 export default class Modules {
 
-  public static async initMetrics(): Promise<void> {
+  public static initMetrics(): void {
     Metrics.init()
   }
 

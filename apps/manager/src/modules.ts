@@ -1,10 +1,10 @@
 import { Logger } from "@freestuffbot/common"
-import { config } from "."
 import * as express from 'express'
 import Mongo from "./database/mongo"
 import DockerInterface from "./lib/docker-interface"
 import { getServicesComposed, getServicesRaw } from "./router/services"
 import { postCommand } from "./router/command"
+import { config } from "."
 
 
 export default class Modules {

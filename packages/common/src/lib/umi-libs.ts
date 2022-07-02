@@ -1,6 +1,6 @@
+import * as os from 'os'
 import { Express, Request, Response, NextFunction, json } from 'express'
 import * as ip from 'ip'
-import * as os from 'os'
 import CMS from './cms'
 import ContainerInfo from './container-info'
 import FSApiGateway from './fsapi-gateway'
@@ -49,6 +49,7 @@ export default class UmiLibs {
 
       for (const entry of entries) {
         if (!entry.startsWith('api')) continue
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [ _major, minor, id ] = entry.split('.')
         if (!minor || !id) continue
 
@@ -85,9 +86,9 @@ export default class UmiLibs {
   public static mount(server: Express, config: ServerMountConfig): void {
     UmiLibs.serviceName = UmiLibs.getServiceName()
 
-    if (config.allowedIpRange) {
+    if (config.allowedIpRange) 
       server.all('/umi/*', UmiLibs.ipLockMiddleware(config.allowedIpRange))
-    }
+    
 
     if (config.renderMetrics) {
       server.get('/umi/metrics', config.renderMetrics)
@@ -113,7 +114,7 @@ export default class UmiLibs {
     }
   }
 
-  public static renderInfoResponse(req: Request, res: Response): void {
+  public static renderInfoResponse(_req: Request, res: Response): void {
     const out: UmiInfoReport = {
       name: UmiLibs.serviceName,
       version: ContainerInfo.getVersion(),

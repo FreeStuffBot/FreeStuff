@@ -1,7 +1,7 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
 import { DataGuild, Emojis, Errors, Localisation } from '@freestuffbot/common'
-import Tracker from '../../../lib/tracker'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
+import Tracker from '../../../lib/tracker'
 import DiscordGateway from '../../../services/discord-gateway'
 
 
@@ -30,7 +30,7 @@ export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Pr
       (a[1] ? 999 : 0) - (b[1] ? 999 : 0)
       + (b[0].position - a[0].position)
     )
-    .filter(([r]) => (r.name !== '@everyone' && !r.managed))
+    .filter(([ r ]) => (r.name !== '@everyone' && !r.managed))
     .slice(0, 23)
 
   const overflow = guild.roles.length > 23
@@ -50,7 +50,7 @@ export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Pr
       description: '=settings_role_list_everyone_2',
       emoji: Emojis.global.toObject()
     },
-    ...roles.map(([r]) => ({
+    ...roles.map(([ r ]) => ({
       label: sanitizeRoleName(r.name, 25),
       value: r.id,
       default: guildData.role?.toString() === r.id,

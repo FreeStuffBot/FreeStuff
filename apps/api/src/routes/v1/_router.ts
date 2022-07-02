@@ -1,10 +1,10 @@
 import { Response, Router } from 'express'
 import { apiGateway } from '../../middleware/api-gateway'
+import ReqError from '../../lib/req-error'
+import { rateLimiter } from '../../middleware/rate-limits'
 import { ping as Ping } from './ping'
 import { router as GamesEndpoint } from './games'
 import { router as GameEndpoint } from './game'
-import ReqError from '../../lib/req-error'
-import { rateLimiter } from '../../middleware/rate-limits'
 
 
 const disableRateLimits = process.env.NODE_ENV !== 'production'

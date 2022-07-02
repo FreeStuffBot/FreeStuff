@@ -5,7 +5,7 @@ import Resolver from '../../lib/resolver'
 import Utils from '../../lib/utils'
 
 
-export async function getChannels(req: Request, res: Response) {
+export function getChannels(_req: Request, res: Response) {
   res.status(200).json(ProductDiscountType)
 }
 

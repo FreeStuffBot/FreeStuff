@@ -1,3 +1,31 @@
-[35m@freestuffbot/common:lint: [0mcache hit, replaying output [2m0dad69d0a6eee816[0m
+[35m@freestuffbot/common:lint: [0mcache hit, replaying output [2m2f196caefb29600c[0m
 [35m@freestuffbot/common:lint: [0mwarning package.json: No license field
 [35m@freestuffbot/common:lint: [0m$ eslint --ext .ts --ignore-path .gitignore src/**/*.ts
+[35m@freestuffbot/common:lint: [0m
+[35m@freestuffbot/common:lint: [0mOops! Something went wrong! :(
+[35m@freestuffbot/common:lint: [0m
+[35m@freestuffbot/common:lint: [0mESLint: 7.32.0
+[35m@freestuffbot/common:lint: [0m
+[35m@freestuffbot/common:lint: [0mError: Cannot read config file: C:\Users\andre\Desktop\Projekte\FreeStuff\FreeStuff\packages\common\.eslintrc.js
+[35m@freestuffbot/common:lint: [0mError: Cannot find module 'config/eslint-preset'
+[35m@freestuffbot/common:lint: [0mRequire stack:
+[35m@freestuffbot/common:lint: [0m- C:\Users\andre\Desktop\Projekte\FreeStuff\FreeStuff\packages\common\.eslintrc.js
+[35m@freestuffbot/common:lint: [0m- C:\Users\andre\Desktop\Projekte\FreeStuff\FreeStuff\node_modules\@eslint\eslintrc\lib\config-array-factory.js
+[35m@freestuffbot/common:lint: [0m- C:\Users\andre\Desktop\Projekte\FreeStuff\FreeStuff\node_modules\@eslint\eslintrc\lib\index.js
+[35m@freestuffbot/common:lint: [0m- C:\Users\andre\Desktop\Projekte\FreeStuff\FreeStuff\node_modules\eslint\lib\cli-engine\cli-engine.js
+[35m@freestuffbot/common:lint: [0m- C:\Users\andre\Desktop\Projekte\FreeStuff\FreeStuff\node_modules\eslint\lib\eslint\eslint.js
+[35m@freestuffbot/common:lint: [0m- C:\Users\andre\Desktop\Projekte\FreeStuff\FreeStuff\node_modules\eslint\lib\eslint\index.js
+[35m@freestuffbot/common:lint: [0m- C:\Users\andre\Desktop\Projekte\FreeStuff\FreeStuff\node_modules\eslint\lib\cli.js
+[35m@freestuffbot/common:lint: [0minfo Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+[35m@freestuffbot/common:lint: [0m- C:\Users\andre\Desktop\Projekte\FreeStuff\FreeStuff\node_modules\eslint\bin\eslint.js
+[35m@freestuffbot/common:lint: [0m    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:933:15)
+[35m@freestuffbot/common:lint: [0m    at Function.Module._load (node:internal/modules/cjs/loader:778:27)
+[35m@freestuffbot/common:lint: [0m    at Module.require (node:internal/modules/cjs/loader:1005:19)
+[35m@freestuffbot/common:lint: [0m    at require (C:\Users\andre\Desktop\Projekte\FreeStuff\FreeStuff\node_modules\v8-compile-cache\v8-compile-cache.js:159:20)
+[35m@freestuffbot/common:lint: [0m    at Object.<anonymous> (C:\Users\andre\Desktop\Projekte\FreeStuff\FreeStuff\packages\common\.eslintrc.js:1:80)
+[35m@freestuffbot/common:lint: [0m    at Module._compile (C:\Users\andre\Desktop\Projekte\FreeStuff\FreeStuff\node_modules\v8-compile-cache\v8-compile-cache.js:192:30)
+[35m@freestuffbot/common:lint: [0m    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+[35m@freestuffbot/common:lint: [0m    at Module.load (node:internal/modules/cjs/loader:981:32)
+[35m@freestuffbot/common:lint: [0m    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+[35m@freestuffbot/common:lint: [0m    at Module.require (node:internal/modules/cjs/loader:1005:19)
+[35m@freestuffbot/common:lint: [0merror Command failed with exit code 2.

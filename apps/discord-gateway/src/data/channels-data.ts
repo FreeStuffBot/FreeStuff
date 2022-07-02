@@ -1,6 +1,5 @@
 import { DataChannel, DataGuild, DataMember } from "@freestuffbot/common"
 import ChannelsApi from "../api/channels-api"
-import ChannelsCache from "../cache/channels-cache"
 import { calculatePermissionsForMemberInChannel, containerToBitfield } from "../lib/discord-permissions"
 import { MagicNumber, MAGICNUMBER_BAD_GATEWAY } from "../lib/magic-number"
 import GuildData from "./guild-data"
@@ -21,11 +20,11 @@ export default class ChannelsData {
     if (typeof guild === 'number') return guild as MagicNumber
     if (typeof member === 'number') return member as MagicNumber
 
-    return Promise.all(raw.map(item => ChannelsData.parseSingle(member, item, guild)))
+    return raw.map(item => ChannelsData.parseSingle(member, item, guild))
   }
 
-  public static async parseSingle(member: DataMember, raw: any, guild: DataGuild): Promise<DataChannel> {
-    const permissionsRaw = await calculatePermissionsForMemberInChannel(member, raw, guild)
+  public static parseSingle(member: DataMember, raw: any, guild: DataGuild): DataChannel {
+    const permissionsRaw = calculatePermissionsForMemberInChannel(member, raw, guild)
     const permissions = containerToBitfield(permissionsRaw)
 
     return {

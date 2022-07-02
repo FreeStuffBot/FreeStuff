@@ -24,8 +24,8 @@ export default class TaskRouter {
         return handleDiscordPublishSplit(task)
 
       default: {
-        console.warn('Unhandled Task Type %s, deferring', (task as TasksForQueue<'DISCORD'>).t)
-        return new Promise((res) => setTimeout(
+        Logger.warn(`Unhandled Task Type ${(task as TasksForQueue<'DISCORD'>).t}, deferring`)
+        return new Promise(res => setTimeout(
           () => res(false),
           TaskRouter.UNKNOWN_TASK_DEFER_DELAY
         ))

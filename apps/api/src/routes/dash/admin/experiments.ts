@@ -4,7 +4,7 @@ import Mongo from '../../../database/mongo'
 import ReqError from '../../../lib/req-error'
 
 
-export async function getExperiments(req: Request, res: Response) {
+export async function getExperiments(_req: Request, res: Response) {
   const experiments: ExperimentDataType[] = await Mongo.Experiment
     .find({})
     .lean(true)
@@ -21,7 +21,7 @@ export async function getExperiments(req: Request, res: Response) {
 }
 
 
-export async function postExperiment(req: Request, res: Response) {
+export function postExperiment(req: Request, res: Response) {
   const exp = req.body as ExperimentDataType & { id: string }
   if (!exp || !exp.id || !exp.description || !exp.rules)
     return ReqError.badRequest(res, 'Malformed request body', 'Missing one or more required fields.')

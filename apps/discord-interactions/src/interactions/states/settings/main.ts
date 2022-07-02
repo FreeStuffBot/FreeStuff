@@ -3,7 +3,6 @@ import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationC
 import Tracker from '../../../lib/tracker'
 
 
-
 const recentlyInSetup: string[] = []
 
 export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {

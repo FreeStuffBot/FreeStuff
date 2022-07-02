@@ -4,7 +4,7 @@
  */
 
 import { UserDataType, UserType } from '@freestuffbot/common'
-import { Request, Response } from 'express'
+import { Request } from 'express'
 import Mongo from '../database/mongo'
 import IPApi from './ipapi'
 import JWT from './jwt'

@@ -1,11 +1,11 @@
 import { ApiInterface, CMS, FSApiGateway, Logger, UmiLibs } from '@freestuffbot/common'
 import RabbitHole from '@freestuffbot/rabbit-hole'
 import * as express from 'express'
-import { config } from '.'
 import Mongo from './database/mongo'
 import Metrics from './lib/metrics'
 import Upstream from './lib/upstream'
 import TaskRouter from './tasks/router'
+import { config } from '.'
 
 
 export default class Modules {
@@ -19,7 +19,7 @@ export default class Modules {
     await RabbitHole.subscribe('DISCORD', TaskRouter.consume)
   }
 
-  public static async initApiInterface(): Promise<void> {
+  public static initApiInterface(): void {
     ApiInterface.storeCredentials(
       config.freestuffApi.baseUrl,
       config.freestuffApi.auth
@@ -38,15 +38,15 @@ export default class Modules {
     await Modules.loadCmsData(retryDelay * 2)
   }
 
-  public static async startUpstream(): Promise<void> {
+  public static startUpstream(): void {
     Upstream.startBurstInterval()
   }
 
-  public static async initCacheJanitor(): Promise<void> {
+  public static initCacheJanitor(): void {
     setInterval(() => FSApiGateway.clearOrRefetchAll(), 1000 * 60 * 60 * 24)
   }
 
-  public static async initMetrics(): Promise<void> {
+  public static initMetrics(): void {
     Metrics.init()
   }
 

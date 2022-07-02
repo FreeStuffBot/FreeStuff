@@ -15,5 +15,5 @@ export default function (i: ReplyableComponentInteraction) {
   blocked.add(i.guild_id)
   i.state('settings_channel', { ignoreCache: true })
 
-  setTimeout((id) => blocked.delete(id), config.userLimits.refreshChannelsInterval, i.guild_id)
+  setTimeout(id => blocked.delete(id), config.userLimits.refreshChannelsInterval, i.guild_id)
 }

@@ -1,9 +1,9 @@
-import { ButtonStyle, ChannelType, ComponentType, GenericInteraction, GuildData, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
+import { ButtonStyle, ChannelType, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
 import { Localisation, Emojis, CustomPermissions, DataChannel, SanitizedGuildType, Errors } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
+import { CustomChannelPermissions } from '@freestuffbot/common/dist/lib/custom-permissions'
 import Tracker from '../../../lib/tracker'
 import DiscordGateway from '../../../services/discord-gateway'
-import { CustomChannelPermissions } from '@freestuffbot/common/dist/lib/custom-permissions'
 
 
 type Options = {
@@ -77,7 +77,7 @@ export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Pr
   const channels = channelsFound
     .sort((a, b) => sortChannels(a, b, i, parentOrder))
     .slice(0, 24)
-    .map((c) => channelToDropdownOption(c, i, guildData, hereText))
+    .map(c => channelToDropdownOption(c, i, guildData, hereText))
 
   const options: MessageComponentSelectOption[] = [
     {

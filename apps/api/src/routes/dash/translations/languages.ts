@@ -4,7 +4,7 @@ import DiscordUtils from '../../../lib/discord-utils'
 import ReqError from '../../../lib/req-error'
 
 
-export async function getLanguages(req: Request, res: Response) {
+export async function getLanguages(_req: Request, res: Response) {
   const users = await Mongo.User
     .find({})
     .lean(true)
@@ -45,8 +45,8 @@ export async function getLanguages(req: Request, res: Response) {
 }
 
 
-export async function getLanguage(req: Request, res: Response) {
-  Mongo.Language
+export function getLanguage(req: Request, res: Response) {
+  return Mongo.Language
     .findById(req.params.name)
     .lean(true)
     .exec()

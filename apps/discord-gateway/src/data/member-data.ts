@@ -1,6 +1,5 @@
 import { DataMember } from "@freestuffbot/common"
 import MemberApi from "../api/member-api"
-import MemberCache from "../cache/member-cache"
 import { MagicNumber, MAGICNUMBER_BAD_GATEWAY } from "../lib/magic-number"
 
 
@@ -18,7 +17,7 @@ export default class MemberData {
    * 
    */
 
-  public static async findMember(guild: string, directives: string[]): Promise<DataMember | MagicNumber | null> {
+  public static async findMember(guild: string, _directives: string[]): Promise<DataMember | MagicNumber | null> {
     // if (!directives.includes('nocache')) {
     //   const cache = MemberCache.get(guild, directives.includes('softcache'))
     //   if (cache !== undefined) return cache

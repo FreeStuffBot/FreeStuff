@@ -7,6 +7,7 @@ export default class AutoScraper {
   public static async scrape(product: ProductType, url: string, merge: boolean) {
     const data = await GibuProductDetails
       .getDetails(url, product.data.id)
+      // eslint-disable-next-line no-console
       .catch(console.error)
 
     if (!data) {
@@ -32,7 +33,7 @@ export default class AutoScraper {
   }
 
   private static mergeData(product: ProductType['data'], newData: GibuProcessedProduct['data']): void {
-    for (const [k, v] of Object.entries(newData)) {
+    for (const [ k, v ] of Object.entries(newData)) {
       if (!v) continue
       if (product[k]) continue
 
@@ -51,7 +52,7 @@ export default class AutoScraper {
       }
 
       if (!product[k]) product[k] = {}
-      for (const [nK, nV] of Object.entries(v))
+      for (const [ nK, nV ] of Object.entries(v))
         product[k][nK] = nV
     }
   }

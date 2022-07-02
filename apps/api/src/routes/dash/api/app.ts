@@ -7,7 +7,7 @@ import ReqError from '../../../lib/req-error'
 import Notifier from '../../../lib/notifier'
 
 
-export async function getApp(req: Request, res: Response) {
+export async function getApp(_req: Request, res: Response) {
   const appId = res.locals.user?._id
   if (!appId) return ReqError.badRequest(res, 'User ID not found', 'Please log in.')
 
@@ -29,7 +29,7 @@ export async function getApp(req: Request, res: Response) {
 }
 
 
-export async function postApp(req: Request, res: Response) {
+export async function postApp(_req: Request, res: Response) {
   const appId = res.locals.user?._id
   if (!appId) return ReqError.badRequest(res, 'User ID not found', 'Please log in.')
 
@@ -41,7 +41,7 @@ export async function postApp(req: Request, res: Response) {
   const document = new Mongo.App({
     _id: appId,
     type: 'basic',
-    key: await generateKey(res.locals.user.data.id),
+    key: generateKey(res.locals.user.data.id),
     description: 'I\'m using it for: \nYou can find more information at: \nAdditional information: ',
     webhookUrl: '',
     webhookSecret: '',
@@ -55,7 +55,7 @@ export async function postApp(req: Request, res: Response) {
 }
 
 
-export async function postAppKeyRegen(req: Request, res: Response) {
+export async function postAppKeyRegen(_req: Request, res: Response) {
   const appId = res.locals.user?._id
   if (!appId) return ReqError.badRequest(res, 'User ID not found', 'Please log in.')
 
@@ -64,7 +64,7 @@ export async function postAppKeyRegen(req: Request, res: Response) {
       { _id: appId },
       {
         $set: {
-          key: await generateKey(appId),
+          key: generateKey(appId),
           lc_key: getTimestamp()
         }
       })
@@ -110,7 +110,7 @@ export async function patchAppWebhook(req: Request, res: Response) {
 }
 
 
-export async function postAppWebhookTest(req: Request, res: Response) {
+export async function postAppWebhookTest(_req: Request, res: Response) {
   const appId = res.locals.user?._id
   if (!appId) return ReqError.badRequest(res, 'User ID not found', 'Please log in.')
 
@@ -164,7 +164,7 @@ export async function patchAppDescription(req: Request, res: Response) {
 
 //
 
-async function generateKey(appid: string): Promise<string> {
+function generateKey(appid: string): string {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
   let out = ''
   let it = 24

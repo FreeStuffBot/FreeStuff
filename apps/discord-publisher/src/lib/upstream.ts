@@ -95,7 +95,7 @@ export default class Upstream {
       + skipAmount * config.behavior.upstreamRequestInterval
 
     if (delta <= 0) return Promise.resolve()
-    return new Promise((res) => setTimeout(res, delta))
+    return new Promise(res => setTimeout(res, delta))
   }
 
 }

@@ -1,4 +1,4 @@
-import { AnnouncementSchema, AppSchema, CurrencySchema, ExperimentSchema, GuildSchema, LanguageSchema, Logger, MiscSchema, PlatformSchema, ProductSchema, UserSchema } from '@freestuffbot/common'
+import { GuildSchema, LanguageSchema, Logger } from '@freestuffbot/common'
 import * as mongoose from 'mongoose'
 
 

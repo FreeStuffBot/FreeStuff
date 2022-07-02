@@ -1,7 +1,7 @@
 import { ReplyableComponentInteraction } from 'cordo'
-import { onGuildDataDeleteCooldown } from './delete'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import DatabaseGateway from '../../../../services/database-gateway'
+import { onGuildDataDeleteCooldown } from './delete'
 
 
 export default async function (i: ReplyableComponentInteraction) {

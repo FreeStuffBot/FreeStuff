@@ -32,7 +32,7 @@ function filterNetworkByReceivers(network: FsContainer[], receivers: string[]): 
   return out
 }
 
-async function deliverCommandToService(command: any, service: FsContainer): Promise<void> {
+function deliverCommandToService(command: any, service: FsContainer): Promise<void> {
   if (!service?.info || !service.info.features.command || !service.info.commands.includes(command))
     return
 

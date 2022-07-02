@@ -1,5 +1,4 @@
-import { AnnouncementType, CurrencyDataType, ProductType } from "@freestuffbot/common"
-import RabbitHole, { TaskId } from "@freestuffbot/rabbit-hole"
+import { CurrencyDataType, Logger, ProductType } from "@freestuffbot/common"
 import Mongo from "../database/mongo"
 import CurrConv from "../services/currconv"
 import LinkProxy from "../services/link-proxy"
@@ -59,7 +58,8 @@ export default class ProductApproval {
         const id = httpUrl.split('/app/')[1].split('/')[0]
         return `steam://store/${id}`
       } catch (ex) {
-        console.info(`Failed creating the client url for steam with url ${httpUrl} for reason:`)
+        Logger.info(`Failed creating the client url for steam with url ${httpUrl} for reason:`)
+        // eslint-disable-next-line no-console
         console.log(ex)
       }
     }
@@ -70,7 +70,8 @@ export default class ProductApproval {
         const data = httpUrl.split('/p/')[1].split('?')[0].replace(/\/home$/, '')
         return `com.epicgames.launcher://store/p/${data}`
       } catch (ex) {
-        console.info(`Failed creating the client url for epic games with url ${httpUrl} for reason:`)
+        Logger.info(`Failed creating the client url for epic games with url ${httpUrl} for reason:`)
+        // eslint-disable-next-line no-console
         console.log(ex)
       }
     }

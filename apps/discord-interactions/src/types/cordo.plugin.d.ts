@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Fragile, SanitizedGuildType, SettingCurrency, SettingPlatform, SettingPriceClass, SettingTheme } from '@freestuffbot/common'
 import { DatabaseActions } from './database-actions'
 

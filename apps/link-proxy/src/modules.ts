@@ -1,11 +1,11 @@
 import { Logger } from "@freestuffbot/common"
-import { config } from "."
 import * as express from 'express'
 import { getAnalytics } from "./router/analytics"
 import { getMetrics } from "./router/metrics"
 import { postCreateGame } from "./router/create"
 import Mongo from "./database/mongo"
 import Metrics from "./lib/metrics"
+import { config } from "."
 
 
 export default class Modules {

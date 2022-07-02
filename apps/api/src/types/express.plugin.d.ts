@@ -1,4 +1,5 @@
 import { UserType } from '@freestuffbot/common'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Response } from 'express'
 
 

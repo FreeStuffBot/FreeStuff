@@ -1,4 +1,4 @@
-import { AnnouncementType, createNewAnnouncement, ProductType } from '@freestuffbot/common'
+import { AnnouncementType, createNewAnnouncement, Logger, ProductType } from '@freestuffbot/common'
 import RabbitHole, { TaskId } from '@freestuffbot/rabbit-hole'
 import { Request, Response } from 'express'
 import { config } from '../../..'
@@ -56,6 +56,6 @@ export async function postAnnouncement(req: Request, res: Response) {
       await product.save()
     }
   } catch (err) {
-    console.error(err)
+    Logger.error(err)
   }
 }

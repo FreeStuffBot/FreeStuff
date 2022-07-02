@@ -2,8 +2,8 @@
 import { Const, LanguageDataType, ProductDataType, SanitizedProductType } from '@freestuffbot/common'
 import paparsya from 'paparsya'
 import { Router, Request, Response } from 'express'
-import Mongo from '../../database/mongo'
 import { ProductFlag } from '@freestuffbot/common/dist/types/other/product-flag'
+import Mongo from '../../database/mongo'
 import CurrConv from '../../services/currconv'
 import Thumbnailer from '../../services/thumbnailer'
 
@@ -27,7 +27,7 @@ function getInfo(field: string) {
       ? await Mongo.Language
         .find(req.query.lang === '@all'
           ? { _index: { $gte: 0 }, _enabled: true }
-          : { _id: { $in: [ 'en-US', ...`${req.query.lang}`.split(' ') ] } })
+          : { _id: { $in: [ 'en-US', ...`${req.query.lang}`.split(' ').slice(0, 25) ] } })
         .lean(true)
         .exec()
       : null

@@ -1,9 +1,9 @@
 import { ChannelType, ReplyableComponentInteraction } from 'cordo'
 import { CustomPermissions, Errors, Localisation } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
+import { Long } from 'bson'
 import DiscordGateway from '../../../services/discord-gateway'
 import Webhooks from '../../../lib/webhooks'
-import { Long } from 'bson'
 
 
 export default async function (i: ReplyableComponentInteraction) {
