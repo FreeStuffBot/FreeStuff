@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         # repeating this job for the following module names, using ${{ matrix.module }} as the name
-        module: [ api, discord-gateway, discord-interactions, discord-publisher, link-proxy, manager, thumbnailer ]
+        module: [ api, app-publisher, discord-gateway, discord-interactions, discord-publisher, link-proxy, manager, thumbnailer ]
 
     steps:
       - name: Set up QEMU
