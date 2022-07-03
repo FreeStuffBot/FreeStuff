@@ -90,7 +90,7 @@ export type TaskType = {
   t: TaskId.APPS_TEST
   /** app id as string            */ i: string
 } | {
-  t: TaskId.APPS_PUBLISH
+  t: TaskId.APPS_PUBLISH_SPLIT
   /** next value to continue with */ v: number
   /** total bucket count          */ c: number
   /** announcement id             */ a: number

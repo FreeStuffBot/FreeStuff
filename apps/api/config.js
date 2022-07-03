@@ -10,6 +10,7 @@ module.exports = {
   dashboardOauthCallbackUrl: loadArg('API_DASH_OAUTH_CALLBACK_URL'),
   behavior: {
     desiredGuildCountPerBucket: 250,
+    desiredAppCountPerBucket: 50,
     resolvingCacheMaxAge: 1000 * 60 * 5,
     currconvUpdateInterval: 1000 * 60 * 60 * 24
   },

@@ -4,7 +4,7 @@
   "scripts": {
     "start": "node --icu-data-dir=node_modules\\full-icu ./dist/index.js",
     "build": "tsc",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "lint": "eslint --ext .ts --ignore-path .gitignore .",
     "dev": "tsc && node --icu-data-dir=node_modules\\full-icu --trace-warnings ./dist/index.js",
     "test": "echo \"No test specified\" && exit 0"
   },

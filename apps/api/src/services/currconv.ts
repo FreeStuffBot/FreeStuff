@@ -8,7 +8,7 @@ export default class CurrConv {
   private static priceMap: Map<string, number> = new Map()
 
   public static async updateData() {
-    const { data, status } = await axios.get(CurrConv.URL)
+    const { data, status } = await axios.get(CurrConv.URL, { validateStatus: null }).catch(() => ({} as any))
     if (!data || status !== 200) return
 
     for (const [ curr, value ] of Object.entries(data.usd)) {

@@ -50,6 +50,7 @@ function getInfo() {
       })
       .catch((err) => {
         Logger.warn('Handled error occured at /v1/game')
+        // eslint-disable-next-line no-console
         console.error(err)
         res.status(502).json({ success: false, error: 'Bad Gateway', message: 'Connection to database failed.', data: {} })
       })
@@ -129,8 +130,8 @@ function localize(game: SanitizedProductType, langs: any) {
     }
 
     const [ priceEur, priceUsd ] = [
-      game.prices.find(p => p.currency === 'eur').oldValue,
-      game.prices.find(p => p.currency === 'usd').oldValue
+      game.prices.find(p => p.currency === 'eur')?.oldValue ?? 1999,
+      game.prices.find(p => p.currency === 'usd')?.oldValue ?? 1999
     ]
 
     out[l._id] = {

@@ -10,6 +10,7 @@ export type configjs = {
   dashboardOauthCallbackUrl: string
   behavior: {
     desiredGuildCountPerBucket: number
+    desiredAppCountPerBucket: number
     resolvingCacheMaxAge: number
     currconvUpdateInterval: number
   }

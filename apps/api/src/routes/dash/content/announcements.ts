@@ -1,10 +1,9 @@
 import { AnnouncementType, createNewAnnouncement, Logger, ProductType } from '@freestuffbot/common'
-import RabbitHole, { TaskId } from '@freestuffbot/rabbit-hole'
 import { Request, Response } from 'express'
-import { config } from '../../..'
 import Mongo from "../../../database/mongo"
 import LocalConst from '../../../lib/local-const'
 import ReqError from '../../../lib/req-error'
+import Upstream from '../../../lib/upstream'
 import Utils from '../../../lib/utils'
 
 
@@ -31,22 +30,13 @@ export async function postAnnouncement(req: Request, res: Response) {
   const dbobj: AnnouncementType = new Mongo.Announcement(announcement)
   if (!dbobj) return ReqError.badGateway(res)
 
-  let guilds = await Mongo.Guild.count()
-  if (guilds < 200000) guilds = 200000 // Failswitch, if the guilds yields 0, -1 or any other incorrect low value this wont create a single huge bucket
-  const announcementBucketCount = Math.round(guilds / config.behavior.desiredGuildCountPerBucket)
-
   try {
     await dbobj.save()
   } catch (err) {
     return ReqError.badGateway(res, err?.message)
   }
 
-  RabbitHole.publish({
-    t: TaskId.DISCORD_PUBLISH_SPLIT,
-    a: id,
-    v: 0,
-    c: announcementBucketCount
-  })
+  Upstream.publish(id)
 
   res.status(200).json({ id })
 
