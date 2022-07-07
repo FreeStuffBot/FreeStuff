@@ -1,3 +1,4 @@
+import { Logger } from "@freestuffbot/common"
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
 import { config } from ".."
 import Metrics from "./metrics"
@@ -48,9 +49,11 @@ export default class Upstream {
     Upstream.remaining--
     Upstream.waiting--
 
-    axios(req)
-      .catch(err => err?.response ?? { status: 999 })
-      .then(res => Upstream.handleResponse(res, req))
+    // TODO (high) re-enable
+    // axios(req)
+    //   .catch(err => err?.response ?? { status: 999 })
+    //   .then(res => Upstream.handleResponse(res, req))
+    Upstream.handleResponse({ status: 200 } as any, req)
   }
 
   private static handleResponse(res: AxiosResponse, retryConfig: AxiosRequestConfig) {
@@ -70,8 +73,11 @@ export default class Upstream {
   }
 
   private static parseRateLimitRetry(res: AxiosResponse) {
+    if (!res?.headers) return 0
+
     if (res.headers['X-RateLimit-Remaining'] !== '0') return 0
     if (!res.headers['X-RateLimit-Reset-After']) return 0
+
     return ~~(Number(res.headers['X-RateLimit-Reset-After']) * 1000)
   }
 
@@ -79,6 +85,7 @@ export default class Upstream {
     if (Upstream.burstStarted) return
     Upstream.burstStarted = true
     setInterval(() => {
+      Logger.debug(`Upstream burst. Prev remain: ${Upstream.remaining}`)
       Upstream.remaining = config.behavior.upstreamRequestRate
       Upstream.nextFrame = Date.now() + config.behavior.upstreamRequestInterval + 1 // +1 to encounter timing hiccups
     }, config.behavior.upstreamRequestInterval)
