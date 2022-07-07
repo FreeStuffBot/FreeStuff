@@ -8,8 +8,8 @@ export default class Metrics {
   private static register = new Registry()
 
   public static counterInteractions = new Counter({
-    name: 'fsb_interactions',
-    help: 'FreeStuffBot: incoming interactions',
+    name: 'fsb_sdi_interactions',
+    help: 'FreeStuffBot Service DiscordInteractions: incoming interactions',
     labelNames: [ 'type', 'name' ]
   })
 
@@ -26,7 +26,7 @@ export default class Metrics {
   })
 
   public static counterDiErrors = new Counter({
-    name: 'fsb_sdi_db_errors',
+    name: 'fsb_sdi_errors',
     help: 'FreeStuffBot Service DiscordInteractions: Errors',
     labelNames: [ 'errorid', 'source' ]
   })

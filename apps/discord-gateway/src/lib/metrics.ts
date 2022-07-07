@@ -10,7 +10,7 @@ export default class Metrics {
   private static register = new Registry()
 
   public static counterDgRequests = new Counter({
-    name: 'fsb_sdi_requests',
+    name: 'fsb_sdg_requests',
     help: 'FreeStuffBot Service DiscordGateway: Http Requests',
     labelNames: [ 'method', 'endpoint', 'status' ]
   })
