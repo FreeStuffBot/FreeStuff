@@ -35,7 +35,7 @@ export class ExperimentSanitizer {
 
       switch (command) {
         case 'amount':
-          out.amount = parseInt(arg.substr(0, arg.length - 1)) / 100
+          out.amount = parseInt(arg.substring(0, arg.length - 1)) / 100
           break
 
         case 'of':
