@@ -1,5 +1,6 @@
 import { hostname } from 'os'
 import { GuildData } from '@freestuffbot/typings'
+import { Long } from 'mongodb'
 import Tracker from '../bot/tracker'
 import Manager from '../controller/manager'
 import { Core } from '..'
@@ -14,7 +15,9 @@ export default function guildDataToViewString(g: GuildData, maxLength = 2048, er
     if (includeMetainfo) {
       gd.host = hostname()
       gd.workerIndex = Manager.getMeta().workerIndex
-      gd.shard = ((typeof g.sharder === 'number') ? g.sharder : g.sharder.getLowBits()) % Core.options.shardCount
+      gd.shard = (typeof g.sharder === 'number')
+        ? (g.sharder % Core.options.shardCount)
+        : (g.sharder.modulo(Long.fromInt(Core.options.shardCount)).toInt())
     }
 
     gd.currency = gd.currency.name
