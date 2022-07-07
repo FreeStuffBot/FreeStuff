@@ -53,18 +53,14 @@ export default class Upstream {
       .then(res => Upstream.handleResponse(res, req))
   }
 
-  private static handleResponse(res: AxiosResponse, retryConfig: AxiosRequestConfig) {
+  private static handleResponse(res: AxiosResponse, _retryConfig: AxiosRequestConfig) {
     const status = res?.status ?? 998
     Metrics.counterUpstreamStatus.inc({ status })
     console.log('status -> ', status)
 
     if (status >= 400 && status < 600) {
-      const rateLimit = Upstream.parseRateLimitRetry(res)
-      if (rateLimit && !Upstream.blocked) {
-        Upstream.blocked = true
-        setTimeout(() => (Upstream.blocked = false), rateLimit)
-        Upstream.queueRequest(retryConfig)
-      }
+      // TODO (low) resend in increasing intervals if not 200
+      // warn users before-hand that this change will be made and that all webhook requests should be answered with a 200 code
     }
   }
 

@@ -1,6 +1,6 @@
 import { ReplyableComponentInteraction } from 'cordo'
 import RabbitHole, { TaskId } from '@freestuffbot/rabbit-hole'
-import { Const, CustomPermissions, DataChannel, Errors, FSApiGateway, ProductFilter, SanitizedGuildType } from '@freestuffbot/common'
+import { Const, CustomPermissions, DataChannel, Errors, FSApiGateway, Logger, ProductFilter, SanitizedGuildType } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import Tracker from '../../../lib/tracker'
 import DiscordGateway from '../../../services/discord-gateway'
@@ -96,6 +96,7 @@ export default async function (i: ReplyableComponentInteraction) {
       })
     }
   } catch (ex) {
+    Logger.error(ex)
     i.replyPrivately({
       title: '=cmd_error_fixable_1',
       description: '=cmd_error_fixable_2'
@@ -118,6 +119,7 @@ function getChannel(guildData: SanitizedGuildType, channels: DataChannel[]): Dat
 async function checkRequirements(i: ReplyableComponentInteraction, channel: DataChannel, webhook: string): Promise<boolean> {
   if (!i.guildData) {
     // DatabaseManager.addGuild(i.guild_id)
+    Logger.error('No guild data in run_resend::checkRequirements')
     i.replyPrivately({
       title: '=cmd_error_fixable_1',
       description: '=cmd_error_fixable_2',

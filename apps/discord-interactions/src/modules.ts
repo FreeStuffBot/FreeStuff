@@ -11,7 +11,9 @@ import { config } from "."
 export default class Modules {
 
   public static async initRabbit(): Promise<void> {
+    Logger.info('Opening RabbitHole...')
     await RabbitHole.open(config.rabbitUrl)
+    Logger.process('RabbitHole opened')
   }
 
   public static initApiInterface(): void {

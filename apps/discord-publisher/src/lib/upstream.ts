@@ -58,6 +58,8 @@ export default class Upstream {
     Metrics.counterUpstreamStatus.inc({ status })
 
     if (status >= 400 && status < 600) {
+      // TODO (low) if 404 remove the webhook from the db perhaps
+
       const rateLimit = Upstream.parseRateLimitRetry(res)
       if (rateLimit && !Upstream.blocked) {
         Upstream.blocked = true

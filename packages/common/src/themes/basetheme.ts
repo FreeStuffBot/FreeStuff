@@ -136,8 +136,8 @@ export default class BaseTheme {
 
     return {
       url: settings.themeExtraInfo
-        ? product.thumbnails.full
-        : product.thumbnails.blank
+        ? (product.thumbnails.full ?? product.thumbnails.org)
+        : (product.thumbnails.blank ?? product.thumbnails.org)
     }
   }
 
