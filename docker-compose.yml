@@ -1,44 +1,67 @@
 version: "3.3"
 
+networks:
+  local:
+    driver: bridge
+
 services:
-  bot:
-    image: ghcr.io/freestuffbot/discord:master
+  rabbit:
+    image: rabbitmq:latest
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+  api:
+    image: ghcr.io/freestuffbot/fsb-api:master
     environment:
-      NODE_ENV: "production" # don't change
-      FSB_DBOT_TOKEN: "your bot token here"
-      FSB_DBOT_ID: "your bot id here like 756183898156957850"
-      FSB_MONGO_URL: "mongodb://host.docker.internal:27017/admin"
-      FSB_FSAPI_KEY: "your freestuff api key here"
-      FSB_FSAPI_TYPE: "basic" # don't change
-
-    # SINGLE SHARD
-      FSB_MODE: "single"
-    # or MULTIPLE SHARDS
-      FSB_MODE: "shard"
-      FSB_SHARD_IDS: "1,2,3,4"
-      FSB_SHARD_COUNT: "4"
-    # or DYNAMIC SHARDS BY WORKING FOR A MANAGER
-      FSB_MODE: "worker"
-      FSB_WORKER_HOST: "ws://manager.localhost"
-
-    # Below is optional but if you would like to have real-time events you need to start the webhook server
-      FSB_SERVER_ENABLE: "true"
-      FSB_SERVER_PORT: "6622"
-      FSB_WEBHOOK_SECRET: "your custom webhook secret"
-      FSB_WEBHOOK_ENDPOINT: "/webhooks/freestuff"
-
-    # If you like to have prometheus metrics enabled use the following config. You can have both the webhook server and metrics, just delete duplicate environment variables
-      FSB_SERVER_ENABLE: "true"
-      FSB_SERVER_PORT: "6622"
-      FSB_METRICS_ENDPOINT: "/metrics"
-
-  # Only if using the webhook server
+      NODE_ENV: "production"
+      FSB_API_PORT: "80"
+      FSB_API_REDIS_URL: ""
+      FSB_API_RABBIT_URL: "amqp://rabbit"
+      FSB_API_DASH_CORS_ORIGIN: "https://dashboard.freestuffbot.xyz"
+      FSB_API_DASH_OAUTH_CALLBACK_URL: "https://dashboard.freestuffbot.xyz/oauth/callback"
+      FSB_NETWORK_GIBU_GQL_ENDPOINT: "http://gibu_api_games/graphql"
+      FSB_NETWORK_THUMBNAILER: "http://thumbnailer"
+      FSB_NETWORK_LINK_PROXY: "http://link_proxy"
+      FSB_API_PRIVATE_KEY_URI: "/run/secrets/FSB_API_PRIVATE_KEY"
+      FSB_API_MONGO_URL: "mongodb://host.docker.internal:27017/freestuffbot"
+      FSB_API_OAUTH_DISCORD_APPID: ""
+      FSB_API_OAUTH_DISCORD_APPSECRET: ""
+      FSB_API_PRIVATE_KEY: ""
+    networks:
+      - local
     ports:
-      - 6622:6622
+      - 4062:80
+    depends_on:
+      - rabbit
+    labels:
+      - prometheus-job=fsb
+      - xyz.freestuffbot.service.role=api
+      - xyz.freestuffbot.service.network=freestuff_local
 
-  # Also optional but recommended
-    restart_policy:
-      condition: any
-      delay: 5s
-      max_attempts: 3
-      window: 30s
+  discord-interactions:
+    image: ghcr.io/freestuffbot/fsb-discord-interactions:master
+    environment:
+      NODE_ENV: "production"
+      FSB_DISCORD_INTERACTIONS_PORT: 80
+      FSB_DISCORD_INTERACTIONS_CLIENTID: "756183898156957850"
+      FSB_DISCORD_INTERACTIONS_PUBKEY: "ae92419b8a8752234363888abdc0d2b7bdfc730b4b9182dd6c1d5af594842f12"
+      FSB_DISCORD_INTERACTIONS_MONGO_URL: "mongodb://host.docker.internal:27017/freestuffbot"
+      FSB_DISCORD_INTERACTIONS_RABBIT_URL: "amqp://rabbit"
+      FSB_NETWORK_UMI_ALLOWED_IP_RANGE: ""
+      FSB_NETWORK_DISCORD_GATEWAY: ""
+      FSB_DISCORD_INTERACTIONS_FREESTUFF_API_URL: ""
+      FSB_DISCORD_INTERACTIONS_FREESTUFF_API_KEY: ""
+    networks:
+      - local
+    ports:
+      - 4061:80
+    depends_on:
+      - rabbit
+    labels:
+      - prometheus-job=fsb
+      - xyz.freestuffbot.service.role=discord-interactions
+      - xyz.freestuffbot.service.network=freestuff_local
+

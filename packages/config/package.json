@@ -1,0 +1,13 @@
+{
+  "name": "@freestuffbot/config",
+  "version": "0.0.0",
+  "main": "index.js",
+  "files": [
+    "eslint-preset.js",
+    "dev-config.js",
+    "load-arg.js"
+  ],
+  "dependencies": {
+    "eslint-config-maanex": "^1.1.2"
+  }
+}

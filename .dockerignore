@@ -1,18 +1,16 @@
-/node_modules
+node_modules/
 
-/files
-/build
+files/
+build/
+dist/
+vault/
 
-config/settings.json
-config.js
+config.private.js
 
-yarn.lock
+private.key
+.env
+.turbo
 
-
-# dockerignore only
-
-/.github
-/scripts
-/resources
-
-*.md
+dev-*.js
+dev-config.js
+*.log

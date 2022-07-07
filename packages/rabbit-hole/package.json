@@ -1,0 +1,31 @@
+{
+  "name": "@freestuffbot/rabbit-hole",
+  "version": "1.0.0",
+  "description": "A wrapper for our RabbitMQ communication layer.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint --ext .ts --ignore-path .gitignore src/**/*.ts",
+    "test": "echo \"Error: no tests specified\" && exit 0",
+    "prepub": "npm run lint && npm run build && npm run test && npm pub"
+  },
+  "publishConfig": {
+    "@freestuffbot:registry": "https://npm.pkg.github.com"
+  },
+  "author": "FreeStuff Team",
+  "dependencies": {
+    "@types/amqplib": "^0.8.2",
+    "amqplib": "^0.8.0"
+  },
+  "devDependencies": {
+    "@freestuffbot/config": "*",
+    "@types/node": "^16.9.6",
+    "@typescript-eslint/eslint-plugin": "^4.31.2",
+    "@typescript-eslint/parser": "^4.31.2",
+    "eslint": "^7.32.0",
+    "reflect-metadata": "^0.1.13",
+    "tsconfig": "*",
+    "typescript": "^4.4.3"
+  }
+}

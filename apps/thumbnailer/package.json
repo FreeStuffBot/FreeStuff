@@ -1,0 +1,27 @@
+{
+  "name": "@freestuffbot/thumbnailer",
+  "version": "2.1.0",
+  "description": "A thumbnail generator microservice",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "build": "exit 0",
+    "dev": "node . --dev"
+  },
+  "author": "Andreas May (@maanex)",
+  "license": "MIT",
+  "dependencies": {
+    "@freestuffbot/config": "*",
+    "axios": "^0.26.1",
+    "canny-edge-detector": "^1.0.0",
+    "colorthief": "^2.3.2",
+    "express": "^4.17.1",
+    "form-data": "^4.0.0",
+    "helmet": "^4.4.1",
+    "image-js": "^0.31.4",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "prom-client": "^13.1.0",
+    "skia-canvas": "^0.9.27"
+  }
+}

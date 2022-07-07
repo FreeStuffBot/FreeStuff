@@ -3,12 +3,22 @@
 
 [https://freestuffbot.xyz/](https://freestuffbot.xyz/)
 
-[![CodeFactor](https://www.codefactor.io/repository/github/freestuffbot/discord/badge)](https://www.codefactor.io/repository/github/freestuffbot/discord)
-![Node.js CI](https://github.com/TudeTeam/freestuff-bot/workflows/Node.js%20CI/badge.svg)
 [![Discord Bots](https://top.gg/api/widget/status/672822334641537041.svg)](https://top.gg/bot/672822334641537041)
 [![Discord Bots](https://top.gg/api/widget/servers/672822334641537041.svg?noavatar=true)](https://top.gg/bot/672822334641537041)
 
-^ code quality is A; please keep it that way when PR-ing :)
+
+## About this repo
+
+This is a monorepo that hosts all of FreeStuff's **public** services and modules.
+
+Websites are in seperate repos. Internal tooling is closed source.
+
+All packages can be found in the `packages` folder.
+
+All apps can be found in the `apps` folder.
+
+Legacy code can be found in the `legacy` folder.
+
 
 ## Git branches
 
@@ -16,71 +26,10 @@
 
 **dev** As the development, not-necessarily-stable-but-preferably-stable branch. Please pr here.
 
+
 ## Trello
 
 Roadmap, Todo, Suggestions, etc: https://trello.com/b/Zhw6umTy/freestuff
-
-## Running the bot using Docker
-
-1. Download the docker-compose.yml file
-2. Edit the environment variables accordingly
-3. Pick one mode to run:
-   * **single** — is probably what you wanna go for as it just starts one shard and you don't have to worry about anything
-   * **shard** — if you need multiple shards, use this mode to specify which ones and how many you want to start
-   * **worker** — unless you have a custom manager service this mode will only put the bot in limbo, making it wait forever. You don't wanna use this
-4. If you want realtime updates you want to start the webhook server. Settings should be self explanatory. If you cannot publish a server for some reason, you have two alternative options:
-   * Don't have real-time announcements. In this case you can only really use the /free command
-   * Edit the code to poll and publish announcements through the API. Look at the next section for running the bot from source
-5. Register slash commands and init database
-   * Run `node ./scripts/register-commands.js`
-   * Run `node ./scripts/initdb.js`
-
-
-## Running the bot from source
-
-#### Prerequisites
-
-This bot uses discord.js v13 which required **NodeJS v16.0.0** or up.
-
-#### Preperation
-
-Make sure to have typescript installed globally or modify the building scripts accordingly.
-
-Run `npm i` or `yarn install` after cloning.
-
-In the root directory, rename the file `config.template.js` to `config.js`. Open the file and edit it accordingly.
-
-Now go to /scripts and run the initdb.js file using nodejs: `node ./initdb.js`. Make sure to configure your MongoDB connection in config.js before running this script.
-
-You probably also want to register the slash commands by running the `node ./register-commands.js` command in the same directory.
-
-#### Running
-
-For development use
-```sh
-$ npm run dev
-# OR
-$ yarn dev
-```
-
-For production build first using
-```sh
-$ npm run build
-# OR
-$ yarn build
-```
-
-... and run using
-
-```sh
-$ npm start
-# OR
-$ yarn start
-```
-
-#### Support
-
-If you need any help, feel free to ask in our [discord server](https://freestuffbot.xyz/discord). Unfortunately we cannot guarantee to be able to help you with any problem that might occur.
 
 
 ## Contributors

@@ -1,0 +1,11 @@
+module.exports = {
+  host: 'http://localhost',
+  env: {
+    THUMBNAILER_PORT: 5051,
+    DISCORD_INTERACTIONS_PORT: 5058,
+    DISCORD_INTERACTIONS_CLIENTID: '',
+    DISCORD_INTERACTIONS_PUBKEY: '',
+    DISCORD_GATEWAY_PORT: 5053,
+    DISCORD_GATEWAY_API_TOKEN: ''
+  }
+}
