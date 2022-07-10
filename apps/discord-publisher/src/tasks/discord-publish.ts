@@ -77,7 +77,8 @@ async function locateAndRegisterWebhook(guild: SanitizedGuildType) {
   }
 
   Mongo.Guild.updateOne({
-    _id: guild.id,
+    _id: guild.id,    
+  }, {
     webhook: `${hooks[0].id}/${hooks[0].token}`
   })
   Logger.debug(`Locate and register: registered for ${guild.id.toString()} (${hooks.length})`)
