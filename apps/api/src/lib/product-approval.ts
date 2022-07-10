@@ -19,8 +19,8 @@ export default class ProductApproval {
     // links
     const leanProduct = product.toObject({ aliases: false, depopulate: true, flattenMaps: true, getters: false, minimize: true, useProjection: false, versionKey: false, virtuals: false })
     const proxyLink = await LinkProxy.createGameLink(leanProduct)
-    product.data.urls.browser = proxyLink
-    product.data.urls.default = proxyLink
+    product.data.urls.browser = proxyLink ?? product.data.urls.org
+    product.data.urls.default = proxyLink ?? product.data.urls.org
     product.data.urls.client = ProductApproval.getClientUrl(product.data.urls.org)
 
     // prices
