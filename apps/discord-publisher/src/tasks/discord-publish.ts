@@ -44,9 +44,6 @@ async function sendToGuild(guild: GuildDataType, products: SanitizedProductType[
     { test: false, donationNotice: false /** TODO */ }
   )
 
-  if (sanitizedGuild.webhook)
-    return true
-
   await Upstream.queueRequest({
     method: 'POST',
     url: `https://discord.com/api/webhooks/${sanitizedGuild.webhook}`,

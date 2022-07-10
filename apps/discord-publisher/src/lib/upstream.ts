@@ -49,10 +49,9 @@ export default class Upstream {
     Upstream.remaining--
     Upstream.waiting--
 
-    // TODO (high) re-enable
-    // axios(req)
-    //   .catch(err => err?.response ?? { status: 999 })
-    //   .then(res => Upstream.handleResponse(res, req))
+    axios(req)
+      .catch(err => err?.response ?? { status: 999 })
+      .then(res => Upstream.handleResponse(res, req))
     Upstream.handleResponse({ status: 200 } as any, req)
   }
 
