@@ -1,5 +1,5 @@
 import { Logger } from "@freestuffbot/common"
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
+import { AxiosRequestConfig, AxiosResponse } from "axios"
 import { config } from ".."
 import Metrics from "./metrics"
 

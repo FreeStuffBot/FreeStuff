@@ -65,7 +65,7 @@ export default class DashRouter {
     r.get(   '/content/products/:product',         fw('admin|contentmod'),  getProduct)
     r.post(  '/content/products',                  fw('admin|contentmod'),  postProduct)
     r.patch( '/content/products/:product',         fw('admin|contentmod'),  patchProduct)
-    r.post( '/content/products/:product/refetch',  fw('admin|contentmod'),  postProductRefetch)
+    r.post(  '/content/products/:product/refetch', fw('admin|contentmod'),  postProductRefetch)
 
     r.post(  '/content/announcements',             fw('admin|contentmod'),  postAnnouncement)
 

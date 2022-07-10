@@ -63,7 +63,7 @@ function getResponsibleForLanguage(languageId: string, users: any[]) {
   return users
     .filter(u => u.scope?.includes(`translate.${languageId}`))
     .map(u => ({
-      name: u.data.username || u.display,
+      name: u.data?.username || u.display,
       icon: DiscordUtils.getAvatar(u.data)
     }))
 }
