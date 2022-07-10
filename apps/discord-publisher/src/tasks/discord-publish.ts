@@ -1,5 +1,5 @@
 import { Task, TaskId } from "@freestuffbot/rabbit-hole"
-import { DataWebhook, FSApiGateway, GuildDataType, GuildSanitizer, Logger, ProductFilter, SanitizedGuildType, SanitizedProductType, Themes } from "@freestuffbot/common"
+import { DataWebhook, FSApiGateway, GuildDataType, GuildSanitizer, GuildType, Logger, ProductFilter, SanitizedGuildType, SanitizedProductType, Themes } from "@freestuffbot/common"
 import axios from "axios"
 import Mongo from "../database/mongo"
 import Upstream from "../lib/upstream"
@@ -36,14 +36,14 @@ export default async function handleDiscordPublish(task: Task<TaskId.DISCORD_PUB
 async function sendToGuild(guild: GuildDataType, products: SanitizedProductType[]) {
   const sanitizedGuild = GuildSanitizer.sanitize(guild)
 
-  // const filteredProducts = ProductFilter.filterList(products, sanitizedGuild)
-  // if (!filteredProducts.length) return
+  const filteredProducts = ProductFilter.filterList(products, sanitizedGuild)
+  if (!filteredProducts.length) return
 
-  // const theme = Themes.build(
-  //   filteredProducts,
-  //   sanitizedGuild,
-  //   { test: false, donationNotice: false /** TODO */ }
-  // )
+  const theme = Themes.build(
+    filteredProducts,
+    sanitizedGuild,
+    { test: false, donationNotice: false /** TODO */ }
+  )
 
   if (sanitizedGuild.webhook)
     return true
@@ -76,12 +76,21 @@ async function locateAndRegisterWebhook(guild: SanitizedGuildType) {
     return
   }
 
-  Mongo.Guild.updateOne({
-    _id: guild.id,    
-  }, {
-    $set: {
-      webhook: `${hooks[0].id}/${hooks[0].token}`
-    }
-  })
+  const webhook = `${hooks[0].id}/${hooks[0].token}`
+  // Mongo.Guild.updateOne({
+  //   _id: guild.id,
+  // }, {
+  //   $set: {
+  //     webhook
+  //   }
+  // })
+  const g = await Mongo.Guild.findById(guild.id) as GuildType
+  if (!g) {
+    Logger.debug(`Locate and register: guild not found. YIKES.`)
+    return
+  }
+  g.webhook = webhook
+  await g.save()
+
   Logger.debug(`Locate and register: registered for ${guild.id.toString()} (${hooks.length})`)
 }
