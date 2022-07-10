@@ -33,6 +33,8 @@ export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Pr
     .filter(([ r ]) => (r.name !== '@everyone' && !r.managed))
     .slice(0, 23)
 
+  // TODO (high) make sure the selected role is always in view
+
   const overflow = guild.roles.length > 23
 
   const options: MessageComponentSelectOption[] = [

@@ -164,7 +164,7 @@ export default class Const {
   // public static readonly currencies: SettingCurrency<any>[] = [
   //   {
   //     id: 0,
-  //     code: 'euro',
+  //     code: 'eur',
   //     name: '=currency_euro',
   //     symbol: '€',
   //     calculated: false

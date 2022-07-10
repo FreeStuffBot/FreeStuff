@@ -48,9 +48,11 @@ export default class Upstream {
     Upstream.remaining--
     Upstream.waiting--
 
-    axios(req)
-      .catch(err => err?.response ?? { status: 999 })
-      .then(res => Upstream.handleResponse(res, req))
+    // TODO (high) re-enable
+    // axios(req)
+    //   .catch(err => err?.response ?? { status: 999 })
+    //   .then(res => Upstream.handleResponse(res, req))
+    Upstream.handleResponse({ status: 200 } as any, req)
   }
 
   private static handleResponse(res: AxiosResponse, _retryConfig: AxiosRequestConfig) {
@@ -62,12 +64,6 @@ export default class Upstream {
       // TODO (low) resend in increasing intervals if not 200
       // warn users before-hand that this change will be made and that all webhook requests should be answered with a 200 code
     }
-  }
-
-  private static parseRateLimitRetry(res: AxiosResponse) {
-    if (res.headers['X-RateLimit-Remaining'] !== '0') return 0
-    if (!res.headers['X-RateLimit-Reset-After']) return 0
-    return ~~(Number(res.headers['X-RateLimit-Reset-After']) * 1000)
   }
 
   public static startBurstInterval() {
