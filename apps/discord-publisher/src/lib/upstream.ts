@@ -1,4 +1,3 @@
-import { Logger } from "@freestuffbot/common"
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
 import { config } from ".."
 import Metrics from "./metrics"
@@ -49,10 +48,11 @@ export default class Upstream {
     Upstream.remaining--
     Upstream.waiting--
 
-    axios(req)
-      .catch(err => err?.response ?? { status: 999 })
-      .then(res => Upstream.handleResponse(res, req))
-    Upstream.handleResponse({ status: 200 } as any, req)
+    // TODO (high swap two)
+    // axios(req)
+    //   .catch(err => err?.response ?? { status: 999 })
+    //   .then(res => Upstream.handleResponse(res, req))
+    /* */ Upstream.handleResponse({ status: 200 } as any, req)
   }
 
   private static handleResponse(res: AxiosResponse, retryConfig: AxiosRequestConfig) {
