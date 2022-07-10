@@ -48,11 +48,9 @@ export default class Upstream {
     Upstream.remaining--
     Upstream.waiting--
 
-    // TODO (high swap two)
-    // axios(req)
-    //   .catch(err => err?.response ?? { status: 999 })
-    //   .then(res => Upstream.handleResponse(res, req))
-    /* */ Upstream.handleResponse({ status: 200 } as any, req)
+    axios(req)
+      .catch(err => err?.response ?? { status: 999 })
+      .then(res => Upstream.handleResponse(res, req))
   }
 
   private static handleResponse(res: AxiosResponse, retryConfig: AxiosRequestConfig) {
