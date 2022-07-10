@@ -118,7 +118,7 @@ async function checkRequirements(i: ReplyableComponentInteraction, channel: Data
     i.replyPrivately({
       title: '=cmd_test_nosee_1',
       description: '=cmd_test_nosee_2',
-      _context: { channel: channel.toString() }
+      _context: { channel: `<#${channel.id}>` }
     })
     return false
   }
@@ -127,7 +127,7 @@ async function checkRequirements(i: ReplyableComponentInteraction, channel: Data
     i.replyPrivately({
       title: '=cmd_test_nosend_1',
       description: '=cmd_test_nosend_2',
-      _context: { channel: channel.toString() }
+      _context: { channel: `<#${channel.id}>` }
     })
     return false
   }
@@ -136,7 +136,7 @@ async function checkRequirements(i: ReplyableComponentInteraction, channel: Data
     i.replyPrivately({ 
       title: '=cmd_test_noembeds_1',
       description: '=cmd_test_noembeds_2',
-      _context: { channel: channel.toString() }
+      _context: { channel: `<#${channel.id}>` }
     })
     return false
   }
@@ -150,7 +150,7 @@ async function checkRequirements(i: ReplyableComponentInteraction, channel: Data
     i.replyPrivately({
       title: '=cmd_test_invalid_webhook_1',
       description: '=cmd_test_invalid_webhook_2',
-      _context: { channel: channel.toString() }
+      _context: { channel: `<#${channel.id}>` }
     })
     return false
   }

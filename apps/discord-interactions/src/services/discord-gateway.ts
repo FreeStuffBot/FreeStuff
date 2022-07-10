@@ -1,4 +1,4 @@
-import { Fragile, DataGuild, DataChannel, FlipflopCache, DataWebhook, Errors } from "@freestuffbot/common"
+import { Fragile, DataGuild, DataChannel, FlipflopCache, DataWebhook, Errors, Logger } from "@freestuffbot/common"
 import axios from "axios"
 import { config } from ".."
 
@@ -160,13 +160,17 @@ export default class DiscordGateway {
   }
 
   public static async validateWebhook(accessor: string): Promise<Fragile<boolean>> {
+    Logger.debug(`Validate: access ${accessor} (${accessor.includes('/')})`)
     if (!accessor || !accessor.includes('/'))
       return Errors.success(false)
 
-    const { status, statusText } = await axios.get(`/webhooks/${accessor}?nodata`, {
+    const { status, statusText, data } = await axios.get(`/webhooks/${accessor}?nodata`, {
       baseURL: config.network.discordGateway,
       validateStatus: null
-    }).catch(err => ({ status: 999, statusText: err.name }))
+    }).catch(err => ({ status: 999, statusText: err.name, data: null }))
+
+    Logger.debug(`Validate: status ${status}`)
+    Logger.debug(`Data: ${data}`)
 
     if (status === 200)
       return Errors.success(true)
