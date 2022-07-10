@@ -36,14 +36,14 @@ export default async function handleDiscordPublish(task: Task<TaskId.DISCORD_PUB
 async function sendToGuild(guild: GuildDataType, products: SanitizedProductType[]) {
   const sanitizedGuild = GuildSanitizer.sanitize(guild)
 
-  // const filteredProducts = ProductFilter.filterList(products, sanitizedGuild)
-  // if (!filteredProducts.length) return
+  const filteredProducts = ProductFilter.filterList(products, sanitizedGuild)
+  if (!filteredProducts.length) return
 
-  // const theme = Themes.build(
-  //   filteredProducts,
-  //   sanitizedGuild,
-  //   { test: false, donationNotice: false /** TODO */ }
-  // )
+  const theme = Themes.build(
+    filteredProducts,
+    sanitizedGuild,
+    { test: false, donationNotice: false /** TODO */ }
+  )
 
   if (sanitizedGuild.webhook)
     return true

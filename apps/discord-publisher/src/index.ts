@@ -13,8 +13,8 @@ async function run() {
   ContainerInfo.printVersion()
 
   await Modules.connectMongo()
-  await Modules.loadCmsData()
   Modules.initApiInterface()
+  await Modules.loadCmsData()
   Modules.initMetrics()
   await Modules.startServer()
   Modules.startUpstream()

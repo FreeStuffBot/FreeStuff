@@ -37,6 +37,10 @@ export default class Modules {
 
     Logger.warn('Loading data from CMS failed. Retrying soon.')
     await new Promise(res => setTimeout(res, retryDelay))
+    if (retryDelay > 60000) {
+      Logger.error('Loading data from CMS failed too often. Restarting.')
+      process.exit(1)
+    }
     await Modules.loadCmsData(retryDelay * 2)
   }
 
