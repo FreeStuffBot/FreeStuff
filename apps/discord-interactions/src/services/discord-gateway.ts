@@ -160,7 +160,7 @@ export default class DiscordGateway {
   }
 
   public static async validateWebhook(accessor: string): Promise<Fragile<boolean>> {
-    Logger.debug(`Validate: access ${accessor} (${accessor.includes('/')})`)
+    Logger.debug(`Validate: access ${accessor} (${accessor?.includes('/')})`)
     if (!accessor || !accessor.includes('/'))
       return Errors.success(false)
 

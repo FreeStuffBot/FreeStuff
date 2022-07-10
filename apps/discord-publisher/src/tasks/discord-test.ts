@@ -21,7 +21,7 @@ export default async function handleDiscordTest(task: Task<TaskId.DISCORD_TEST>)
     { test: true, donationNotice: false }
   )
 
-  Upstream.queueRequest({
+  await Upstream.queueRequest({
     method: 'POST',
     url: `https://discord.com/api/webhooks/${sanitizedGuild.webhook}`,
     data: theme

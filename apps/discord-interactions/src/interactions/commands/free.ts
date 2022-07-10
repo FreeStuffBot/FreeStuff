@@ -28,6 +28,9 @@ export default function (i: ReplyableCommandInteraction) {
   if (freeToday.length) replyText += `\n\n${Localisation.text(i, '=cmd_free_ends_soon')}\n\n${freeToday.join('\n')}`
   if (!freeLonger.length && !freeToday.length) replyText = Localisation.text(i, '=cmd_free_no_freebies')
 
+  // TODO (SUPER HIGH) remove this below:
+  replyText += '\n\n**We are currently undergoing maintenance. The list above might not be complete.**'
+
   Tracker.set(i.guildData, 'PAGE_DISCOVERED_FREE_GAMES_LIST')
 
   i.reply({

@@ -85,7 +85,7 @@ export default class Upstream {
     if (Upstream.burstStarted) return
     Upstream.burstStarted = true
     setInterval(() => {
-      Logger.debug(`Upstream burst. Prev remain: ${Upstream.remaining}`)
+      // Logger.debug(`Upstream burst. Prev remain: ${Upstream.remaining}`)
       Upstream.remaining = config.behavior.upstreamRequestRate
       Upstream.nextFrame = Date.now() + config.behavior.upstreamRequestInterval + 1 // +1 to encounter timing hiccups
     }, config.behavior.upstreamRequestInterval)
