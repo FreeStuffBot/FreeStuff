@@ -15,6 +15,10 @@ export default class WebhooksApi {
       endpoint: `/channels/${channel}/webhooks`
     })
 
+    console.log(`BEGIN Seeing channel ${channel} status ${res.status}`)
+    console.log(res.data)
+    console.log(`END`)
+
     Metrics.counterDgRequests.inc({ method: 'GET', endpoint: 'webhooks', status: res.status })
 
     if (res.status === 403)
