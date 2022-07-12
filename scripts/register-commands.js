@@ -10,7 +10,7 @@ const clientid = config.bot.clientid || ''
 const commands = [
   {
     name: 'about',
-    description: 'Get info about the FreeStuff bot.'
+    description: 'Get info about the FreeStuff Bot.'
   },
   {
     name: 'free',
