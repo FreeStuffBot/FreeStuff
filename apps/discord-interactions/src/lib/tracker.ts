@@ -10,6 +10,9 @@ export default class Tracker {
   public static readonly TRACKING_POINT = Tracking.DISCORD_POINTS
 
   private static resolveGuildData(g: GuildDataResolveable): Promise<Fragile<Readonly<SanitizedGuildType>>> {
+    if (!g)
+      return Promise.resolve(Errors.throwStderrGeneric('discord-interactions::tracker.notpresent', 'Guild Data was not present', 'This error is likely caused by a bug. Please inform the bot team.'))
+
     if ((g as SanitizedGuildType).tracker !== undefined)
       return Promise.resolve([ null, g as SanitizedGuildType ])
 
@@ -28,6 +31,7 @@ export default class Tracker {
   }
 
   public static async showHint(guild: GuildDataResolveable, hint: keyof typeof Tracker.TRACKING_POINT): Promise<boolean> {
+    if (!guild) return true
     const [ err, g ] = await Tracker.resolveGuildData(guild)
     if (err) {
       Errors.handleErrorWithoutCommunicate(err)
@@ -37,10 +41,12 @@ export default class Tracker {
   }
 
   public static syncShowHint(guild: SanitizedGuildType, hint: keyof typeof Tracker.TRACKING_POINT): boolean {
+    if (!guild) return true
     return !Tracker.syncIsTracked(guild, hint)
   }
 
   public static async isTracked(guild: GuildDataResolveable, hint: keyof typeof Tracker.TRACKING_POINT): Promise<boolean> {
+    if (!guild) return
     const [ err, g ] = await Tracker.resolveGuildData(guild)
     if (err) {
       Errors.handleErrorWithoutCommunicate(err)
@@ -54,6 +60,7 @@ export default class Tracker {
   }
 
   public static async set(guild: GuildDataResolveable, hint: keyof typeof Tracker.TRACKING_POINT, value = true): Promise<void> {
+    if (!guild) return
     const [ err, g ] = await Tracker.resolveGuildData(guild)
     if (err) {
       Errors.handleErrorWithoutCommunicate(err)
