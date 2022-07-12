@@ -8,6 +8,9 @@ export type configjs = {
     key: string
     serviceAccount: string
   }
+  network: {
+    umiAllowedIpRange: string
+  }
   metrics: {
     recordName: string
     scrapeInterval: StringValue

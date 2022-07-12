@@ -9,6 +9,9 @@ module.exports = {
     key: loadArg('LINK_PROXY_FIREBASE_API_KEY'),
     serviceAccount: loadArg('LINK_PROXY_FIREBASE_SERVICE_ACCOUNT_KEY')
   },
+  network: {
+    umiAllowedIpRange: loadArg('NETWORK_UMI_ALLOWED_IP_RANGE')
+  },
   metrics: {
     recordName: 'fsb_proxy_clicks',
     scrapeInterval: '1h'

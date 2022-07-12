@@ -1,7 +1,6 @@
-import { Logger } from "@freestuffbot/common"
+import { Logger, UmiLibs } from "@freestuffbot/common"
 import * as express from 'express'
 import { getAnalytics } from "./router/analytics"
-import { getMetrics } from "./router/metrics"
 import { postCreateGame } from "./router/create"
 import Mongo from "./database/mongo"
 import Metrics from "./lib/metrics"
@@ -23,8 +22,12 @@ export default class Modules {
     app.set('trust proxy', 1)
 
     app.get('/analytics', getAnalytics)
-    app.get('/metrics', getMetrics)
     app.post('/create-game', express.json(), postCreateGame)
+
+    UmiLibs.mount(app, {
+      allowedIpRange: config.network.umiAllowedIpRange,
+      renderMetrics: Metrics.endpoint()
+    })
 
     app.all('*', (_, res) => res.status(400).end())
 

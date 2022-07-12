@@ -1,3 +1,4 @@
+import { Request, Response } from 'express'
 import ms from 'ms'
 import { config } from '..'
 import Mongo from "../database/mongo"
@@ -88,6 +89,18 @@ export default class Metrics {
       `# TYPE ${name} counter`,
       ...entries
     ].join('\n')
+  }
+
+  //
+
+  public static endpoint() {
+    return function (_req: Request, res: Response) {
+      const out = Metrics.renderPrometheus(config.metrics.recordName)
+      res
+        .status(200)
+        .header({ 'Content-Type': 'text/plain' })
+        .send(out)
+    }
   }
 
 }
