@@ -1,3 +1,4 @@
+import { Logger } from "@freestuffbot/common"
 import axios, { AxiosResponse, Method } from "axios"
 import { config } from ".."
 
@@ -71,6 +72,7 @@ export default class RestGateway {
       })
     })
 
+    // just to make sure, should not occur but as a backup this will do
     if (res.status !== RestGateway.HTTP_429_TOO_MANY_REQUESTS || maxRetries <= 0)
       return res
 
@@ -78,16 +80,22 @@ export default class RestGateway {
   }
 
   private static execute(request: RestRequest | RestRequestResolveable): Promise<AxiosResponse> {
-    return axios({
-      method: request.method,
-      url: RestGateway.buildFullUrl(request.endpoint),
-      data: request.payload,
-      validateStatus: null,
-      headers: {
-        'Authorization': `Bot ${config.apiToken}`,
-        'User-Agent': 'FreeStuffCustom (https://freestuffbot.xyz/, 1.0)'
-      }
-    })
+    try {
+      return axios({
+        method: request.method,
+        url: RestGateway.buildFullUrl(request.endpoint),
+        data: request.payload,
+        validateStatus: null,
+        headers: {
+          'Authorization': `Bot ${config.apiToken}`,
+          'User-Agent': 'FreeStuffCustom (https://freestuffbot.xyz/, 1.0)'
+        }
+      })
+    } catch (ex) {
+      Logger.warn('Issue with axios upstream @rest-gateway::execute')
+      // eslint-disable-next-line no-console
+      console.error(ex)
+    }
   }
 
   private static buildFullUrl(path: string) {

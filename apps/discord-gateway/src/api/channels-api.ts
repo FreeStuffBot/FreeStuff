@@ -1,4 +1,4 @@
-import { DataChannel, Logger } from "@freestuffbot/common"
+import { DataChannel } from "@freestuffbot/common"
 import ChannelsData from "../data/channels-data"
 import { MagicNumber } from "../lib/magic-number"
 import Metrics from "../lib/metrics"
@@ -15,10 +15,6 @@ export default class ChannelsApi {
     })
 
     Metrics.counterDgRequests.inc({ method: 'GET', endpoint: 'channels', status: res.status })
-
-
-    if (res.status >= 400 && res.status < 500)
-      Logger.debug(`Debug: res status: ${res.status} (${res.statusText})`)
 
     if (res.status >= 400 && res.status < 500)
       return null

@@ -1,8 +1,8 @@
 import { Task, TaskId } from "@freestuffbot/rabbit-hole"
 import { DataWebhook, Experiments, FSApiGateway, GuildDataType, GuildSanitizer, GuildType, Logger, ProductFilter, SanitizedProductType, Themes } from "@freestuffbot/common"
+import axios from "axios"
 import Mongo from "../database/mongo"
 import Upstream from "../lib/upstream"
-import axios from "axios"
 
 
 export default async function handleDiscordPublish(task: Task<TaskId.DISCORD_PUBLISH>): Promise<boolean> {
@@ -81,13 +81,6 @@ async function debugGuild(guild: GuildDataType): Promise<void> {
   }
 
   const webhook = `${hooks[0].id}/${hooks[0].token}`
-  // Mongo.Guild.updateOne({
-  //   _id: guild.id,
-  // }, {
-  //   $set: {
-  //     webhook
-  //   }
-  // })
   const g = await Mongo.Guild.findById(guild._id) as GuildType
   if (!g) {
     Logger.debug(`Locate and register: guild not found. YIKES.`)
