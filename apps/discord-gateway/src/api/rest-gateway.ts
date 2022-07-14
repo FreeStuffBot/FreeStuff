@@ -20,6 +20,8 @@ type RestRequestResolveable = RestRequest & {
  */
 export default class RestGateway {
 
+  private static readonly HTTP_429_TOO_MANY_REQUESTS = 429
+
   private static outgoingQueue: RestRequestResolveable[] = []
 
   public static startLoop() {
@@ -61,13 +63,18 @@ export default class RestGateway {
     }, ~~(1000 / frequency))
   }
 
-  public static queue(request: RestRequest): Promise<AxiosResponse> {
-    return new Promise((resolve) => {
+  public static async queue(request: RestRequest, maxRetries = 7): Promise<AxiosResponse> {
+    const res: AxiosResponse = await new Promise((resolve) => {
       RestGateway.outgoingQueue.push({
         ...request,
         resolve
       })
     })
+
+    if (res.status !== RestGateway.HTTP_429_TOO_MANY_REQUESTS || maxRetries <= 0)
+      return res
+
+    return RestGateway.queue(request, maxRetries - 1)
   }
 
   private static execute(request: RestRequest | RestRequestResolveable): Promise<AxiosResponse> {
