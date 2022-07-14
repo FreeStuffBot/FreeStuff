@@ -23,7 +23,7 @@ export default class InputValidator {
   /** returns an empty string if valid, error otherwise */
   public static validateProductId(id: string): string {
     if (!id) return 'Product id not present'
-    if (!/^\d{6,10}$/g.test(id)) return 'Product id did not match criteria'
+    if (!/^\d{2,10}$/g.test(id)) return 'Product id did not match criteria'
     return ''
   }
 

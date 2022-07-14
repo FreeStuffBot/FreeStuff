@@ -52,12 +52,11 @@ async function sendToGuild(guild: GuildDataType, products: SanitizedProductType[
     { test: false, donationNotice }
   )
 
-  Logger.error("ALARM!")
-  // await Upstream.queueRequest({
-  //   method: 'POST',
-  //   url: `https://discord.com/api/webhooks/${sanitizedGuild.webhook}`,
-  //   data: theme
-  // })
+  await Upstream.queueRequest({
+    method: 'POST',
+    url: `https://discord.com/api/webhooks/${sanitizedGuild.webhook}`,
+    data: theme
+  })
 }
 
 let upgraded = 0
