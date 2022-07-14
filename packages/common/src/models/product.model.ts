@@ -21,7 +21,7 @@ export const ProductApprovalStatus = [ 'pending', 'issues', 'approved', 'process
 export const ProductApprovalStatusArray = ProductApprovalStatus as readonly string[]
 export type ProductApprovalStatusType = typeof ProductApprovalStatus[number]
 
-export const ProductDiscountType = [ 'keep', 'timed', 'prime', 'gamepass', 'other' ] as const
+export const ProductDiscountType = [ 'keep', 'timed', 'prime', 'gamepass', 'other', 'debug' ] as const
 export const ProductDiscountTypeArray = ProductDiscountType as readonly string[]
 export type ProductDiscountTypeType = typeof ProductDiscountType[number]
 

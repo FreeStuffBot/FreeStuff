@@ -1,3 +1,6 @@
+/** @deprecated channels are hard-coded and will not be dynamic */
+
+
 /* eslint-disable spaced-comment */
 import { Schema, Document as MongooseDocument } from 'mongoose'
 
