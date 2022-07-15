@@ -14,7 +14,7 @@ export default class GibuGqlCore {
   public static async query<T>(query: GibuGqlQueries<T>, variables: Record<string, any>): Promise<T | null> {
     const res = await GibuGqlCore.client
       .request({ document: query.compiledQuery, variables })
-      .catch(() => {})
+      .catch(() => null)
 
     return res
       ? (<unknown> res[query.functionName] as T)

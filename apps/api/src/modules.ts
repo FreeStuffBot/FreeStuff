@@ -6,9 +6,8 @@ import Mongo from './database/mongo'
 import V1Router from "./routes/v1/_router"
 import GibuGqlCore from "./services/gibu/gibu-gql-core"
 import V2Router from "./routes/v2/_router"
-import Resolver from "./lib/resolver"
 import InternalRouter from "./routes/internal/_router"
-import CurrConv from "./services/currconv"
+import Routines from "./routines/_routines"
 import { config } from "."
 
 
@@ -47,11 +46,7 @@ export default class Modules {
   }
 
   public static startRoutines() {
-    Resolver.clearCache()
-    setInterval(() => Resolver.clearCache(), config.behavior.resolvingCacheMaxAge)
-
-    CurrConv.updateData()
-    setInterval(() => CurrConv.updateData(), config.behavior.currconvUpdateInterval)
+    Routines.start()
   }
 
 }

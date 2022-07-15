@@ -10,9 +10,15 @@ module.exports = {
   dashboardOauthCallbackUrl: loadArg('API_DASH_OAUTH_CALLBACK_URL'),
   behavior: {
     desiredGuildCountPerBucket: 250,
-    desiredAppCountPerBucket: 50,
-    resolvingCacheMaxAge: 1000 * 60 * 5,
-    currconvUpdateInterval: 1000 * 60 * 60 * 24
+    desiredAppCountPerBucket: 50
+  },
+  routines: {
+    // At minute 5 past every hour.
+    fetchFreebies: '5 */1 * * *',
+    // At every 5th minute.
+    clearResolverCache: '*/5 * * * *',
+    // At minute 10 past hour 2 and 14.
+    updateCurrConvData: '10 2,14 * * *'
   },
   keys: {
     privateKeyUri: loadArg('API_PRIVATE_KEY_URI')

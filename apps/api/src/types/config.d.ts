@@ -11,8 +11,11 @@ export type configjs = {
   behavior: {
     desiredGuildCountPerBucket: number
     desiredAppCountPerBucket: number
-    resolvingCacheMaxAge: number
-    currconvUpdateInterval: number
+  }
+  routines: {
+    fetchFreebies: string
+    clearResolverCache: string
+    updateCurrConvData: string
   }
   keys: {
     privateKeyUri: string

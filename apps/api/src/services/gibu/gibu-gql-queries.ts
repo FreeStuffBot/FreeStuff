@@ -79,4 +79,28 @@ export default class GibuGqlQueries<T> {
   }
   `, 'gamePageDetails')
 
+  //
+
+  public static FREE_GAMES_LIST = new GibuGqlQueries<
+    {
+      items: {
+        uuid: string
+        url: string
+        type: string
+        store: string
+      }[]
+    }
+  >(`
+  query FreeGamesList {
+    gameList(id: "free") {
+      items {
+        uuid
+        url
+        type
+        store
+      }
+    }
+  }
+  `, 'gameList')
+
 }

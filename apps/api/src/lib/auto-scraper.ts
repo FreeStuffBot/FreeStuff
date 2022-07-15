@@ -16,7 +16,7 @@ export default class AutoScraper {
 
       product.uuid = `custom:${product._id}`
       product.status = 'pending'
-      product.save()
+      await product.save()
       return
     }
 
@@ -29,7 +29,7 @@ export default class AutoScraper {
     }
 
     product.status = 'pending'
-    product.save()
+    await product.save()
   }
 
   private static mergeData(product: ProductType['data'], newData: GibuProcessedProduct['data']): void {
