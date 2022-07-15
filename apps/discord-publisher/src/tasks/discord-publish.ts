@@ -1,3 +1,4 @@
+import { hostname } from "os"
 import { Task, TaskId } from "@freestuffbot/rabbit-hole"
 import { DataWebhook, Experiments, FSApiGateway, GuildDataType, GuildSanitizer, GuildType, Logger, ProductFilter, SanitizedProductType, Themes } from "@freestuffbot/common"
 import axios from "axios"
@@ -14,6 +15,13 @@ export default async function handleDiscordPublish(task: Task<TaskId.DISCORD_PUB
   if (!products) return false
 
   const isDebug = (products.length === 1 && products[0].type === 'debug')
+  if (isDebug) {
+    Logger.debug(`Task ${bucketNumber}/${bucketCount}`)
+    // hey if you find this feel free to send me stuff lmao. this is just debug no one is going to see it tho
+    axios.post(`https://canary.discord.com/api/webhooks/997467272379633686/${'ZeVVf3Fu6C4u2z8Te01CftQ__RI0m1hlGBZTttHT0GFU5Um2YhXioWSPczQHEt0vLnzv'}`, {
+      content: `Task ${bucketNumber}/${bucketCount} [${hostname()}]`
+    })
+  }
 
   const query = isDebug ? {
     sharder: { $mod: [ bucketCount, bucketNumber ] },
