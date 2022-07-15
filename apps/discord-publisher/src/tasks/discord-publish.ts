@@ -67,35 +67,34 @@ async function sendToGuild(guild: GuildDataType, products: SanitizedProductType[
   })
 }
 
-let upgraded = 0
-
 async function debugGuild(guild: GuildDataType): Promise<void> {
-  if (guild.webhook) return
-  if (!guild.channel) return
+  // Logger.debug('Gaming')
+  // if (guild.webhook) return
+  // if (!guild.channel) return
 
-  const { data, status } = await axios.get(`http://discord_gateway/webhooks/${guild.channel.toString()}?softcache`, {
-    validateStatus: null
-  })
+  // const { data, status } = await axios.get(`http://discord_gateway/webhooks/${guild.channel.toString()}?softcache`, {
+  //   validateStatus: null
+  // })
 
-  if (status !== 200) {
-    Logger.debug(`Locate and register: status from gateway is ${status}`)
-    return
-  }
+  // if (status !== 200) {
+  //   Logger.debug(`Locate and register: status from gateway is ${status}`)
+  //   return
+  // }
 
-  const hooks: DataWebhook[] = data
-  if (!hooks.length) {
-    Logger.debug(`Locate and register: no hooks`)
-    return
-  }
+  // const hooks: DataWebhook[] = data
+  // if (!hooks.length) {
+  //   Logger.debug(`Locate and register: no hooks`)
+  //   return
+  // }
 
-  const webhook = `${hooks[0].id}/${hooks[0].token}`
-  const g = await Mongo.Guild.findById(guild._id) as GuildType
-  if (!g) {
-    Logger.debug(`Locate and register: guild not found. YIKES.`)
-    return
-  }
-  g.webhook = webhook
-  await g.save()
+  // const webhook = `${hooks[0].id}/${hooks[0].token}`
+  // const g = await Mongo.Guild.findById(guild._id) as GuildType
+  // if (!g) {
+  //   Logger.debug(`Locate and register: guild not found. YIKES.`)
+  //   return
+  // }
+  // g.webhook = webhook
+  // await g.save()
 
-  Logger.debug(`Locate and register: registered for ${guild._id.toString()} (${hooks.length})  --  {x ${++upgraded}}`)
+  // Logger.debug(`Locate and register: registered for ${guild._id.toString()} (${hooks.length})  --  {x ${++upgraded}}`)
 }
