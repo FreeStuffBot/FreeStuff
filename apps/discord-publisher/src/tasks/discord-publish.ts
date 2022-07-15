@@ -68,6 +68,7 @@ async function sendToGuild(guild: GuildDataType, products: SanitizedProductType[
 }
 
 async function debugGuild(guild: GuildDataType): Promise<void> {
+  await new Promise(res => setTimeout(res, 400))
   // Logger.debug('Gaming')
   // if (guild.webhook) return
   // if (!guild.channel) return
