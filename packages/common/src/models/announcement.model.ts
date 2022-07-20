@@ -31,10 +31,10 @@ export type AnnouncementDataType = {
   /** the products in this announcement */
   products: number[]
   /** publishing services save their progress to the announcement object */
-  publishingMeta: {
-    discord: AnnouncementProgressEntry
-    // discord: AnnouncementProgressEntry
-  }
+  // publishingMeta: {
+  //   discord: AnnouncementProgressEntry
+  //   discord: AnnouncementProgressEntry
+  // }
 }
 
 /** The user mongoose object, muteable and saveable */
