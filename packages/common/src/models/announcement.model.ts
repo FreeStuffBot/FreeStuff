@@ -11,6 +11,10 @@ export type AnnouncementApprovalStatusType = typeof AnnouncementApprovalStatus[n
 
 // ===== HELPER TYPES ===== //
 
+type AnnouncementProgressEntry = {
+
+}
+
 
 // ===== EXPORT TYPES ===== //
 
@@ -25,6 +29,10 @@ export type AnnouncementDataType = {
   responsible: string
   /** the products in this announcement */
   products: number[]
+  /** services tell  */
+  progress: {
+    discord: 
+  }
 }
 
 /** The user mongoose object, muteable and saveable */
