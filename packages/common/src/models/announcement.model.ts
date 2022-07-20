@@ -12,7 +12,8 @@ export type AnnouncementApprovalStatusType = typeof AnnouncementApprovalStatus[n
 // ===== HELPER TYPES ===== //
 
 type AnnouncementProgressEntry = {
-
+  bucketCount: number
+  
 }
 
 
@@ -29,9 +30,10 @@ export type AnnouncementDataType = {
   responsible: string
   /** the products in this announcement */
   products: number[]
-  /** services tell  */
-  progress: {
-    discord: 
+  /** publishing services save their progress to the announcement object */
+  publishingMeta: {
+    discord: AnnouncementProgressEntry
+    // discord: AnnouncementProgressEntry
   }
 }
 
