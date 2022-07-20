@@ -8,6 +8,9 @@ module.exports = {
   rabbitUrl: loadArg('API_RABBIT_URL'),
   dashboardCorsOrigin: loadArg('API_DASH_CORS_ORIGIN'),
   dashboardOauthCallbackUrl: loadArg('API_DASH_OAUTH_CALLBACK_URL'),
+  auditLog: {
+    destinationDiscord: loadArg('API_AUDITLOG_DEST_DISCORD')
+  },
   behavior: {
     desiredGuildCountPerBucket: 250,
     desiredAppCountPerBucket: 50

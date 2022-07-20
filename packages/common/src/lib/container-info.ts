@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as os from 'os'
-import Logger from './logger'
+import { Logger } from './logger'
 
 
 export default class ContainerInfo {

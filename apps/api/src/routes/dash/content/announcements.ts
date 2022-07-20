@@ -22,7 +22,7 @@ export async function postAnnouncement(req: Request, res: Response) {
 
   const announcement = createNewAnnouncement()
   announcement._id = id
-  announcement.responsible = LocalConst.PSEUDO_USER_SYSTEM_ID
+  announcement.responsible = res.locals.user?.id ?? LocalConst.PSEUDO_USER_UNKNOWN_ID
   announcement.published = Date.now()
   announcement.status = 'published'
   announcement.products.push(...items)
@@ -43,6 +43,8 @@ export async function postAnnouncement(req: Request, res: Response) {
   try {
     for (const product of itemsValid) {
       product.status = 'published'
+      // product.responsible = res.locals.user?.id ?? LocalConst.PSEUDO_USER_UNKNOWN_ID
+      // product.changed = Date.now()
       await product.save()
     }
   } catch (err) {

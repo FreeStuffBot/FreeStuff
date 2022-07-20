@@ -8,6 +8,9 @@ export type configjs = {
   rabbitUrl: string
   dashboardCorsOrigin: string
   dashboardOauthCallbackUrl: string
+  auditLog: {
+    destinationDiscord: string
+  },
   behavior: {
     desiredGuildCountPerBucket: number
     desiredAppCountPerBucket: number

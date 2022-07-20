@@ -4,7 +4,7 @@ import { AppDataType, AppSanitizer, AppType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from '../../../database/mongo'
 import ReqError from '../../../lib/req-error'
-import Notifier from '../../../lib/notifier'
+import AuditLog from '../../../lib/audit-log'
 
 
 export async function getApp(_req: Request, res: Response) {
@@ -72,7 +72,10 @@ export async function postAppKeyRegen(_req: Request, res: Response) {
     .exec()
     .catch(() => null)
 
-  Notifier.newEvent('api_key_regen', { user: appId })
+  AuditLog.record({
+    event: 'api_key_regen',
+    author: appId
+  })
 
   res.status(app ? 200 : 400).json({})
 }
@@ -104,7 +107,10 @@ export async function patchAppWebhook(req: Request, res: Response) {
     .exec()
     .catch(() => null)
 
-  Notifier.newEvent('api_webhook_update', { user: appId })
+  AuditLog.record({
+    event: 'api_webhook_update',
+    author: appId
+  })
 
   res.status(app ? 200 : 400).json({})
 }
@@ -131,8 +137,9 @@ export async function postAppWebhookTest(_req: Request, res: Response) {
     i: app._id
   })
 
-  Notifier.newEvent('api_webhook_test', {
-    user: appId
+  AuditLog.record({
+    event: 'api_webhook_test',
+    author: appId
   })
 
   res.status(200).json({})
@@ -157,7 +164,10 @@ export async function patchAppDescription(req: Request, res: Response) {
     .exec()
     .catch(() => null)
 
-  Notifier.newEvent('api_descr_update', { user: appId })
+  AuditLog.record({
+    event: 'api_description_update',
+    author: appId
+  })
 
   res.status(app ? 200 : 400).json({})
 }

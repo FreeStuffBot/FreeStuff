@@ -1,6 +1,7 @@
 import { createNewProduct, ProductDataType, ProductType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from "../../../database/mongo"
+import AuditLog from '../../../lib/audit-log'
 import AutoScraper from '../../../lib/auto-scraper'
 import InputValidator from '../../../lib/input-validator'
 import LocalConst from '../../../lib/local-const'
@@ -80,7 +81,7 @@ export async function postProduct(req: Request, res: Response) {
   const product = createNewProduct()
 
   product._id = id
-  product.responsible = LocalConst.PSEUDO_USER_SYSTEM_ID
+  product.responsible = res.locals.user?.id ?? LocalConst.PSEUDO_USER_UNKNOWN_ID
   product.changed = Date.now()
   product.data.id = id
   product.data.urls.org = url
@@ -140,7 +141,17 @@ export async function patchProduct(req: Request, res: Response) {
   if (body.status === 'approved')
     await ProductApproval.completeProduct(product, true)
 
-  // Notifier.newEvent('game_save_draft', { user: res.locals.user.data.id, game: req.body._id })
+  product.responsible = res.locals.user?.id ?? LocalConst.PSEUDO_USER_UNKNOWN_ID
+  product.changed = Date.now()
+
+  AuditLog.record({
+    event: (body.status === 'approved')
+      ? 'product_save_approve'
+      : 'product_save_draft',
+    author: product.responsible,
+    product: product._id?.toString()
+  })
+
   await product.save().catch(() => {})
   res.status(200).json({})
 }
@@ -176,8 +187,14 @@ export async function postProductRefetch(req: Request, res: Response) {
   //
 
   product.status = 'processing'
+  product.responsible = res.locals.user?.id ?? LocalConst.PSEUDO_USER_UNKNOWN_ID
+  product.changed = Date.now()
 
-  // Notifier.newEvent('game_save_draft', { user: res.locals.user.data.id, game: req.body._id })
+  AuditLog.record({
+    event: 'product_refetch',
+    author: product.responsible,
+    product: product._id?.toString()
+  })
   
   try {
     await product.save()

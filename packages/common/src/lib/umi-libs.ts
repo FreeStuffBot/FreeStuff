@@ -4,7 +4,7 @@ import * as ip from 'ip'
 import CMS from './cms'
 import ContainerInfo from './container-info'
 import FSApiGateway from './fsapi-gateway'
-import Logger from './logger'
+import { Logger } from './logger'
 
 
 export type UmiInfoReport = {

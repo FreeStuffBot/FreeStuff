@@ -1,6 +1,6 @@
 import { SanitizedExperimentType } from "../models/experiment.model"
 import { SanitizedGuildType } from "../models/guild.model"
-import Logger from "./logger"
+import { Logger } from "./logger"
 
 
 export type ExperimentId
