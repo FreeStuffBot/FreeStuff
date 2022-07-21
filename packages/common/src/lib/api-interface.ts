@@ -49,4 +49,20 @@ export default class ApiInterface {
     return res.data
   }
 
+  public static async reportPublishingProgress(service: 'discord', announcement: number, event: 'begin' | 'complete', bucket: number, maxRetries = 3): Promise<void> {
+    if (maxRetries < 0) return
+
+    const res = await ApiInterface.makeRequest(
+      'POST',
+      'internal',
+      `/reporting/publishing-progress/${announcement}`,
+      { service, bucket, event }
+    )
+
+    if (res.status !== 200) {
+      await new Promise(res => setTimeout(res, 2000))
+      ApiInterface.reportPublishingProgress(service, announcement, event, bucket, maxRetries--)
+    }
+  }
+
 }

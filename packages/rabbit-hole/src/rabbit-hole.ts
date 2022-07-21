@@ -15,8 +15,13 @@ export default class RabbitHole {
       RabbitHole.connection = await amqp.connect(uri)
       RabbitHole.channel = await RabbitHole.connection.createChannel()
 
-      for (const queued of RabbitHole.initPendingQueue)
-        RabbitHole.channel.sendToQueue(...queued)
+      for (const queued of RabbitHole.initPendingQueue) {        
+        let success = false
+        do {
+          success = RabbitHole.channel.sendToQueue(...queued)
+          if (!success) await new Promise(res => setTimeout(res, 200))
+        } while (!success)
+      }
     } catch (ex) {
       if (maxRetries > 0) {
         await new Promise(res => setTimeout(res, retryDelay))
@@ -36,13 +41,14 @@ export default class RabbitHole {
    *
    */
 
-  public static publish(task: Task<TaskId>, overrideQueue?: QueueName): void {
+  public static async publish(task: Task<TaskId>, overrideQueue?: QueueName): Promise<void> {
     const queue = overrideQueue
       ? TaskQueue[overrideQueue]
       : TaskMeta[task.t].queue
 
     const options: amqp.Options.Publish = {
       persistent: true,
+      mandatory: true,
       priority: TaskMeta[task.t].priority
     }
 
@@ -56,11 +62,15 @@ export default class RabbitHole {
       return
     }
 
-    RabbitHole.channel.sendToQueue(
-      queue.name,
-      Buffer.from(JSON.stringify(task)),
-      options
-    )
+    let success = false
+    do {
+      success = RabbitHole.channel.sendToQueue(
+        queue.name,
+        Buffer.from(JSON.stringify(task)),
+        options
+      )
+      if (!success) await new Promise(res => setTimeout(res, 200))
+    } while (!success)
   }
 
   /**

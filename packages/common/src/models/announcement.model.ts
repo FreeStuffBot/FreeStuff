@@ -12,8 +12,10 @@ export type AnnouncementApprovalStatusType = typeof AnnouncementApprovalStatus[n
 // ===== HELPER TYPES ===== //
 
 type AnnouncementProgressEntry = {
+  /** total amount of buckets for this announcement */
   bucketCount: number
-  
+  /** bucket progress */
+  bucketProgress: number[]
 }
 
 
@@ -31,10 +33,9 @@ export type AnnouncementDataType = {
   /** the products in this announcement */
   products: number[]
   /** publishing services save their progress to the announcement object */
-  // publishingMeta: {
-  //   discord: AnnouncementProgressEntry
-  //   discord: AnnouncementProgressEntry
-  // }
+  publishingMeta: {
+    discord: AnnouncementProgressEntry
+  }
 }
 
 /** The user mongoose object, muteable and saveable */
@@ -46,11 +47,19 @@ export type SanitizedAnnouncementType = {
   published: number
   status: AnnouncementApprovalStatusType
   responsible: string
-  products: number[]
+  products: number[],
+  publishingMeta: {
+    discord: AnnouncementProgressEntry
+  }
 }
 
 
 // ===== MONGO SCHEMA ===== //
+
+const AnnouncementProgressEntrySchema = new Schema({
+  bucketCount: Number,
+  bucketProgress: [ Number ]
+})
 
 export const AnnouncementSchema = new Schema({
   _id: Number,
@@ -60,7 +69,10 @@ export const AnnouncementSchema = new Schema({
     enum: AnnouncementApprovalStatusArray
   },
   responsible: String,
-  products: [ Number ]
+  products: [ Number ],
+  publishingMeta: {
+    discord: AnnouncementProgressEntrySchema
+  }
 }, { collection: 'announcements' })
 
 
@@ -72,6 +84,12 @@ export function createNewAnnouncement(): AnnouncementDataType {
     published: 0,
     status: 'pending',
     responsible: '',
-    products: []
+    products: [],
+    publishingMeta: {
+      discord: {
+        bucketCount: 0,
+        bucketProgress: []
+      }
+    }
   }
 }

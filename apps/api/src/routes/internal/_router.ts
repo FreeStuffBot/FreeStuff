@@ -5,6 +5,7 @@ import { rateLimiter as limit } from '../../middleware/rate-limits'
 import { apiGateway } from '../../middleware/api-gateway'
 import { getCmsConstants, getExperiments, getLanguages, getRemoteConfig } from './data'
 import { allPing } from './ping'
+import { postPublishingProgress } from './reporting'
 
 
 export default class InternalRouter {
@@ -36,6 +37,9 @@ export default class InternalRouter {
     r.get('/data/cms-constants', getCmsConstants)
     r.get('/data/remote-config', getRemoteConfig)
     r.get('/data/experiments', getExperiments)
+
+    // reporting
+    r.post('/reporting/publishing-progress/:announcement', postPublishingProgress)
 
 
     /* Default 404 handler */

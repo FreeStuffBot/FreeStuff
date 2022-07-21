@@ -10,7 +10,8 @@ export class AnnouncementSanitizer {
       published: data.published,
       status: data.status,
       responsible: data.responsible,
-      products: data.products
+      products: data.products,
+      publishingMeta: JSON.parse(JSON.stringify(data.publishingMeta))
     }
   }
 

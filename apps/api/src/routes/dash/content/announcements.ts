@@ -36,7 +36,7 @@ export async function postAnnouncement(req: Request, res: Response) {
     return ReqError.badGateway(res, err?.message)
   }
 
-  Upstream.publish(id)
+  Upstream.publish(dbobj)
 
   res.status(200).json({ id })
 
