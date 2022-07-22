@@ -25,7 +25,7 @@ export async function getAnnouncement(req: Request, res: Response) {
   const out: Partial<OutType> = AnnouncementSanitizer.sanitize(data)
   delete (out as any).responsible
 
-  if (resolveItems) {  
+  if (resolveItems) {
     out.resolved = {}
     const resolving = out.products.map(async id => (
       [ id, await Resolver.resolveProduct(id) ] as
