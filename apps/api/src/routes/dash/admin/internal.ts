@@ -15,14 +15,18 @@ export function postInternalCommand(req: Request, res: Response) {
 
 function runCommand(command: string) {
   switch (command.toLowerCase()) {
-    case 'republish_220728': {
-      RabbitHole.publish({
-        t: TaskId.DISCORD_PUBLISH_SPLIT,
-        a: 147076,
-        v: 0,
-        c: 1095
-      })
+    case 'debug': {
+      Logger.debug('Debug')
       return
     }
+    // case 'republish_220728': {
+    //   RabbitHole.publish({
+    //     t: TaskId.DISCORD_PUBLISH_SPLIT,
+    //     a: 147076,
+    //     v: 0,
+    //     c: 1095
+    //   })
+    //   return
+    // }
   }
 }
