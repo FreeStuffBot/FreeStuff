@@ -16,6 +16,7 @@ import { getConfig, patchConfig } from './admin/config'
 import { postAnnouncement } from './content/announcements'
 import { getServices, postServicesCommand } from './admin/services'
 import { getApp, patchAppDescription, patchAppWebhook, postApp, postAppKeyRegen, postAppWebhookTest } from './api/app'
+import { postInternalCommand } from './admin/internal'
 
 
 export default class DashRouter {
@@ -90,6 +91,8 @@ export default class DashRouter {
 
     r.get(   '/admin/services',                    fw('admin'),             getServices)
     r.post(  '/admin/services/command',            fw('admin'),             postServicesCommand)
+
+    r.post(  '/admin/internal/command',            fw('admin'),             postInternalCommand)
 
 
     /* Default 404 handler */
