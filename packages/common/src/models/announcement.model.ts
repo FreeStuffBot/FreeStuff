@@ -15,7 +15,7 @@ type AnnouncementProgressEntry = {
   /** total amount of buckets for this announcement */
   bucketCount: number
   /** bucket progress */
-  bucketProgress: number[]
+  bucketProgress: string[]
 }
 
 
@@ -58,7 +58,7 @@ export type SanitizedAnnouncementType = {
 
 const AnnouncementProgressEntrySchema = new Schema({
   bucketCount: Number,
-  bucketProgress: [ Number ]
+  bucketProgress: [ String ]
 })
 
 export const AnnouncementSchema = new Schema({

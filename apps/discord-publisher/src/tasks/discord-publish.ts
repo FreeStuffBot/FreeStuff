@@ -9,14 +9,21 @@ export default async function handleDiscordPublish(task: Task<TaskId.DISCORD_PUB
   const bucketNumber = task.b
   const announcementId = task.a
 
+  // report starting this task
   ApiInterface.reportPublishingProgress('discord', announcementId, 'begin', bucketNumber)
 
+  // fetch products, if none found return unsuccessfully 
   const products = await FSApiGateway.getProductsForAnnouncement(announcementId)
-  if (!products) return false
+  if (!products) {
+    ApiInterface.reportPublishingProgress('discord', announcementId, 'abort-product-gateway', bucketNumber)
+    return false
+  }
 
+  // figure out of this is a debug task - this could be solved better
   const isDebug = (products.length === 1 && products[0].type === 'debug')
   if (isDebug) Logger.debug(`Task ${bucketNumber}/${bucketCount}`)
 
+  // build query to fetch guidls in the bucket
   const query = isDebug ? {
     sharder: { $mod: [ bucketCount, bucketNumber ] },
     /* webhook: { $ne: null } */
@@ -25,19 +32,33 @@ export default async function handleDiscordPublish(task: Task<TaskId.DISCORD_PUB
     webhook: { $ne: null }
   }
 
+  // fetch guilds with built query
   const guilds = await Mongo.Guild
     .find(query)
     .lean(true)
     .exec()
-    .catch(() => {}) as GuildDataType[]
-  if (!guilds?.length) return true
+    .catch(() => (null)) as GuildDataType[]
 
+  // error loading guilds
+  if (!guilds) {
+    ApiInterface.reportPublishingProgress('discord', announcementId, 'abort-database-gateway', bucketNumber)
+    return false
+  }
+
+  // no error but bucket empty
+  if (!guilds.length) {
+    ApiInterface.reportPublishingProgress('discord', announcementId, 'complete-empty', bucketNumber)
+    return true
+  }
+
+  // iterate all guilds
   for (const guild of guilds) {
     if (isDebug) await debugGuild(guild)
     else await sendToGuild(guild, products)
   }
 
-  ApiInterface.reportPublishingProgress('discord', announcementId, 'complete', bucketNumber)
+  // complete
+  ApiInterface.reportPublishingProgress('discord', announcementId, 'complete-normal', bucketNumber)
   return true
 }
 
@@ -62,7 +83,7 @@ async function sendToGuild(guild: GuildDataType, products: SanitizedProductType[
   })
 }
 
-async function debugGuild(guild: GuildDataType): Promise<void> {
+async function debugGuild(_guild: GuildDataType): Promise<void> {
   await new Promise(res => setTimeout(res, 100))
   // Logger.debug('Gaming')
   // if (guild.webhook) return

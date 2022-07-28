@@ -1,5 +1,6 @@
 import * as os from "os"
 import axios, { AxiosResponse } from "axios"
+import { PublishReportEventType } from "../types/other/reporting"
 
 
 export default class ApiInterface {
@@ -49,7 +50,7 @@ export default class ApiInterface {
     return res.data
   }
 
-  public static async reportPublishingProgress(service: 'discord', announcement: number, event: 'begin' | 'complete', bucket: number, maxRetries = 3): Promise<void> {
+  public static async reportPublishingProgress(service: 'discord', announcement: number, event: PublishReportEventType, bucket: number, maxRetries = 3): Promise<void> {
     if (maxRetries < 0) return
 
     const res = await ApiInterface.makeRequest(

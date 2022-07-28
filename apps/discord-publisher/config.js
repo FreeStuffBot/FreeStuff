@@ -2,7 +2,7 @@ const loadArg = require('@freestuffbot/config/load-arg')
 
 
 module.exports = {
-  port: loadArg('DISCORD_PUBLISHER_PORT') || 80,
+  port: Number(process.argv[2]) || loadArg('DISCORD_PUBLISHER_PORT') || 80,
   mongoUrl: loadArg('DISCORD_PUBLISHER_MONGO_URL'),
   rabbitUrl: loadArg('DISCORD_PUBLISHER_RABBIT_URL'),
   network: {

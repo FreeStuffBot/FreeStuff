@@ -68,4 +68,5 @@ export * from './types/communication/gateway-discord'
 export * from './types/convenience/discord-settings'
 export * from './types/other/theme-builder-class'
 export * from './types/other/product-flag'
+export * from './types/other/reporting'
 
