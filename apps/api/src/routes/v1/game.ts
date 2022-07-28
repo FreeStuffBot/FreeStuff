@@ -67,8 +67,8 @@ function mapToOldStruct(data: any) {
   data.org_price = {}
 
   for (const price of data.prices) {
-    data.price[price.currency] = price.newValue
-    data.org_price[price.currency] = price.oldValue
+    data.price[price.currency] = price.newValue / 100
+    data.org_price[price.currency] = price.oldValue / 100
   }
 
   data.price.euro = data.price.eur

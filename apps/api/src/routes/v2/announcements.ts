@@ -35,7 +35,7 @@ export async function getAnnouncement(req: Request, res: Response) {
     for (const [ id, data ] of await Promise.all(resolving)) {
       if (!data) continue
       out.resolved[id] = ProductSanitizer.sanitize(data)
-    } 
+    }
   }
 
   res.status(200).json(out)
