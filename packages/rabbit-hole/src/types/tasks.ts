@@ -30,6 +30,13 @@ export const StaticTypedTaskQueue = {
       durable: true,
       maxPriority: Priority.HIGH
     }
+  },
+  TELEGRAM: {
+    name: 'fsb-telegram',
+    options: {
+      durable: true,
+      maxPriority: Priority.HIGH
+    }
   }
 } as const
 
@@ -58,6 +65,14 @@ export enum TaskId {
   APPS_TEST = 13,
   /** task to split up remaining apps into workable chunks */
   APPS_PUBLISH_SPLIT = 14,
+  /** publish an announcement to multiple channels */
+  TELEGRAM_PUBLISH = 21,
+  /** resend an announcement to a single channel */
+  TELEGRAM_RESEND = 22,
+  /** send a test message to a channel */
+  TELEGRAM_TEST = 23,
+  /** task to split up remaining channels into workable chunks */
+  TELEGRAM_PUBLISH_SPLIT = 24,
 }
 
 export type TaskType = {
@@ -94,6 +109,23 @@ export type TaskType = {
   /** next value to continue with */ v: number
   /** total bucket count          */ c: number
   /** announcement id             */ a: number
+} | {
+  t: TaskId.TELEGRAM_PUBLISH
+  /** bucket number               */ b: number
+  /** total bucket count          */ c: number
+  /** announcement id             */ a: number
+} | {
+  t: TaskId.TELEGRAM_RESEND
+  /** channel name as string      */ n: string
+  /** list of product ids         */ p: number[]
+} | {
+  t: TaskId.TELEGRAM_TEST
+  /** channel name as string      */ n: string
+} | {
+  t: TaskId.TELEGRAM_PUBLISH_SPLIT
+  /** next value to continue with */ v: number
+  /** total bucket count          */ c: number
+  /** announcement id             */ a: number
 }
 
 export type Task<T extends TaskId> = TaskType & { t: T }
@@ -112,6 +144,10 @@ export const StaticTypedTaskMeta = {
   [TaskId.APPS_RESEND]: { queue: StaticTypedTaskQueue.APPS, priority: Priority.HIGH },
   [TaskId.APPS_TEST]: { queue: StaticTypedTaskQueue.APPS, priority: Priority.HIGH },
   [TaskId.APPS_PUBLISH_SPLIT]: { queue: StaticTypedTaskQueue.APPS, priority: Priority.LOW },
+  [TaskId.TELEGRAM_PUBLISH]: { queue: StaticTypedTaskQueue.TELEGRAM, priority: Priority.MEDIUM },
+  [TaskId.TELEGRAM_RESEND]: { queue: StaticTypedTaskQueue.TELEGRAM, priority: Priority.HIGH },
+  [TaskId.TELEGRAM_TEST]: { queue: StaticTypedTaskQueue.TELEGRAM, priority: Priority.HIGH },
+  [TaskId.TELEGRAM_PUBLISH_SPLIT]: { queue: StaticTypedTaskQueue.TELEGRAM, priority: Priority.LOW },
 } as const
 
 export const TaskMeta: Record<TaskId, TaskMetaType<any>> = StaticTypedTaskMeta

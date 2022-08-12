@@ -12,6 +12,7 @@
     "lint": "turbo run lint",
     "run-api": "cd ./apps/api && yarn start",
     "run-app-publisher": "cd ./apps/app-publisher && yarn start",
+    "run-telegram-publisher": "cd ./apps/telegram-publisher && yarn start",
     "run-discord-gateway": "cd ./apps/discord-gateway && yarn start",
     "run-discord-interactions": "cd ./apps/discord-interactions && yarn start",
     "run-discord-publisher": "cd ./apps/discord-publisher && yarn start",
