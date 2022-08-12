@@ -1,5 +1,4 @@
 import { Logger } from '@freestuffbot/common'
-import RabbitHole, { TaskId } from '@freestuffbot/rabbit-hole'
 import { Request, Response } from 'express'
 import ReqError from '../../../lib/req-error'
 
