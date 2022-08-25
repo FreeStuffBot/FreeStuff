@@ -1,6 +1,6 @@
+import { DiscordUtils } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from '../../../database/mongo'
-import DiscordUtils from '../../../lib/discord-utils'
 import ReqError from '../../../lib/req-error'
 
 

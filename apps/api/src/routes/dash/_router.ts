@@ -17,6 +17,7 @@ import { postAnnouncement } from './content/announcements'
 import { getServices, postServicesCommand } from './admin/services'
 import { getApp, patchAppDescription, patchAppWebhook, postApp, postAppKeyRegen, postAppWebhookTest } from './api/app'
 import { postInternalCommand } from './admin/internal'
+import { deleteUser, getUsers, patchUser, postUser } from './admin/users'
 
 
 export default class DashRouter {
@@ -91,6 +92,11 @@ export default class DashRouter {
 
     r.get(   '/admin/services',                    fw('admin'),             getServices)
     r.post(  '/admin/services/command',            fw('admin'),             postServicesCommand)
+
+    r.get(   '/admin/users',                       fw('admin'),             getUsers)
+    r.post(  '/admin/users',                       fw('admin'),             postUser)
+    r.patch( '/admin/users/:user',                 fw('admin'),             patchUser)
+    r.delete('/admin/users/:user',                 fw('admin'),             deleteUser)
 
     r.post(  '/admin/internal/command',            fw('admin'),             postInternalCommand)
 

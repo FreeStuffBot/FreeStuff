@@ -21,6 +21,7 @@ export { default as UmiLibs, UmiInfoReport } from './lib/umi-libs'
 export { default as ContainerInfo } from './lib/container-info'
 export { default as Experiments } from './lib/experiments'
 export { default as FSApiGateway } from './lib/fsapi-gateway'
+export { default as DiscordUtils } from './lib/discord-utils'
 export * from './lib/logger'
 
 export { default as ThemeOne } from './themes/1'
@@ -60,6 +61,7 @@ export * from './sanitizers/currency.sanitizer'
 export * from './sanitizers/guild.sanitizer'
 export * from './sanitizers/platform.sanitizer'
 export * from './sanitizers/product.sanitizer'
+export * from './sanitizers/user.sanitizer'
 
 export * from './struct/fragile.struct'
 
