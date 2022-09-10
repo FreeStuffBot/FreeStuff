@@ -26,6 +26,7 @@ function getTimestamp() {
  *  - `i` **(blue):** Info log messages.
  *  - `√` **(green):** Process log messages.
  *  - `M` **(green):** Manager log messages.
+ *  - `#` **(magenta):** Excessive log messages.
  */
 export class Logger {
 
