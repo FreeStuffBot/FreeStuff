@@ -1,6 +1,6 @@
 const fs = require('fs')
 let devConfig
-try { devConfig = require('./dev-config') } catch (ex) {}
+try { devConfig = require('./dev-config') } catch (ex) { }
 
 const secretPrefix = 'FSB_'
 const secretSuffix = ''
@@ -8,15 +8,11 @@ const secretSuffix = ''
 
 module.exports = function loadArg(name) {
   const extName = secretPrefix + name + secretSuffix
-  try {
-    if (!devConfig || devConfig.env[name] === undefined)
-      throw new Error()
-    return devConfig.env[name]
-  } catch (ex) {
-    try {
-      return fs.readFileSync('/run/secrets/' + extName).toString()
-    } catch (ex) {
-      return process.env[extName]
-    }
-  }
+
+  if (devConfig?.env[ name ] !== undefined)
+    return devConfig.env[ name ];
+  else if (fs.existsSync(`/run/secrets/${extName}`))
+    return fs.readFileSync('/run/secrets/' + extName).toString();
+  else
+    return process.env[ extName ];
 }
