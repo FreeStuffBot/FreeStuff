@@ -9,18 +9,9 @@ export default class Metrics {
   public static counterUpstreamStatus = new Counter({
     name: 'fsb_stp_upstream_status',
     help: 'FreeStuffBot Service TelegramPublisher: Upstream Response Status',
-    labelNames: [ 'status' ]
+    labelNames: [ 'status' ],
+    registers: [ this.register ],
   })
-
-  //
-
-  public static init() {
-    Metrics.registerMetrics()
-  }
-
-  private static registerMetrics() {
-    Metrics.register.registerMetric(Metrics.counterUpstreamStatus)
-  }
 
   //
 

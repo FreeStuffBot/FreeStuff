@@ -38,10 +38,6 @@ export default class Modules {
     setInterval(() => FSApiGateway.clearOrRefetchAll(), 1000 * 60 * 60 * 24)
   }
 
-  public static initMetrics(): void {
-    Metrics.init()
-  }
-
   public static async startServer() {
     const app = express()
     app.set('trust proxy', 1)
