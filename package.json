@@ -20,7 +20,7 @@
     "run-thumbnailer": "cd ./apps/thumbnailer && yarn start"
   },
   "devDependencies": {
-    "turbo": "^1.2.6"
+    "turbo": "1.4.3"
   },
   "engines": {
     "npm": ">=7.0.0",

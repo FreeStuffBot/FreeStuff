@@ -2,7 +2,7 @@ FROM node:alpine AS builder
 RUN apk update
 # Set working directory
 WORKDIR /app
-RUN yarn global add turbo@1.2.6
+RUN yarn global add turbo@1.4.3
 COPY . .
 RUN turbo prune --scope=@freestuffbot/link-proxy --docker
 
