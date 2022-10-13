@@ -24,7 +24,7 @@ function runCommand(command: string) {
       RabbitHole.publish({
         t: TaskId.DISCORD_PUBLISH_SPLIT,
         a: 339382,
-        v: 424,
+        v: 450,
         c: 1207
       })
       return
