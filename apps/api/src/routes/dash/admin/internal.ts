@@ -1,4 +1,6 @@
 import { Logger } from '@freestuffbot/common'
+import { TaskId } from '@freestuffbot/rabbit-hole'
+import RabbitHole from '@freestuffbot/rabbit-hole/dist/rabbit-hole'
 import { Request, Response } from 'express'
 import ReqError from '../../../lib/req-error'
 
@@ -16,6 +18,15 @@ function runCommand(command: string) {
   switch (command.toLowerCase()) {
     case 'debug': {
       Logger.debug('Debug')
+      return
+    }
+    case 'republish_221013': {
+      RabbitHole.publish({
+        t: TaskId.DISCORD_PUBLISH_SPLIT,
+        a: 327235,
+        v: 424,
+        c: 1207
+      })
       return
     }
     // case 'republish_220728': {
