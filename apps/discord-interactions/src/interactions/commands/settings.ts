@@ -3,8 +3,7 @@ import { ReplyableCommandInteraction } from 'cordo'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 
 
-/** This entire file could be ommitted but I decided to add this for transparency as it could easily be too confusing where the settings command gets handled */
-export default function (i: ReplyableCommandInteraction) {
+export default async function (i: ReplyableCommandInteraction) {
   if (!i.member) {
     return i.reply({
       title: '=interaction_server_only_1',
@@ -20,5 +19,9 @@ export default function (i: ReplyableCommandInteraction) {
     })
   }
 
-  i.state('settings_main')
+  // const [ , guild ] = await i.guildData.fetch()
+  // if (guild?.beta)
+  //   i.state('settingsv2_main')
+  // else
+    i.state('settings_main')
 }

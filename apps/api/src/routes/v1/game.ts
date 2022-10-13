@@ -101,6 +101,10 @@ function mapToOldStruct(data: any) {
 
   //
 
+  data.until = ~~(data.until / 1000)
+
+  //
+
   data.store_meta = {
     steam_subids: data.platformMeta?.steamSubids ?? ''
   }
@@ -111,7 +115,7 @@ function localize(game: SanitizedProductType, langs: any) {
   const out = {} as any
   const fallback = langs.find((l: any) => (l._id === 'en-US'))
 
-  const date = game.until ? new Date(game.until * 1000) : null
+  const date = game.until ? new Date(game.until) : null
   const days = date ? Math.round(Math.abs((date.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))) : null
 
   for (const l of langs) {
