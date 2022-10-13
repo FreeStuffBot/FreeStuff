@@ -23,7 +23,7 @@ function runCommand(command: string) {
     case 'republish_221013': {
       RabbitHole.publish({
         t: TaskId.DISCORD_PUBLISH_SPLIT,
-        a: 327235,
+        a: 339382,
         v: 424,
         c: 1207
       })
