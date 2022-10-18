@@ -19,10 +19,9 @@ export default async function (i: ReplyableCommandInteraction) {
     })
   }
 
-  // TODO uncomment below:
-  // const [ , guild ] = await i.guildData.fetch()
-  // if (guild?.beta)
-  //   i.state('settingsv2_main')
-  // else
+  const [ , guild ] = await i.guildData.fetch()
+  if (guild?.beta)
+    i.state('settingsv2_main')
+  else
     i.state('settings_main')
 }

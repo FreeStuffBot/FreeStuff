@@ -4,6 +4,27 @@ import DiscordUtils from '../../../lib/discord-utils'
 import ReqError from '../../../lib/req-error'
 
 
+export async function getLanguagesPreview(_req: Request, res: Response) {
+  const out = await Mongo.Language
+    .find({ _index: { $gte: 0 } })
+    .lean(true)
+    .sort({ lang_name_en: 1 })
+    .select({
+      _id: 1,
+      _index: 1,
+      _enabled: 1,
+      _meta_progress: 1,
+      lang_name: 1,
+      lang_name_en: 1,
+      lang_flag_emoji: 1,
+      _ranking: 1
+    })
+    .exec()
+    .catch(() => ReqError.badGateway(res)) as any[]
+
+  res.status(200).json(out || {})
+}
+
 export async function getLanguages(_req: Request, res: Response) {
   const users = await Mongo.User
     .find({})
