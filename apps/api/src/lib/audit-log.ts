@@ -99,7 +99,7 @@ export default class AuditLog {
   private static authorCacheAge: Map<string, number> = new Map()
   private static readonly AVATAR_CACHE_MAX_AGE = 60 * 60 * 1000
 
-  private static async getAuthor(userId: string): Promise<[ string, string ]> {
+  public static async getAuthor(userId: string): Promise<[ string, string ]> {
     if (userId === LocalConst.PSEUDO_USER_SYSTEM_ID)
       return [ 'System', 'https://media.discordapp.net/attachments/672907465670787083/999027825493418166/0.png' ]
     if (userId === LocalConst.PSEUDO_USER_UNKNOWN_ID)

@@ -1,4 +1,4 @@
-import { LanguageType, UserType } from '@freestuffbot/common'
+import { LanguageType, NotificationDataType, NotificationSanitizer, SanitizedNotificationType, UserType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from '../../database/mongo'
 import OAuthStrat, { OauthDiscordUserObject } from '../../lib/oauth-strat'
@@ -59,11 +59,36 @@ export async function getMe(_req: Request, res: Response) {
 
   delete out.logins
   delete out.data?._accessToken
-  out.lang = await packageLang()
+  const [ lang, notif ] = await Promise.all([
+    packageLang(),
+    fetchNotifications(res.locals.user.id)
+  ])
+  out.lang = lang
+  out.notifications = notif
 
   // package guilds if needed
 
   res.status(200).json(out)
+}
+
+/*
+ *
+ */
+
+async function fetchNotifications(userId: string): Promise<SanitizedNotificationType[]> {
+  const data = await Mongo.Notification
+    .find({
+      recipient: userId,
+      readAt: { // filter out notifications read over a week ago
+        $not: { $lt: Date.now() - 7 * 24 * 60 * 60 * 1000 }
+      }
+    })
+    .lean(true)
+    .limit(99)
+    .exec()
+    .catch(() => ([])) as NotificationDataType[]
+
+  return data.map(NotificationSanitizer.sanitize)
 }
 
 /*
@@ -94,6 +119,7 @@ async function packageLang() {
 
   raw[0]?.forEach(u => (out[u._id] = u.display))
   raw[1]?.forEach(l => (out['lang_' + l._index] = l.lang_name_en))
+  raw[1]?.forEach(l => (out['lang_' + l._id] = l.lang_name_en))
 
   langCacheAge = Date.now()
   langCacheData = out

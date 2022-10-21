@@ -1,4 +1,4 @@
-import { AnnouncementSchema, AppSchema, CurrencySchema, ExperimentSchema, GuildSchema, LanguageSchema, Logger, MiscSchema, PlatformSchema, ProductSchema, TranslateApplicationSchema, UserSchema } from '@freestuffbot/common'
+import { AnnouncementSchema, AppSchema, CurrencySchema, ExperimentSchema, GuildSchema, LanguageSchema, Logger, MiscSchema, NotificationSchema, PlatformSchema, ProductSchema, TranslateApplicationSchema, UserSchema } from '@freestuffbot/common'
 import * as mongoose from 'mongoose'
 
 
@@ -17,6 +17,7 @@ export default class Mongo {
   public static Misc = mongoose.model('Misc', MiscSchema)
   public static Guild = mongoose.model('Guild', GuildSchema)
   public static TranslateApplication = mongoose.model('TranslateApplication', TranslateApplicationSchema)
+  public static Notification = mongoose.model('Notification', NotificationSchema)
 
   //
 

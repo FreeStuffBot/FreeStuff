@@ -17,7 +17,8 @@ import { postAnnouncement } from './content/announcements'
 import { getServices, postServicesCommand } from './admin/services'
 import { getApp, patchAppDescription, patchAppWebhook, postApp, postAppKeyRegen, postAppWebhookTest } from './api/app'
 import { postInternalCommand } from './admin/internal'
-import { getTranslationsApplicationStatus, postTranslationsApply } from './translations/applications'
+import { getTranslationsApplications, getTranslationsApplicationsStatus, patchTranslationsApplication, postTranslationsApplication } from './translations/applications'
+import { postNotificationRead } from './notifications'
 
 
 export default class DashRouter {
@@ -50,12 +51,17 @@ export default class DashRouter {
     r.get(   '/auth/me',                           fw('[logged_in]'),       getMe)
 
     // translations
-    r.get(   '/translations/application-status',   fw('[logged_in]'),       getTranslationsApplicationStatus)
-    r.post(  '/translations/apply',                fw('[logged_in]'),       postTranslationsApply)
+    r.get(   '/translations/applications',         fw('admin|contentmod'),  getTranslationsApplications)
+    r.post(  '/translations/applications',         fw('[logged_in]'),       postTranslationsApplication)
+    r.get(   '/translations/applications/@me',     fw('[logged_in]'),       getTranslationsApplicationsStatus)
+    r.patch( '/translations/applications/:id',     fw('admin|contentmod'),  patchTranslationsApplication)
     r.get(   '/translations/languages-preview',    fw('[logged_in]'),       getLanguagesPreview)
     r.get(   '/translations/languages',            fw('admin|translate.*'), getLanguages)
     r.get(   '/translations/languages/:id',        fw('admin|translate.*'), getLanguage)
     // r.patch( '/translations/languages/:id',        fw('admin|translate.{id}'), TODO)
+
+    // notifications
+    r.post( '/notifications/:notification/read',   fw('[logged_in]'),       postNotificationRead)
 
     // api apps
     r.get(   '/app',                               fw('admin|api'), getApp)

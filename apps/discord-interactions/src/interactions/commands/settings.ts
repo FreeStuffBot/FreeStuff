@@ -19,8 +19,10 @@ export default async function (i: ReplyableCommandInteraction) {
     })
   }
 
-  const [ , guild ] = await i.guildData.fetch()
-  if (guild?.beta)
+  // TODO
+  // const [ , guild ] = await i.guildData.fetch()
+  // if (guild?.beta)
+  if (i.user.id === '137258778092503042')
     i.state('settingsv2_main')
   else
     i.state('settings_main')

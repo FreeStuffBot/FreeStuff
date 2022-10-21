@@ -1,10 +1,12 @@
-import { TranslateApplicationDataType, TranslateApplicationType } from '@freestuffbot/common'
+import { SanitizedTranslateApplicationType, TranslateApplicationDataType, TranslateApplicationSanitizer, TranslateApplicationType, UserDataType, UserType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from '../../../database/mongo'
+import DiscordUtils from '../../../lib/discord-utils'
+import Notifier from '../../../lib/notifier'
 import ReqError from '../../../lib/req-error'
 
 
-export async function getTranslationsApplicationStatus(_req: Request, res: Response) {
+export async function getTranslationsApplicationsStatus(_req: Request, res: Response) {
   if (!res.locals.user) return ReqError.badRequest(res, 'no_user', 'error')
   const id = res.locals.user._id
 
@@ -24,8 +26,7 @@ export async function getTranslationsApplicationStatus(_req: Request, res: Respo
   return res.status(200).end()
 }
 
-export async function postTranslationsApply(req: Request, res: Response) {
-  console.log(res.locals.user)
+export async function postTranslationsApplication(req: Request, res: Response) {
   if (!res.locals.user) return ReqError.badRequest(res, 'no_user', 'error')
   const id = res.locals.user._id
 
@@ -41,6 +42,9 @@ export async function postTranslationsApply(req: Request, res: Response) {
   if (out as any === 0) return ReqError.badGateway(res)
   if (out) return ReqError.badRequest(res, 'already_submitted', 'You already submitted an application!')
 
+  const languageCorrect = await Mongo.Language.exists({ _id: req.body.language })
+  if (!languageCorrect) return ReqError.badRequest(res, 'invalid_language', 'Foolery.')
+
   const app = new Mongo.TranslateApplication({
     _id: id,
     submitted: Date.now(),
@@ -53,4 +57,78 @@ export async function postTranslationsApply(req: Request, res: Response) {
   await app.save()
 
   res.status(200).json({})
+}
+
+export async function getTranslationsApplications(req: Request, res: Response) {
+  const countOnly = !!req.query.countOnly
+  const declined = !!req.query.declined
+
+  if (countOnly) {
+    const out = await Mongo.TranslateApplication
+      .count(declined ? {} : { declined: null })
+      .exec()
+      .catch(() => null)
+    if (out as any === null) return ReqError.badGateway(res)
+    return res.status(200).json({ count: out })
+  }
+
+  const apps = await Mongo.TranslateApplication
+    .find(declined ? {} : { declined: null })
+    .lean(true)
+    .exec()
+    .catch(() => 0) as TranslateApplicationDataType[]
+
+  if (apps as any === 0) return ReqError.badGateway(res)
+  const sanitized = apps.map(TranslateApplicationSanitizer.sanitize)
+  const out = await Promise.all(sanitized.map(async (data: SanitizedTranslateApplicationType) => {
+    const userData = await Mongo.User
+      .findById(data.id)
+      .lean(true)
+      .exec()
+      .catch(() => ({})) as UserDataType
+    const user = {
+      id: userData._id,
+      name: userData.display || userData.data.username,
+      icon: DiscordUtils.getAvatar(userData.data)
+    }
+    return { ...data, user }
+  }))
+  return res.status(200).json(out)
+}
+
+export async function patchTranslationsApplication(req: Request, res: Response) {
+  if (req.body?.accept === undefined)
+    return ReqError.badRequest(res, 'malformed_body', 'Malformed request body')
+
+  const id = req.params.id ?? ''
+
+  const application = await Mongo.TranslateApplication
+    .findById(id)
+    .exec()
+    .catch(() => 0) as TranslateApplicationType
+
+  if (application as any === 0) return ReqError.badGateway(res)
+  if (!application) return ReqError.notFound(res)
+
+  const accept = !!req.body.accept
+  if (accept) {
+    const user = await Mongo.User.findById(id) as UserType
+    if (!user) return ReqError.internalServerError(res, 'User Not Found')
+    user.scope.push(`translate.${application.language}`)
+    await user.save()
+    await application.delete()
+    Notifier.sendPlain(id, {
+      title: 'An update on your translate application',
+      message: `Hey ${user.display}! Welcome to the FreeStuff translation team!\nWe are happy to welcome you in! With receiving this message you should have gotten access to two things:\n1. The translation panel, you can find it on the left. Same place where you submitted your application\n2. A Discord channel for all translators.\nMake yourself home and check out the translation page to get started!`
+    })
+  } else {
+    application.declined = req.body.reason || 'No reason provided'
+    application.save()
+    Notifier.sendPlain(id, {
+      title: 'An update on your translate application',
+      message: `Hey there! Thank you for your interest, unfortunately your application was declined. Here's why: ${application.declined}`
+    })
+  }
+
+  return res.status(200).end()
 }
