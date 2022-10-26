@@ -15,6 +15,7 @@ async function run() {
   await Modules.connectMongo()
   Modules.initDocker()
   Modules.startServer()
+  // migration221026_translations()
 }
 
 run().catch((err) => {

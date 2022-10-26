@@ -52,6 +52,7 @@ export * from './models/notification.model'
 export * from './models/platform.model'
 export * from './models/product.model'
 export * from './models/translate-application.model'
+export * from './models/translation.model'
 export * from './models/user.model'
 
 export * from './sanitizers/announcement.sanitizer'
@@ -64,6 +65,7 @@ export * from './sanitizers/notification.sanitizer'
 export * from './sanitizers/platform.sanitizer'
 export * from './sanitizers/product.sanitizer'
 export * from './sanitizers/translate-application.sanitizer'
+export * from './sanitizers/translation.sanitizer'
 
 export * from './struct/fragile.struct'
 

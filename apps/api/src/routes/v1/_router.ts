@@ -31,8 +31,8 @@ export default class V1Router {
     /* ENDPOINTS */
     
     r.all('/ping', Ping)
-    r.use('/game', rateLimiter(disableRateLimits ? 99999 : 20, 5), GameEndpoint)
-    r.use('/games', rateLimiter(disableRateLimits ? 99999 : 10, 15), GamesEndpoint)
+    r.use('/game', rateLimiter(disableRateLimits ? 99999 : 20, 5*60), GameEndpoint)
+    r.use('/games', rateLimiter(disableRateLimits ? 99999 : 10, 15*60), GamesEndpoint)
 
     /* Default 404 handler */
 

@@ -1,4 +1,4 @@
-import { Logger, MiscSchema } from '@freestuffbot/common'
+import { LanguageSchema, Logger, MiscSchema, TranslationSchema } from '@freestuffbot/common'
 import * as mongoose from 'mongoose'
 
 
@@ -7,6 +7,8 @@ export default class Mongo {
   public static connection: mongoose.Connection;
 
   public static Misc = mongoose.model('Misc', MiscSchema)
+  public static Language = mongoose.model('Language', LanguageSchema)
+  public static Translation = mongoose.model('Translation', TranslationSchema)
 
   //
 
