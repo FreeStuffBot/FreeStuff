@@ -43,6 +43,8 @@ export default class DatabaseGateway {
       .exec()
       .catch(() => null) as GuildDataType
 
+    Metrics.counterDiDbReads.inc({ collection: 'guilds', success: String(found !== null) })
+
     if (found) {
       const sanitized = GuildSanitizer.sanitize(found)
       return Errors.success(sanitized)
@@ -74,7 +76,11 @@ export default class DatabaseGateway {
     }
 
     const obj = new Mongo.Guild(data) as GuildType
-    await obj?.save()
+    const success = await obj?.save()
+      .catch(() => false)
+      .then(() => true)
+
+    Metrics.counterDiDbWrites.inc({ collection: 'guilds', success: String(success) })
     return obj
   }
 
@@ -84,10 +90,16 @@ export default class DatabaseGateway {
       .exec()
       .catch(() => null) as GuildType
 
-    await raw?.delete()
+    Metrics.counterDiDbReads.inc({ collection: 'guilds', success: String(raw !== null) })
+
+    const success = await raw?.delete()
+      .catch(() => false)
+      .then(() => true)
+
     if (DatabaseGateway.guildCache.has(guildid))
       DatabaseGateway.guildCache.remove(guildid, false)
 
+    Metrics.counterDiDbReads.inc({ collection: 'guilds', success: String(success) })
     return !!raw
   }
 
@@ -121,13 +133,15 @@ export default class DatabaseGateway {
     const changes = guild._changes
     delete guild._changes
 
-    await Mongo.Guild
+    const success = await Mongo.Guild
       .updateOne(
         { _id: guild.id },
         { $set: changes }
       )
+      .catch(() => false)
+      .then(() => true)
 
-    Metrics.counterDiDbWrites.inc({ collection: 'guilds' })
+    Metrics.counterDiDbWrites.inc({ collection: 'guilds', success: String(success) })
   }
 
   public static get cacheSizes(): [number, number] {
