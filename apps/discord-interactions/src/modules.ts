@@ -62,7 +62,7 @@ export default class Modules {
         interaction_invalid_title: 'That is odd. You should not be able to run this command...'
       }
     })
-    Cordo.addMiddlewareInteractionCallback((_, i) => Metrics.counterInteractions.inc({ type: i.type, name: (i.data as any)?.name }))
+    Cordo.addMiddlewareInteractionCallback((_, i) => Metrics.counterInteractions.inc({ type: i.type, name: (i.data as any)?.name || (i.data as any)?.custom_id }))
     Cordo.addMiddlewareInteractionCallback((data, i) => Localisation.translateObject(data, i, data._context, 14))
     Cordo.setMiddlewareGuildData((guildid) => {
       const out = { _cache: null } as Partial<GuildData>
