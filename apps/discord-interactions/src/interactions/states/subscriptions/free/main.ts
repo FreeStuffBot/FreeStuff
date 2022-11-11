@@ -2,7 +2,7 @@ import { ButtonStyle, ChannelType, ComponentType, GenericInteraction, Interactio
 import { Localisation, Emojis, CustomPermissions, DataChannel, SanitizedGuildType, Errors } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import { CustomChannelPermissions } from '@freestuffbot/common/dist/lib/custom-permissions'
-import DiscordGateway from '../../../../../services/discord-gateway'
+import DiscordGateway from '../../../../services/discord-gateway'
 
 
 type Options = {
