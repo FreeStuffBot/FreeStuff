@@ -1,3 +1,8 @@
+# THIS DOCKER COMPOSE FILE IS USED TO BOOT UP THE
+# DEVELOPMENT ENVIRONMENT. THIS COMPOSE FILE DOES
+# NOT LAUNCH FREESTUFF. PLEASE CREATE YOUR OWN
+# DEPLOYMENT CONFIGURATION.
+
 version: "3.3"
 
 networks:
@@ -12,56 +17,3 @@ services:
       interval: 30s
       timeout: 30s
       retries: 3
-
-  api:
-    image: ghcr.io/freestuffbot/fsb-api:master
-    environment:
-      NODE_ENV: "production"
-      FSB_API_PORT: "80"
-      FSB_API_REDIS_URL: ""
-      FSB_API_RABBIT_URL: "amqp://rabbit"
-      FSB_API_DASH_CORS_ORIGIN: "https://dashboard.freestuffbot.xyz"
-      FSB_API_DASH_OAUTH_CALLBACK_URL: "https://dashboard.freestuffbot.xyz/oauth/callback"
-      FSB_NETWORK_GIBU_GQL_ENDPOINT: "http://gibu_api_games/graphql"
-      FSB_NETWORK_THUMBNAILER: "http://thumbnailer"
-      FSB_NETWORK_LINK_PROXY: "http://link_proxy"
-      FSB_API_PRIVATE_KEY_URI: "/run/secrets/FSB_API_PRIVATE_KEY"
-      FSB_API_MONGO_URL: "mongodb://host.docker.internal:27017/freestuffbot"
-      FSB_API_OAUTH_DISCORD_APPID: ""
-      FSB_API_OAUTH_DISCORD_APPSECRET: ""
-      FSB_API_PRIVATE_KEY: ""
-    networks:
-      - local
-    ports:
-      - 4062:80
-    depends_on:
-      - rabbit
-    labels:
-      - prometheus-job=fsb
-      - xyz.freestuffbot.service.role=api
-      - xyz.freestuffbot.service.network=freestuff_local
-
-  discord-interactions:
-    image: ghcr.io/freestuffbot/fsb-discord-interactions:master
-    environment:
-      NODE_ENV: "production"
-      FSB_DISCORD_INTERACTIONS_PORT: 80
-      FSB_DISCORD_INTERACTIONS_CLIENTID: "756183898156957850"
-      FSB_DISCORD_INTERACTIONS_PUBKEY: "ae92419b8a8752234363888abdc0d2b7bdfc730b4b9182dd6c1d5af594842f12"
-      FSB_DISCORD_INTERACTIONS_MONGO_URL: "mongodb://host.docker.internal:27017/freestuffbot"
-      FSB_DISCORD_INTERACTIONS_RABBIT_URL: "amqp://rabbit"
-      FSB_NETWORK_UMI_ALLOWED_IP_RANGE: ""
-      FSB_NETWORK_DISCORD_GATEWAY: ""
-      FSB_DISCORD_INTERACTIONS_FREESTUFF_API_URL: ""
-      FSB_DISCORD_INTERACTIONS_FREESTUFF_API_KEY: ""
-    networks:
-      - local
-    ports:
-      - 4061:80
-    depends_on:
-      - rabbit
-    labels:
-      - prometheus-job=fsb
-      - xyz.freestuffbot.service.role=discord-interactions
-      - xyz.freestuffbot.service.network=freestuff_local
-
