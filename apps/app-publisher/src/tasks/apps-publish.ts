@@ -10,8 +10,6 @@ export default async function handleAppsPublish(task: Task<TaskId.APPS_PUBLISH>)
   const bucketNumber = task.b
   const announcementId = task.a
 
-  console.log('bucketNumber', bucketNumber)
-
   // TODO (lowest) add proper sharding
   // rn we are just lazily skipping sharding alltogether
   // too few destinations for this to be worth it

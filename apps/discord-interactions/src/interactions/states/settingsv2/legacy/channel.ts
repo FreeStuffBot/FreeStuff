@@ -1,7 +1,6 @@
 import { ButtonStyle, ChannelType, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
-import { Localisation, Emojis, CustomPermissions, DataChannel, SanitizedGuildType, Errors } from '@freestuffbot/common'
+import { Localisation, Emojis, CustomPermissions, DataChannel, SanitizedGuildType, Errors, CustomChannelPermissions } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
-import { CustomChannelPermissions } from '@freestuffbot/common/dist/lib/custom-permissions'
 import Tracker from '../../../../lib/tracker'
 import DiscordGateway from '../../../../services/discord-gateway'
 

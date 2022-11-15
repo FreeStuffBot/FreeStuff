@@ -114,19 +114,19 @@ export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Pr
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.PRIMARY,
-        custom_id: 'settingsv2_sub_free_display',
+        custom_id: 'subscriptions_free_display',
         label: 'Display Settings'
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.PRIMARY,
-        custom_id: 'settingsv2_sub_free_filter',
+        custom_id: 'subscriptions_free_filter',
         label: 'Filter Settings'
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.PRIMARY,
-        custom_id: 'settingsv2_sub_free_notif',
+        custom_id: 'subscriptions_free_notif',
         label: 'Notification Settings'
       },
       {
@@ -135,7 +135,7 @@ export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Pr
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
-        custom_id: 'settingsv2_main',
+        custom_id: 'subscriptions_main',
         label: '=generic_back',
         emoji: Emojis.caretLeft.toObject()
       },

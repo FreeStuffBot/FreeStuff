@@ -11,7 +11,7 @@ export function rateLimiter(max: number, window: number, bucket: string = '') {
     keyGenerator(req: Request) {
       if (bucket.includes('{')) {
         for (const key in req.params)
-          bucket.split(`{${key}}`).join(req.params[key])
+          bucket = bucket.split(`{${key}}`).join(req.params[key])
       }
 
       return (req.headers.authorization || req.ip) + bucket

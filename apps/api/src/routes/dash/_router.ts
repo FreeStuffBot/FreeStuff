@@ -7,7 +7,7 @@ import { rateLimiter as limit } from '../../middleware/rate-limits'
 import pagination from '../../middleware/pagination'
 
 import { getLogin, getMe, postCode } from './auth'
-import { getComments, getLanguage, getLanguages, getLanguagesPreview, patchCommentVote } from './translations/languages'
+import { getComments, getLanguage, getLanguages, getLanguagesPreview, patchCommentVote, postComment } from './translations/languages'
 import { getProduct, getProducts, patchProduct, postProduct, postProductRefetch } from './content/products'
 import { deletePlatform, getPlatforms, patchPlatform, postPlatform } from './content/platforms'
 import { deleteCurrency, getCurrencies, patchCurrency, postCurrency } from './content/currencies'
@@ -60,7 +60,7 @@ export default class DashRouter {
     r.get(   '/translations/languages/:language',  fw('admin|translate.*'), getLanguage)
     r.patch( '/translations/comments/:id',             limit(10, 30),               fw('admin|translate.*'), patchCommentVote)
     r.get(   '/translations/comments/:language/:line', limit(8, 5),                 fw('admin|translate.*'), getComments)
-    // r.patch( '/translations/comments/:language/:line', limit(2, 60 * 60, '{line}'), fw('admin|translate.*'), TODO)
+    r.post(  '/translations/comments/:language/:line', limit(2, 60 * 60, '{line}'), fw('admin|translate.*'), postComment)
 
     // notifications
     r.post( '/notifications/:notification/read',   fw('[logged_in]'),       postNotificationRead)

@@ -1,5 +1,5 @@
 import { Const, Emojis, Errors } from '@freestuffbot/common'
-import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, InteractionType } from 'cordo'
+import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionType } from 'cordo'
 import Tracker from '../../../lib/tracker'
 
 
@@ -45,25 +45,28 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
   }
 
   return {
-    title: '=settings_main_ui_1',
+    title: 'Your Subscriptions',
     description,
     components: [
       {
         type: ComponentType.BUTTON,
-        style: ButtonStyle.SUCCESS,
+        style: ButtonStyle.SECONDARY,
         custom_id: 'settingsv2_sub_free_main',
+        emoji: Emojis.toggleOn.toObject(),
         label: 'Free to keep'
       },
       {
         type: ComponentType.BUTTON,
-        style: ButtonStyle.SUCCESS,
+        style: ButtonStyle.SECONDARY,
         custom_id: 'settingsv2_sub_weekend_main',
+        emoji: Emojis.toggleOn.toObject(),
         label: 'Free Weekend'
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_more',
+        emoji: Emojis.toggleOff.toObject(),
         label: 'DLC\'s & More'
       },
       {
@@ -73,13 +76,25 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_display',
+        emoji: Emojis.toggleOff.toObject(),
         label: 'Prime Gaming' + ' ' + Const.premiumIndicatorSymbol
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_filter',
+        emoji: Emojis.toggleOff.toObject(),
         label: 'Game Pass' + ' ' + Const.premiumIndicatorSymbol
+      },
+      {
+        type: ComponentType.LINE_BREAK
+      },
+      {
+        type: ComponentType.BUTTON,
+        style: ButtonStyle.SECONDARY,
+        custom_id: 'settingsv2_main',
+        label: '=generic_back',
+        emoji: Emojis.caretLeft.toObject()
       }
     ],
     _context: {

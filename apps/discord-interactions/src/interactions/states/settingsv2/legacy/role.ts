@@ -1,8 +1,8 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
 import { DataGuild, Emojis, Errors, Localisation, SanitizedGuildType } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
-import Tracker from '../../../lib/tracker'
-import DiscordGateway from '../../../services/discord-gateway'
+import Tracker from '../../../../lib/tracker'
+import DiscordGateway from '../../../../services/discord-gateway'
 
 
 type Options = {

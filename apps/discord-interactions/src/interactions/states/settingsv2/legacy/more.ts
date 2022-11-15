@@ -1,6 +1,6 @@
 import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag } from 'cordo'
 import { ContainerInfo, Emojis, Errors, Localisation } from '@freestuffbot/common'
-import Tracker from '../../../lib/tracker'
+import Tracker from '../../../../lib/tracker'
 
 
 export default async function (i: GenericInteraction): Promise<InteractionApplicationCommandCallbackData> {

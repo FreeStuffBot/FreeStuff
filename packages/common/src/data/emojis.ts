@@ -64,6 +64,9 @@ export default class Emojis {
   public static readonly settings = new Emojis('870412781780869150', 'settings')
   public static readonly bot = new Emojis('870418849739198465', 'bot')
 
+  public static readonly toggleOff = new Emojis('1041753384547524699', 'toggleOff')
+  public static readonly toggleOn = new Emojis('1041753386023927958', 'toggleOn')
+
   public static readonly global = new Emojis('863734030280032256', 'global')
   public static readonly no = new Emojis('863734030457372692', 'no')
 
