@@ -37,10 +37,10 @@ function runCommand(command: string) {
     //   })
     //   return
     // }
-    case 'migration221115': {
-      migration221115_translations()
-      return
-    }
+    // case 'migration221115': {
+    //   migration221115_translations()
+    //   return
+    // }
   }
 }
 
@@ -51,7 +51,6 @@ export async function migration221115_translations() {
     .exec()
     .then(l => l.map(p => p._id))
   const USER = '0' // system user
-  console.log(IDS)
 
   for (const id of IDS) {
     const lang = await Mongo.Language

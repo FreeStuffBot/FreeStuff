@@ -4,7 +4,6 @@ import { config } from ".."
 import Mongo from "../database/mongo"
 import LocalConst from "./local-const"
 
-// TODO (medium) add calls to this audit logger everywhere across the app!
 
 export type AuditEvent = {
   event: 'api_app_new'
@@ -12,23 +11,23 @@ export type AuditEvent = {
     | 'api_key_regen'
     | 'api_webhook_update'
     | 'api_webhook_test'
-    | 'api_webhook_test'
     | 'api_webhook_outgoing_failed'
   author: string
 } | {
   event: 'admin_config_update'
   author: string
-  name: 'global' | 'services'
+  name: string
 } | {
-  event: 'admin_experiment_create'
-    | 'admin_experiment_delete'
+  event: 'admin_experiment_delete'
   author: string
   id: string
 } | {
   event: 'admin_experiment_update'
+    | 'admin_experiment_create'
   author: string
   id: string
-  value: string
+  description: string
+  rules: string
 } | {
   event: 'product_new'
     | 'product_refetch'
@@ -43,6 +42,12 @@ export type AuditEvent = {
     | 'admin_user_delete'
   author: string
   target: string
+} | {
+  event: 'translations_approve_suggestion'
+   | 'translations_post_comment'
+  author: string
+  override: boolean
+  commentId: string
 }
 
 export default class AuditLog {

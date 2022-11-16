@@ -52,6 +52,11 @@ export async function postApp(_req: Request, res: Response) {
 
   await document.save()
   res.status(200).json({})
+
+  AuditLog.record({
+    event: 'api_app_new',
+    author: appId
+  })
 }
 
 

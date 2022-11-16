@@ -256,7 +256,12 @@ function helperCastCommentApproval(approve: boolean, comment: TranslationType, r
       .catch(Logger.warn)
 
     comment.approved = true
-    // TODO audit log event
+    AuditLog.record({
+      event: 'translations_approve_suggestion',
+      author: res.locals.user?.id,
+      override: true,
+      commentId: comment.id
+    })
 
     return true
   }
@@ -265,7 +270,12 @@ function helperCastCommentApproval(approve: boolean, comment: TranslationType, r
     return void res.status(200).end()
 
   comment.approved = false
-  // TODO audit log event
+  AuditLog.record({
+    event: 'translations_approve_suggestion',
+    author: res.locals.user?.id,
+    override: false,
+    commentId: comment.id
+  })
 
   return true
 }
@@ -377,7 +387,13 @@ export async function postComment(req: Request, res: Response) {
     created.save()
       .then(() => res.status(200).end())
       .catch(() => ReqError.badGateway(res))
-    // TODO audit log
+
+    AuditLog.record({
+      event: 'translations_post_comment',
+      author: res.locals.user?.id,
+      override: false,
+      commentId: id
+    })
     return
   }
 
@@ -408,7 +424,13 @@ export async function postComment(req: Request, res: Response) {
   sameUserExisting.save()
     .then(() => res.status(200).end())
     .catch(() => ReqError.badGateway(res))
-  // TODO audit log
+
+  AuditLog.record({
+    event: 'translations_post_comment',
+    author: res.locals.user?.id,
+    override: true,
+    commentId: id
+  })
 }
 
 /*
