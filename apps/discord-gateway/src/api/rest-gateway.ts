@@ -1,17 +1,25 @@
 import { Logger } from "@freestuffbot/common"
-import axios, { AxiosResponse, Method } from "axios"
+import axios from "axios"
 import { config } from ".."
+import RestCache from "../cache/rest-cache"
 
 
 type RestRequest = {
-  method: Method
+  method: 'GET' | 'POST' | 'PATCH' | 'DELETE'
   endpoint: string
   bucket: string
   payload?: any
+  noCache?: boolean
+  softCache?: boolean
+}
+
+type RestResponse = {
+  status: number
+  data: any
 }
 
 type RestRequestResolveable = RestRequest & {
-  resolve: (res: AxiosResponse) => any
+  resolve: (res: RestResponse) => any
 }
 
 /**
@@ -64,8 +72,8 @@ export default class RestGateway {
     }, ~~(1000 / frequency))
   }
 
-  public static async queue(request: RestRequest, maxRetries = 7): Promise<AxiosResponse> {
-    const res: AxiosResponse = await new Promise((resolve) => {
+  public static async queue(request: RestRequest, maxRetries = 7): Promise<RestResponse> {
+    const res: RestResponse = await new Promise((resolve) => {
       RestGateway.outgoingQueue.push({
         ...request,
         resolve
@@ -79,9 +87,17 @@ export default class RestGateway {
     return RestGateway.queue(request, maxRetries - 1)
   }
 
-  private static execute(request: RestRequest | RestRequestResolveable): Promise<AxiosResponse> {
+  private static async execute(request: RestRequest | RestRequestResolveable): Promise<RestResponse> {
+    if (!request.noCache && request.method === 'GET') {
+      const cached = RestCache.get(request.endpoint, request.softCache)
+      if (cached !== undefined)
+        return cached
+    }
+
+    console.log(request.endpoint)
+
     try {
-      return axios({
+      const res = await axios({
         method: request.method,
         url: RestGateway.buildFullUrl(request.endpoint),
         data: request.payload,
@@ -91,6 +107,11 @@ export default class RestGateway {
           'User-Agent': 'FreeStuffCustom (https://freestuffbot.xyz/, 1.0)'
         }
       })
+
+      if (request.method === 'GET')
+        RestCache.set(request.endpoint, { status: res.status, data: res.data })
+
+      return res
     } catch (ex) {
       Logger.warn('Issue with axios upstream @rest-gateway::execute')
       // eslint-disable-next-line no-console

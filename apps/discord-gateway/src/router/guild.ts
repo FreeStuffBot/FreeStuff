@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import GuildData from '../data/guild-data'
 import { MAGICNUMBER_BAD_GATEWAY, MAGICNUMBER_MISSING_PERMISSIONS } from '../lib/magic-number'
+import { Directives } from '../types/lib'
 
 
 export async function getGuild(req: Request, res: Response) {
@@ -8,7 +9,7 @@ export async function getGuild(req: Request, res: Response) {
   if (!guild)
     return void res.status(400).end()
 
-  const data = await GuildData.findGuild(guild, Object.keys(req.query))
+  const data = await GuildData.findGuild(guild, req.query as Directives)
 
   if (!data)
     return void res.status(404).end()

@@ -45,6 +45,15 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
         style: ButtonStyle.SECONDARY,
         custom_id: 'subscriptions_main',
         label: 'Manage Subscriptions'
+      },
+      {
+        type: ComponentType.LINE_BREAK
+      },
+      {
+        type: ComponentType.BUTTON,
+        style: ButtonStyle.SECONDARY,
+        custom_id: 'settings_main',
+        label: '(debug) Old Settings'
       }
     ],
     _context: {

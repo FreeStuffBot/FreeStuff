@@ -2,13 +2,14 @@ import { DataChannel, DataGuild, DataMember } from "@freestuffbot/common"
 import ChannelsApi from "../api/channels-api"
 import { calculatePermissionsForMemberInChannel, containerToBitfield } from "../lib/discord-permissions"
 import { MagicNumber, MAGICNUMBER_BAD_GATEWAY } from "../lib/magic-number"
+import { Directives } from "../types/lib"
 import GuildData from "./guild-data"
 import MemberData from "./member-data"
 
 
 export default class ChannelsData {
 
-  public static async parseRaw(raw: any, guildId: string, directives: string[]): Promise<DataChannel[] | null | MagicNumber> {
+  public static async parseRaw(raw: any, guildId: string, directives: Directives): Promise<DataChannel[] | null | MagicNumber> {
     if (typeof raw !== "object") return null
 
     const [ guild, member ] = await Promise.all([
@@ -17,8 +18,8 @@ export default class ChannelsData {
     ])
 
     if (!guild || !member) return null
-    if (typeof guild === 'number') return guild as MagicNumber
-    if (typeof member === 'number') return member as MagicNumber
+    if (typeof guild === 'number') return guild
+    if (typeof member === 'number') return member
 
     return raw.map(item => ChannelsData.parseSingle(member, item, guild))
   }
@@ -43,7 +44,7 @@ export default class ChannelsData {
    * 
    */
 
-  public static async findChannels(guild: string, directives: string[]): Promise<DataChannel[] | MagicNumber | null> {
+  public static async findChannels(guild: string, directives: Directives): Promise<DataChannel[] | MagicNumber | null> {
     // if (!directives.includes('nocache')) {
     //   const cache = ChannelsCache.get(guild, directives.includes('softcache'))
     //   if (cache !== undefined) return cache

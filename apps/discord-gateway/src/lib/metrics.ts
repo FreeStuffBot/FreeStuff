@@ -1,8 +1,6 @@
 import { Counter, Gauge, Registry } from 'prom-client'
 import { Request, Response } from 'express'
-import ChannelsCache from '../cache/channels-cache'
-import GuildCache from '../cache/guild-cache'
-import MemberCache from '../cache/member-cache'
+import RestCache from '../cache/rest-cache'
 
 
 export default class Metrics {
@@ -25,7 +23,7 @@ export default class Metrics {
 
   public static init() {
     Metrics.registerMetrics()
-    // Metrics.startCollectors() // disabled while caches are disabled
+    Metrics.startCollectors()
   }
 
   private static registerMetrics() {
@@ -36,9 +34,10 @@ export default class Metrics {
 
   private static startCollectors() {
     setInterval(() => {
-      Metrics.gaugeDgCacheSize.set({ bucket: 'channels' }, ChannelsCache.size)
-      Metrics.gaugeDgCacheSize.set({ bucket: 'guilds' }, GuildCache.size)
-      Metrics.gaugeDgCacheSize.set({ bucket: 'members' }, MemberCache.size)
+      // Metrics.gaugeDgCacheSize.set({ bucket: 'channels' }, ChannelsCache.size)
+      // Metrics.gaugeDgCacheSize.set({ bucket: 'guilds' }, GuildCache.size)
+      // Metrics.gaugeDgCacheSize.set({ bucket: 'members' }, MemberCache.size)
+      Metrics.gaugeDgCacheSize.set({ bucket: 'rest' }, RestCache.size)
     }, 10e3)
   }
 

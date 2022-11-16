@@ -59,6 +59,8 @@ export default class Emojis {
   public static readonly channelGreen = new Emojis('863736579335913483', 'channel_green')
   public static readonly announcementChannel = new Emojis('863732741752487946', 'announcement_channel')
   public static readonly announcementChannelGreen = new Emojis('863742472790474812', 'announcement_channel_green')
+  public static readonly channelThreads = new Emojis('1042545315493990411', 'channel_threads')
+  public static readonly channelThreadsGreen = new Emojis('1042545314537685054', 'channel_threads_green')
   public static readonly overflow = new Emojis('863142285465485372', 'overflow')
   public static readonly support = new Emojis('870412781827002418', 'support')
   public static readonly settings = new Emojis('870412781780869150', 'settings')

@@ -1,5 +1,5 @@
 import { ButtonStyle, ChannelType, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
-import { Localisation, Emojis, CustomPermissions, DataChannel, SanitizedGuildType, Errors } from '@freestuffbot/common'
+import { Localisation, Emojis, CustomPermissions, DataChannel, SanitizedGuildType, Errors, Experiments } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import { CustomChannelPermissions } from '@freestuffbot/common/dist/lib/custom-permissions'
 import Tracker from '../../../lib/tracker'
@@ -26,18 +26,29 @@ function isRecommended(i: GenericInteraction, c: DataChannel) {
   return recommendedChannelRegex.test(c.name) || i.channel_id === c.id
 }
 
+const allowedChannelTypes = [
+  ChannelType.GUILD_TEXT,
+  ChannelType.GUILD_NEWS,
+  ChannelType.GUILD_PUBLIC_THREAD,
+  ChannelType.GUILD_NEWS_THREAD
+]
+
 export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Promise<InteractionApplicationCommandCallbackData> {
   const [ err, guildData ] = await i.guildData.fetch()
   if (err) return Errors.handleErrorAndCommunicate(err)
 
   Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
 
-  const [ error, allChannels ] = await DiscordGateway.getChannels(i.guild_id, !!opts?.ignoreCache)
+  // we don't know if the current channel is a thread so we just always look it up in case it is
+  const lookupThreads = Experiments.runExperimentOnServer('allow_thread_channels', guildData)
+    ? [ i.channel_id, guildData.channel?.toString() ].filter(Boolean)
+    : null
+  const [ error, allChannels ] = await DiscordGateway.getChannels(i.guild_id, lookupThreads, !!opts?.ignoreCache)
   if (error) return Errors.handleErrorAndCommunicate(error)
 
   let youHaveTooManyChannelsStage = 0
   let channelsFound = allChannels
-    .filter(c => (c.type === ChannelType.GUILD_TEXT || c.type === ChannelType.GUILD_NEWS))
+    .filter(c => allowedChannelTypes.includes(c.type))
 
   // ah dang list is too long, let's start filtering some out
   if (channelsFound.length > 24) {
@@ -108,6 +119,7 @@ export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Pr
       {
         type: ComponentType.SELECT,
         custom_id: 'settings_channel_change',
+        placeholder: '=settings_channel_unknown_channel',
         options,
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
@@ -195,13 +207,22 @@ function getDescriptionForChannel(i: GenericInteraction, permissions: CustomChan
  */
 function getEmojiForChannel(recommended: boolean, type: number, sussy: boolean): ({ name: string } | { id: string }) {
   if (sussy) return Emojis.amogus.toObject()
-  return (type === ChannelType.GUILD_NEWS)
-      ? recommended
-        ? Emojis.announcementChannelGreen.toObject()
-        : Emojis.announcementChannel.toObject()
-      : recommended
-        ? Emojis.channelGreen.toObject()
-        : Emojis.channel.toObject()
+
+  if (type === ChannelType.GUILD_NEWS) {
+    return recommended
+      ? Emojis.announcementChannelGreen.toObject()
+      : Emojis.announcementChannel.toObject()
+  }
+
+  if (type === ChannelType.GUILD_NEWS_THREAD || type === ChannelType.GUILD_PUBLIC_THREAD) {
+    return recommended
+      ? Emojis.channelThreadsGreen.toObject()
+      : Emojis.channelThreads.toObject()
+  }
+
+  return recommended
+    ? Emojis.channelGreen.toObject()
+    : Emojis.channel.toObject()
 }
 
 

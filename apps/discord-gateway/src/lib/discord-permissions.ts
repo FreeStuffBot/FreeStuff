@@ -58,11 +58,13 @@ export function calculatePermissionsForMemberInChannel(member: DataMember, chann
   }
 
   const overridesToCheck = [ member.id, ...roles.reverse().map(r => r.id) ]
+  // permission_overwrites could be null if channel is a thread
   const overrides = channel.permission_overwrites
-    .filter(f => overridesToCheck.includes(f.id))
+    ?.filter(f => overridesToCheck.includes(f.id))
     .map(f => ([ f, overridesToCheck.indexOf(f.id) ] as [ ChannelPermissionOverrides['permission_overwrites'][number], number ]))
     .sort((a, b) => (a[1] - b[1]))
     .map(f => f[0])
+    ?? []
 
   const permissionsOverrides: PermissionsContainer = {
     sendMessages: null as boolean,

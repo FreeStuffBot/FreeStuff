@@ -7,6 +7,7 @@ export type ExperimentId
 = 'announcement_tags'
 | 'use_proxy_url'
 | 'show_donation_notice'
+| 'allow_thread_channels'
 
 export default class Experiments {
 

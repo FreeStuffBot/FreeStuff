@@ -31,7 +31,9 @@ export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Pr
 
   Tracker.set(guildData, 'PAGE_DISCOVERED_SETTINGS_CHANGE_CHANNEL')
 
-  const [ error, allChannels ] = await DiscordGateway.getChannels(i.guild_id, !!opts?.ignoreCache)
+  // we don't know if the current channel is a thread so we just always look it up in case it is
+  const lookupThread = i.channel_id
+  const [ error, allChannels ] = await DiscordGateway.getChannels(i.guild_id, lookupThread, !!opts?.ignoreCache)
   if (error) return Errors.handleErrorAndCommunicate(error)
 
   let youHaveTooManyChannelsStage = 0

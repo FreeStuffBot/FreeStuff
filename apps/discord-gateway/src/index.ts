@@ -16,6 +16,7 @@ async function run() {
   RestGateway.startLoop()
   Modules.initMetrics()
   await Modules.startServer()
+  Modules.startPurgeTask()
 }
 
 run().catch((err) => {

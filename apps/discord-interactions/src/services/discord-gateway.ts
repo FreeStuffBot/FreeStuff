@@ -51,21 +51,27 @@ export default class DiscordGateway {
 
   public static readonly channelsCache: FlipflopCache<DataChannel[]> = new FlipflopCache(config.discordChannelsCacheInterval)
 
-  public static async getChannels(guildid: string, ignoreCache = false): Promise<Fragile<DataChannel[]>> {
-    if (!ignoreCache && DiscordGateway.channelsCache.has(guildid))
-      return Errors.success(DiscordGateway.channelsCache.get(guildid))
+  public static async getChannels(guildid: string, lookupThreads?: string | string[], ignoreCache = false): Promise<Fragile<DataChannel[]>> {
+    const cacheBucket = lookupThreads
+      ? `${guildid}:${lookupThreads}`
+      : guildid
+    
+    if (!ignoreCache && DiscordGateway.channelsCache.has(cacheBucket))
+      return Errors.success(DiscordGateway.channelsCache.get(cacheBucket))
 
-    const fresh = await this.fetchChannels(guildid, ignoreCache)
+    const fresh = await this.fetchChannels(guildid, lookupThreads, ignoreCache)
     if (fresh[0]) return fresh
 
-    DiscordGateway.channelsCache.put(guildid, fresh[1])
+    DiscordGateway.channelsCache.put(cacheBucket, fresh[1])
     return fresh
   }
 
-  private static async fetchChannels(guildid: string, ignoreCache: boolean): Promise<Fragile<DataChannel[]>> {
+  private static async fetchChannels(guildid: string, lookupThreads: string | string[] | undefined, ignoreCache: boolean): Promise<Fragile<DataChannel[]>> {
     try {
-      const flags = ignoreCache ? 'softcache' : ''
-      const { data, status, statusText } = await axios.get(`/channels/${guildid}?${flags}`, {
+      const flags = []
+      if (ignoreCache) flags.push('softcache=1')
+      if (lookupThreads) flags.push(`lookup_threads=${typeof lookupThreads === 'string' ? lookupThreads : lookupThreads.join('+')}`)
+      const { data, status, statusText } = await axios.get(`/channels/${guildid}?${flags.join('&')}`, {
         baseURL: config.network.discordGateway,
         validateStatus: null
       })

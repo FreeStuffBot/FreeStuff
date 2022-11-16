@@ -1,5 +1,5 @@
 import { ButtonStyle, ChannelType, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
-import { Localisation, Emojis, CustomPermissions, DataChannel, SanitizedGuildType, Errors } from '@freestuffbot/common'
+import { Localisation, Emojis, CustomPermissions, DataChannel, SanitizedGuildType, Errors, Experiments } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import { CustomChannelPermissions } from '@freestuffbot/common/dist/lib/custom-permissions'
 import DiscordGateway from '../../../../services/discord-gateway'
@@ -29,7 +29,11 @@ export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Pr
   const [ err, guildData ] = await i.guildData.fetch()
   if (err) return Errors.handleErrorAndCommunicate(err)
 
-  const [ error, allChannels ] = await DiscordGateway.getChannels(i.guild_id, !!opts?.ignoreCache)
+  // we don't know if the current channel is a thread so we just always look it up in case it is
+  const lookupThreads = Experiments.runExperimentOnServer('allow_thread_channels', guildData)
+    ? [ i.channel_id, guildData.channel?.toString() ].filter(Boolean)
+    : null
+  const [ error, allChannels ] = await DiscordGateway.getChannels(i.guild_id, lookupThreads, !!opts?.ignoreCache)
   if (error) return Errors.handleErrorAndCommunicate(error)
 
   let youHaveTooManyChannelsStage = 0
