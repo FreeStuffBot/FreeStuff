@@ -61,11 +61,10 @@ export default async function (i: ReplyableComponentInteraction) {
     ? allChannels.find(c => c.id === channel.parentId)
     : null
 
-  // check if parent is valid (just to make sure)
-  if (parent && !allowedParentTypes.includes(parent.type))
-    return i.state('settings_channel')
-
-  const webhookTargetChannel = parent ?? channel
+  // use parent if valid (eg parent = forum), or channel if not (eg parent = category)
+  const webhookTargetChannel = (parent && allowedParentTypes.includes(parent.type))
+    ? parent
+    : channel
 
   // do webhook magic
   const [ webhookError, webhook ] = await Webhooks.updateWebhook(webhookTargetChannel)
