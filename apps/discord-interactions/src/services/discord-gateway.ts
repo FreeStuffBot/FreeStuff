@@ -52,6 +52,9 @@ export default class DiscordGateway {
   public static readonly channelsCache: FlipflopCache<DataChannel[]> = new FlipflopCache(config.discordChannelsCacheInterval)
 
   public static async getChannels(guildid: string, lookupThreads?: string | string[], ignoreCache = false): Promise<Fragile<DataChannel[]>> {
+    if (typeof lookupThreads === 'object') 
+      lookupThreads = lookupThreads.join('+')
+
     const cacheBucket = lookupThreads
       ? `${guildid}:${lookupThreads}`
       : guildid
@@ -66,11 +69,11 @@ export default class DiscordGateway {
     return fresh
   }
 
-  private static async fetchChannels(guildid: string, lookupThreads: string | string[] | undefined, ignoreCache: boolean): Promise<Fragile<DataChannel[]>> {
+  private static async fetchChannels(guildid: string, lookupThreads: string | undefined, ignoreCache: boolean): Promise<Fragile<DataChannel[]>> {
     try {
       const flags = []
       if (ignoreCache) flags.push('softcache=1')
-      if (lookupThreads) flags.push(`lookup_threads=${typeof lookupThreads === 'string' ? lookupThreads : lookupThreads.join('+')}`)
+      if (lookupThreads) flags.push(`lookup_threads=${lookupThreads}`)
       const { data, status, statusText } = await axios.get(`/channels/${guildid}?${flags.join('&')}`, {
         baseURL: config.network.discordGateway,
         validateStatus: null
@@ -170,7 +173,9 @@ export default class DiscordGateway {
     if (!accessor || !accessor.includes('/'))
       return Errors.success(false)
 
-    const { status, statusText, data } = await axios.get(`/webhooks/${accessor}?nodata`, {
+    const [ path ] = accessor.split(':')
+
+    const { status, statusText, data } = await axios.get(`/webhooks/${path}?nodata`, {
       baseURL: config.network.discordGateway,
       validateStatus: null
     }).catch(err => ({ status: 999, statusText: err.name, data: null }))

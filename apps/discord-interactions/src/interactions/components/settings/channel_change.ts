@@ -6,6 +6,13 @@ import DiscordGateway from '../../../services/discord-gateway'
 import Webhooks from '../../../lib/webhooks'
 
 
+const allowedChannelTypes = [
+  ChannelType.GUILD_TEXT,
+  ChannelType.GUILD_NEWS,
+  ChannelType.GUILD_PUBLIC_THREAD,
+  ChannelType.GUILD_NEWS_THREAD
+]
+
 export default async function (i: ReplyableComponentInteraction) {
   if (i.member && !PermissionStrings.containsManageServer(i.member.permissions))
     return i.ack()
@@ -20,14 +27,20 @@ export default async function (i: ReplyableComponentInteraction) {
     return
   }
 
+  if (!/^\d{9,50}$/.test(val)) {
+    // just in case the id is malformed as the requested is passed to the gateway
+    i.state('settings_channel')
+    return
+  }
+
   // fetch channels
-  const [ channelError, allChannels ] = await DiscordGateway.getChannels(i.guild_id)
+  const [ channelError, allChannels ] = await DiscordGateway.getChannels(i.guild_id, val)
   if (channelError) return Errors.handleErrorAndCommunicate(channelError, i)
 
   // find channel and return if invalid
   const channel = allChannels.find(c => c.id === val)
-  if (!channel || (channel.type !== ChannelType.GUILD_TEXT && channel.type !== ChannelType.GUILD_NEWS))
-    return i.ack()
+  if (!channel || !allowedChannelTypes.includes(channel.type))
+    return i.state('settings_channel')
 
   // check for view channel permissions
   const permissions = CustomPermissions.parseChannel(channel.permissions)
@@ -39,8 +52,19 @@ export default async function (i: ReplyableComponentInteraction) {
     return
   }
 
+  // if the channel is a thread, we need to find the parent channel
+  const parent = channel.parentId
+    ? allChannels.find(c => c.id === channel.parentId)
+    : null
+
+  // check if parent is valid (just to make sure)
+  if (channel.parentId && (!parent || !allowedChannelTypes.includes(parent.type)))
+    return i.state('settings_channel')
+
+  const webhookTargetChannel = parent ?? channel
+
   // do webhook magic
-  const [ webhookError, webhook ] = await Webhooks.updateWebhook(channel)
+  const [ webhookError, webhook ] = await Webhooks.updateWebhook(webhookTargetChannel)
   if (webhookError) {
     if (webhookError.status === Errors.STATUS_MISPERM_WEBHOOKS) {
       i.state('settings_channel', {
@@ -63,7 +87,10 @@ export default async function (i: ReplyableComponentInteraction) {
   }
 
   // success!
-  i.guildData.changeSetting('webhook', `${webhook.id}/${webhook.token}`)
+  const webhookData = parent
+    ? `${webhook.id}/${webhook.token}:${channel.id}`
+    : `${webhook.id}/${webhook.token}`
+  i.guildData.changeSetting('webhook', webhookData)
   i.guildData.changeSetting('channel', Long.fromString(channel.id))
   i.state('settings_channel')
 }

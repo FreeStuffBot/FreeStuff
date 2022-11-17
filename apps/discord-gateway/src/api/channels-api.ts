@@ -43,45 +43,39 @@ export default class ChannelsApi {
   }
 
   private static async lookupThreads(guild: string, parsed: DataChannel[], directives: Directives): Promise<DataChannel[] | null> {
-    // look all threads up
-    const promises = directives.lookup_threads.split(' ')
-      .map(threadId => ChannelsApi.lookupThread(guild, threadId, parsed, directives))
+    const uniqueThreadIds = [ ...new Set(directives.lookup_threads.split(' ')) ]
 
-    // wait until all are resolved
-    const resolved = await Promise.all(promises)
+    // filter out threads that are actually regular channels (no need to fetch threads)
+    const ids = uniqueThreadIds.filter(threadId => !parsed.some(channel => channel.id === threadId))
 
-    // filter out ones that failed
-    const out = resolved.filter(Boolean)
-
-    // return if at least one succeeded
-    return out.length ? out : null
-  }
-
-  private static async lookupThread(guild: string, threadId: string, parsed: DataChannel[], directives: Directives): Promise<DataChannel | null> {
-    // the requested thread to look up is actually a regular channel (no need to fetch threads)
-    if (parsed.some(fetched => fetched.id === threadId))
+    // all requested lookups were real channels
+    if (!ids.length)
       return null
 
-    const threads = await ThreadsApi.fetchThreads(guild, directives, true)
+    const allThreads = await ThreadsApi.fetchThreads(guild, directives, true)
 
     // error loading threads (or no threads found)
-    if (!threads || typeof threads === 'number')
+    if (!allThreads || typeof allThreads === 'number')
       return null
 
-    const thread = threads.find(thread => thread.id === threadId)
+    const resolvedThreads = ids
+      .map(threadId => allThreads.find(thread => thread.id === threadId))
+      .filter(Boolean)
 
-    // no thread by that id found or error
-    if (!thread || typeof thread === 'number')
+    // no threads found or error
+    if (!resolvedThreads || typeof resolvedThreads === 'number' || resolvedThreads.length === 0)
       return null
 
-    const parent = parsed.find(channel => channel.id === thread.parentId)
-    if (parent) {
+    for (const thread of resolvedThreads) {
+      const parent = parsed.find(channel => channel.id === thread.parentId)
+      if (!parent) continue
+
       thread.position = parent.position
       thread.topic = parent.topic
       thread.nsfw = parent.nsfw
     }
 
-    return thread
+    return resolvedThreads
   }
 
 }

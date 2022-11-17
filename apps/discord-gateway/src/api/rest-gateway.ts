@@ -64,8 +64,14 @@ export default class RestGateway {
           bucketsBlocked.add(item.bucket)
 
         RestGateway.outgoingQueue.splice(offset, 1)
-        RestGateway.execute(item).then(item.resolve)
-        remaining--
+
+        const res = RestGateway.checkRestCache(item)
+        if (res) {
+          item.resolve(res)
+        } else {
+          RestGateway.execute(item).then(item.resolve)
+          remaining--
+        }
       }
 
       blocked = false
@@ -87,14 +93,19 @@ export default class RestGateway {
     return RestGateway.queue(request, maxRetries - 1)
   }
 
-  private static async execute(request: RestRequest | RestRequestResolveable): Promise<RestResponse> {
-    if (!request.noCache && request.method === 'GET') {
-      const cached = RestCache.get(request.endpoint, request.softCache)
-      if (cached !== undefined)
-        return cached
-    }
+  private static checkRestCache(request: RestRequest | RestRequestResolveable): RestResponse | null {
+    if (request.noCache || request.method !== 'GET')
+      return null
 
-    console.log(request.endpoint)
+    const cached = RestCache.get(request.endpoint, request.softCache)
+    if (cached === undefined)
+      return null
+
+    return cached
+  }
+
+  private static async execute(request: RestRequest | RestRequestResolveable): Promise<RestResponse> {
+    Logger.excessive(`HIT HTTP ${request.method}: ${request.endpoint}`)
 
     try {
       const res = await axios({

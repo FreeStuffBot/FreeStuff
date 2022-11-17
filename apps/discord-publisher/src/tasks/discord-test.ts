@@ -21,9 +21,11 @@ export default async function handleDiscordTest(task: Task<TaskId.DISCORD_TEST>)
     { test: true, donationNotice: false }
   )
 
+  const [ path, thread ] = sanitizedGuild.webhook.split(':')
+  const hook = thread ? `${path}?thread_id=${thread}` : path
   await Upstream.queueRequest({
     method: 'POST',
-    url: `https://discord.com/api/webhooks/${sanitizedGuild.webhook}`,
+    url: `https://discord.com/api/webhooks/${hook}`,
     data: theme
   })
 

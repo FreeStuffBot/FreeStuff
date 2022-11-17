@@ -35,7 +35,7 @@ export default async function (i: ReplyableComponentInteraction) {
   const [ err1, guildData ] = await i.guildData.fetch()
   if (err1) return Errors.handleErrorAndCommunicate(err1, i)
 
-  const [ err2, channels ] = await DiscordGateway.getChannels(i.guild_id)
+  const [ err2, channels ] = await DiscordGateway.getChannels(i.guild_id, guildData.channel?.toString())
   if (err2) return Errors.handleErrorAndCommunicate(err2, i)
 
   const channel = getChannel(guildData, channels)
