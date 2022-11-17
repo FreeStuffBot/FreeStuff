@@ -6,6 +6,12 @@ import DiscordGateway from '../../../services/discord-gateway'
 import Webhooks from '../../../lib/webhooks'
 
 
+const allowedParentTypes = [
+  ChannelType.GUILD_TEXT,
+  ChannelType.GUILD_NEWS,
+  ChannelType.GUILD_FORUM
+]
+
 const allowedChannelTypes = [
   ChannelType.GUILD_TEXT,
   ChannelType.GUILD_NEWS,
@@ -58,7 +64,7 @@ export default async function (i: ReplyableComponentInteraction) {
     : null
 
   // check if parent is valid (just to make sure)
-  if (channel.parentId && (!parent || !allowedChannelTypes.includes(parent.type)))
+  if (channel.parentId && (!parent || !allowedParentTypes.includes(parent.type)))
     return i.state('settings_channel')
 
   const webhookTargetChannel = parent ?? channel

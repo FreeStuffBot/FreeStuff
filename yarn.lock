@@ -902,6 +902,15 @@ cordo@1.13.3, cordo@^1.13.3:
     discord-interactions "^2.4.1"
     express "^4.17.3"
 
+cordo@^1.13.4:
+  version "1.13.4"
+  resolved "https://registry.yarnpkg.com/cordo/-/cordo-1.13.4.tgz#76642ec32fabf3923d67840977500b6655cf2368"
+  integrity sha512-Y9bkFKFwx8fnXW8Jn1hSnTjsveEfiEQlD5DIJko8lnOE5HV8AKeBFzr3McuYDmOeA1hCeQFsH/eIbc5hV2H0Fg==
+  dependencies:
+    axios "^0.21.4"
+    discord-interactions "^2.4.1"
+    express "^4.17.3"
+
 core-util-is@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
