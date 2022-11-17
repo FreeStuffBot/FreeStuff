@@ -893,7 +893,7 @@ cookie@0.5.0:
   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.5.0.tgz#d1f5d71adec6558c58f389987c366aa47e994f8b"
   integrity sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==
 
-cordo@1.13.3, cordo@^1.13.3:
+cordo@^1.13.3:
   version "1.13.3"
   resolved "https://registry.yarnpkg.com/cordo/-/cordo-1.13.3.tgz#9b7220cd32f7968ae3ce806e4e9a852ddee7aa58"
   integrity sha512-FxM7OjsgSq8cmcxqcSkEM4cMUdiOWkVdUs/1FwdRO5RNXmI0CCi0oDFe/w4d7tCRBy4sXi+j2EGlQPYfKw5Y/g==
