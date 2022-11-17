@@ -9,12 +9,13 @@ export function rateLimiter(max: number, window: number, bucket: string = '') {
     max,
     headers: true,
     keyGenerator(req: Request) {
-      if (bucket.includes('{')) {
+      let localBucket = bucket
+      if (localBucket.includes('{')) {
         for (const key in req.params)
-          bucket = bucket.split(`{${key}}`).join(req.params[key])
+          localBucket = bucket.split(`{${key}}`).join(req.params[key])
       }
 
-      return (req.headers.authorization || req.ip) + bucket
+      return (req.headers.authorization || req.ip) + localBucket
     },
     handler(_, res: Response) {
       ReqError.rateLimited(res)
