@@ -33,11 +33,9 @@ export default async function (i: ReplyableComponentInteraction) {
     return
   }
 
-  if (!/^\d{9,50}$/.test(val)) {
-    // just in case the id is malformed as the requested is passed to the gateway
-    i.state('settings_channel')
-    return
-  }
+  // just in case the id is malformed as the requested is passed to the gateway
+  if (!/^\d{9,50}$/.test(val))
+    return i.state('settings_channel')
 
   // fetch channels
   const [ channelError, allChannels ] = await DiscordGateway.getChannels(i.guild_id, val)
@@ -64,7 +62,7 @@ export default async function (i: ReplyableComponentInteraction) {
     : null
 
   // check if parent is valid (just to make sure)
-  if (channel.parentId && (!parent || !allowedParentTypes.includes(parent.type)))
+  if (parent && !allowedParentTypes.includes(parent.type))
     return i.state('settings_channel')
 
   const webhookTargetChannel = parent ?? channel
