@@ -52,7 +52,7 @@ export default class DiscordGateway {
   public static readonly channelsCache: FlipflopCache<DataChannel[]> = new FlipflopCache(config.discordChannelsCacheInterval)
 
   public static async getChannels(guildid: string, lookupThreads?: string | string[], ignoreCache = false): Promise<Fragile<DataChannel[]>> {
-    if (typeof lookupThreads === 'object') 
+    if (lookupThreads && typeof lookupThreads === 'object') 
       lookupThreads = lookupThreads.join('+')
 
     const cacheBucket = lookupThreads
