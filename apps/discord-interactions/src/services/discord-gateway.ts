@@ -62,7 +62,7 @@ export default class DiscordGateway {
     if (!ignoreCache && DiscordGateway.channelsCache.has(cacheBucket))
       return Errors.success(DiscordGateway.channelsCache.get(cacheBucket))
 
-    const fresh = await this.fetchChannels(guildid, lookupThreads, ignoreCache)
+    const fresh = await this.fetchChannels(guildid, lookupThreads as string, ignoreCache)
     if (fresh[0]) return fresh
 
     DiscordGateway.channelsCache.put(cacheBucket, fresh[1])
