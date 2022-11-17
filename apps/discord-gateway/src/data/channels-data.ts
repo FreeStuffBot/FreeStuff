@@ -9,7 +9,7 @@ import MemberData from "./member-data"
 
 export default class ChannelsData {
 
-  public static async parseRaw(raw: any, guildId: string, directives: Directives): Promise<DataChannel[] | null | MagicNumber> {
+  public static async parseRaw(raw: any, guildId: string, directives: Directives, keepParent = false): Promise<DataChannel[] | null | MagicNumber> {
     if (typeof raw !== "object") return null
 
     const [ guild, member ] = await Promise.all([
@@ -21,10 +21,10 @@ export default class ChannelsData {
     if (typeof guild === 'number') return guild
     if (typeof member === 'number') return member
 
-    return raw.map(item => ChannelsData.parseSingle(member, item, guild))
+    return raw.map(item => ChannelsData.parseSingle(member, item, guild, keepParent))
   }
 
-  public static parseSingle(member: DataMember, raw: any, guild: DataGuild): DataChannel {
+  public static parseSingle(member: DataMember, raw: any, guild: DataGuild, keepParent: boolean): DataChannel {
     const permissionsRaw = calculatePermissionsForMemberInChannel(member, raw, guild)
     const permissions = containerToBitfield(permissionsRaw)
 
@@ -32,7 +32,7 @@ export default class ChannelsData {
       id: raw.id,
       name: raw.name,
       type: raw.type,
-      parentId: raw.parent_id,
+      parentId: keepParent ? raw.parent_id : null,
       position: raw.position,
       topic: raw.topic,
       nsfw: raw.nsfw,

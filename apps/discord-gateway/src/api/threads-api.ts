@@ -23,7 +23,7 @@ export default class ThreadsApi {
       return null
 
     if (res.status >= 200 && res.status < 300)
-      return ChannelsData.parseRaw(res.data.threads, guild, directives)
+      return ChannelsData.parseRaw(res.data.threads, guild, directives, true)
 
     if (retry)
       return await this.fetchThreads(guild, directives, false)
