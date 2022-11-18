@@ -90,7 +90,7 @@ const querySortByVoteScore = { $sort: { approved: -1, voteScore: -1 } } as const
 export async function getComments(req: Request, res: Response) {
   const lang = parseLanguageName(req.params.language)
   const line = req.params.line
-  if (line.length > 50) return ReqError.badRequest(res, 'line_too_long', 'just no')
+  if (line.length > 128) return ReqError.badRequest(res, 'line_too_long', 'just no')
   const userId = res.locals.user?.id
   if (!userId) return ReqError.badRequest(res, 'no_user', 'how?')
 
@@ -336,7 +336,7 @@ export async function postComment(req: Request, res: Response) {
   
   // check if input is valid
   if (!text) return ReqError.badRequest(res, 'no_text', 'No text? (megamind pleading meme)')
-  if (line.length > 50) return ReqError.badRequest(res, 'line_too_long', 'just no')
+  if (line.length > 128) return ReqError.badRequest(res, 'line_too_long', 'just no')
   if (!userId) return ReqError.badRequest(res, 'no_user', 'how?')
   if (!/^(?:\w{2}-)?\w{2}$/g.test(lang)) return ReqError.badRequest(res, 'invalid_id', 'don\'t mess with that')
   if (typeof text !== 'string') return ReqError.badRequest(res, 'invalid_text', 'wrong.')
