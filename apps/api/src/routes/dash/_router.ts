@@ -59,8 +59,8 @@ export default class DashRouter {
     r.get(   '/translations/languages',            fw('admin|translate.*'), getLanguages)
     r.get(   '/translations/languages/:language',  fw('admin|translate.*'), getLanguage)
     r.patch( '/translations/comments/:id',             limit(10, 30),               fw('admin|translate.*'), patchCommentVote)
-    r.get(   '/translations/comments/:language/:line', limit(8, 5),                 fw('admin|translate.*'), getComments)
-    r.post(  '/translations/comments/:language/:line', limit(2, 60 * 60, '{line}'), fw('admin|translate.*'), postComment)
+    r.get(   '/translations/comments/:language/:line', limit(8, 5),                 fw('admin|translate.{language}'), getComments)
+    r.post(  '/translations/comments/:language/:line', limit(2, 60 * 60, '{line}'), fw('admin|translate.{language}'), postComment)
 
     // notifications
     r.post( '/notifications/:notification/read',   fw('[logged_in]'),       postNotificationRead)

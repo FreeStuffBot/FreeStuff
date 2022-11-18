@@ -400,7 +400,7 @@ export async function postComment(req: Request, res: Response) {
   const top = await helperGetTopComment(parent)
 
   // check if current top comment is by the person updating it
-  if (top._id === id) {
+  if (top?._id === id) {
     const dummyPostId = `${parent}:1`
 
     // delete previous dummy post, if exists
