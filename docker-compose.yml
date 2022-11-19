@@ -1,19 +1,31 @@
-# THIS DOCKER COMPOSE FILE IS USED TO BOOT UP THE
-# DEVELOPMENT ENVIRONMENT. THIS COMPOSE FILE DOES
-# NOT LAUNCH FREESTUFF. PLEASE CREATE YOUR OWN
-# DEPLOYMENT CONFIGURATION.
-
-version: "3.3"
-
-networks:
-  local:
-    driver: bridge
+# This is for the development environment.
+# Use your own customized configuration for the production environment.
 
 services:
-  rabbit:
-    image: rabbitmq:latest
+  rabbitmq:
+    image: rabbitmq:3.10.7-alpine
     healthcheck:
       test: rabbitmq-diagnostics -q ping
       interval: 30s
       timeout: 30s
       retries: 3
+    ports:
+      - 5672:5672
+    environment:
+      RABBITMQ_DEFAULT_USER: freestuff-dev
+      RABBITMQ_DEFAULT_PASS: freestuff-dev
+
+  mongodb:
+    image: mongo:6.0.3
+    ports:
+      - 27017:27017
+    volumes:
+      - ./scripts/initdb:/docker-entrypoint-initdb.d
+      - dbdata:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: freestuff-dev
+      MONGO_INITDB_ROOT_PASSWORD: freestuff-dev
+      MONGO_INITDB_DATABASE: freestuffbot
+
+volumes:
+  dbdata:
