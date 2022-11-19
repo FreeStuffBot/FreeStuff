@@ -48,8 +48,17 @@ export type UserType = UserDataType & MongooseDocument<any, {}>
 /** The sanitized version of the data, gets served out by the api */
 export type SanitizedUserType = {
   id: string
-  display: string
+  name: string
+  avatar: string
   scope: string[]
+  data: {
+    username: string
+    discriminator: string
+    avatar: string
+    flags: number
+    locale: string
+    verified: boolean
+  }
 }
 
 
@@ -82,6 +91,12 @@ export const UserSchema = new Schema({
   _id: String,
   display: String,
   scope: [ String ],
-  logins: [ UserLoginSchema ],
-  data: UserDetailsSchema
+  logins: {
+    type: [ UserLoginSchema ],
+    default: () => ([])
+  },
+  data: {
+    type: UserDetailsSchema,
+    default: () => ({})
+  }
 }, { collection: 'users' })

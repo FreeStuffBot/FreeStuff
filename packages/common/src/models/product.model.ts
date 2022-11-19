@@ -111,7 +111,7 @@ export type SanitizedProductType = {
   description: string
   /** rating from 0-1 */
   rating?: number
-  /** timestamp of how long this offer is valid */
+  /** timestamp of when this offer expires (in milliseconds) */
   until: number
   /** type of discount */
   type: ProductDiscountTypeType

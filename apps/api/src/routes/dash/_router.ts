@@ -18,10 +18,10 @@ import { getApp, patchAppDescription, patchAppWebhook, postApp, postAppKeyRegen,
 import { postInternalCommand } from './admin/internal'
 import { getTranslationsApplications, getTranslationsApplicationsStatus, patchTranslationsApplication, postTranslationsApplication } from './translations/applications'
 import { postNotificationRead } from './notifications'
-import { getLanguage, getLanguagesPreview } from './translations/languages'
-import { getLanguages } from '../internal/data'
+import { getLanguage, getLanguages, getLanguagesPreview } from './translations/languages'
 import { getComments, patchCommentVote, postComment } from './translations/comments'
 import { postLine } from './translations/lines'
+import { deleteUser, getUsers, patchUser, postUser } from './admin/users'
 
 
 export default class DashRouter {
@@ -107,6 +107,11 @@ export default class DashRouter {
 
     r.get(   '/admin/services',                    fw('admin'),             getServices)
     r.post(  '/admin/services/command',            fw('admin'),             postServicesCommand)
+
+    r.get(   '/admin/users',                       fw('admin'),             getUsers)
+    r.post(  '/admin/users',                       fw('admin'),             postUser)
+    r.patch( '/admin/users/:user',                 fw('admin'),             patchUser)
+    r.delete('/admin/users/:user',                 fw('admin'),             deleteUser)
 
     r.post(  '/admin/internal/command',            fw('admin'),             postInternalCommand)
 

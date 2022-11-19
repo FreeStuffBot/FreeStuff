@@ -9,7 +9,8 @@ export default class Upstream {
   public static async publish(announcement: AnnouncementType) {
     await Promise.all([
       Upstream.publishToDiscord(announcement),
-      Upstream.publishToApps(announcement)
+      Upstream.publishToApps(announcement),
+      Upstream.publishToTelegram(announcement)
     ])
     announcement.save()
   }
@@ -39,6 +40,22 @@ export default class Upstream {
 
     RabbitHole.publish({
       t: TaskId.APPS_PUBLISH_SPLIT,
+      a: announcement._id,
+      v: 0,
+      c: announcementBucketCount
+    })
+  }
+
+  // TODO (medium) put actual bucket count in
+  // eslint-disable-next-line require-await
+  public static async publishToTelegram(announcement: AnnouncementType) {
+    const announcementBucketCount = 1
+
+    // TODO (medium)
+    // announcement.publishingMeta.apps.bucketCount = announcementBucketCount
+
+    RabbitHole.publish({
+      t: TaskId.TELEGRAM_PUBLISH_SPLIT,
       a: announcement._id,
       v: 0,
       c: announcementBucketCount

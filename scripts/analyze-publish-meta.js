@@ -1272,7 +1272,6 @@ const abortedProductGateway = []
 const doubleFailed = []
 for (let i = 0; i < count; i++) {
   // TODO b BEGIN not implemented
-
   if (!results[i]) missing.push(i)
   else if (results[i].length > 1) {
     const amountNormal = results[i].filter(type => type === 'cn').length

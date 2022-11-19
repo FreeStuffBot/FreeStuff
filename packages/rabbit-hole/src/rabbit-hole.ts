@@ -91,9 +91,12 @@ export default class RabbitHole {
     const internalHandler = (msg: amqp.ConsumeMessage) => !msg?.content
       ? void RabbitHole.channel.ack(msg)
       : handler(JSON.parse(msg.content.toString()))
-        .then(ack => ack ? 'ack' : 'nack')
-        .then(fun => RabbitHole.channel[fun](msg))
-        .catch(() => {})
+        .then(ack => RabbitHole.channel[ack ? 'ack' : 'nack'](msg))
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error)
+          RabbitHole.channel.nack(msg)
+        });
 
     RabbitHole.subscription = await RabbitHole.channel.consume(
       queue.name,
