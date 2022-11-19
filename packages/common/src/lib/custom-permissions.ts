@@ -9,7 +9,7 @@ export type CustomChannelPermissions = {
   embedLinks: boolean
 }
 
-export default class CustomPermissions {
+export class CustomPermissions {
 
   public static parseChannel(permissions: number): CustomChannelPermissions {
     return {

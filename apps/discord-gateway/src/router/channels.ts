@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import ChannelsData from '../data/channels-data'
 import { MAGICNUMBER_BAD_GATEWAY, MAGICNUMBER_MISSING_PERMISSIONS } from '../lib/magic-number'
+import { Directives } from '../types/lib'
 
 
 export async function getChannels(req: Request, res: Response) {
@@ -8,7 +9,7 @@ export async function getChannels(req: Request, res: Response) {
   if (!guild)
     return void res.status(400).end()
 
-  const channels = await ChannelsData.findChannels(guild, Object.keys(req.query))
+  const channels = await ChannelsData.findChannels(guild, req.query as Directives)
 
   if (!channels)
     return void res.status(404).end()

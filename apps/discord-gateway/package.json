@@ -19,10 +19,10 @@
     "@freestuffbot/common": "*",
     "axios": "^0.24.0",
     "express": "^4.17.2",
-    "typescript": "^4.5.4"
+    "typescript": "^4.9.3"
   },
   "devDependencies": {
-    "@types/express": "^4.17.13",
-    "@freestuffbot/config": "*"
+    "@freestuffbot/config": "*",
+    "@types/express": "^4.17.13"
   }
 }

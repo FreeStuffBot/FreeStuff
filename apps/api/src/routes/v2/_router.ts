@@ -30,17 +30,17 @@ export default class V2Router {
     /* ENDPOINTS */
 
     // ping
-    r.all(   '/ping', limit(10, 60), () => {})
+    r.all(   '/ping', limit(10, 60*60), () => {})
 
     // products
-    r.get(   '/products/:product', limit(50, 5), getProduct)
+    r.get(   '/products/:product', limit(50, 5*60), getProduct)
 
     // announcements
-    r.get(   '/announcements/:announcement', limit(5, 1), getAnnouncement)
+    r.get(   '/announcements/:announcement', limit(5, 1*60), getAnnouncement)
 
     // channels
-    r.get(   '/channels',          limit(5, 1), getChannels)
-    r.get(   '/channels/:channel', limit(50, 5), getChannel)
+    r.get(   '/channels',          limit(5, 1*60), getChannels)
+    r.get(   '/channels/:channel', limit(50, 5*60), getChannel)
 
 
     /* Default 404 handler */

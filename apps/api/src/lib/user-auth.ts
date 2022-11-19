@@ -74,4 +74,44 @@ export default class UserAuth {
     return out
   }
 
+  public static hasPermission(scope: string, user: UserType, req?: Request): boolean {
+    // not locked -> pass
+    if (scope === '[everyone]')
+      return true
+
+    // can't pass without login -> stop
+    if (!user)
+      return false
+
+    // need to be logged in -> pass
+    if (scope === '[logged_in]')
+      return true
+
+    // find scopes
+    const scopes = scope
+      .split('|')
+      .map((s) => {
+        if (req) {
+          for (const param in req.params)
+            s = s.split(`{${param}}`).join(req.params[param])
+        }
+        return s
+      })
+      .map(s => s.trim())
+      .map(s => s.split('.').join('\\.'))
+      .map(s => s.split('*').join('.*'))
+      .map(s => `^${s}$`)
+
+    // check scopes
+    for (const item of scopes) {
+      for (const permission of user.scope) {
+        if (new RegExp(item, 'g').test(permission))
+          return true
+      }
+    }
+
+    // cringe -> stop
+    return false
+  }
+
 }

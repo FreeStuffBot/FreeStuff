@@ -5,6 +5,7 @@ import { getGuild } from "./router/guild"
 import { getMember } from "./router/member"
 import { getWebhook, getWebhooks, postWebhook } from "./router/webhooks"
 import Metrics from "./lib/metrics"
+import RestCache from "./cache/rest-cache"
 import { config } from "."
 
 
@@ -32,6 +33,12 @@ export default class Modules {
 
     await new Promise(res => app.listen(config.port, undefined, res as any))
     Logger.process(`Server launched at port ${config.port}`)
+  }
+
+  public static startPurgeTask(): void {
+    setInterval(() => {
+      RestCache.purge()
+    }, config.cachePurgeInterval)
   }
 
 }

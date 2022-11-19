@@ -1,6 +1,7 @@
 import { ExperimentDataType, ExperimentSanitizer, ExperimentType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from '../../../database/mongo'
+import AuditLog from '../../../lib/audit-log'
 import ReqError from '../../../lib/req-error'
 
 
@@ -34,6 +35,14 @@ export function postExperiment(req: Request, res: Response) {
 
   document.save()
   res.status(200).json({})
+
+  AuditLog.record({
+    event: 'admin_experiment_create',
+    author: res.locals.user?.id,
+    id: exp.id,
+    description: exp.description,
+    rules: exp.rules
+  })
 }
 
 
@@ -56,6 +65,14 @@ export async function patchExperiment(req: Request, res: Response) {
 
   document.save()
   res.status(200).json({})
+
+  AuditLog.record({
+    event: 'admin_experiment_update',
+    author: res.locals.user?.id,
+    id: req.params.experiment,
+    description: req.body.description,
+    rules: req.body.rules
+  })
 }
 
 
@@ -73,4 +90,10 @@ export async function deleteExperiment(req: Request, res: Response) {
 
   document.delete()
   res.status(200).json({})
+
+  AuditLog.record({
+    event: 'admin_experiment_delete',
+    author: res.locals.user?.id,
+    id: req.params.experiment
+  })
 }

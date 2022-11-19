@@ -11,6 +11,9 @@ module.exports = {
   auditLog: {
     destinationDiscord: loadArg('API_AUDITLOG_DEST_DISCORD')
   },
+  notifications: {
+    destinationDiscord: loadArg('API_NOTIFICATIONS_DEST_DISCORD')
+  },
   behavior: {
     desiredGuildCountPerBucket: 250,
     desiredAppCountPerBucket: 50

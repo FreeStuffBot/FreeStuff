@@ -2,6 +2,7 @@ import { DataWebhook } from "@freestuffbot/common"
 import { config } from ".."
 import WebhooksApi from "../api/webhooks-api"
 import { MagicNumber, MAGICNUMBER_BAD_GATEWAY } from "../lib/magic-number"
+import { Directives } from "../types/lib"
 
 
 export default class WebhooksData {
@@ -29,7 +30,7 @@ export default class WebhooksData {
    * 
    */
 
-  public static async findWebhooks(channel: string, directives: string[]): Promise<DataWebhook[] | MagicNumber | null> {
+  public static async findWebhooks(channel: string, directives: Directives): Promise<DataWebhook[] | MagicNumber | null> {
     // if (!directives.includes('nocache')) {
     //   const cache = WebhookCache.get(channel, directives.includes('softcache'))
     //   if (cache !== undefined) return cache

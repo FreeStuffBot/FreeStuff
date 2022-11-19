@@ -1,6 +1,7 @@
 import { MiscDataType, MiscType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from '../../../database/mongo'
+import AuditLog from '../../../lib/audit-log'
 import ReqError from '../../../lib/req-error'
 
 
@@ -50,4 +51,10 @@ export async function patchConfig(req: Request, res: Response) {
 
   config.save()
   res.status(200).json(config?.data || {})
+
+  AuditLog.record({
+    event: 'admin_config_update',
+    author: res.locals.user?.id,
+    name
+  })
 }

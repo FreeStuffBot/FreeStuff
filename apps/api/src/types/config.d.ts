@@ -11,6 +11,9 @@ export type configjs = {
   auditLog: {
     destinationDiscord: string
   },
+  notifications: {
+    destinationDiscord: string
+  },
   behavior: {
     desiredGuildCountPerBucket: number
     desiredAppCountPerBucket: number

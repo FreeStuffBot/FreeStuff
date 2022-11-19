@@ -32,6 +32,8 @@ export default class Const {
 
   public static readonly invisibleCharacter = '﻿'
 
+  public static readonly premiumIndicatorSymbol = '❖'
+
   public static readonly placeholderThumbnail = 'https://media.discordapp.net/attachments/672907465670787083/830794212894572574/thumbnail_placeholder.png'
 
   public static readonly brandIcons = {

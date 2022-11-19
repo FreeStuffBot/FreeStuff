@@ -3,16 +3,19 @@ import { config } from ".."
 import WebhooksData from "../data/webhooks-data"
 import { MagicNumber, MAGICNUMBER_MAX_WEBHOOKS_REACHED, MAGICNUMBER_MISSING_PERMISSIONS } from "../lib/magic-number"
 import Metrics from "../lib/metrics"
+import { Directives } from "../types/lib"
 import RestGateway from "./rest-gateway"
 
 
 export default class WebhooksApi {
 
-  public static async fetchWebhooks(channel: string, directives: string[], retry = true): Promise<DataWebhook[] | null | MagicNumber> {
+  public static async fetchWebhooks(channel: string, directives: Directives, retry = true): Promise<DataWebhook[] | null | MagicNumber> {
     const res = await RestGateway.queue({
       method: 'GET',
       bucket: channel,
-      endpoint: `/channels/${channel}/webhooks`
+      endpoint: `/channels/${channel}/webhooks`,
+      noCache: !directives.nocache,
+      softCache: !directives.softcache
     })
 
     Metrics.counterDgRequests.inc({ method: 'GET', endpoint: 'webhooks', status: res.status })
@@ -32,11 +35,13 @@ export default class WebhooksApi {
     return undefined
   }
 
-  public static async fetchWebhook(accessor: string, directives: string[], retry = true): Promise<DataWebhook[] | null | MagicNumber> {
+  public static async fetchWebhook(accessor: string, directives: Directives, retry = true): Promise<DataWebhook[] | null | MagicNumber> {
     const res = await RestGateway.queue({
       method: 'GET',
       bucket: accessor,
-      endpoint: `/webhooks/${accessor}`
+      endpoint: `/webhooks/${accessor}`,
+      noCache: !directives.nocache,
+      softCache: !directives.softcache
     })
 
     Metrics.counterDgRequests.inc({ method: 'GET', endpoint: 'webhook', status: res.status })
@@ -48,7 +53,7 @@ export default class WebhooksApi {
       return null
 
     if (res.status >= 200 && res.status < 300)
-      return directives.includes('nodata') ? {} : res.data
+      return directives.nodata ? {} : res.data
 
     if (retry)
       return await this.fetchWebhook(accessor, directives, false)
