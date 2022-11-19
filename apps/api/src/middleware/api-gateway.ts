@@ -12,6 +12,7 @@ import ReqError from '../lib/req-error'
 export type ApiSubset
   = 'dash'
   | 'internal'
+  | 'public'
   | 'v1'
   | 'v2'
 
@@ -42,6 +43,9 @@ export async function validateToken(auth: string, locals: Response['locals']) {
 export function apiGateway(subset: ApiSubset, partnerOnly = false): (req: Request, res: Response, next: NextFunction) => any {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (subset === 'dash')
+      return next()
+
+    if (subset === 'public')
       return next()
 
     //
