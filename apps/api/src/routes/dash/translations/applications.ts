@@ -1,7 +1,6 @@
-import { SanitizedTranslateApplicationType, TranslateApplicationDataType, TranslateApplicationSanitizer, TranslateApplicationType, UserDataType, UserType } from '@freestuffbot/common'
+import { DiscordUtils, SanitizedTranslateApplicationType, TranslateApplicationDataType, TranslateApplicationSanitizer, TranslateApplicationType, UserDataType, UserType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
 import Mongo from '../../../database/mongo'
-import DiscordUtils from '../../../lib/discord-utils'
 import Notifier from '../../../lib/notifier'
 import ReqError from '../../../lib/req-error'
 

@@ -8,10 +8,12 @@ export async function postLine(req: Request, res: Response) {
     return ReqError.badRequest(res, 'missing_key', 'No key provided')
 
   const key = req.body.key
-  const exists = await Mongo.Language.exists({
-    _index: 0,
-    [key]: { $exists: 1 }
-  })
+  // .exists does not work because you can't put it in { strict: false } mode
+  const exists = await Mongo.Language.findOne(
+    { _index: 0, [key]: { $ne: null } },
+    { _id: 1 },
+    { strict: false }
+  )
   if (exists)
     return ReqError.badRequest(res, 'duplicate_key', 'Provided key already exists')
 
@@ -22,13 +24,16 @@ export async function postLine(req: Request, res: Response) {
     { _index: 0 },
     { $set: { [key]: eng } },
     { strict: false, returnNewDocument: false }
-  )
+  ).exec()
 
-  return Mongo.Language
-    .findById(name)
-    .lean(true)
-    .exec()
-    .then(data => res.status(200).json(data || {}))
-    .catch(() => ReqError.badGateway(res))
+  if (desc) {
+    Mongo.Language.updateOne(
+      { _id: 'descriptions' },
+      { $set: { [key]: desc } },
+      { strict: false, returnNewDocument: false }
+    ).exec()
+  }
+
+  res.status(200).end()
 }
 
