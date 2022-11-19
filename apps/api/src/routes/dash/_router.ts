@@ -7,7 +7,6 @@ import { rateLimiter as limit } from '../../middleware/rate-limits'
 import pagination from '../../middleware/pagination'
 
 import { getLogin, getMe, postCode } from './auth'
-import { getComments, getLanguage, getLanguages, getLanguagesPreview, patchCommentVote, postComment } from './translations/languages'
 import { getProduct, getProducts, patchProduct, postProduct, postProductRefetch } from './content/products'
 import { deletePlatform, getPlatforms, patchPlatform, postPlatform } from './content/platforms'
 import { deleteCurrency, getCurrencies, patchCurrency, postCurrency } from './content/currencies'
@@ -19,6 +18,10 @@ import { getApp, patchAppDescription, patchAppWebhook, postApp, postAppKeyRegen,
 import { postInternalCommand } from './admin/internal'
 import { getTranslationsApplications, getTranslationsApplicationsStatus, patchTranslationsApplication, postTranslationsApplication } from './translations/applications'
 import { postNotificationRead } from './notifications'
+import { getLanguage, getLanguagesPreview } from './translations/languages'
+import { getLanguages } from '../internal/data'
+import { getComments, patchCommentVote, postComment } from './translations/comments'
+import { postLine } from './translations/lines'
 
 
 export default class DashRouter {
@@ -51,6 +54,7 @@ export default class DashRouter {
     r.get(   '/auth/me',                           fw('[logged_in]'),       getMe)
 
     // translations
+    r.post(  '/translations/lines',                fw('admin'),             postLine)
     r.get(   '/translations/applications',         fw('admin|contentmod'),  getTranslationsApplications)
     r.post(  '/translations/applications',         fw('[logged_in]'),       postTranslationsApplication)
     r.get(   '/translations/applications/@me',     fw('[logged_in]'),       getTranslationsApplicationsStatus)
