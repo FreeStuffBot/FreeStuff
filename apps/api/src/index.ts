@@ -6,7 +6,6 @@ export const config = require('../config.js') as configjs
 
 import { ContainerInfo, Logger } from '@freestuffbot/common'
 import Modules from './modules'
-import { DiscordBridge } from './lib/discord-bridge'
 
 
 async function run() {
@@ -18,8 +17,6 @@ async function run() {
   Modules.connectGibu()
   Modules.startServer()
   Modules.startRoutines()
-
-  console.log(DiscordBridge.assignRole('297438154200449024', '487358779025915904'))
 }
 
 run().catch((err) => {
