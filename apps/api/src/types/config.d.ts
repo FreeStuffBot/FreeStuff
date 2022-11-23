@@ -10,13 +10,20 @@ export type configjs = {
   dashboardOauthCallbackUrl: string
   auditLog: {
     destinationDiscord: string
-  },
+  }
   notifications: {
     destinationDiscord: string
-  },
+  }
   behavior: {
     desiredGuildCountPerBucket: number
     desiredAppCountPerBucket: number
+  }
+  discordCommunity: {
+    guildId: number
+    helperAuthToken: string
+    roles: {
+      donor: string
+    }
   }
   routines: {
     fetchFreebies: string

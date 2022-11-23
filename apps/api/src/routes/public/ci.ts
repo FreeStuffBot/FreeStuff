@@ -33,7 +33,7 @@ export async function getBuildWeb(req: Request, res: Response) {
     selector[key] = 1
 
   const all = await Mongo.Language
-    .find({})
+    .find({ _enabled: true })
     .select(selector)
     .lean(true)
     .exec()
