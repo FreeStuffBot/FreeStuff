@@ -12,5 +12,8 @@ module.exports = {
     baseUrl: loadArg('TELEGRAM_PUBLISHER_FREESTUFF_API_URL'),
     /** this needs a privileged partner api key */
     auth: loadArg('TELEGRAM_PUBLISHER_FREESTUFF_API_KEY')
+  },
+  telegram: {
+    botToken: loadArg('TELEGRAM_PUBLISHER_BOT_TOKEN')
   }
 }

@@ -4,6 +4,9 @@ const DISCORD_CLIENT_ID = '<place-your-client-id-here>';
 const DISCORD_PUBLIC_KEY = '<place-your-public-key-here>';
 const DISCORD_OAUTH_CLIENT_SECRET = '<place-your-client-secret-here>';
 
+/* -- Telegram Tokens -- */
+const TELEGRAM_BOT_TOKEN = '<place-your-bot-token-here>';
+
 /* -- Local Services -- */
 const MONGO_URL = 'mongodb://freestuff-dev:freestuff-dev@127.0.0.1:27017/freestuffbot?authSource=admin';
 const RABBIT_URL = 'amqp://freestuff-dev:freestuff-dev@localhost';
@@ -95,6 +98,7 @@ module.exports = {
     /* -- 'telegram-publisher' microservice -- */
     TELEGRAM_PUBLISHER_PORT,
     TELEGRAM_PUBLISHER_RABBIT_URL: RABBIT_URL,
+    TELEGRAM_PUBLISHER_BOT_TOKEN: TELEGRAM_BOT_TOKEN,
     TELEGRAM_PUBLISHER_FREESTUFF_API_URL: `http://localhost:${API_PORT}`,
     TELEGRAM_PUBLISHER_FREESTUFF_API_KEY: 'verysecret'
   }
