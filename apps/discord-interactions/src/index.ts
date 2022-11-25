@@ -19,6 +19,8 @@ async function run() {
   Modules.loadProductChannnels()
   Modules.initCordo()
   Modules.startServer()
+
+  Modules.loadDevLangData()
 }
 
 run().catch((err) => {

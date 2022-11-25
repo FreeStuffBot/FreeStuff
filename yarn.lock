@@ -902,10 +902,10 @@ cordo@^1.13.3:
     discord-interactions "^2.4.1"
     express "^4.17.3"
 
-cordo@^1.13.4:
-  version "1.13.4"
-  resolved "https://registry.yarnpkg.com/cordo/-/cordo-1.13.4.tgz#76642ec32fabf3923d67840977500b6655cf2368"
-  integrity sha512-Y9bkFKFwx8fnXW8Jn1hSnTjsveEfiEQlD5DIJko8lnOE5HV8AKeBFzr3McuYDmOeA1hCeQFsH/eIbc5hV2H0Fg==
+cordo@^1.14.7:
+  version "1.14.7"
+  resolved "https://registry.yarnpkg.com/cordo/-/cordo-1.14.7.tgz#5901e65cbf08507a032b3fe430bdcead98ce90cd"
+  integrity sha512-kAEyWAvnj2RgyfyiZzSeeadOOuwU8pcwsMSHm17WU+O4qeg068qGu+hEe6fkZFN6sNes0w1wQugIfqGm0mpMoA==
   dependencies:
     axios "^0.21.4"
     discord-interactions "^2.4.1"
@@ -4077,7 +4077,7 @@ typescript@^4.4.3:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.4.tgz#a17d3a0263bf5c8723b9c52f43c5084edf13c2e8"
   integrity sha512-VgYs2A2QIRuGphtzFV7aQJduJ2gyfTljngLzjpfW9FoYZF6xuw1W0vW9ghCKLfcWrCFxK81CSGRAvS1pn4fIUg==
 
-typescript@^4.9.3:
+typescript@^4.5.4, typescript@^4.9.3:
   version "4.9.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.3.tgz#3aea307c1746b8c384435d8ac36b8a2e580d85db"
   integrity sha512-CIfGzTelbKNEnLpLdGFgdyKhG23CKdKgQPOBc+OUNrkJ2vr+KSzsSV5kq5iWhEQbok+quxgGzrAtGWCyU7tHnA==

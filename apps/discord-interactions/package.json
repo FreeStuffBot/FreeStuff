@@ -19,7 +19,7 @@
     "@freestuffbot/rabbit-hole": "*",
     "axios": "^0.24.0",
     "bson": "^4.6.1",
-    "cordo": "^1.13.4",
+    "cordo": "^1.14.7",
     "express": "^4.17.2",
     "mongodb": "^4.3.0",
     "mongoose": "^6.1.6",
