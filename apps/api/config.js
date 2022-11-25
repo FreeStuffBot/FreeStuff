@@ -18,6 +18,13 @@ module.exports = {
     desiredGuildCountPerBucket: 250,
     desiredAppCountPerBucket: 50
   },
+  discordCommunity: {
+    guildId: '517009303203479572',
+    helperAuthToken: loadArg('API_DISCORD_HELPER_AUTH_TOKEN'),
+    roles: {
+      donor: '721776266755440690'
+    }
+  },
   routines: {
     // At minute 5 past every hour.
     fetchFreebies: '5 */1 * * *',

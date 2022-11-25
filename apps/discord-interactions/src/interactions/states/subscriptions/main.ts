@@ -1,5 +1,5 @@
 import { Const, Emojis, Errors } from '@freestuffbot/common'
-import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionType } from 'cordo'
+import { ButtonStyle, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionType, MessageComponent } from 'cordo'
 import Tracker from '../../../lib/tracker'
 
 
@@ -44,57 +44,48 @@ export default async function (i: GenericInteraction): Promise<InteractionApplic
       : '=settings_main_ui_2_guided_display_normal'
   }
 
+  const subscriptions = [
+    [
+      { id: 'free', enabled: true },
+      { id: 'weekend', enabled: true },
+      { id: 'dlc', enabled: false }
+    ],
+    [
+      { id: 'prime', enabled: false },
+      { id: 'gamepass', enabled: false }
+    ]
+  ]
+  const subComponents: MessageComponent[] = subscriptions.flatMap((line) => {
+    const lineComps: MessageComponent[] = line.map(sub => ({
+      type: ComponentType.BUTTON,
+      style: ButtonStyle.SECONDARY,
+      custom_id: `=subscriptions_${sub.id}_main`,
+      emoji: sub.enabled
+        ? Emojis.toggleOn.toObject()
+        : Emojis.toggleOff.toObject(),
+      label: `=subscription_${sub.id}_name`
+    }))
+
+    return [
+      ...lineComps,
+      { type: ComponentType.LINE_BREAK }
+    ]
+  })
+
   return {
     title: 'Your Subscriptions',
     description,
     components: [
+      ...subComponents,
       {
-        type: ComponentType.BUTTON,
-        style: ButtonStyle.SECONDARY,
-        custom_id: 'settingsv2_sub_free_main',
-        emoji: Emojis.toggleOn.toObject(),
-        label: 'Free to keep'
-      },
-      {
-        type: ComponentType.BUTTON,
-        style: ButtonStyle.SECONDARY,
-        custom_id: 'settingsv2_sub_weekend_main',
-        emoji: Emojis.toggleOn.toObject(),
-        label: 'Free Weekend'
+        type: ComponentType.LINE_BREAK
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.SECONDARY,
         custom_id: 'settings_more',
-        emoji: Emojis.toggleOff.toObject(),
-        label: 'DLC\'s & More'
-      },
-      {
-        type: ComponentType.LINE_BREAK
-      },
-      {
-        type: ComponentType.BUTTON,
-        style: ButtonStyle.SECONDARY,
-        custom_id: 'settings_display',
-        emoji: Emojis.toggleOff.toObject(),
-        label: 'Prime Gaming' + ' ' + Const.premiumIndicatorSymbol
-      },
-      {
-        type: ComponentType.BUTTON,
-        style: ButtonStyle.SECONDARY,
-        custom_id: 'settings_filter',
-        emoji: Emojis.toggleOff.toObject(),
-        label: 'Game Pass' + ' ' + Const.premiumIndicatorSymbol
-      },
-      {
-        type: ComponentType.LINE_BREAK
-      },
-      {
-        type: ComponentType.BUTTON,
-        style: ButtonStyle.SECONDARY,
-        custom_id: 'settingsv2_main',
-        label: '=generic_back',
-        emoji: Emojis.caretLeft.toObject()
+        label: '=settings_general',
+        emoji: Emojis.settings.toObject()
       }
     ],
     _context: {

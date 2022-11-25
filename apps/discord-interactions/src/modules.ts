@@ -114,4 +114,21 @@ export default class Modules {
     return Mongo.connect(config.mongoUrl)
   }
 
+  public static loadDevLangData(): void {
+    setTimeout(() => {
+      Localisation.load([
+        {
+          _id: 'en-US',
+          subscription_free_name: '100% Discount',
+          subscription_weekend_name: 'Free Weekend!',
+          subscription_dlc_name: 'DLC\'s & More',
+          subscription_prime_name: 'Prime Gaming',
+          subscription_gamepass_name: 'Game Pass',
+          settings_general: 'General Settings',
+          subscriptions_notifications_add_role: 'Add Role',
+        }
+      ], true)
+    }, 5000) // wait for umi libs to mount
+  }
+
 }

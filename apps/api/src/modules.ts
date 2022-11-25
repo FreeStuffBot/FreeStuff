@@ -8,6 +8,7 @@ import GibuGqlCore from "./services/gibu/gibu-gql-core"
 import V2Router from "./routes/v2/_router"
 import InternalRouter from "./routes/internal/_router"
 import Routines from "./routines/_routines"
+import PublicRouter from "./routes/public/_router"
 import { config } from "."
 
 
@@ -37,6 +38,7 @@ export default class Modules {
     app.use('/v1', V1Router.init())
     app.use('/v2', V2Router.init())
     app.use('/internal', InternalRouter.init())
+    app.use('/public', PublicRouter.init())
 
     app.all('*', (_, res) => res.status(400).end())
 

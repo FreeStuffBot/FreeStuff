@@ -13,7 +13,7 @@ export default class Localisation {
   private static texts: Map<string, Record<string, string>> = new Map()
   private static closestMatch: Map<string, string> = new Map()
 
-  public static load(languages: Record<string, any>[]) {
+  public static load(languages: Record<string, any>[], append = false) {
     const all = languages.sort((a, b) => a._id.startsWith('en')
       ? -1
       : b._id.startsWith('en')
@@ -21,9 +21,11 @@ export default class Localisation {
         : 0
     )
 
-    Localisation.list = new Set()
-    Localisation.idmap = new Map()
-    Localisation.texts = new Map()
+    if (!append) {
+      Localisation.list = new Set()
+      Localisation.idmap = new Map()
+      Localisation.texts = new Map()
+    }
 
     for (const lang of all) {
       for (const key in lang) {
@@ -31,9 +33,15 @@ export default class Localisation {
         lang[key] = (lang[key] as string).split('\\n').join('\n')
       }
 
-      Localisation.list.add(lang._id)
-      Localisation.idmap.set(lang._index, lang._id)
-      Localisation.texts.set(lang._id, lang as Record<string, string>)
+      if (append) {
+        const obj = Localisation.texts.get(lang._id)
+        for (const key in lang)
+          obj[key] = lang[key]
+      } else {
+        Localisation.list.add(lang._id)
+        Localisation.idmap.set(lang._index, lang._id)
+        Localisation.texts.set(lang._id, lang as Record<string, string>)
+      }
     }
   }
 

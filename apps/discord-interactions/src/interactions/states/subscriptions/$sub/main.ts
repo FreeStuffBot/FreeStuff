@@ -1,4 +1,4 @@
-import { ButtonStyle, ChannelType, ComponentType, GenericInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
+import { ButtonStyle, ChannelType, ComponentType, GenericInteraction, SlotableInteraction, InteractionApplicationCommandCallbackData, InteractionComponentFlag, MessageComponentSelectOption } from 'cordo'
 import { Localisation, Emojis, CustomPermissions, DataChannel, SanitizedGuildType, Errors, Experiments } from '@freestuffbot/common'
 import PermissionStrings from 'cordo/dist/lib/permission-strings'
 import { CustomChannelPermissions } from '@freestuffbot/common/dist/lib/custom-permissions'
@@ -25,7 +25,7 @@ function isRecommended(i: GenericInteraction, c: DataChannel) {
   return recommendedChannelRegex.test(c.name) || i.channel_id === c.id
 }
 
-export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Promise<InteractionApplicationCommandCallbackData> {
+export default async function (i: SlotableInteraction, [ opts ]: [ Options ]): Promise<InteractionApplicationCommandCallbackData> {
   const [ err, guildData ] = await i.guildData.fetch()
   if (err) return Errors.handleErrorAndCommunicate(err)
 
@@ -106,31 +106,32 @@ export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Pr
     description += `\n\n⚠️ **${opts.conflict}**`
 
   return {
-    title: 'Free to keep',
+    title: `=subscription_${i.params.sub}_name`,
     description,
     components: [
       {
         type: ComponentType.SELECT,
-        custom_id: 'settingsv2_channel_change',
+        custom_id: `subscriptions_${i.params.sub}_channel_change`,
+        placeholder: '=settings_channel_unknown_channel',
         options,
         flags: [ InteractionComponentFlag.ACCESS_MANAGE_SERVER ]
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.PRIMARY,
-        custom_id: 'subscriptions_free_display',
+        custom_id: `subscriptions_${i.params.sub}_display`,
         label: 'Display Settings'
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.PRIMARY,
-        custom_id: 'subscriptions_free_filter',
+        custom_id: `subscriptions_${i.params.sub}_filter`,
         label: 'Filter Settings'
       },
       {
         type: ComponentType.BUTTON,
         style: ButtonStyle.PRIMARY,
-        custom_id: 'subscriptions_free_notif',
+        custom_id: `subscriptions_${i.params.sub}_notif`,
         label: 'Notification Settings'
       },
       {

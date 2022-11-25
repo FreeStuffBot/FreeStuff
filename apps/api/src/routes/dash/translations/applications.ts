@@ -1,7 +1,8 @@
-import { SanitizedTranslateApplicationType, TranslateApplicationDataType, TranslateApplicationSanitizer, TranslateApplicationType, UserDataType, UserType } from '@freestuffbot/common'
+import { DiscordUtils, SanitizedTranslateApplicationType, TranslateApplicationDataType, TranslateApplicationSanitizer, TranslateApplicationType, UserDataType, UserType } from '@freestuffbot/common'
 import { Request, Response } from 'express'
+import { config } from '../../..'
 import Mongo from '../../../database/mongo'
-import DiscordUtils from '../../../lib/discord-utils'
+import { DiscordBridge } from '../../../lib/discord-bridge'
 import Notifier from '../../../lib/notifier'
 import ReqError from '../../../lib/req-error'
 
@@ -121,6 +122,7 @@ export async function patchTranslationsApplication(req: Request, res: Response) 
       title: 'An update on your translate application',
       message: `Hey ${user.display}! Welcome to the FreeStuff translation team!\nWe are happy to welcome you in! With receiving this message you should have gotten access to two things:\n1. The translation panel, you can find it on the left. Same place where you submitted your application\n2. A Discord channel for all translators.\nMake yourself home and check out the translation page to get started!`
     })
+    DiscordBridge.assignRole(id, config.discordCommunity.roles.donor)
   } else {
     application.declined = req.body.reason || 'No reason provided'
     application.save()

@@ -31,7 +31,7 @@ export default class ThemeSix implements ThemeBuilderClass {
       }
     }))
 
-    return { content, embeds }
+    return { content, embeds, _context: { website: Const.links.website } }
   }
 
 }

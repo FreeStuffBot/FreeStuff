@@ -82,7 +82,7 @@ export async function patchCommentVote(req: Request, res: Response) {
   if (vote !== undefined) {
     if (typeof vote !== 'number')
       return ReqError.badRequest(res, 'invalid_body', 'HUH!?')
-    if (!UserAuth.hasPermission(`translate.${lang}`, res.locals.user))
+    if (!UserAuth.hasPermission(`admin|translate.${lang}`, res.locals.user))
       return ReqError.noAccess(res, 'not your language, get your fingers off!')
 
     const comment = await Mongo.Translation
