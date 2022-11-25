@@ -8,7 +8,16 @@ db.misc.insertMany([
                     "137258778092503042",
                     "171675309177831424",
                     "207435670854041602",
-                ]
+                ],
+                "telegramAdmins": [
+                    "856875680"
+                ],
+                "telegramChannels": [
+                    {
+                        "chatId": "@freestuff_dev_606026",
+                        "locale": "en-US",
+                    }
+                ],
             }
         },
         "__v": 4,
