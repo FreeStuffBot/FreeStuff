@@ -1,5 +1,5 @@
 import { CMS, Localisation, ProductFlag, SanitizedProductType } from "@freestuffbot/common";
-import { bot } from 'lib/telegram-bot';
+import { bot } from './telegram-bot';
 
 function renderProductPrice(product: SanitizedProductType, locale: string) {
     const [ error, currencies ] = CMS.currencies;
