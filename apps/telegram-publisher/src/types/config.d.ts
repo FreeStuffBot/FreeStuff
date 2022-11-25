@@ -10,4 +10,7 @@ export type configjs = {
     baseUrl: string
     auth: string
   }
+  telegram: {
+    botToken: string
+  }
 }
