@@ -30,7 +30,7 @@ export default class Mongo {
       mongoose.connect(url)
       this.connection.on('error', reject)
       this.connection.on('open', () => {
-        Logger.process('Mongo connection estabished')
+        Logger.process('Mongo connection established')
         resolve(this.connection)
       })
     })
