@@ -1,5 +1,5 @@
-import { CMS, Logger } from '@freestuffbot/common'
 import RabbitHole, { Task, TaskId } from "@freestuffbot/rabbit-hole"
+import { config } from '../';
 
 /*
 PUBLISH_SPLIT is triggered a single time by the system when it's a new announcement is published.
@@ -17,11 +17,7 @@ Check packages/rabbit-hole/src/types/tasks.ts to figure out the structure of the
 */
 
 export default async function handleAppsPublishSplit(task: Task<TaskId.TELEGRAM_PUBLISH_SPLIT>): Promise<boolean> {
-  const targetChannels = CMS.remoteConfig[1]?.global?.telegramChannels;
-  if (targetChannels === undefined) {
-    Logger.warn('No Telegram channels are configured, skipping announcements.');
-    return true;
-  }
+  const targetChannels = config.telegram.channels;
 
   const totalBuckets = task.c;
   const totalChannels = targetChannels.length;

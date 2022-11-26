@@ -1,14 +1,10 @@
-import { CMS, FSApiGateway, Logger } from '@freestuffbot/common';
+import { FSApiGateway } from '@freestuffbot/common';
 import { Task, TaskId } from "@freestuffbot/rabbit-hole"
 import { sendProduct } from '../lib/message-formatter';
-
+import { config } from '../';
 
 export default async function handleAppsPublish(task: Task<TaskId.TELEGRAM_PUBLISH>): Promise<boolean> {
-  const targetChannels = CMS.remoteConfig[ 1 ]?.global?.telegramChannels;
-  if (targetChannels === undefined) {
-    Logger.warn('Failed to load telegram channels configuration');
-    return false;
-  }
+  const targetChannels = config.telegram.channels;
 
   const announcementId = task.a;
   const channelIndex = task.b;

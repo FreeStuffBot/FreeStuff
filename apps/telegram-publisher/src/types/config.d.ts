@@ -1,4 +1,7 @@
-
+interface ChannelEntry {
+  chatId: string | number,
+  locale: string,
+}
 
 export type configjs = {
   port: number
@@ -12,5 +15,6 @@ export type configjs = {
   }
   telegram: {
     botToken: string
+    channels: ChannelEntry[]
   }
 }

@@ -16,17 +16,11 @@ type CmsConstantsType = {
   platforms: SanitizedPlatformType[]
 }
 
-type TelegramChannelEntry = {
-  chatId: string | number
-  locale?: string
-}
-
 type RemoteConfigType = {
   global: {
     excessiveLogging: boolean
     botAdmins: string[]
     telegramAdmins: (string | number)[]
-    telegramChannels: TelegramChannelEntry[]
   }
 }
 

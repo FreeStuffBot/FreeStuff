@@ -1,6 +1,8 @@
 const loadArg = require('@freestuffbot/config/load-arg')
 
-
+/**
+ * @type {import('./src/types/config').configjs}
+ */
 module.exports = {
   port: loadArg('TELEGRAM_PUBLISHER_PORT') || 80,
   rabbitUrl: loadArg('TELEGRAM_PUBLISHER_RABBIT_URL'),
@@ -14,6 +16,12 @@ module.exports = {
     auth: loadArg('TELEGRAM_PUBLISHER_FREESTUFF_API_KEY')
   },
   telegram: {
-    botToken: loadArg('TELEGRAM_PUBLISHER_BOT_TOKEN')
+    botToken: loadArg('TELEGRAM_PUBLISHER_BOT_TOKEN'),
+    channels: [
+      {
+        "chatId": "@freestuff_dev_606026",
+        "locale": "en-US"
+      },
+    ],
   }
 }
