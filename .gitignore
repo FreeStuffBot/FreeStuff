@@ -13,3 +13,5 @@ private.key
 
 dev-*.js
 *.log
+
+.vscode/tasks.json
