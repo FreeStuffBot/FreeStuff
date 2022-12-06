@@ -22,8 +22,6 @@ export default class RabbitHole {
         await this.publish(task, overrideQueue)
 
       RabbitHole.connection.once('close', RabbitHole.onClose)
-
-      setTimeout(() => RabbitHole.connection.close(), 6000)
     } catch (ex) {
       if (maxRetries > 0) {
         await new Promise(res => setTimeout(res, retryDelay))
