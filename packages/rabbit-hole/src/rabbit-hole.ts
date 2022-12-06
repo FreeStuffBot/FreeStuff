@@ -4,24 +4,26 @@ import { QueueName, Task, TaskId, TaskMeta, TaskQueue, TasksForQueue } from './t
 
 export default class RabbitHole {
 
-  private static connection: amqp.Connection
-  private static channel: amqp.Channel
-  private static subscription: amqp.Replies.Consume
+  private static connection: amqp.Connection = null
+  private static channel: amqp.Channel = null
+  private static subscription: amqp.Replies.Consume = null
 
-  private static initPendingQueue: [string, Buffer, amqp.Options.Publish][] = []
+  private static initPendingQueue: [Task<TaskId>, QueueName?][] = []
+  private static initUri: string = null
 
   public static async open(uri: string, maxRetries = 3, retryDelay = 5000): Promise<void> {
+    RabbitHole.initUri = uri
+
     try {
       RabbitHole.connection = await amqp.connect(uri)
       RabbitHole.channel = await RabbitHole.connection.createChannel()
 
-      for (const queued of RabbitHole.initPendingQueue) {        
-        let success = false
-        do {
-          success = RabbitHole.channel.sendToQueue(...queued)
-          if (!success) await new Promise(res => setTimeout(res, 200))
-        } while (!success)
-      }
+      for (const [ task, overrideQueue ] of RabbitHole.initPendingQueue)         
+        await this.publish(task, overrideQueue)
+
+      RabbitHole.connection.once('close', RabbitHole.onClose)
+
+      setTimeout(() => RabbitHole.connection.close(), 6000)
     } catch (ex) {
       if (maxRetries > 0) {
         await new Promise(res => setTimeout(res, retryDelay))
@@ -37,11 +39,28 @@ export default class RabbitHole {
     }
   }
 
+  private static async onClose() {
+      // eslint-disable-next-line no-console
+    console.warn('Rabbit hole closed unexpectedly. Attempting to re-open.')
+
+    await RabbitHole.open(RabbitHole.initUri)
+
+      // eslint-disable-next-line no-console
+    console.warn('Rabbit hole re-opened.')
+  }
+
   /*
    *
    */
 
-  public static async publish(task: Task<TaskId>, overrideQueue?: QueueName): Promise<void> {
+  /** @returns if success */
+  public static async publish(task: Task<TaskId>, overrideQueue?: QueueName): Promise<boolean> {
+    // if the channel is not yet connected, put it in a queue to be published once connected
+    if (!RabbitHole.channel) {
+      RabbitHole.initPendingQueue.push([ task, overrideQueue ])
+      return true
+    }
+
     const queue = overrideQueue
       ? TaskQueue[overrideQueue]
       : TaskMeta[task.t].queue
@@ -52,25 +71,20 @@ export default class RabbitHole {
       priority: TaskMeta[task.t].priority
     }
 
-    // if the channel is not yet connected, put it in a queue to be published once connected
-    if (!RabbitHole.channel) {
-      RabbitHole.initPendingQueue.push([
-        queue.name,
-        Buffer.from(JSON.stringify(task)),
-        options  
-      ])
-      return
-    }
-
-    let success = false
+    let attempt = 0
     do {
-      success = RabbitHole.channel.sendToQueue(
+      const success = RabbitHole.channel.sendToQueue(
         queue.name,
         Buffer.from(JSON.stringify(task)),
         options
       )
-      if (!success) await new Promise(res => setTimeout(res, 200))
-    } while (!success)
+      if (success) return true
+      attempt++
+      if (attempt > 10) return false
+      //  1 |  2 |  3 |   4 |   5 |   6 |    7 |    8 |    9 |    10
+      // 20 | 40 | 80 | 160 | 320 | 640 | 1280 | 2560 | 5120 | 10240
+      await new Promise(res => setTimeout(res, (2 ** attempt) * 10))
+    } while (true)
   }
 
   /**
@@ -82,7 +96,8 @@ export default class RabbitHole {
     queueName: Q,
     handler: (task: TasksForQueue<Q>) => Promise<boolean>
   ): Promise<void> {
-    if (RabbitHole.subscription) throw new Error('This Rabbit Hole has already been subscribed to a queue.')
+    if (RabbitHole.subscription)
+      throw new Error('This Rabbit Hole has already been subscribed to a queue.')
 
     const queue = TaskQueue[queueName]
     RabbitHole.channel.assertQueue(queue.name, queue.options)
@@ -108,6 +123,7 @@ export default class RabbitHole {
   public static unsubscribe() {
     if (RabbitHole.subscription)
       RabbitHole.channel.cancel(RabbitHole.subscription.consumerTag)
+    RabbitHole.subscription = null
   }
 
 }
