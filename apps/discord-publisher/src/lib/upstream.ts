@@ -51,16 +51,16 @@ export default class Upstream {
 
     if (status === 429) {
       // rate limited
-      const blockedFor = Upstream.parseRateLimitRetry(res)
+      const blockedFor = Upstream.parseRateLimitRetry(res) ?? 5000
       const scope = Upstream.parseRateLimitScope(res)
 
       Metrics.counterRateLimitHits.inc({ scope, type: retryConfig.$type })
 
       if (scope === 'shared') {
-        const multiplier = (retryConfig.$attempt - 1) ** 2
+        const multiplier = retryConfig.$attempt ** 2
         await new Promise(res => setTimeout(res, blockedFor * multiplier))
-        retryConfig.$attempt++
 
+        retryConfig.$attempt++
         Upstream.queueRequest(retryConfig)
         return
       }
@@ -68,16 +68,16 @@ export default class Upstream {
       Upstream.timeout++
       await new Promise(res => setTimeout(res, blockedFor + 1))
       Upstream.timeout--
-      retryConfig.$attempt++
 
+      retryConfig.$attempt++
       Upstream.queueRequest(retryConfig)
       return 
     }
 
     if (status >= 500 && status < 600) {
       await Upstream.waitUntilWindowAvailable()
-      retryConfig.$attempt++
 
+      retryConfig.$attempt++
       Upstream.queueRequest(retryConfig)
       return
     }
