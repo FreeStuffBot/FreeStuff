@@ -41,6 +41,7 @@ export default class Metrics {
     Metrics.register.registerMetric(Metrics.counterUpstreamStatus)
     Metrics.register.registerMetric(Metrics.counterUpstreamRetries)
     Metrics.register.registerMetric(Metrics.counterRateLimitHits)
+    Metrics.register.registerMetric(Metrics.counterTasksConsumed)
   }
 
   //
