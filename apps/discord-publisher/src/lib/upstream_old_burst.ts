@@ -72,10 +72,10 @@ export default class Upstream {
   private static parseRateLimitRetry(res: AxiosResponse) {
     if (!res?.headers) return 0
 
-    if (res.headers['X-RateLimit-Remaining'] !== '0') return 0
-    if (!res.headers['X-RateLimit-Reset-After']) return 0
+    if (res.headers['x-ratelimit-remaining'] !== '0') return 0
+    if (!res.headers['x-ratelimit-reset-after']) return 0
 
-    return ~~(Number(res.headers['X-RateLimit-Reset-After']) * 1000)
+    return ~~(Number(res.headers['x-ratelimit-reset-after']) * 1000)
   }
 
   public static startBurstInterval() {

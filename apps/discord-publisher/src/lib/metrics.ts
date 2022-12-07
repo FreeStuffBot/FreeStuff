@@ -12,6 +12,25 @@ export default class Metrics {
     labelNames: [ 'status' ]
   })
 
+  public static counterUpstreamRetries = new Counter({
+    name: 'fsb_sdp_upstream_retries',
+    help: 'FreeStuffBot Service DiscordPublisher: Upstream Retries',
+    labelNames: [ 'attempt' ]
+  })
+
+  public static counterRateLimitHits = new Counter({
+    name: 'fsb_sdp_rate_limit_hits',
+    help: 'FreeStuffBot Service DiscordPublisher: Rate Limit Hits',
+    labelNames: [ 'type', 'scope' ]
+    // type = task type, scope = x-ratelimit headers
+  })
+
+  public static counterTasksConsumed = new Counter({
+    name: 'fsb_sdp_tasks_consumed',
+    help: 'FreeStuffBot Service DiscordPublisher: Tasks Consumed',
+    labelNames: [ 'task', 'status' ]
+  })
+
   //
 
   public static init() {
@@ -20,6 +39,8 @@ export default class Metrics {
 
   private static registerMetrics() {
     Metrics.register.registerMetric(Metrics.counterUpstreamStatus)
+    Metrics.register.registerMetric(Metrics.counterUpstreamRetries)
+    Metrics.register.registerMetric(Metrics.counterRateLimitHits)
   }
 
   //

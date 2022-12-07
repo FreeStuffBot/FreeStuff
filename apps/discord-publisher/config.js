@@ -11,7 +11,9 @@ module.exports = {
   behavior: {
     upstreamRequestRate: 45,
     upstreamRequestInterval: 1000,
-    publishSplitTaskAmount: 20
+    upstreamMaxRetries: 4,
+    publishSplitTaskAmount: 20,
+    publishTaskBatchSize: 60
   },
   freestuffApi: {
     /** base api NOT INCLUDING version indicator */
