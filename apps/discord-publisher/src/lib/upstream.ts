@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
-import { Logger } from "@freestuffbot/common"
 import { config } from ".."
 import Metrics from "./metrics"
 
@@ -41,21 +40,18 @@ export default class Upstream {
   // 
 
   private static burst(req: RequestConfig): void {
+    if (!req) return
     req.validateStatus = null
     axios(req)
-      .catch(err => {
-        if (err?.response)
-          return err.response
-        // TODO migrate to logger
-        console.error(err)
-        return { status: 999 }
-      })
+      .catch(err => err?.response ?? { status: 999 })
       .then(res => Upstream.handleResponse(res, req))
   }
 
   private static async handleResponse(res: AxiosResponse, retryConfig: RequestConfig): Promise<void> {
     const status = res?.status ?? 998
     Metrics.counterUpstreamStatus.inc({ status })
+
+    if (!res) return
 
     if (status === 429) {
       // rate limited
@@ -116,7 +112,8 @@ export default class Upstream {
     setInterval(() => {
       if (!Upstream.queue.length) return
       if (Upstream.timeout) return
-      for (let i = 0; i < config.behavior.upstreamRequestRate; i++) 
+      const iterations = Math.min(Upstream.queue.length, config.behavior.upstreamRequestRate)
+      for (let i = 0; i < iterations; i++)
         Upstream.burst(Upstream.queue.pop())
     }, config.behavior.upstreamRequestInterval)
   }
