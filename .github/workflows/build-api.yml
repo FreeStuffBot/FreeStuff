@@ -1,4 +1,4 @@
-name: Build API
+name: Build API Module
 
 env:
   REGISTRY: ghcr.io
