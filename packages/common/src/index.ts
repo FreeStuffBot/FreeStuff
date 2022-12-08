@@ -3,7 +3,7 @@ import mongooseLong from 'mongoose-long'
 mongooseLong(mongoose)
 
 /*
- *
+ * test
  */
 
 export { default as Localisation } from './lib/localisation'
