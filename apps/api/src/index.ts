@@ -2,7 +2,7 @@
 import { configjs } from './types/config'
 export const config = require('../config.js') as configjs
 
-//
+// test
 
 import { ContainerInfo, Logger } from '@freestuffbot/common'
 import Modules from './modules'
