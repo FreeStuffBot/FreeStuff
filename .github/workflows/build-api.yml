@@ -7,7 +7,7 @@ env:
 on:
   push:
     branches: [ master, staging ]
-    paths: [ 'apps/${{ env.MODULE }}/**', 'packages/**', 'dockerfiles/**' ]
+    paths: [ 'apps/${{ env.MODULE }}/**/*', 'packages/**', 'dockerfiles/**' ]
 
 jobs:
   build-and-push-image:
