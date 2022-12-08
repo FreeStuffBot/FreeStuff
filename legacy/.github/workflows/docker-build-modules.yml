@@ -1,26 +1,25 @@
-name: API
-
-# to change this workflow into another module, there is three instances of the module name to replace:
-# env.MODULE in line 10
-# on.push.paths in line 15
-# jobs name in line 17
-
-env:
-  REGISTRY: ghcr.io
-  MODULE: api
+name: Build Modules
 
 on:
   push:
     branches: [ master, staging ]
-    paths: [ 'apps/api/**/*', 'packages/**', 'dockerfiles/**' ]
+
+env:
+  REGISTRY: ghcr.io
 
 jobs:
-  api-buildpush:
+  build-and-push-image:
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
       packages: write
+
+    strategy:
+      matrix:
+        # repeating this job for the following module names, using ${{ matrix.module }} as the name
+        # module: [ api, app-publisher, discord-gateway, discord-interactions, discord-publisher, link-proxy, manager, thumbnailer, telegram-publisher ]
+        module: [ api, app-publisher, discord-gateway, discord-interactions, discord-publisher, link-proxy, manager, thumbnailer ]
 
     steps:
       - name: Set up QEMU
@@ -52,7 +51,7 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           #            v ghcr.io       v orga name  v package name  v module name
-          images: ${{ env.REGISTRY }}/FreeStuffBot/fsb-${{ env.MODULE }}
+          images: ${{ env.REGISTRY }}/FreeStuffBot/fsb-${{ matrix.module }}
 
       - name: Add metadata
         run: echo ${{ github.sha }} > version
@@ -63,12 +62,12 @@ jobs:
         with:
           context: .
           # dockerfile to build, using the module name
-          file: ./dockerfiles/${{ env.MODULE }}.Dockerfile
+          file: ./dockerfiles/${{ matrix.module }}.Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: |
             ${{ steps.meta.outputs.labels }}
-            xyz.freestuffbot.service.module=${{ env.MODULE }}
+            xyz.freestuffbot.service.module=${{ matrix.module }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           build-args: |

@@ -1,4 +1,4 @@
-name: API
+name: Thumbnailer
 
 # to change this workflow into another module, there is three instances of the module name to replace:
 # env.MODULE in line 10
@@ -7,15 +7,15 @@ name: API
 
 env:
   REGISTRY: ghcr.io
-  MODULE: api
+  MODULE: thumbnailer
 
 on:
   push:
     branches: [ master, staging ]
-    paths: [ 'apps/api/**/*', 'packages/**', 'dockerfiles/**' ]
+    paths: [ 'apps/thumbnailer/**/*', 'packages/**', 'dockerfiles/**' ]
 
 jobs:
-  api-buildpush:
+  thumbnailer-buildpush:
     runs-on: ubuntu-latest
 
     permissions:
