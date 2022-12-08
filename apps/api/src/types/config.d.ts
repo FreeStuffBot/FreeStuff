@@ -29,6 +29,7 @@ export type configjs = {
     fetchFreebies: string
     clearResolverCache: string
     updateCurrConvData: string
+    cleanUpTranslations: string
   }
   keys: {
     privateKeyUri: string

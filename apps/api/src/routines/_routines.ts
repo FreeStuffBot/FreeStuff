@@ -4,6 +4,7 @@ import { config } from '..'
 import Resolver from '../lib/resolver'
 import StringUtils from '../lib/string-utils'
 import CurrConv from '../services/currconv'
+import CleanUpTranslationsRoutine from './clean-up-translations'
 import FetchFreebiesRoutine from "./fetch-freebies"
 
 
@@ -18,6 +19,8 @@ export default class Routines {
     Routines.register(rule.clearResolverCache, 'Clear Resolver Cache', Resolver.clearCache, true)
     
     Routines.register(rule.updateCurrConvData, 'Update CurrConv Data', CurrConv.updateData, true)
+
+    Routines.register(rule.cleanUpTranslations, 'Clean Up Translations', CleanUpTranslationsRoutine.run, false)
   }
 
   //

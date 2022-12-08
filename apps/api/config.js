@@ -31,7 +31,9 @@ module.exports = {
     // At every 5th minute.
     clearResolverCache: '*/5 * * * *',
     // At minute 10 past hour 2 and 14.
-    updateCurrConvData: '10 2,14 * * *'
+    updateCurrConvData: '10 2,14 * * *',
+    // At 2:30 am
+    cleanUpTranslations: '30 2 * * *'
   },
   keys: {
     privateKeyUri: loadArg('API_PRIVATE_KEY_URI')
