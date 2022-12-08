@@ -1,5 +1,9 @@
 name: Build API Module
 
+# to change this workflow into another module, there is two instances of the module name to replace:
+# env.MODULE in line 9
+# on.push.paths in line 14
+
 env:
   REGISTRY: ghcr.io
   MODULE: api
@@ -7,7 +11,7 @@ env:
 on:
   push:
     branches: [ master, staging ]
-    paths: [ 'apps/${{ env.MODULE }}/**/*', 'packages/**', 'dockerfiles/**' ]
+    paths: [ 'apps/api/**/*', 'packages/**', 'dockerfiles/**' ]
 
 jobs:
   build-and-push-image:
