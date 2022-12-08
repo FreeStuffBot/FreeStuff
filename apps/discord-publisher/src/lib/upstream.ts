@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
+import { Logger } from "@freestuffbot/common"
 import { config } from ".."
 import Metrics from "./metrics"
 
@@ -40,8 +41,15 @@ export default class Upstream {
   // 
 
   private static burst(req: RequestConfig): void {
+    req.validateStatus = null
     axios(req)
-      .catch(err => err?.response ?? { status: 999 })
+      .catch(err => {
+        if (err?.response)
+          return err.response
+        // TODO migrate to logger
+        console.error(err)
+        return { status: 999 }
+      })
       .then(res => Upstream.handleResponse(res, req))
   }
 
