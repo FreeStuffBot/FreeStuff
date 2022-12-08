@@ -1,8 +1,9 @@
 name: Build API Module
 
-# to change this workflow into another module, there is two instances of the module name to replace:
-# env.MODULE in line 9
-# on.push.paths in line 14
+# to change this workflow into another module, there is three instances of the module name to replace:
+# env.MODULE in line 10
+# on.push.paths in line 15
+# jobs name in line 17
 
 env:
   REGISTRY: ghcr.io
@@ -14,7 +15,7 @@ on:
     paths: [ 'apps/api/**/*', 'packages/**', 'dockerfiles/**' ]
 
 jobs:
-  build-and-push-image:
+  api-buildpush:
     runs-on: ubuntu-latest
 
     permissions:
@@ -51,7 +52,7 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           #            v ghcr.io       v orga name  v package name  v module name
-          images: ${{ env.REGISTRY }}/FreeStuffBot/fsb-${{ env.module }}
+          images: ${{ env.REGISTRY }}/FreeStuffBot/fsb-${{ env.MODULE }}
 
       - name: Add metadata
         run: echo ${{ github.sha }} > version
@@ -62,12 +63,12 @@ jobs:
         with:
           context: .
           # dockerfile to build, using the module name
-          file: ./dockerfiles/${{ env.module }}.Dockerfile
+          file: ./dockerfiles/${{ env.MODULE }}.Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: |
             ${{ steps.meta.outputs.labels }}
-            xyz.freestuffbot.service.module=${{ env.module }}
+            xyz.freestuffbot.service.module=${{ env.MODULE }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           build-args: |
