@@ -1,4 +1,4 @@
-name: Build API Module
+name: Build api Module
 
 # to change this workflow into another module, there is three instances of the module name to replace:
 # env.MODULE in line 10
