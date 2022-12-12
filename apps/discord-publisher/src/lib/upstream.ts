@@ -15,6 +15,8 @@ export default class Upstream {
   private static burstStarted = false
   /** outgoig requests are blocked while this number is > 0 */
   private static timeout = 0
+  /** how many requests are currently sent but haven't received a reply */
+  private static pendingReplyCount = 0
 
   public static queueRequest(req: RequestConfig): void {
     const tooManyRetries = req.$attempt > config.behavior.upstreamMaxRetries
@@ -28,31 +30,54 @@ export default class Upstream {
     Upstream.queue.push(req)
   }
 
-  /** sleep until the next free window */
-  public static waitUntilWindowAvailable(): Promise<void> {
+  /** time until the next free window */
+  public static getTimeUntilWindowAvailable(): number {
     const intervalsQueued = Math.ceil(Upstream.queue.length / config.behavior.upstreamRequestRate)
     const waitFor = Math.max(0, intervalsQueued - 1)
-    const sleepFor = waitFor * config.behavior.upstreamRequestInterval
-    if (sleepFor <= 0) return Promise.resolve()
-    return new Promise(res => setTimeout(res, sleepFor))
+    return waitFor * config.behavior.upstreamRequestInterval
   }
 
-  // 
+  /** sleep until the next free window */
+  public static async waitUntilWindowAvailable(): Promise<void> {
+    let sleepFor = Upstream.getTimeUntilWindowAvailable()
+    // while loop becase if the queue didn't empty as quickly as predicted we'll have to wait some longer
+    while (sleepFor > 0) {
+      // wait for the predicted amount
+      await new Promise(res => setTimeout(res, sleepFor))
+      // check how we're doing
+      sleepFor = Upstream.getTimeUntilWindowAvailable()
+    }
+  }
+
+  //
 
   private static burst(req: RequestConfig): void {
+    if (!req) return
+    req.validateStatus = null
+    Upstream.pendingReplyCount++
     axios(req)
       .catch(err => err?.response ?? { status: 999 })
       .then(res => Upstream.handleResponse(res, req))
   }
 
   private static async handleResponse(res: AxiosResponse, retryConfig: RequestConfig): Promise<void> {
+    Upstream.pendingReplyCount--
+
     const status = res?.status ?? 998
     Metrics.counterUpstreamStatus.inc({ status })
+
+    if (!res) return
 
     if (status === 429) {
       // rate limited
       const blockedFor = Upstream.parseRateLimitRetry(res) ?? 5000
       const scope = Upstream.parseRateLimitScope(res)
+
+      if (!scope) {
+        // TODO remove after investigation
+        console.error(`NO RATELIMIT SCOPE PROVIDED:`)
+        console.error(res.headers)
+      }
 
       Metrics.counterRateLimitHits.inc({ scope, type: retryConfig.$type })
 
@@ -106,9 +131,15 @@ export default class Upstream {
     Upstream.burstStarted = true
 
     setInterval(() => {
+      // queue empty? return
       if (!Upstream.queue.length) return
+      // rate limited? return
       if (Upstream.timeout) return
-      for (let i = 0; i < config.behavior.upstreamRequestRate; i++) 
+      // too many sent requests that didn't get a reply yet? return
+      if (Upstream.pendingReplyCount > config.behavior.upstreamRequestRate) return
+
+      const iterations = Math.min(Upstream.queue.length, config.behavior.upstreamRequestRate)
+      for (let i = 0; i < iterations; i++)
         Upstream.burst(Upstream.queue.pop())
     }, config.behavior.upstreamRequestInterval)
   }

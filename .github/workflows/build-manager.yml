@@ -1,0 +1,86 @@
+name: Manager
+
+# to change this workflow into another module, there is three instances of the module name to replace:
+# env.MODULE in line 10
+# on.push.paths in line 15
+# jobs name in line 17
+
+env:
+  REGISTRY: ghcr.io
+  MODULE: manager
+
+on:
+  push:
+    branches: [ master, staging ]
+    paths: [ 'apps/manager/**/*', 'packages/**', 'dockerfiles/**' ]
+
+jobs:
+  manager-buildpush:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          #            v ghcr.io       v orga name  v package name  v module name
+          images: ${{ env.REGISTRY }}/FreeStuffBot/fsb-${{ env.MODULE }}
+
+      - name: Add metadata
+        run: echo ${{ github.sha }} > version
+
+      - name: Build and push Docker image
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          # dockerfile to build, using the module name
+          file: ./dockerfiles/${{ env.MODULE }}.Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: |
+            ${{ steps.meta.outputs.labels }}
+            xyz.freestuffbot.service.module=${{ env.MODULE }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+          build-args: |
+            NODE_AUTH_TOKEN=${{secrets.GITHUB_TOKEN}}
+
+      - name: Image digest
+        run: echo ${{ steps.docker_bot_build.outputs.digest }}
+
+      # Temp fix
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
