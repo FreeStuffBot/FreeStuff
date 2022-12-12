@@ -66,18 +66,14 @@ export default class Upstream {
     const status = res?.status ?? 998
     Metrics.counterUpstreamStatus.inc({ status })
 
+    console.log(status, res?.headers)
+
     if (!res) return
 
     if (status === 429) {
       // rate limited
       const blockedFor = Upstream.parseRateLimitRetry(res) ?? 5000
       const scope = Upstream.parseRateLimitScope(res)
-
-      if (!scope) {
-        // TODO remove after investigation
-        console.error(`NO RATELIMIT SCOPE PROVIDED:`)
-        console.error(res.headers)
-      }
 
       Metrics.counterRateLimitHits.inc({ scope, type: retryConfig.$type })
 
