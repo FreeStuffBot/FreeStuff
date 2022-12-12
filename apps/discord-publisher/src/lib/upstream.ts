@@ -71,7 +71,7 @@ export default class Upstream {
 
       retryConfig.$attempt++
       Upstream.queueRequest(retryConfig)
-      return 
+      return
     }
 
     if (status >= 500 && status < 600) {
