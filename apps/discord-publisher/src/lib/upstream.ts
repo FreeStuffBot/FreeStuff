@@ -66,8 +66,6 @@ export default class Upstream {
     const status = res?.status ?? 998
     Metrics.counterUpstreamStatus.inc({ status })
 
-    console.log(status, res?.headers)
-
     if (!res) return
 
     if (status === 429) {
