@@ -147,7 +147,7 @@ export default class Upstream {
 
       const iterations = Math.min(Upstream.queue.length, config.behavior.upstreamRequestRate)
       for (let i = 0; i < iterations; i++) {
-        Upstream.burst(Upstream.queue.pop())
+        Upstream.burst(Upstream.queue.shift())
         Metrics.gaugeDebugQueueSize.set(Upstream.queue.length)
       }
     }, config.behavior.upstreamRequestInterval)
