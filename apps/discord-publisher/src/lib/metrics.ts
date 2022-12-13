@@ -1,4 +1,4 @@
-import { Counter, Registry } from 'prom-client'
+import { Counter, Gauge, Registry } from 'prom-client'
 import { Request, Response } from 'express'
 
 
@@ -29,6 +29,24 @@ export default class Metrics {
     name: 'fsb_sdp_tasks_consumed',
     help: 'FreeStuffBot Service DiscordPublisher: Tasks Consumed',
     labelNames: [ 'task', 'status' ]
+  })
+
+  public static gaugeDebugQueueSize = new Gauge({
+    name: 'fsb_sdp_debug_queue_size',
+    help: 'FreeStuffBot Service DiscordPublisher: Debug Queue Size',
+    labelNames: [ ]
+  })
+
+  public static gaugeDebugPendingReplies = new Gauge({
+    name: 'fsb_sdp_debug_pending_replies',
+    help: 'FreeStuffBot Service DiscordPublisher: Pending Replies',
+    labelNames: [ ]
+  })
+
+  public static gaugeDebugTimeout = new Gauge({
+    name: 'fsb_sdp_debug_timeout',
+    help: 'FreeStuffBot Service DiscordPublisher: Upstream Timeout',
+    labelNames: [ ]
   })
 
   //

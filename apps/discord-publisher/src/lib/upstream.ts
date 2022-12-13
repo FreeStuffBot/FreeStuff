@@ -28,11 +28,13 @@ export default class Upstream {
       return
 
     Upstream.queue.push(req)
+    Metrics.gaugeDebugQueueSize.set(Upstream.queue.length)
   }
 
   /** time until the next free window */
   public static getTimeUntilWindowAvailable(): number {
-    const intervalsQueued = Math.ceil(Upstream.queue.length / config.behavior.upstreamRequestRate)
+    const queueLength = Upstream.queue.length + Upstream.pendingReplyCount
+    const intervalsQueued = Math.ceil(queueLength / config.behavior.upstreamRequestRate)
     const waitFor = Math.max(0, intervalsQueued - 1)
     return waitFor * config.behavior.upstreamRequestInterval
   }
@@ -53,24 +55,33 @@ export default class Upstream {
 
   private static burst(req: RequestConfig): void {
     if (!req) return
-    req.validateStatus = null
     Upstream.pendingReplyCount++
+    Metrics.gaugeDebugPendingReplies.set(Upstream.pendingReplyCount)
+
+    req.validateStatus = null
     axios(req)
       .catch(err => err?.response ?? { status: 999 })
       .then(res => Upstream.handleResponse(res, req))
+      .catch(() => null)
+      .then(() => {
+        Upstream.pendingReplyCount--
+        Metrics.gaugeDebugPendingReplies.set(Upstream.pendingReplyCount)
+      })
   }
 
   private static async handleResponse(res: AxiosResponse, retryConfig: RequestConfig): Promise<void> {
-    Upstream.pendingReplyCount--
-
     const status = res?.status ?? 998
     Metrics.counterUpstreamStatus.inc({ status })
 
     if (!res) return
 
+    // rate limited
     if (status === 429) {
-      // rate limited
-      const blockedFor = Upstream.parseRateLimitRetry(res) ?? 5000
+      // wait minimum of 1 second. if no limit was provided wait 30s
+      const rawBlockedFor = Upstream.parseRateLimitRetry(res)
+      const blockedFor = rawBlockedFor
+        ? Math.min(1000, rawBlockedFor)
+        : 30000
       const scope = Upstream.parseRateLimitScope(res)
 
       Metrics.counterRateLimitHits.inc({ scope, type: retryConfig.$type })
@@ -85,8 +96,10 @@ export default class Upstream {
       }
 
       Upstream.timeout++
+      Metrics.gaugeDebugTimeout.set(Upstream.timeout)
       await new Promise(res => setTimeout(res, blockedFor + 1))
       Upstream.timeout--
+      Metrics.gaugeDebugTimeout.set(Upstream.timeout)
 
       retryConfig.$attempt++
       Upstream.queueRequest(retryConfig)
@@ -133,8 +146,10 @@ export default class Upstream {
       if (Upstream.pendingReplyCount > config.behavior.upstreamRequestRate) return
 
       const iterations = Math.min(Upstream.queue.length, config.behavior.upstreamRequestRate)
-      for (let i = 0; i < iterations; i++)
+      for (let i = 0; i < iterations; i++) {
         Upstream.burst(Upstream.queue.pop())
+        Metrics.gaugeDebugQueueSize.set(Upstream.queue.length)
+      }
     }, config.behavior.upstreamRequestInterval)
   }
 
