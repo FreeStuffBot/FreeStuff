@@ -80,7 +80,7 @@ export default class Upstream {
       // wait minimum of 1 second. if no limit was provided wait 30s
       const rawBlockedFor = Upstream.parseRateLimitRetry(res)
       const blockedFor = rawBlockedFor
-        ? Math.min(1000, rawBlockedFor)
+        ? Math.max(1000, rawBlockedFor)
         : 30000
       const scope = Upstream.parseRateLimitScope(res)
 
