@@ -1,10 +1,12 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
+import { Long } from "bson"
 import { config } from ".."
+import Mongo from "../database/mongo"
 import Metrics from "./metrics"
 
 
 type RequestType = 'task_publish' | 'task_resend' | 'task_test'
-type RequestConfig = AxiosRequestConfig & { $type: RequestType, $attempt: number }
+type RequestConfig = AxiosRequestConfig & { $type: RequestType, $attempt: number, $guild: Long }
 type QueueEntry = RequestConfig
 
 export default class Upstream {
@@ -17,6 +19,8 @@ export default class Upstream {
   private static timeout = 0
   /** how many requests are currently sent but haven't received a reply */
   private static pendingReplyCount = 0
+  /** number of 4xx errors received within the last x minutes */
+  private static clientErrors = 0
 
   public static queueRequest(req: RequestConfig): void {
     const tooManyRetries = req.$attempt > config.behavior.upstreamMaxRetries
@@ -81,7 +85,7 @@ export default class Upstream {
       const rawBlockedFor = Upstream.parseRateLimitRetry(res)
       const blockedFor = rawBlockedFor
         ? Math.max(1000, rawBlockedFor)
-        : 30000
+        : 60000
       const scope = Upstream.parseRateLimitScope(res)
 
       Metrics.counterRateLimitHits.inc({ scope, type: retryConfig.$type })
@@ -115,7 +119,13 @@ export default class Upstream {
     }
 
     if (status >= 400 && status < 500) {
-      // TODO (low) if 404 remove the webhook from the db perhaps
+      Upstream.clientErrors++
+      Metrics.gaugeDebugClientErrors.set(Upstream.clientErrors)
+    }
+
+    if (status === 404) {
+      Upstream.clearGuild(retryConfig.$guild)
+      return
     }
   }
 
@@ -137,13 +147,16 @@ export default class Upstream {
     if (Upstream.burstStarted) return
     Upstream.burstStarted = true
 
+    // START BURST
     setInterval(() => {
-      // queue empty? return
+      // queue empty?
       if (!Upstream.queue.length) return
-      // rate limited? return
+      // rate limited?
       if (Upstream.timeout) return
-      // too many sent requests that didn't get a reply yet? return
+      // too many sent requests that didn't get a reply yet?
       if (Upstream.pendingReplyCount > config.behavior.upstreamRequestRate) return
+      // too many client errors recently?
+      if (Upstream.clientErrors >= (config.behavior.upstreamClientErrorsMax * config.behavior.upstreamClientErrorActionLeeway)) return
 
       const iterations = Math.min(Upstream.queue.length, config.behavior.upstreamRequestRate)
       for (let i = 0; i < iterations; i++) {
@@ -151,6 +164,29 @@ export default class Upstream {
         Metrics.gaugeDebugQueueSize.set(Upstream.queue.length)
       }
     }, config.behavior.upstreamRequestInterval)
+
+    // START CLIENT ERROR DECAY
+    setInterval(() => {
+      if (!Upstream.clientErrors) return
+
+      const sub = ~~(config.behavior.upstreamClientErrorsMax / config.behavior.upstreamClientErrorsTimeframeMinutes)
+      if (Upstream.clientErrors <= sub)
+        Upstream.clientErrors = 0
+      else
+        Upstream.clientErrors -= sub
+
+      Metrics.gaugeDebugClientErrors.set(Upstream.clientErrors)
+    }, 60000)
+  }
+
+  /** remove a guild's webhook from the database as it no longer exists */
+  public static clearGuild(id: Long) {
+    Mongo.Guild.updateOne(
+      { _id: id },
+      { $set: { webhook: null } },
+      { lean: true }
+    ).exec()
+    Metrics.counterGuildsCleared.inc()
   }
 
 }

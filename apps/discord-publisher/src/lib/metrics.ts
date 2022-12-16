@@ -31,6 +31,12 @@ export default class Metrics {
     labelNames: [ 'task', 'status' ]
   })
 
+  public static counterGuildsCleared = new Counter({
+    name: 'fsb_sdp_guilds_cleared',
+    help: 'FreeStuffBot Service DiscordPublisher: Guilds Cleared',
+    labelNames: [ ]
+  })
+
   public static gaugeDebugQueueSize = new Gauge({
     name: 'fsb_sdp_debug_queue_size',
     help: 'FreeStuffBot Service DiscordPublisher: Debug Queue Size',
@@ -49,6 +55,12 @@ export default class Metrics {
     labelNames: [ ]
   })
 
+  public static gaugeDebugClientErrors = new Gauge({
+    name: 'fsb_sdp_debug_client_errors',
+    help: 'FreeStuffBot Service DiscordPublisher: Client Errors',
+    labelNames: [ ]
+  })
+
   //
 
   public static init() {
@@ -60,9 +72,11 @@ export default class Metrics {
     Metrics.register.registerMetric(Metrics.counterUpstreamRetries)
     Metrics.register.registerMetric(Metrics.counterRateLimitHits)
     Metrics.register.registerMetric(Metrics.counterTasksConsumed)
+    Metrics.register.registerMetric(Metrics.counterGuildsCleared)
     Metrics.register.registerMetric(Metrics.gaugeDebugQueueSize)
     Metrics.register.registerMetric(Metrics.gaugeDebugPendingReplies)
     Metrics.register.registerMetric(Metrics.gaugeDebugTimeout)
+    Metrics.register.registerMetric(Metrics.gaugeDebugClientErrors)
   }
 
   //

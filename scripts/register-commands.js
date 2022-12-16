@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 const axios = require('axios')
-const config = require('../config.js')
+const loadArg = require('../packages/config/load-arg')
 
-if (!config) throw new Error('Config not found. Please cd into /scripts')
+if (!loadArg) throw new Error('Config not found. Please cd into /scripts')
 
-const token = config.bot.token || ''
-const clientid = config.bot.clientid || ''
+const token = loadArg('DISCORD_GATEWAY_API_TOKEN')
+const clientid = loadArg('DISCORD_GATEWAY_API_USER')
 
 const commands = [
   {
