@@ -28,9 +28,8 @@ export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Pr
     .map(r => [ r, recommendRole(r, guildData) ] as [ DataRole, number ])
     .filter(([ r ]) => (r.name !== '@everyone' && !r.managed))
     .sort((a, b) => (b[0].position + b[1]) - (a[0].position + a[1]))
-    .slice(0, 23)
 
-  const overflow = guild.roles.length > 23
+  const overflow = roles.length > 23
 
   const options: MessageComponentSelectOption[] = [
     {
@@ -47,21 +46,23 @@ export default async function (i: GenericInteraction, [ opts ]: [ Options ]): Pr
       description: '=settings_role_list_everyone_2',
       emoji: Emojis.global.toObject()
     },
-    ...roles.map(([ role, reco ]) => ({
-      label: sanitizeRoleName(role.name, 25),
-      value: role.id,
-      default: guildData.role?.toString() === role.id,
-      emoji: (reco > 0)
-        ? Emojis.mentionGreen.toObject()
-        : Emojis.mention.toObject()
-    }))
+    ...roles
+      .slice(0, 23)
+      .map(([ role, reco ]) => ({
+        label: sanitizeRoleName(role.name, 25),
+        value: role.id,
+        default: guildData.role?.toString() === role.id,
+        emoji: (reco > 0)
+          ? Emojis.mentionGreen.toObject()
+          : Emojis.mention.toObject()
+      }))
   ]
 
   let text = '=settings_role_ui_2'
   if (overflow) {
     text = Localisation.text(i, text)
       + '\n\n'
-      + Localisation.text(i, '=settings_role_list_hidden_permissions_disclaimer')
+      + Localisation.text(i, '=settings_role_list_hidden_overflow_disclaimer')
 
       // + Localisation.text(i, everyone
       //     ? '=settings_role_list_hidden_overflow_disclaimer'
