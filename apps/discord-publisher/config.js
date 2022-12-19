@@ -9,11 +9,11 @@ module.exports = {
     umiAllowedIpRange: loadArg('NETWORK_UMI_ALLOWED_IP_RANGE')
   },
   behavior: {
-    upstreamRequestRate: 5, // TODO up this to 10 once running stable
+    upstreamRequestRate: 8, // TODO up this to 10 once running stable
     upstreamRequestInterval: 250,
     upstreamMaxRetries: 10,
     publishSplitTaskAmount: 20,
-    publishTaskBatchSize: 5
+    publishTaskBatchSize: 8
   },
   freestuffApi: {
     /** base api NOT INCLUDING version indicator */
