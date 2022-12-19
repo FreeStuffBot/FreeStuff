@@ -32,7 +32,8 @@ export default async function handleDiscordTest(task: Task<TaskId.DISCORD_TEST>)
     url: `https://discord.com/api/webhooks/${hook}`,
     data: theme,
     $type: 'task_test',
-    $attempt: 0
+    $attempt: 0,
+    $guild: sanitizedGuild.id
   })
 
   Metrics.counterTasksConsumed.inc({ task: 'DISCORD_TEST', status: 'success' })

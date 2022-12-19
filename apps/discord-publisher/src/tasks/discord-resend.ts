@@ -42,7 +42,8 @@ export default async function handleDiscordResend(task: Task<TaskId.DISCORD_RESE
     url: `https://discord.com/api/webhooks/${hook}`,
     data: theme,
     $type: 'task_resend',
-    $attempt: 0
+    $attempt: 0,
+    $guild: sanitizedGuild.id
   })
 
   Metrics.counterTasksConsumed.inc({ task: 'DISCORD_RESEND', status: 'success' })

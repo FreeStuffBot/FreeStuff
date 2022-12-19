@@ -89,6 +89,7 @@ function sendToGuild(guild: GuildDataType, products: SanitizedProductType[]) {
     url: `https://discord.com/api/webhooks/${hook}`,
     data: theme,
     $type: 'task_publish',
-    $attempt: 0
+    $attempt: 0,
+    $guild: sanitizedGuild.id
   })
 }
