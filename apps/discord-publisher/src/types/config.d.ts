@@ -16,6 +16,8 @@ export type configjs = {
     upstreamMaxRetries: number
     /** how many frames worth of requests are allowed in the queue before asking suppliers to wait */
     upstreamMaxFramesInQueue: number
+    /** maximum amount of requests that can be sent but haven't been answered yet before blocking */
+    upstreamMaxPendingReplyCount: number
     /** timeframe in which client errors are measured */
     upstreamClientErrorsTimeframeMinutes: number
     /** max amount of client errors tolerated within the given timeframe */

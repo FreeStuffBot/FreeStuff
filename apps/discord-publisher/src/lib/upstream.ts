@@ -154,7 +154,7 @@ export default class Upstream {
       // rate limited?
       if (Upstream.timeout) return
       // too many sent requests that didn't get a reply yet?
-      if (Upstream.pendingReplyCount > config.behavior.upstreamRequestRate) return
+      if (Upstream.pendingReplyCount > config.behavior.upstreamMaxPendingReplyCount) return
       // too many client errors recently?
       if (Upstream.clientErrors >= (config.behavior.upstreamClientErrorsMax * config.behavior.upstreamClientErrorActionLeeway)) return
 
