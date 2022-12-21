@@ -12,6 +12,7 @@ module.exports = {
     upstreamRequestRate: 8, // TODO up this to 10 once running stable
     upstreamRequestInterval: 250,
     upstreamMaxRetries: 10,
+    upstreamMaxPendingReplyCount: 30,
     upstreamClientErrorsTimeframeMinutes: 10,
     upstreamClientErrorsMax: 10000,
     upstreamClientErrorActionLeeway: 0.9,
