@@ -14,6 +14,8 @@ export type configjs = {
     upstreamRequestInterval: number
     /** maximum amount of times to try to re-publish a failed request */
     upstreamMaxRetries: number
+    /** how many frames worth of requests are allowed in the queue before asking suppliers to wait */
+    upstreamMaxFramesInQueue: number
     /** timeframe in which client errors are measured */
     upstreamClientErrorsTimeframeMinutes: number
     /** max amount of client errors tolerated within the given timeframe */

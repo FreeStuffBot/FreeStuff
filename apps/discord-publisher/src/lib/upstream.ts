@@ -39,7 +39,7 @@ export default class Upstream {
   public static getTimeUntilWindowAvailable(): number {
     const queueLength = Upstream.queue.length + Upstream.pendingReplyCount
     const intervalsQueued = Math.ceil(queueLength / config.behavior.upstreamRequestRate)
-    const waitFor = Math.max(0, intervalsQueued - 1)
+    const waitFor = Math.max(0, intervalsQueued - config.behavior.upstreamMaxFramesInQueue)
     return waitFor * config.behavior.upstreamRequestInterval
   }
 
