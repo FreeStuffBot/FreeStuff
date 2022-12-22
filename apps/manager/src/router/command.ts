@@ -45,5 +45,5 @@ function deliverCommandToService(command: any, service: FsContainer): Promise<vo
       { validateStatus: null, timeout: 10000 }
     )
     .catch((e) => void console.error(e))
-    .catch((e) => void console.log(e))
+    .then((e) => void console.log(e))
 }
