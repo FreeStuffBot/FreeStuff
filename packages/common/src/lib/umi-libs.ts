@@ -156,7 +156,7 @@ export default class UmiLibs {
 
     Logger.process(`Received UMI command ${name}`)
 
-    const cmd = UmiLibs.commandHandlers[name]
+    const cmd = UmiLibs.commandHandlers.find(c => c.name === name)
     if (!cmd)
       return res.status(400).json({ success: false, error: `No handler for command "${name}"` })
 

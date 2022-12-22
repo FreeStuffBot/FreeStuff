@@ -30,6 +30,7 @@ export default class DockerInterface {
       () => DockerInterface.fetchFsContainers(),
       config.behavior.networkRefetchInterval
     )
+    DockerInterface.fetchFsContainers()
   }
 
   public static getFsContainers(): FsContainer[] {

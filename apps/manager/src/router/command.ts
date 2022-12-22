@@ -6,7 +6,6 @@ import DockerInterface, { FsContainer } from '../lib/docker-interface'
 
 export async function postCommand(req: Request, res: Response) {
   const { receivers, name, data } = req.body ?? {}
-  Logger.debug("Command: " + JSON.stringify(req.body))
 
   if (!receivers?.length || !name)
     return res.status(400).json({ error: 'bad request, invalid body' })
@@ -16,8 +15,6 @@ export async function postCommand(req: Request, res: Response) {
 
   const payload = { name, data }
   const progress = targets.map(cont => deliverCommandToService(payload, cont))
-
-  console.log(targets.map(t => `${t.imageName}:${t.networkIp}:${t.id}`))
 
   await Promise.all(progress)
   res.status(200).json({ })
@@ -45,5 +42,4 @@ function deliverCommandToService(command: { name: string, data: any }, service: 
       { validateStatus: null, timeout: 10000 }
     )
     .catch((e) => void console.error(e))
-    .then((e) => void console.log(e))
 }
