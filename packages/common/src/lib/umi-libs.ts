@@ -116,6 +116,13 @@ export default class UmiLibs {
   public static ipLockMiddleware(range: string) {
     const subnet = range ? ip.cidrSubnet(range) : null
     return (req: Request, res: Response, next: NextFunction) => {
+      const cfConnect = req.headers['cf-connecting-ip']
+      if (cfConnect) {
+        const ray = req.headers['cf-ray']
+        res.status(407).send(`Not allowed. Your IP address does not have access to this resource.\n${cfConnect}\nCloudflare Ray ID: ${ray}`)
+        return
+      }
+
       const reqIp = req.ip.replace('::ffff:', '').split('/')[0]
       if (!range || subnet.contains(reqIp)) return next()
 
