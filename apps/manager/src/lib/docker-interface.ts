@@ -111,7 +111,7 @@ export default class DockerInterface {
     }
 
     return {
-      id: service.ID,
+      id: task.ID,
       role: service.Spec.Labels[config.dockerLabels.role],
       imageName: service.Spec.Name,
       labels: service.Spec.Labels,
