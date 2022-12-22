@@ -17,6 +17,8 @@ export async function postCommand(req: Request, res: Response) {
   const payload = { name, data }
   const progress = targets.map(cont => deliverCommandToService(payload, cont))
 
+  console.log(targets.map(t => `${t.imageName}:${t.networkIp}:${t.id}`))
+
   await Promise.all(progress)
   res.status(200).json({ })
 }
@@ -42,5 +44,6 @@ function deliverCommandToService(command: any, service: FsContainer): Promise<vo
       command,
       { validateStatus: null, timeout: 10000 }
     )
-    .catch(() => null)
+    .catch((e) => void console.error(e))
+    .catch((e) => void console.log(e))
 }
