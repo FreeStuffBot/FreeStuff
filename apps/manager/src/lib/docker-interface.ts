@@ -76,9 +76,6 @@ export default class DockerInterface {
         service: [ 'fsb_discord_publisher' ]
       }
     })
-    console.log('-----------')
-    console.log(JSON.stringify(test))
-    console.log('-----------')
 
     const progress = containers.map(async (container) => {
       const res = await axios
