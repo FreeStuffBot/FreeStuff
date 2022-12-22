@@ -56,26 +56,31 @@ export default class DockerInterface {
 
     const validNetworks = self[0].Endpoint.VirtualIPs.map(i => i.NetworkID)
 
-    const services = await DockerInterface.client.listServices({
-      Filters: {
-        label: [ config.dockerLabels.role ]
-      }
-    })
+    const services = await DockerInterface.client.listServices(<any> {
+      filters: { label: [ config.dockerLabels.role ] }
+    } as Docker.ServiceListOptions)
 
     if (!services?.length) {
       Logger.error('Error at DockerInterface::getFsContainers() -> "no services were found"')
       return
     }
 
-    const containers = services
-      .map(s => DockerInterface.mapServiceToFsContainer(s, validNetworks))
-      .filter(s => (!!s.networkIp && !!s.role))
+    const validServices = services.filter(s => s.Spec?.Name)
 
-    const test = await DockerInterface.client.listTasks({
-      Filters: {
-        service: [ 'fsb_discord_publisher' ]
-      }
+    const fetchContainers = validServices.map(async service => {
+      const tasks = await DockerInterface.client.listTasks({
+        filters: {
+          service: [ service.Spec.Name ],
+          'desired-state': ['running']
+        }
+      })
+      return tasks
+        .map(t => DockerInterface.mapTaskToFsContainer(t, service, validNetworks))
+        .filter(s => (!!s.networkIp && !!s.role))
     })
+
+    const containersNested = await Promise.all(fetchContainers)
+    const containers = containersNested.flat()
 
     const progress = containers.map(async (container) => {
       const res = await axios
@@ -96,13 +101,12 @@ export default class DockerInterface {
     return containers
   }
 
-  private static mapServiceToFsContainer(service: Docker.Service, validNetworks: string[]): FsContainer {
+  private static mapTaskToFsContainer(task: Docker.Task | any, service: Docker.Service, validNetworks: string[]): FsContainer {
     let networkIp = null
 
-    console.log(service.Spec?.Name, JSON.stringify(service.Endpoint.VirtualIPs))
-    for (const network of service.Endpoint.VirtualIPs) {
-      if (!validNetworks.includes(network.NetworkID)) continue
-      networkIp = network.Addr?.split('/')[0] ?? null
+    for (const attachment of task.NetworksAttachments) {
+      if (!validNetworks.includes(attachment.Network.ID)) continue
+      networkIp = attachment.Addresses[0]?.split('/')[0] ?? null
       if (networkIp) break
     }
 
