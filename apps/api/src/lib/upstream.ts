@@ -52,7 +52,7 @@ export default class Upstream {
     const announcementBucketCount = 1
 
     // TODO (medium)
-    // announcement.publishingMeta.apps.bucketCount = announcementBucketCount
+    // announcement.publishingMeta.telegram.bucketCount = announcementBucketCount
 
     RabbitHole.publish({
       t: TaskId.TELEGRAM_PUBLISH_SPLIT,

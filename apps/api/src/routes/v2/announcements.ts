@@ -17,7 +17,7 @@ export async function getAnnouncement(req: Request, res: Response) {
   const numId = parseInt(id, 10)
   if (!numId || isNaN(numId)) return ReqError.badRequest(res, 'Huh', 'Hmmmmmm')
 
-  const resolveItems = req.query.resolve && Utils.isStringTruth(req.query.resolve + '')
+  const resolveItems = req.query.resolve && Utils.isStringTruthy(req.query.resolve + '')
 
   const data: AnnouncementDataType = await Resolver.resolveAnnouncement(numId)
   if (!data) return ReqError.notFound(res, `No announcement by id ${id} found!`)

@@ -6,7 +6,7 @@ export default class Utils {
     return new Promise(res => setTimeout(res, ms))
   }
 
-  public static isStringTruth(string: string): boolean {
+  public static isStringTruthy(string: string): boolean {
     if (!string) return false
     if (string === '0') return false
     if (string === 'false') return false

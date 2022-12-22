@@ -16,7 +16,7 @@ export type UmiInfoReport = {
     metrics: boolean
     command: boolean
   },
-  commands: string[]
+  commands: Omit<UmiCommand, 'handler'>[]
 }
 
 type ServerMountConfig = {
@@ -31,45 +31,53 @@ type ServerMountConfig = {
   }
 }
 
+type UmiCommandArgumentTypes = 'string' | 'boolean' | 'number'
+
+type UmiCommandArgument<
+  Name extends string,
+  Type extends UmiCommandArgumentTypes,
+  Array extends boolean,
+  EnumKeys extends string
+> = {
+  name: Name,
+  type: Type,
+  array: Array
+  enum: EnumKeys[]
+  description: string
+  __type?: Record<Name, GetUmiCommandArgumentType<Type, Array, EnumKeys>>
+}
+
+type GetUmiCommandArgumentType<
+  StringType extends UmiCommandArgumentTypes,
+  Array extends boolean,
+  EnumKeys extends string
+> =
+  EnumKeys extends null
+  ? (
+    StringType extends 'string' ? (Array extends true ? string[] : string)
+    : StringType extends 'boolean' ? (Array extends true ? boolean[] : boolean)
+    : StringType extends 'number' ? (Array extends true ? number[] : number)
+    : never
+  )
+  : (Array extends true ? string[] : EnumKeys)
+
+type TypedUmiCommand<
+  ArgNames extends string,
+  ArgTypes extends UmiCommandArgumentTypes,
+  ArgArray extends boolean,
+  ArgEnumKeys extends string
+> = {
+  name: string
+  description: string
+  arguments: UmiCommandArgument<ArgNames, ArgTypes, ArgArray, ArgEnumKeys>[]
+  handler: (data: UmiCommandArgument<ArgNames, ArgTypes, ArgArray, ArgEnumKeys>['__type']) => string
+}
+
+type UmiCommand = TypedUmiCommand<string, UmiCommandArgumentTypes, boolean, string>
+
 export default class UmiLibs {
 
-  private static commandHandlers: Record<string, (data: any) => string> = {
-    shutdown(): string {
-      process.exit(0)
-    },
-    refetch(entries: string[]): string {
-      if (entries.includes('config'))
-        CMS.loadRemoteConfig()
-      if (entries.includes('experiments'))
-        CMS.loadExperiments()
-      if (entries.includes('cms.languages'))
-        CMS.loadLanguages()
-      if (entries.includes('cms.constants'))
-        CMS.loadConstants()
-
-      for (const entry of entries) {
-        if (!entry.startsWith('api')) continue
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [ _major, minor, id ] = entry.split('.')
-        if (!minor || !id) continue
-
-        if (minor === 'product')
-          FSApiGateway.clearProductsCache(id)
-
-        if (minor === 'channel')
-          FSApiGateway.updateChannel(id as any, true)
-
-        if (minor === 'announcement')
-          FSApiGateway.clearAnnouncementsCache(id)
-      }
-
-      return ''
-    },
-    log(text: string): string {
-      Logger.debug(`UMI: ${text}`)
-      return ''
-    }
-  }
+  private static commandHandlers: UmiCommand[] = []
 
   private static serviceName = 'unknown'
   private static features: UmiInfoReport['features'] = {
@@ -79,8 +87,8 @@ export default class UmiLibs {
 
   //
 
-  public static registerCommand(name: string, handler: (data: any) => string) {
-    UmiLibs.commandHandlers[name] = handler
+  public static registerCommand<A extends string, B extends UmiCommandArgumentTypes, C extends boolean, D extends string>(command: TypedUmiCommand<A, B, C, D>) {
+    UmiLibs.commandHandlers.push(command)
   }
 
   public static mount(server: Express, config: ServerMountConfig): void {
@@ -88,12 +96,13 @@ export default class UmiLibs {
 
     if (config.allowedIpRange) 
       server.all('/umi/*', UmiLibs.ipLockMiddleware(config.allowedIpRange))
-    
 
     if (config.renderMetrics) {
       server.get('/umi/metrics', config.renderMetrics)
       UmiLibs.features.metrics = true
     }
+
+    UmiLibs.registerDefaultCommands()
 
     server.get('/umi/info', UmiLibs.renderInfoResponse)
 
@@ -121,7 +130,11 @@ export default class UmiLibs {
       id: os.hostname(),
       status: 'ok',
       features: UmiLibs.features,
-      commands: Object.keys(UmiLibs.commandHandlers)
+      commands: UmiLibs.commandHandlers.map(cmd => ({
+        name: cmd.name,
+        description: cmd.description,
+        arguments: cmd.arguments
+      }))
     }
 
     res.status(200).json(out)
@@ -136,11 +149,11 @@ export default class UmiLibs {
 
     Logger.process(`Received UMI command ${name}`)
 
-    const handler = UmiLibs.commandHandlers[name]
-    if (!handler)
+    const cmd = UmiLibs.commandHandlers[name]
+    if (!cmd)
       return res.status(400).json({ success: false, error: `No handler for command "${name}"` })
 
-    const error = handler(data)
+    const error = cmd.handler(data)
     if (error) return res.status(400).json({ success: false, error })
     else return res.status(200).json({ success: true })
   }
@@ -200,6 +213,85 @@ export default class UmiLibs {
       delay *= 2
     }
     onFail()
+  }
+
+  private static registerDefaultCommands() {
+    UmiLibs.registerCommand({
+      name: 'shutdown',
+      description: 'Shuts the service down, resulting in a restart.',
+      arguments: [],
+      handler(): string {
+        process.exit(0)
+      }
+    })
+
+    UmiLibs.registerCommand({
+      name: 'refetch',
+      description: 'Re-fetches one or multiple data sources.',
+      arguments: [
+        {
+          name: 'entries',
+          type: 'string',
+          array: true,
+          enum: [
+            'config',
+            'experiments',
+            'cms.languages',
+            'cms.constants',
+            'api.product.*',
+            'api.channel.*',
+            'api.announcement.*'
+          ],
+          description: 'Select which datasets you want to re-fetch'
+        }
+      ],
+      handler({ entries }): string {
+        if (entries.includes('config'))
+          CMS.loadRemoteConfig()
+        if (entries.includes('experiments'))
+          CMS.loadExperiments()
+        if (entries.includes('cms.languages'))
+          CMS.loadLanguages()
+        if (entries.includes('cms.constants'))
+          CMS.loadConstants()
+  
+        for (const entry of entries) {
+          if (!entry.startsWith('api')) continue
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const [ _major, minor, id ] = entry.split('.')
+          if (!minor || !id) continue
+  
+          if (minor === 'product')
+            FSApiGateway.clearProductsCache(id)
+  
+          if (minor === 'channel')
+            FSApiGateway.updateChannel(id as any, true)
+  
+          if (minor === 'announcement')
+            FSApiGateway.clearAnnouncementsCache(id)
+        }
+  
+        return ''
+      }
+    })
+
+    UmiLibs.registerCommand({
+      name: 'log',
+      description: 'Debug logs something to the console',
+      arguments: [
+        {
+          name: 'text',
+          description: 'Text to print',
+          type: 'string',
+          array: false,
+          enum: null
+        }
+      ],
+      handler({ text }): string {
+        Logger.debug(`UMI: ${text}`)
+        return ''
+      }
+    })
   }
 
 }

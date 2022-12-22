@@ -108,6 +108,60 @@ export default class Modules {
         remoteConfig: 1000 * 60 * 60 * 6, // every 6h
       }
     })
+
+    UmiLibs.registerCommand({
+      name: 'test',
+      description: 'This is a test command to test.',
+      arguments: [
+        {
+          name: 'text',
+          type: 'string',
+          description: 'A text',
+          array: false,
+          enum: null
+        },
+        {
+          name: 'text_list',
+          type: 'string',
+          description: 'Two text',
+          array: true,
+          enum: null
+        },
+        {
+          name: 'one_emum',
+          type: 'string',
+          description: 'Three text',
+          array: false,
+          enum: [ 'gaming', 'not gaming' ]
+        },
+        {
+          name: 'more_emum',
+          type: 'string',
+          description: 'Four text',
+          array: true,
+          enum: [ 'gaming', 'not gaming', 'three gaming' ]
+        },
+        {
+          name: 'numbr',
+          type: 'number',
+          description: 'one or two or more',
+          array: false,
+          enum: null
+        },
+        {
+          name: 'boooool',
+          type: 'boolean',
+          description: 'tru or fals',
+          array: false,
+          enum: null
+        },
+      ],
+      handler(data: any): string {
+        const dat = JSON.stringify(data) + ' xoxo'
+        console.log(dat)
+        return data.text === 'error' ? dat : ''
+      }
+    })
   }
 
   public static connectDatabases(): Promise<any> {

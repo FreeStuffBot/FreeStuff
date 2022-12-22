@@ -16,7 +16,7 @@ export async function getChannel(req: Request, res: Response) {
   if (!name || !ProductDiscountTypeArray.includes(name))
     return ReqError.notFound(res, `Channel '${name}' not found.`)
   
-  const resolveItems = req.query.resolve && Utils.isStringTruth(req.query.resolve + '')
+  const resolveItems = req.query.resolve && Utils.isStringTruthy(req.query.resolve + '')
 
   const products = await Resolver.resolveChannel(name)
 
