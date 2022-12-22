@@ -33,14 +33,14 @@ export default class DockerInterface {
   }
 
   public static getFsContainers(): FsContainer[] {
+    if (config.dockerOfflineMode)
+      return DockerInterface.getFsContainersTestData()
     return [ ...this.cache ]
   }
 
   public static async fetchFsContainers(): Promise<FsContainer[]> {
     if (config.dockerOfflineMode)
       return DockerInterface.getFsContainersTestData()
-
-    Logger.debug('Starting to fetch Containers')
 
     const self = await DockerInterface.client.listServices({
       Filters: {
@@ -84,9 +84,6 @@ export default class DockerInterface {
     })
     await Promise.all(progress)
 
-    Logger.debug('Done fetching Containers')
-    Logger.debug(JSON.stringify(containers))
-
     DockerInterface.cache = [ ...containers ]
     DockerInterface.onServiceUpdate(containers)
     return containers
@@ -123,28 +120,7 @@ export default class DockerInterface {
   //
 
   private static getFsContainersTestData(): FsContainer[] {
-    return [
-      {
-        "id": "fd895233b73e2f08e2eeb36ff2e30e8262d0d4fb9e5d8cc7047a47bb25159c2f",
-        "role": "api",
-        "imageName": "ghcr.io/freestuffbot/fsb-api:master",
-        "labels": {
-          "xyz.freestuffbot.service.role": "api"
-        },
-        "networkIp": "172.20.0.3",
-        "info": null
-      },
-      {
-        "id": "08ff2454815cbd30d695d76363f963bf387f55a3b695a1334eabc85f85a541d3",
-        "role": "discord-interactions",
-        "imageName": "ghcr.io/freestuffbot/fsb-discord-interactions:master",
-        "labels": {
-          "xyz.freestuffbot.service.role": "discord-interactions"
-        },
-        "networkIp": "172.20.0.1",
-        "info": null
-      }
-    ]
+    return JSON.parse('[{"id":"32ogc4h9j9tk7ova0xbzomxwo","role":"discord-interactions","imageName":"fsb_discord_interactions","labels":{"com.docker.stack.image":"ghcr.io/freestuffbot/fsb-discord-interactions:master","com.docker.stack.namespace":"fsb","prometheus-job":"fsb","traefik.docker.network":"proxy","traefik.enable":"true","traefik.http.routers.fsb-discord-interactions.entrypoints":"https","traefik.http.routers.fsb-discord-interactions.rule":"Host(`inbound-discord--net.freestuffbot.xyz`)","traefik.http.routers.fsb-discord-interactions.tls.certresolver":"cloudflare","traefik.http.routers.fsb-discord-interactions.tls.domains[0].main":"inbound-discord--net.freestuffbot.xyz","traefik.http.services.fsb-discord-interactions.loadbalancer.server.port":"80","xyz.freestuffbot.service.role":"discord-interactions"},"networkIp":"10.0.5.16","info":{"name":"discord-interactions","version":"NONE","id":"d563696d22dd","status":"ok","features":{"command":true,"metrics":true},"commands":[{"name":"shutdown","description":"Shuts the service down, resulting in a restart.","arguments":[]},{"name":"refetch","description":"Re-fetches one or multiple data sources.","arguments":[{"name":"entries","type":"string","array":true,"enum":["config","experiments","cms.languages","cms.constants","api.product.*","api.channel.*","api.announcement.*"],"description":"Select which datasets you want to re-fetch"}]},{"name":"log","description":"Debug logs something to the console","arguments":[{"name":"text","description":"Text to print","type":"string","array":false,"enum":null}]},{"name":"test","description":"This is a test command to test.","arguments":[{"name":"text","type":"string","description":"A text","array":false,"enum":null},{"name":"text_list","type":"string","description":"Two text","array":true,"enum":null},{"name":"one_emum","type":"string","description":"Three text","array":false,"enum":["gaming","not gaming"]},{"name":"more_emum","type":"string","description":"Four text","array":true,"enum":["gaming","not gaming","three gaming"]},{"name":"numbr","type":"number","description":"one or two or more","array":false,"enum":null},{"name":"boooool","type":"boolean","description":"tru or fals","array":false,"enum":null}]}]}},{"id":"dnjky68p88sw76fgcw4sjpv53","role":"link-proxy","imageName":"fsb_link_proxy","labels":{"com.docker.stack.image":"ghcr.io/freestuffbot/fsb-link-proxy:master","com.docker.stack.namespace":"fsb","prometheus-job":"fsb","xyz.freestuffbot.service.role":"link-proxy"},"networkIp":"10.0.6.18","info":null},{"id":"hjejaius41cbzt2zhou4u4df0","role":"manager","imageName":"fsb_manager","labels":{"com.docker.stack.image":"ghcr.io/freestuffbot/fsb-manager:master","com.docker.stack.namespace":"fsb","prometheus-job":"fsb","xyz.freestuffbot.service.role":"manager"},"networkIp":"10.0.5.2","info":null},{"id":"j3t8a965fichl2qsfhom0bpg3","role":"discord-publisher","imageName":"fsb_discord_publisher","labels":{"com.docker.stack.image":"ghcr.io/freestuffbot/fsb-discord-publisher:master","com.docker.stack.namespace":"fsb","prometheus-job":"fsb","xyz.freestuffbot.service.role":"discord-publisher"},"networkIp":"10.0.6.5","info":null},{"id":"lwfpbg6vie0z84q44sxhpije4","role":"thumbnailer","imageName":"fsb_thumbnailer","labels":{"com.docker.stack.image":"ghcr.io/freestuffbot/fsb-thumbnailer:master","com.docker.stack.namespace":"fsb","prometheus-job":"fsb","xyz.freestuffbot.service.role":"thumbnailer"},"networkIp":"10.0.6.16","info":null},{"id":"mmsvq4brpr1crpapy5llntt1d","role":"app-publisher","imageName":"fsb_app_publisher","labels":{"com.docker.stack.image":"ghcr.io/freestuffbot/fsb-app-publisher:master","com.docker.stack.namespace":"fsb","prometheus-job":"fsb","xyz.freestuffbot.service.role":"app-publisher"},"networkIp":"10.0.6.14","info":null},{"id":"nxjraem8e1a8ierpou9t6qb1h","role":"api","imageName":"fsb_api","labels":{"com.docker.stack.image":"ghcr.io/freestuffbot/fsb-api:master","com.docker.stack.namespace":"fsb","prometheus-job":"fsb","traefik.docker.network":"proxy","traefik.enable":"true","traefik.http.routers.fsb-api.entrypoints":"https","traefik.http.routers.fsb-api.rule":"Host(`api.freestuffbot.xyz`)","traefik.http.routers.fsb-api.tls.certresolver":"cloudflare","traefik.http.routers.fsb-api.tls.domains[0].main":"api.freestuffbot.xyz","traefik.http.services.fsb-api.loadbalancer.server.port":"80","xyz.freestuffbot.service.role":"api"},"networkIp":"10.0.5.10","info":null},{"id":"tnhu8z8o9vhd90uylsvccy87q","role":"discord-gateway","imageName":"fsb_discord_gateway","labels":{"com.docker.stack.image":"ghcr.io/freestuffbot/fsb-discord-gateway:master","com.docker.stack.namespace":"fsb","prometheus-job":"fsb","xyz.freestuffbot.service.role":"discord-gateway"},"networkIp":"10.0.5.8","info":{"name":"discord-gateway","version":"NONE","id":"92d1ac822c64","status":"ok","features":{"command":true,"metrics":true},"commands":[{"name":"shutdown","description":"Shuts the service down, resulting in a restart.","arguments":[]},{"name":"refetch","description":"Re-fetches one or multiple data sources.","arguments":[{"name":"entries","type":"string","array":true,"enum":["config","experiments","cms.languages","cms.constants","api.product.*","api.channel.*","api.announcement.*"],"description":"Select which datasets you want to re-fetch"}]},{"name":"log","description":"Debug logs something to the console","arguments":[{"name":"text","description":"Text to print","type":"string","array":false,"enum":null}]}]}}]')
   }
 
 }

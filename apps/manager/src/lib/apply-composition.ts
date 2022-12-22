@@ -45,7 +45,7 @@ export async function applyComposition(containers: Container[]): Promise<any[]> 
       id: c.role ?? c.imageName ?? c.id,
       min: 0,
       max: 0,
-      found: c
+      found: [ c ]
     })
   }
 
