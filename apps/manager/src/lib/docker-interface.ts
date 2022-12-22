@@ -71,6 +71,15 @@ export default class DockerInterface {
       .map(s => DockerInterface.mapServiceToFsContainer(s, validNetworks))
       .filter(s => (!!s.networkIp && !!s.role))
 
+    const test = await DockerInterface.client.listTasks({
+      Filters: {
+        service: [ 'fsb_discord_publisher' ]
+      }
+    })
+    console.log('-----------')
+    console.log(JSON.stringify(test))
+    console.log('-----------')
+
     const progress = containers.map(async (container) => {
       const res = await axios
         .get(`http://${container.networkIp}/umi/info`, {
@@ -93,6 +102,7 @@ export default class DockerInterface {
   private static mapServiceToFsContainer(service: Docker.Service, validNetworks: string[]): FsContainer {
     let networkIp = null
 
+    console.log(service.Spec?.Name, JSON.stringify(service.Endpoint.VirtualIPs))
     for (const network of service.Endpoint.VirtualIPs) {
       if (!validNetworks.includes(network.NetworkID)) continue
       networkIp = network.Addr?.split('/')[0] ?? null
