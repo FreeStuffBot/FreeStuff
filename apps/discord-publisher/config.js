@@ -9,11 +9,11 @@ module.exports = {
     umiAllowedIpRange: loadArg('NETWORK_UMI_ALLOWED_IP_RANGE')
   },
   behavior: {
-    upstreamRequestRate: 10, // TODO up this to 10 once running stable
+    upstreamRequestRate: 15, // TODO up this to 10 once running stable
     upstreamRequestInterval: 250,
     upstreamMaxRetries: 10,
-    upstreamMaxFramesInQueue: 4,
-    upstreamMaxPendingReplyCount: 40,
+    upstreamMaxFramesInQueue: 5,
+    upstreamMaxPendingReplyCount: 50,
     upstreamClientErrorsTimeframeMinutes: 10,
     upstreamClientErrorsMax: 10000,
     upstreamClientErrorActionLeeway: 0.9,
