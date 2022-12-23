@@ -19,7 +19,7 @@
     "form-data": "^4.0.0",
     "helmet": "^4.4.1",
     "image-js": "^0.31.4",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "morgan": "^1.10.0",
     "prom-client": "^13.1.0",
     "skia-canvas": "^0.9.27"
