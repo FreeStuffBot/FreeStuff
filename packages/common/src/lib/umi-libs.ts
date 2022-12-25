@@ -5,6 +5,7 @@ import CMS from './cms'
 import ContainerInfo from './container-info'
 import FSApiGateway from './fsapi-gateway'
 import { Logger } from './logger'
+import axios from 'axios'
 
 
 export type UmiInfoReport = {
@@ -29,6 +30,10 @@ type ServerMountConfig = {
     experiments?: number
     remoteConfig?: number
   }
+}
+
+export type UmiCommandSender = {
+  send(receivers: string, command: string, data: any): void
 }
 
 type UmiCommandArgumentTypes = 'string' | 'boolean' | 'number'
@@ -75,7 +80,7 @@ type TypedUmiCommand<
 
 type UmiCommand = TypedUmiCommand<string, UmiCommandArgumentTypes, boolean, string>
 
-export default class UmiLibs {
+export class UmiLibs {
 
   private static commandHandlers: UmiCommand[] = []
 
@@ -199,6 +204,19 @@ export default class UmiLibs {
       }).then(() => Logger.process('Loaded Experiments.'))
       setInterval(() => CMS.loadExperiments(), config.experiments)
     }
+  }
+
+  public static registerCommandSender(recHost: string): UmiCommandSender {
+    const send = (receivers: string, command: string, data: any) => {
+      const exec = () => axios.post(
+        '/services/command',
+        { receivers, name: command, data },
+        { baseURL: recHost, validateStatus: null }
+      ).catch(() => null).then(res => res && res.status === 200)
+
+      UmiLibs.loadCertain(exec, true, () => Logger.warn(`UMI command ${command} could not be delivered.`))
+    }
+    return { send }
   }
 
   //

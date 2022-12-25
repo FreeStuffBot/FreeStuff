@@ -1,4 +1,4 @@
-import { Logger } from "@freestuffbot/common"
+import { Logger, UmiLibs, UmiCommandSender } from "@freestuffbot/common"
 import RabbitHole from "@freestuffbot/rabbit-hole"
 import * as express from 'express'
 import DashRouter from "./routes/dash/_router"
@@ -13,6 +13,10 @@ import { config } from "."
 
 
 export default class Modules {
+
+  public static umiSender: UmiCommandSender
+
+  //
 
   public static async initRabbit(): Promise<void> {
     Logger.info('Opening RabbitHole...')
@@ -49,6 +53,10 @@ export default class Modules {
 
   public static startRoutines() {
     Routines.start()
+  }
+
+  public static enableUmi() {
+    Modules.umiSender = UmiLibs.registerCommandSender(config.network.manager)
   }
 
 }

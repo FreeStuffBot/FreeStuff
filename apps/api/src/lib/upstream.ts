@@ -1,5 +1,6 @@
 import { AnnouncementType } from "@freestuffbot/common"
 import RabbitHole, { TaskId } from "@freestuffbot/rabbit-hole"
+import Modules from "modules"
 import { config } from ".."
 import Mongo from "../database/mongo"
 
@@ -12,7 +13,14 @@ export default class Upstream {
       Upstream.publishToApps(announcement),
       Upstream.publishToTelegram(announcement)
     ])
-    announcement.save()
+
+    await announcement.save()
+
+    Modules.umiSender.send(
+      '*',
+      'refetch',
+      { entries: [ 'api.announcement.*', 'api.channel.*' ] }
+    )
   }
 
   public static async publishToDiscord(announcement: AnnouncementType) {

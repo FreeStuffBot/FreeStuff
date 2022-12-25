@@ -17,6 +17,7 @@ async function run() {
   Modules.connectGibu()
   Modules.startServer()
   Modules.startRoutines()
+  Modules.enableUmi()
 }
 
 run().catch((err) => {

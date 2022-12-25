@@ -17,7 +17,9 @@ export async function postCommand(req: Request, res: Response) {
   const progress = targets.map(cont => deliverCommandToService(payload, cont))
 
   await Promise.all(progress)
-  res.status(200).json({ })
+  res.status(200).json({
+    targets: targets.length
+  })
 }
 
 function filterNetworkByReceivers(network: FsContainer[], receivers: string[]): FsContainer[] {
