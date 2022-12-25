@@ -20,6 +20,18 @@ export async function postAnnouncement(req: Request, res: Response) {
   const itemsValid = await Promise.all(items.map(_id => Mongo.Product.findOne({ _id, status: 'approved' }).exec() as Promise<ProductType>))
   if (!itemsValid.every(i => !!i)) return ReqError.badRequest(res, 'Invalid products', 'One or more products provided do not exist or are not approved.')
 
+  try {
+    for (const product of itemsValid) {
+      product.status = 'published'
+      // product.responsible = res.locals.user?.id ?? LocalConst.PSEUDO_USER_UNKNOWN_ID
+      // product.changed = Date.now()
+      await product.save()
+    }
+  } catch (err) {
+    Logger.error(err)
+    return
+  }
+
   const announcement = createNewAnnouncement()
   announcement._id = id
   announcement.responsible = res.locals.user?.id ?? LocalConst.PSEUDO_USER_UNKNOWN_ID
@@ -39,15 +51,4 @@ export async function postAnnouncement(req: Request, res: Response) {
   Upstream.publish(dbobj)
 
   res.status(200).json({ id })
-
-  try {
-    for (const product of itemsValid) {
-      product.status = 'published'
-      // product.responsible = res.locals.user?.id ?? LocalConst.PSEUDO_USER_UNKNOWN_ID
-      // product.changed = Date.now()
-      await product.save()
-    }
-  } catch (err) {
-    Logger.error(err)
-  }
 }
